@@ -45,9 +45,17 @@
         .main-box.wrong-box { border-left-color: #dc2626; background: #fff1f2; }
         .main-box.wrong-box .btn-link { background: #dc2626; }
         
+        .main-box.flash-review-box { border-left-color: #d97706; background: #fffbeb; }
+        .main-box.flash-review-box .btn-link { background: #d97706; }
+        .main-box.flash-review-box .btn-link:hover { background: #b45309; }
+        
         .main-box.revision-box { border-left-color: #7c3aed; background: #f5f3ff; }
         .main-box.revision-box .btn-link { background: #7c3aed; }
         .main-box.revision-box .btn-link:hover { background: #6d28d9; }
+
+        .main-box.my-rev-box { border-left-color: #2563eb; background: #eff6ff; }
+        .main-box.my-rev-box .btn-link { background: #2563eb; }
+        .main-box.my-rev-box .btn-link:hover { background: #1d4ed8; }
 
         .main-box h3 { color: #1e293b; font-size: 0.95rem; font-weight: 700; margin: 0; flex: 1; word-break: break-word; }
 
@@ -66,6 +74,27 @@
             display: inline-block;
         }
         .btn-link:hover { background: #047857; }
+
+        .nav-top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+        .small-nav-btn {
+            background: #334155;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .small-nav-btn:hover { background: #1e293b; }
 
         #dynamic-view {
             display: none;
@@ -87,31 +116,94 @@
             margin-bottom: 10px;
         }
         .subtopic-card h4 { font-size: 0.95rem; color: #334155; margin-bottom: 8px; }
-        .action-buttons { display: flex; gap: 8px; flex-wrap: wrap; }
+        
+        .action-buttons { 
+            display: flex; 
+            justify-content: space-between; 
+            gap: 10px; 
+        }
+        .action-buttons .btn-link {
+            flex: 1;
+        }
         
         .btn-mock { background: #059669; }
         .btn-flash { background: #4f46e5; }
         
-        .btn-back {
-            display: block;
-            width: 100%;
-            background: #334155;
-            color: white;
-            padding: 12px;
-            border-radius: 8px;
-            border: none;
-            font-weight: 700;
-            cursor: pointer;
-            text-align: center;
-            margin-top: 15px;
-        }
-        .btn-back:hover { background: #1e293b; }
-
         .form-group { margin-bottom: 15px; }
         .form-group label { display: block; font-weight: bold; margin-bottom: 6px; font-size: 0.9rem; color: #334155; }
         .form-control { width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 0.9rem; background: #f8fafc; }
 
-        .quiz-container { background: #ffffff; padding: 5px; border-radius: 10px; }
+        .quiz-container { background: #ffffff; padding: 5px; border-radius: 10px; text-align: center; }
+        
+        /* 🌟 3D ഫ്ലിപ്പ് ആനിമേഷനും കൂടിയ ഹൈറ്റ് ഉള്ള ഫ്ലാഷ് കാർഡ് ഡിസൈൻ */
+        .flashcard-container { 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            padding: 10px 0; 
+            perspective: 1000px; 
+        }
+        .flash-card-scene {
+            width: 100%;
+            height: 280px; /* ആവശ്യത്തിന് ഹൈറ്റ് കൂട്ടിയിരിക്കുന്നു */
+            perspective: 1000px;
+            margin-bottom: 20px;
+            cursor: pointer;
+        }
+        .flash-card-box {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.6s cubic-bezier(0.4, 0.2, 0.2, 1);
+            border-radius: 18px;
+            box-shadow: 0 12px 30px -8px rgba(0, 0, 0, 0.12);
+        }
+        .flash-card-box.flipped {
+            transform: rotateY(180deg);
+        }
+        .flash-card-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: 18px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 25px;
+            text-align: center;
+            border: 2px solid #e2e8f0;
+        }
+        .flash-card-front {
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+            color: #1e3a8a;
+            border-top: 6px solid #4f46e5;
+        }
+        .flash-card-back {
+            background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+            color: #166534;
+            border-top: 6px solid #059669;
+            transform: rotateY(180deg);
+        }
+
+        .flash-btns { display: flex; gap: 12px; width: 100%; }
+        .btn-known { 
+            background: linear-gradient(135deg, #059669 0%, #047857 100%); 
+            color: white; flex: 1; padding: 14px; border: none; border-radius: 12px; font-weight: bold; cursor: pointer; 
+            box-shadow: 0 4px 12px rgba(5, 150, 105, 0.25);
+            transition: transform 0.1s;
+        }
+        .btn-known:active { transform: scale(0.97); }
+        .btn-unknown { 
+            background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%); 
+            color: white; flex: 1; padding: 14px; border: none; border-radius: 12px; font-weight: bold; cursor: pointer; 
+            box-shadow: 0 4px 12px rgba(220, 38, 38, 0.25);
+            transition: transform 0.1s;
+        }
+        .btn-unknown:active { transform: scale(0.97); }
+
         .quiz-top-bar { display: flex; justify-content: space-between; align-items: center; background: #f1f5f9; padding: 8px 12px; border-radius: 8px; margin-bottom: 15px; font-size: 0.85rem; font-weight: bold; color: #334155; }
         .timer-box { color: #dc2626; display: flex; align-items: center; gap: 5px; }
         
@@ -123,7 +215,7 @@
         .bookmark-btn { background: none; border: none; font-size: 1.3rem; cursor: pointer; color: #cbd5e1; }
         .bookmark-btn.active { color: #f59e0b; }
         
-        .question-text { font-size: 0.95rem; color: #1e293b; font-weight: 600; margin-bottom: 15px; line-height: 1.4; }
+        .question-text { font-size: 0.95rem; color: #1e293b; font-weight: 600; margin-bottom: 15px; line-height: 1.4; text-align: left; }
         .options-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 20px; }
         .option-item { 
             padding: 10px 12px; 
@@ -169,6 +261,15 @@
         .btn-retry { background: #059669; margin-top: 12px; }
         .btn-save-rev { background: #dc2626; margin-top: 10px; }
 
+        .progress-bar-container { background: #e2e8f0; border-radius: 8px; height: 10px; width: 100%; overflow: hidden; margin-top: 5px; }
+        .progress-bar-fill { background: #059669; height: 100%; width: 0%; transition: width 0.3s ease; }
+
+        .rev-row { display: flex; justify-content: space-between; align-items: center; background: #fff; padding: 8px 12px; border-radius: 6px; margin-top: 6px; border: 1px solid #e2e8f0; }
+        .counter-box { display: flex; align-items: center; gap: 8px; }
+        .count-btn { background: #334155; color: white; border: none; width: 28px; height: 28px; border-radius: 4px; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+        .count-btn:hover { background: #1e293b; }
+        .count-display { font-weight: bold; font-size: 0.95rem; min-width: 24px; text-align: center; color: #2563eb; }
+
         #pause-overlay {
             display: none;
             position: fixed;
@@ -192,6 +293,11 @@
 
     <!-- പ്രധാന ഹോം മെനു -->
     <div class="container" id="home-menu">
+        <div class="main-box my-rev-box">
+            <h3>📈 MY REVISION PROGRESS</h3>
+            <button class="btn-link" onclick="openRevisionProgress()">തുറക്കുക →</button>
+        </div>
+
         <div class="main-box tracker-box">
             <h3>📖 സ്റ്റഡി ട്രാക്കർ (Study Tracker)</h3>
             <button class="btn-link" onclick="openTracker()">തുറക്കുക →</button>
@@ -203,8 +309,13 @@
         </div>
 
         <div class="main-box wrong-box">
-            <h3>❌ തെറ്റിയ ഉത്തരങ്ങൾ റിവ്യൂ ചെയ്യുക</h3>
+            <h3>❌ തെറ്റിയ മോക്ക് ടെസ്റ്റ് ചോദ്യങ്ങൾ റിവ്യൂ ചെയ്യുക</h3>
             <button class="btn-link" onclick="openWrongReview()">റിവ്യൂ ചെയ്യുക →</button>
+        </div>
+
+        <div class="main-box flash-review-box">
+            <h3>⚡ തെറ്റിയ ഫ്ലാഷ് കാർഡുകൾ റിവ്യൂ ചെയ്യുക</h3>
+            <button class="btn-link" onclick="openFlashReviewSets()">റിവ്യൂ ചെയ്യുക →</button>
         </div>
 
         <!-- 20 മോഡ്യൂളുകൾ -->
@@ -232,9 +343,12 @@
 
     <!-- ഡൈനാമിക് കണ്ടന്റ് ലോഡ് ആകുന്ന ഏരിയ -->
     <div id="dynamic-view">
+        <div class="nav-top-bar">
+            <button class="small-nav-btn" onclick="goBackToPrevious()">← ബാക്ക്</button>
+            <button class="small-nav-btn" onclick="goBackToHome()">🏠 ഹോം</button>
+        </div>
         <h2 id="view-title">ടൈറ്റിൽ</h2>
         <div id="subtopics-container"></div>
-        <button class="btn-back" onclick="goBackToHome()" id="back-btn">← ഹോം പേജിലേക്ക് മടങ്ങുക</button>
     </div>
 
     <!-- പോസ് ചെയ്യുമ്പോൾ വരുന്ന വിൻഡോ -->
@@ -246,7 +360,7 @@
     <!-- ഫയർബേസ് SDKs -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
-        import { getFirestore, collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyDA1XwfYzlPCL_Soxia0d-JpNekGGCaJMM",
@@ -261,11 +375,11 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        window.saveToFirebase = async function(customName, questionsArray) {
+        window.saveToFirebase = async function(customName, itemsArray, collectionName = "revision_sets") {
             try {
-                await addDoc(collection(db, "revision_sets"), {
+                await addDoc(collection(db, collectionName), {
                     name: customName,
-                    questions: questionsArray,
+                    items: itemsArray,
                     createdAt: new Date().toISOString()
                 });
                 alert(`✓ "${customName}" ഫയർബേസിൽ വിജയകരമായി സേവ് ചെയ്തു!`);
@@ -275,12 +389,12 @@
             }
         };
 
-        window.loadFromFirebase = async function() {
+        window.loadFromFirebase = async function(collectionName = "revision_sets") {
             try {
-                let querySnapshot = await getDocs(collection(db, "revision_sets"));
+                let querySnapshot = await getDocs(collection(db, collectionName));
                 let sets = [];
-                querySnapshot.forEach((doc) => {
-                    sets.push(doc.data());
+                querySnapshot.forEach((document) => {
+                    sets.push({ id: document.id, ...document.data() });
                 });
                 return sets;
             } catch (e) {
@@ -288,24 +402,93 @@
                 return [];
             }
         };
+
+        window.deleteFromFirebase = async function(docId, collectionName = "revision_sets") {
+            try {
+                await deleteDoc(doc(db, collectionName, docId));
+                alert("സെറ്റ് വിജയകരമായി ഡിലീറ്റ് ചെയ്തു!");
+            } catch (e) {
+                console.error("Firebase Delete Error: ", e);
+                alert("ഡിലീറ്റ് ചെയ്യുന്നതിൽ പരാജയപ്പെട്ടു.");
+            }
+        };
+
+        window.saveTrackerData = async function(trackerData) {
+            try {
+                await addDoc(collection(db, "study_tracker"), {
+                    data: trackerData,
+                    updatedAt: new Date().toISOString()
+                });
+            } catch (e) {
+                console.error("Tracker Save Error: ", e);
+            }
+        };
+
+        window.saveRevisionCountsToFirebase = async function(countsData) {
+            try {
+                await setDoc(doc(db, "user_progress", "revision_counts"), {
+                    counts: countsData,
+                    updatedAt: new Date().toISOString()
+                });
+            } catch (e) {
+                console.error("Revision Count Save Error: ", e);
+            }
+        };
+
+        window.loadRevisionCountsFromFirebase = async function() {
+            try {
+                let docSnap = await getDoc(doc(db, "user_progress", "revision_counts"));
+                if (docSnap.exists()) {
+                    return docSnap.data().counts || {};
+                }
+                return {};
+            } catch (e) {
+                console.error("Revision Count Load Error: ", e);
+                return {};
+            }
+        };
     </script>
 
     <script>
+        window.allSavedFlashSets = [];
+        let navigationHistory = [];
+
         const questionsDB = {
             "mod_3_sub_1": [
                 { q: "ആധുനിക സാമ്പത്തികശാസ്ത്രത്തിന്റെ പിതാവ് ആര്?", options: ["എ) ആൽഫ്രഡ് മാർഷൽ", "ബി) ആഡം സ്മിത്ത്", "സി) ദാദാഭായി നൗറോജി", "ഡി) ലയണൽ റോബിൻസ്"], answer: 1, explanation: "ആഡം സ്മിത്ത് ആണ്." },
-                { q: "'ലൈസേ ഫെയർ' (Laissez-faire) നയവുമായി ബന്ധപ്പെട്ട് ശരിയേത്?<br>1. ഫ്രഞ്ച് പദം<br>2. കുറഞ്ഞ സർക്കാർ ഇടപെടൽ", options: ["എ) 1 മാത്രം", "ബി) 2 മാത്രം", "സി) 1 ഉം 2 ഉം ശരിയാണ്", "ഡി) രണ്ടും തെറ്റാണ്"], answer: 2, explanation: "രണ്ടും ശരിയാണ്." }
-            ],
-            "mod_3_sub_2": [
-                { q: "സൂക്ഷ്മ സാമ്പത്തികശാസ്ത്രത്തിന്റെ പിതാവ് ആര്?", options: ["എ) ആഡം സ്മിത്ത്", "ബി) മാർട്ടിൻ ലൂതർ", "സി) ലയണൽ റോബിൻസ്", "ഡി) കാൾ മാർക്സ്"], answer: 0, explanation: "ആഡം സ്മിത്ത്." }
+                { q: "'ലൈസേ ഫെയർ' (Laissez-faire) നയവുമായി ബന്ധപ്പെട്ട് ശരിയേത്?", options: ["എ) 1 മാത്രം", "ബി) 2 മാത്രം", "സി) 1 ഉം 2 ഉം ശരിയാണ്", "ഡി) രണ്ടും തെറ്റാണ്"], answer: 2, explanation: "രണ്ടും ശരിയാണ്." }
+            ]
+        };
+
+        const flashcardDB = {
+            "mod_3_sub_1": [
+                { front: "മനുഷ്യരുടെ ആവശ്യങ്ങളും പരിമിതമായ വിഭവങ്ങളും തമ്മിലുള്ള ബന്ധം", back: "സാമ്പത്തികശാസ്ത്രം (Economics)" },
+                { front: "ആധുനിക സാമ്പത്തികശാസ്ത്രത്തിന്റെ പിതാവ് ആര്?", back: "ആഡം സ്മിത്ത് (Adam Smith)" },
+                { front: "'ലൈസേ ഫെയർ' (Laissez-faire) എന്നത് ഏത് ഭാഷാ പദമാണ്?", back: "ഫ്രഞ്ച് പദം" },
+                { front: "ലൈസേ ഫെയർ നയത്തിന്റെ അർത്ഥം എന്ത്?", back: "സർക്കാർ കുറഞ്ഞ ഇടപെടലോടെ വിപണി സ്വതന്ത്രമായി പ്രവർത്തിക്കണം" },
+                { front: "ഇന്ത്യൻ സാമ്പത്തികശാസ്ത്രത്തിന്റെ പിതാവ് ആര്?", back: "ദാദാഭായി നൗറോജി (Dadabhai Naoroji)" },
+                { front: "'Drain of Wealth' സിദ്ധാന്തം ആരുടേതാണ്?", back: "ദാദാഭായി നൗറോജി" },
+                { front: "ദാദാഭായി നൗറോജിയുടെ പ്രസിദ്ധമായ ഗ്രന്ഥം ഏത്?", back: "Poverty and Un-British Rule in India" },
+                { front: "ഇന്ത്യയിൽ ആദ്യമായി ദേശീയ വരുമാനം കണക്കാക്കിയത് ആര്?", back: "ദാദാഭായി നൗറോജി" },
+                { front: "ഇന്ത്യയിൽ ആദ്യമായി ദേശീയ വരുമാനം കണക്കാക്കിയ കാലഘട്ടം ഏത്?", back: "1867-1868" },
+                { front: "പ്രതിശീർഷ വരുമാനം (Per Capita Income) കാണുന്നതിനുള്ള സമവാക്യം എന്ത്?", back: "ദേശീയ വരുമാനം ÷ ജനസംഖ്യ" },
+                { front: "'Wealth Definition' (സമ്പത്ത് നിർവചനം) നൽകിയത് ആര്?", back: "ആഡം സ്മിത്ത്" },
+                { front: "സമ്പത്ത് നിർവചനവുമായി ബന്ധപ്പെട്ട ആഡം സ്മിത്തിന്റെ ഗ്രന്ഥം ഏത്?", back: "An Enquiry into the Nature and Causes of the Wealth of Nations (1776)" },
+                { front: "സമ്പത്ത് നിർവചനത്തിന്റെ പ്രധാന ആശയം എന്ത്?", back: "സമ്പത്തിന്റെ സൃഷ്ടിയും സമാഹരണവും" },
+                { front: "'Welfare Definition' (ക്ഷേമ നിർവചനം) നൽകിയത് ആര്?", back: "ആൽഫ്രഡ് മാർഷൽ" },
+                { front: "ആൽഫ്രഡ് മാർഷലിന്റെ ഗ്രന്ഥം ഏത്?", back: "Principles of Economics (1890)" },
+                { front: "ക്ഷേമ നിർവചനത്തിന്റെ പ്രധാന ലക്ഷ്യം എന്ത്?", back: "മനുഷ്യ ക്ഷേമം" },
+                { front: "'Scarcity Definition' (ദൗർലഭ്യ നിർവചനം) നൽകിയത് ആര്?", back: "ലയണൽ റോബിൻസ്" },
+                { front: "ലയണൽ റോബിൻസിന്റെ ഗ്രന്ഥം ഏത്?", back: "An Essay on the Nature and Significance of Economic Science (1932)" },
+                { front: "ദൗർലഭ്യ നിർവചനം എന്തിനെയൊക്കെയാണ് പറയുന്നത്?", back: "പരിമിത വിഭവങ്ങളും അളവില്ലാത്ത ആവശ്യങ്ങളും" },
+                { front: "'Growth Definition' (സാമ്പത്തിക വളർച്ചാ നിർവചനം) നൽകിയത് ആര്?", back: "പോൾ എ. സാമുവൽസൺ" }
             ]
         };
 
         const moduleData = {
             "mod_1": [], "mod_2": [], 
             "mod_3": [
-                { id: "mod_3_sub_1", title: "Economics basics 1", hasMock: true, hasFlash: true },
-                { id: "mod_3_sub_2", title: "Economics basics 2", hasMock: true, hasFlash: true }
+                { id: "mod_3_sub_1", title: "Economics basics 1", hasMock: true, hasFlash: true }
             ], 
             "mod_4": [], "mod_5": [], "mod_6": [], "mod_7": [], "mod_8": [], "mod_9": [], "mod_10": [],
             "mod_11": [], "mod_12": [], "mod_13": [], "mod_14": [], "mod_15": [],
@@ -320,7 +503,13 @@
         let timerInterval = null;
         let isPaused = false;
 
+        let currentFlashcards = [];
+        let flashIdx = 0;
+        let flashKnownCount = 0;
+        let flashUnknownList = [];
+
         function loadModuleContent(key, name) {
+            navigationHistory.push({ type: 'home' });
             document.getElementById('home-menu').style.display = 'none';
             let viewDiv = document.getElementById('dynamic-view');
             viewDiv.style.display = 'block';
@@ -328,7 +517,6 @@
             document.getElementById('view-title').innerText = name;
             let container = document.getElementById('subtopics-container');
             container.innerHTML = '';
-            document.getElementById('back-btn').style.display = 'block';
 
             let topics = moduleData[key];
             if (!topics || topics.length === 0) {
@@ -336,21 +524,361 @@
                 return;
             }
 
-            topics.forEach((topic, index) => {
+            topics.forEach((topic) => {
                 container.innerHTML += `
                     <div class="subtopic-card">
                         <h4>${topic.title}</h4>
                         <div class="action-buttons">
-                            ${topic.hasMock ? `<button class="btn-link btn-mock" onclick="openSpecificMock('${topic.id}', '${topic.title}')">📝 മോക്ക് ടെസ്റ്റ്</button>` : ''}
-                            ${topic.hasFlash ? `<button class="btn-link btn-flash" onclick="alert('ഫ്ലാഷ് കാർഡ് ഉടൻ ലഭ്യമാകും')">⚡ ഫ്ലാഷ് കാർഡ്</button>` : ''}
+                            ${topic.hasMock ? `<button class="btn-link btn-mock" onclick="openSpecificMock('${topic.id}', '${topic.title}', '${key}', '${name}')">📝 മോക്ക് ടെസ്റ്റ്</button>` : ''}
+                            ${topic.hasFlash ? `<button class="btn-link btn-flash" onclick="openFlashcardSession('${topic.id}', '${topic.title}', '${key}', '${name}')">⚡ ഫ്ലാഷ് കാർഡ്</button>` : ''}
                         </div>
                     </div>
                 `;
             });
         }
 
-        // ഡ്രോപ്പ്ഡൗൺ ലിസ്റ്റിലേക്ക് മോഡ്യൂളുകളും സബ് ടോപ്പിക്കുകളും ഓട്ടോമാറ്റിക്കായി ജനറേറ്റ് ചെയ്യുന്ന ഫങ്ഷൻ
+        async function openRevisionProgress() {
+            navigationHistory.push({ type: 'home' });
+            document.getElementById('home-menu').style.display = 'none';
+            let viewDiv = document.getElementById('dynamic-view');
+            viewDiv.style.display = 'block';
+            document.getElementById('view-title').innerText = "📈 MY REVISION PROGRESS";
+            let container = document.getElementById('subtopics-container');
+
+            container.innerHTML = `<p style="color: #64748b; text-align: center; padding: 20px;">ഡാറ്റ ലോഡ് ചെയ്യുന്നു...</p>`;
+
+            let counts = await window.loadRevisionCountsFromFirebase();
+            if (Object.keys(counts).length === 0) {
+                counts = JSON.parse(localStorage.getItem('psc_rev_counts') || '{}');
+            }
+
+            let htmlContent = '';
+            let hasAnyContent = false;
+
+            for (let i = 1; i <= 20; i++) {
+                let modKey = `mod_${i}`;
+                let modName = `MODULE ${i}`;
+                let topics = moduleData[modKey] || [];
+
+                if (topics.length > 0) {
+                    hasAnyContent = true;
+                    let topicsHtml = '';
+                    topics.forEach((t) => {
+                        let currentCount = counts[t.id] || 0;
+                        topicsHtml += `
+                            <div class="rev-row">
+                                <span style="font-size: 0.9rem; font-weight: 600; color: #334155; text-align: left; flex: 1;">${t.title}</span>
+                                <div class="counter-box">
+                                    <button class="count-btn" onclick="updateRevCount('${t.id}', -1)">-</button>
+                                    <span class="count-display" id="cnt-${t.id}">${currentCount}</span>
+                                    <button class="count-btn" onclick="updateRevCount('${t.id}', 1)">+</button>
+                                </div>
+                            </div>
+                        `;
+                    });
+
+                    htmlContent += `
+                        <div class="subtopic-card" style="background: #ffffff; border-left: 4px solid #2563eb;">
+                            <h4 style="color: #1e3a8a; margin-bottom: 6px; border-bottom: 1px solid #e2e8f0; padding-bottom: 4px;">${modName}</h4>
+                            ${topicsHtml}
+                        </div>
+                    `;
+                }
+            }
+
+            if (!hasAnyContent) {
+                container.innerHTML = `<p style="color: #64748b; text-align: center; padding: 20px;">നിലവിൽ സബ് ടോപ്പിക്കുകൾ ഒന്നും ആഡ് ചെയ്തിട്ടില്ല.</p>`;
+            } else {
+                container.innerHTML = `
+                    <p style="margin-bottom: 12px; font-size: 0.85rem; color: #64748b;">ആഡ് ചെയ്ത സബ് ടോപ്പിക്കുകൾ മാത്രം ഇവിടെ കാണിച്ചിരിക്കുന്നു:</p>
+                    <div style="max-height: 400px; overflow-y: auto;">
+                        ${htmlContent}
+                    </div>
+                `;
+            }
+        }
+
+        window.updateRevCount = async function(subId, change) {
+            let counts = JSON.parse(localStorage.getItem('psc_rev_counts') || '{}');
+            let currentCount = counts[subId] || 0;
+            let newCount = currentCount + change;
+            if (newCount < 0) newCount = 0;
+
+            let actionText = change > 0 ? "കൂട്ടാൻ" : "കുറയ്ക്കാൻ";
+            let confirmUpdate = confirm(`ഈ സബ് ടോപ്പിക്കിന്റെ റിവിഷൻ കൗണ്ട് ${newCount} ആക്കി ${actionText} ഉറപ്പാണോ?`);
+            if (!confirmUpdate) return;
+
+            counts[subId] = newCount;
+            localStorage.setItem('psc_rev_counts', JSON.stringify(counts));
+
+            let displayElem = document.getElementById(`cnt-${subId}`);
+            if (displayElem) displayElem.innerText = newCount;
+
+            await window.saveRevisionCountsToFirebase(counts);
+        };
+
+        function openSpecificMock(subId, title, modKey, modName) {
+            navigationHistory.push({ type: 'module', key: modKey, name: modName });
+            let qList = questionsDB[subId] || [];
+            if (qList.length === 0) {
+                alert('ചോദ്യങ്ങൾ ഉടൻ ചേർക്കുന്നതാണ്.');
+                return;
+            }
+            startQuiz(JSON.parse(JSON.stringify(qList)), subId);
+        }
+
+        function openFlashcardSession(subId, title, modKey, modName) {
+            navigationHistory.push({ type: 'module', key: modKey, name: modName });
+            currentActiveSubId = subId;
+            currentFlashcards = flashcardDB[subId] || [];
+            if (currentFlashcards.length === 0) {
+                alert("ഈ ടോപ്പിക്കിൽ ഫ്ലാഷ് കാർഡുകൾ ലഭ്യമല്ല.");
+                return;
+            }
+            flashIdx = 0;
+            flashKnownCount = 0;
+            flashUnknownList = [];
+            renderFlashcard(subId);
+        }
+
+        function renderFlashcard(subId) {
+            document.getElementById('home-menu').style.display = 'none';
+            let viewDiv = document.getElementById('dynamic-view');
+            viewDiv.style.display = 'block';
+            document.getElementById('view-title').innerText = `⚡ ഫ്ലാഷ് കാർഡ് (${flashIdx + 1} / ${currentFlashcards.length})`;
+            let container = document.getElementById('subtopics-container');
+
+            let card = currentFlashcards[flashIdx];
+
+            container.innerHTML = `
+                <div class="flashcard-container">
+                    <div class="flash-card-scene" onclick="flipCard()">
+                        <div class="flash-card-box" id="fcard-inner">
+                            <div class="flash-card-face flash-card-front">
+                                <span style="font-size: 0.75rem; color: #64748b; font-weight: bold; margin-bottom: 10px;">ചോദ്യം / വിഷയം</span>
+                                <div style="font-size: 1.1rem; font-weight: bold; line-height: 1.5;">${card.front}</div>
+                                <span style="font-size: 0.75rem; color: #4f46e5; margin-top: 15px; font-weight: 600;">👆 കാർഡിൽ തൊട്ട് തിരിക്കുക</span>
+                            </div>
+                            <div class="flash-card-face flash-card-back">
+                                <span style="font-size: 0.75rem; color: #15803d; font-weight: bold; margin-bottom: 10px;">ഉത്തരം</span>
+                                <div style="font-size: 1.15rem; font-weight: bold; line-height: 1.5;">${card.back}</div>
+                                <span style="font-size: 0.75rem; color: #166534; margin-top: 15px; font-weight: 600;">👆 മടക്കി തിരിക്കാൻ തൊടുക</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flash-btns">
+                        <button class="btn-unknown" onclick="markFlash(false, '${subId}')">❌ അറിയില്ല</button>
+                        <button class="btn-known" onclick="markFlash(true, '${subId}')">✓ അറിയാം</button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function flipCard() {
+            let cardInner = document.getElementById('fcard-inner');
+            if (cardInner) {
+                cardInner.classList.toggle('flipped');
+            }
+        }
+
+        let currentActiveSubId = "";
+        function markFlash(isKnown, subId) {
+            let card = currentFlashcards[flashIdx];
+            if (isKnown) {
+                flashKnownCount++;
+            } else {
+                flashUnknownList.push(card);
+            }
+
+            flashIdx++;
+
+            if (flashIdx < currentFlashcards.length) {
+                renderFlashcard(subId);
+            } else {
+                showFlashResult(subId);
+            }
+        }
+
+        function showFlashResult(subId) {
+            updateStudyTrackerProgress(subId, 'flashcard');
+
+            let container = document.getElementById('subtopics-container');
+            document.getElementById('view-title').innerText = "📊 ഫ്ലാഷ് കാർഡ് റിസൾട്ട്";
+
+            let unknownCount = flashUnknownList.length;
+
+            let unknownListHtml = flashUnknownList.map((item, idx) => `
+                <div class="subtopic-card" style="text-align: left;">
+                    <p style="font-weight: bold; color: #1e3a8a; margin-bottom: 4px;">ചോദ്യം ${idx + 1}: ${item.front}</p>
+                    <p style="font-size: 0.85rem; color: #059669; font-weight: bold;">ശരിയായ ഉത്തരം: ${item.back}</p>
+                </div>
+            `).join('');
+
+            container.innerHTML = `
+                <div class="result-card">
+                    <h3>ഫ്ലാഷ് കാർഡ് പരിശീലനം പൂർത്തിയായി!</h3>
+                    <p style="margin: 15px 0; font-size: 1rem; font-weight: bold;">
+                        ആകെ കാർഡുകൾ: ${currentFlashcards.length} <br>
+                        <span style="color: #15803d;">അറിയാം (Known): ${flashKnownCount}</span> | 
+                        <span style="color: #b91c1c;">അറിയില്ല (Unknown): ${unknownCount}</span>
+                    </p>
+
+                    ${unknownCount > 0 ? `
+                        <div style="max-height: 220px; overflow-y: auto; margin-bottom: 15px;">
+                            <h4 style="font-size: 0.9rem; color: #dc2626; margin-bottom: 8px; text-align: left;">അറിയില്ലാത്തവയുടെ ലിസ്റ്റും വിശദീകരണവും:</h4>
+                            ${unknownListHtml}
+                        </div>
+                        <button class="result-action-btn btn-retry" onclick="retryUnknownFlashes()">🔄 തെറ്റിയവ (അറിയില്ലാത്തവ) മാത്രം വെച്ച് വീണ്ടും ഫ്ലാഷ് കാർഡ് ടെസ്റ്റ് ചെയ്യുക</button>
+                        <button class="result-action-btn btn-save-rev" onclick="promptSaveFlashSet()">💾 തെറ്റിയവ റിവിഷൻ സെറ്റായി ഫയർബേസിൽ സേവ് ചെയ്യുക</button>
+                    ` : `<p style="color: #059669; font-weight: bold; margin-bottom: 15px;">അഭിനന്ദനങ്ങൾ! എല്ലാ ഫ്ലാഷ് കാർഡുകളും താങ്കൾക്ക് അറിയാം.</p>`}
+                </div>
+            `;
+        }
+
+        function retryUnknownFlashes() {
+            if (flashUnknownList.length === 0) {
+                alert('അറിയില്ലാത്ത ഫ്ലാഷ് കാർഡുകൾ ഒന്നും ഇല്ല!');
+                return;
+            }
+            currentFlashcards = [...flashUnknownList];
+            flashIdx = 0;
+            flashKnownCount = 0;
+            flashUnknownList = [];
+            renderFlashcard(currentActiveSubId);
+        }
+
+        async function promptSaveFlashSet() {
+            let customName = prompt("ഈ ഫ്ലാഷ് കാർഡ് റിവിഷൻ സെറ്റിന് ഒരു പേര് നൽകുക:", "My Flashcard Revision Set");
+            if (!customName || customName.trim() === "") return;
+
+            window.saveToFirebase(customName.trim(), flashUnknownList, "flashcard_revision_sets");
+        }
+
+        function updateStudyTrackerProgress(subId, type) {
+            let tracker = JSON.parse(localStorage.getItem('psc_study_tracker') || '{}');
+            if (!tracker[subId]) {
+                tracker[subId] = { mock: false, flash: false };
+            }
+            if (type === 'mock') tracker[subId].mock = true;
+            if (type === 'flash') tracker[subId].flash = true;
+            localStorage.setItem('psc_study_tracker', JSON.stringify(tracker));
+            window.saveTrackerData(tracker);
+        }
+
+        async function openTracker() {
+            navigationHistory.push({ type: 'home' });
+            document.getElementById('home-menu').style.display = 'none';
+            let viewDiv = document.getElementById('dynamic-view');
+            viewDiv.style.display = 'block';
+            document.getElementById('view-title').innerText = "📖 സ്റ്റഡി ട്രാക്കർ (Study Tracker)";
+            let container = document.getElementById('subtopics-container');
+
+            let tracker = JSON.parse(localStorage.getItem('psc_study_tracker') || '{}');
+
+            let totalSubs = 0;
+            let completedSubs = 0;
+
+            let modulesHtml = '';
+            for (let modKey in moduleData) {
+                let topics = moduleData[modKey];
+                if (topics && topics.length > 0) {
+                    let modNum = modKey.replace("mod_", "MODULE ");
+                    let modCompleted = 0;
+                    let modTotal = topics.length;
+
+                    topics.forEach(t => {
+                        totalSubs++;
+                        if (tracker[t.id] && (tracker[t.id].mock || tracker[t.id].flash)) {
+                            completedSubs++;
+                            modCompleted++;
+                        }
+                    });
+
+                    let percent = Math.round((modCompleted / modTotal) * 100);
+                    modulesHtml += `
+                        <div class="subtopic-card">
+                            <h4>${modNum} (${percent}% പൂർത്തിയായി)</h4>
+                            <div class="progress-bar-container">
+                                <div class="progress-bar-fill" style="width: ${percent}%;"></div>
+                            </div>
+                        </div>
+                    `;
+                }
+            }
+
+            let overallPercent = totalSubs > 0 ? Math.round((completedSubs / totalSubs) * 100) : 0;
+
+            container.innerHTML = `
+                <div class="result-card" style="margin-bottom: 15px;">
+                    <h3 style="color: #1e3a8a; margin-bottom: 5px;">മൊത്തത്തിലുള്ള പഠന പുരോഗതി</h3>
+                    <p style="font-size: 1.2rem; font-weight: bold; color: #059669; margin: 10px 0;">${overallPercent}% പൂർത്തിയായി</p>
+                    <div class="progress-bar-container" style="height: 14px;">
+                        <div class="progress-bar-fill" style="width: ${overallPercent}%;"></div>
+                    </div>
+                </div>
+                <h4 style="font-size: 0.95rem; color: #334155; margin-bottom: 10px;">മോഡ്യൂൾ തിരിച്ചുളള പ്രോഗ്രസ്സ്:</h4>
+                <div style="max-height: 280px; overflow-y: auto;">
+                    ${modulesHtml}
+                </div>
+            `;
+        }
+
+        async function openFlashReviewSets() {
+            navigationHistory.push({ type: 'home' });
+            document.getElementById('home-menu').style.display = 'none';
+            let viewDiv = document.getElementById('dynamic-view');
+            viewDiv.style.display = 'block';
+            document.getElementById('view-title').innerText = "⚡ തെറ്റിയ ഫ്ലാഷ് കാർഡുകൾ റിവ്യൂ ചെയ്യുക";
+            let container = document.getElementById('subtopics-container');
+
+            container.innerHTML = `<p style="color: #64748b; text-align: center; padding: 20px;">ഫയർബേസിൽ നിന്ന് ഡാറ്റ ലോഡ് ചെയ്യുന്നു...</p>`;
+
+            let savedSets = await window.loadFromFirebase("flashcard_revision_sets");
+            window.allSavedFlashSets = savedSets;
+
+            if (savedSets.length === 0) {
+                container.innerHTML = `<p style="color: #64748b; text-align: center; padding: 20px;">സേവ് ചെയ്ത ഫ്ലാഷ് കാർഡ് റിവിഷൻ സെറ്റുകൾ ഒന്നും ലഭ്യമല്ല.</p>`;
+            } else {
+                let setsHtml = savedSets.map((set, index) => `
+                    <div class="subtopic-card" style="display: flex; justify-content: space-between; align-items: center; gap: 10px;">
+                        <div>
+                            <h4 style="margin-bottom: 2px;">${set.name}</h4>
+                            <p style="font-size: 0.8rem; color: #64748b;">കാർഡുകൾ: ${set.items.length}</p>
+                        </div>
+                        <div style="display: flex; gap: 6px;">
+                            <button class="btn-link btn-flash" onclick="startSavedFlashSession(${index})">പഠിക്കുക</button>
+                            <button class="btn-link" style="background:#dc2626;" onclick="deleteFlashSet('${set.id}')">ഡിലീറ്റ്</button>
+                        </div>
+                    </div>
+                `).join('');
+
+                container.innerHTML = `
+                    <p style="margin-bottom: 12px; font-size: 0.9rem; color: #475569;">സേവ് ചെയ്തു വെച്ച ഫ്ലാഷ് കാർഡ് സെറ്റുകൾ:</p>
+                    <div style="max-height: 320px; overflow-y: auto;">${setsHtml}</div>
+                `;
+            }
+        }
+
+        async function deleteFlashSet(docId) {
+            if (confirm("ഈ ഫ്ലാഷ് കാർഡ് സെറ്റ് ഡിലീറ്റ് ചെയ്യണമെന്ന് ഉറപ്പാണോ?")) {
+                await window.deleteFromFirebase(docId, "flashcard_revision_sets");
+                openFlashReviewSets();
+            }
+        }
+
+        function startSavedFlashSession(index) {
+            let set = window.allSavedFlashSets[index];
+            if (set && set.items) {
+                currentFlashcards = set.items;
+                flashIdx = 0;
+                flashKnownCount = 0;
+                flashUnknownList = [];
+                renderFlashcard("saved_set");
+            }
+        }
+
         function openRevisionSetup() {
+            navigationHistory.push({ type: 'home' });
             document.getElementById('home-menu').style.display = 'none';
             let viewDiv = document.getElementById('dynamic-view');
             viewDiv.style.display = 'block';
@@ -360,17 +888,12 @@
 
             let optionsHtml = `<optgroup label="പൊതുവായവ (General)"><option value="all_studied">ഇതുവരെ പഠിച്ച എല്ലാ മോഡ്യൂളുകളിൽ നിന്നും (All Studied Modules)</option></optgroup>`;
 
-            // moduleData ലൂപ്പ് ചെയ്ത് മോഡ്യൂളുകളും സബ് ടോപ്പിക്കുകളും ഓട്ടോമാറ്റിക്കായി ആഡ് ചെയ്യുന്നു
             for (let modKey in moduleData) {
                 let topics = moduleData[modKey];
                 if (topics && topics.length > 0) {
                     let modNum = modKey.replace("mod_", "MODULE ");
-                    
-                    // 1. മുഴുവൻ മോഡ്യൂളിനായി ഒരു ഓപ്ഷൻ
                     optionsHtml += `<optgroup label="${modNum}">`;
                     optionsHtml += `<option value="mod_full_${modKey}">${modNum} (മുഴുവൻ)</option>`;
-
-                    // 2. ആ മോഡ്യൂളിലെ ഓരോ സബ് ടോപ്പിക്കിനും വെവ്വേറെ ഓപ്ഷനുകൾ
                     topics.forEach(t => {
                         optionsHtml += `<option value="sub_${t.id}">-- ${t.title}</option>`;
                     });
@@ -397,13 +920,11 @@
                 </div>
                 <button class="result-action-btn btn-retry" onclick="generateCustomRevision()">ടെസ്റ്റ് ആരംഭിക്കുക</button>
             `;
-            document.getElementById('back-btn').style.display = 'block';
         }
 
-        // സെലക്ട് ചെയ്ത ഓപ്ഷൻ അനുസരിച്ച് റാന്റം ചോദ്യങ്ങൾ എടുക്കുന്ന ഫങ്ഷൻ
         function generateCustomRevision() {
             let target = document.getElementById('rev-target').value;
-            let count = parseInt(document.getElementById('rev-count').value);
+            let requestedCount = parseInt(document.getElementById('rev-count').value);
             let pool = [];
 
             if (target.startsWith("sub_")) {
@@ -428,22 +949,22 @@
                 return;
             }
 
-            pool.sort(() => Math.random() - 0.5);
-            let selectedQuestions = pool.slice(0, count);
-
-            startQuiz(selectedQuestions);
-        }
-
-        function openSpecificMock(subId, title) {
-            let qList = questionsDB[subId] || [];
-            if (qList.length === 0) {
-                alert('ചോദ്യങ്ങൾ ഉടൻ ചേർക്കുന്നതാണ്.');
-                return;
+            let finalCount = requestedCount;
+            if (pool.length < requestedCount) {
+                let confirmStart = confirm(`ഈ വിഭാഗത്തിൽ ആകെ ${pool.length} ചോദ്യങ്ങൾ മാത്രമേ ലഭ്യമാകൂ. ലഭ്യമായ ${pool.length} ചോദ്യങ്ങൾ വെച്ച് ടെസ്റ്റ് സ്റ്റാർട്ട് ചെയ്യട്ടെയോ?`);
+                if (!confirmStart) return;
+                finalCount = pool.length;
             }
-            startQuiz(JSON.parse(JSON.stringify(qList)));
+
+            pool.sort(() => Math.random() - 0.5);
+            let selectedQuestions = pool.slice(0, finalCount);
+
+            startQuiz(selectedQuestions, target);
         }
 
-        function startQuiz(questionsArray) {
+        let currentActiveSubIdForMock = "";
+        function startQuiz(questionsArray, subId) {
+            currentActiveSubIdForMock = subId;
             currentQuestions = questionsArray;
             currentIdx = 0;
             userAnswers = {};
@@ -492,9 +1013,10 @@
         }
 
         function renderQuizQuestion() {
-            let container = document.getElementById('subtopics-container');
+            document.getElementById('home-menu').style.display = 'none';
+            let viewDiv = document.getElementById('dynamic-view');
+            viewDiv.style.display = 'block';
             document.getElementById('view-title').innerText = `📝 ടെസ്റ്റ് (ചോദ്യം ${currentIdx + 1} / ${currentQuestions.length})`;
-            document.getElementById('back-btn').style.display = 'none';
             
             let q = currentQuestions[currentIdx];
             let isBookmarked = bookmarked[currentIdx] ? 'active' : '';
@@ -511,6 +1033,7 @@
             let timeString = `${mins}:${secs < 10 ? '0' : ''}${secs}`;
             let isLast = currentIdx === currentQuestions.length - 1;
 
+            let container = document.getElementById('subtopics-container');
             container.innerHTML = `
                 <div class="quiz-container">
                     <div class="quiz-top-bar">
@@ -534,7 +1057,6 @@
                             : `<button class="nav-btn" onclick="nextQuestion()">അടുത്തത്</button>`
                         }
                     </div>
-                    <button class="btn-back" onclick="stopAndGoBack()">← തിരികെ പോവുക</button>
                     <div class="palette-grid" id="palette-grid"></div>
                 </div>
             `;
@@ -583,6 +1105,11 @@
 
         function showResult(filter = 'all') {
             if (timerInterval) clearInterval(timerInterval);
+
+            if (currentActiveSubIdForMock && currentActiveSubIdForMock.startsWith("mod_3_")) {
+                updateStudyTrackerProgress(currentActiveSubIdForMock, 'mock');
+            }
+
             let container = document.getElementById('subtopics-container');
             document.getElementById('view-title').innerText = "📊 ടെസ്റ്റ് ഫലം";
 
@@ -632,8 +1159,6 @@
 
                     <button class="result-action-btn btn-retry" onclick="retryWrongQuestions()">🔄 തെറ്റിയവയും അറ്റൻഡ് ചെയ്യാത്തവയും വെച്ച് വീണ്ടും എക്സാം എഴുതുക</button>
                     <button class="result-action-btn btn-save-rev" onclick="promptSaveCustomSet()">💾 ഫയർബേസിൽ സേവ് ചെയ്യുക</button>
-                    
-                    <button class="btn-back" style="margin-top: 10px; padding: 10px; font-size: 0.85rem;" onclick="goBackToHome()">← ഹോം പേജിലേക്ക് മടങ്ങുക</button>
                 </div>
             `;
         }
@@ -644,7 +1169,7 @@
                 alert('തെറ്റിയോ വിട്ടുപോയതോ ആയ ചോദ്യങ്ങൾ ഒന്നും ഇല്ല!');
                 return;
             }
-            startQuiz(wrongOrUnattempted);
+            startQuiz(wrongOrUnattempted, currentActiveSubIdForMock);
         }
 
         function promptSaveCustomSet() {
@@ -657,54 +1182,46 @@
             let customName = prompt("ഈ ടെസ്റ്റിന് ഒരു പേര് നൽകുക:", "My Revision Set");
             if (!customName || customName.trim() === "") return;
 
-            window.saveToFirebase(customName.trim(), wrongOrUnattempted);
+            window.saveToFirebase(customName.trim(), wrongOrUnattempted, "revision_sets");
         }
 
-        function stopAndGoBack() {
+        function goBackToPrevious() {
             if (timerInterval) clearInterval(timerInterval);
-            goBackToHome();
-        }
-
-        let touchstartX = 0;
-        let touchendX = 0;
-        function checkDirection() {
-            if (touchendX < touchstartX - 50) nextQuestion(); 
-            if (touchendX > touchstartX + 50) prevQuestion(); 
-        }
-        document.addEventListener('touchstart', e => { touchstartX = e.changedTouches[0].screenX; });
-        document.addEventListener('touchend', e => { touchendX = e.changedTouches[0].screenX; checkDirection(); });
-
-        function openTracker() {
-            document.getElementById('home-menu').style.display = 'none';
-            let viewDiv = document.getElementById('dynamic-view');
-            viewDiv.style.display = 'block';
-            document.getElementById('view-title').innerText = "📖 സ്റ്റഡി ട്രാക്കർ (Study Tracker)";
-            document.getElementById('subtopics-container').innerHTML = `<p style="color: #64748b; text-align: center;">പുരോഗതി ഇവിടെ കാണാം.</p>`;
-            document.getElementById('back-btn').style.display = 'block';
+            if (navigationHistory.length > 0) {
+                let lastState = navigationHistory.pop();
+                if (lastState.type === 'module') {
+                    loadModuleContent(lastState.key, lastState.name);
+                } else {
+                    goBackToHome();
+                }
+            } else {
+                goBackToHome();
+            }
         }
 
         async function openWrongReview() {
+            navigationHistory.push({ type: 'home' });
             document.getElementById('home-menu').style.display = 'none';
             let viewDiv = document.getElementById('dynamic-view');
             viewDiv.style.display = 'block';
-            document.getElementById('view-title').innerText = "❌ തെറ്റിയ ഉത്തരങ്ങൾ റിവ്യൂ ചെയ്യുക";
+            document.getElementById('view-title').innerText = "❌ തെറ്റിയ മോക്ക് ടെസ്റ്റ് ചോദ്യങ്ങൾ റിവ്യൂ ചെയ്യുക";
             
             let container = document.getElementById('subtopics-container');
             container.innerHTML = `<p style="color: #64748b; text-align: center; padding: 20px;">ഫയർബേസിൽ നിന്ന് ഡാറ്റ ലോഡ് ചെയ്യുന്നു...</p>`;
 
-            let savedSets = await window.loadFromFirebase();
+            let savedSets = await window.loadFromFirebase("revision_sets");
             
             if (savedSets.length === 0) {
                 container.innerHTML = `<p style="color: #64748b; text-align: center; padding: 20px;">ഫയർബേസിൽ സേവ് ചെയ്ത സെറ്റുകൾ ഒന്നും ലഭ്യമല്ല.</p>`;
             } else {
-                let setsHtml = savedSets.map((set, index) => `
+                let setsHtml = savedSets.map((set) => `
                     <div class="subtopic-card" style="display: flex; justify-content: space-between; align-items: center; gap: 10px;">
                         <div>
                             <h4 style="margin-bottom: 2px;">${set.name}</h4>
-                            <p style="font-size: 0.8rem; color: #64748b;">ചോദ്യങ്ങൾ: ${set.questions.length}</p>
+                            <p style="font-size: 0.8rem; color: #64748b;">ചോദ്യങ്ങൾ: ${set.items.length}</p>
                         </div>
                         <div>
-                            <button class="btn-link btn-mock" onclick="startQuiz(JSON.parse(decodeURIComponent('${encodeURIComponent(JSON.stringify(set.questions))}') ))">എഴുതുക</button>
+                            <button class="btn-link btn-mock" onclick='startQuiz(${JSON.stringify(set.items)}, "custom_set")'>എഴുതുക</button>
                         </div>
                     </div>
                 `).join('');
@@ -714,10 +1231,10 @@
                     <div style="max-height: 320px; overflow-y: auto;">${setsHtml}</div>
                 `;
             }
-            document.getElementById('back-btn').style.display = 'block';
         }
 
         function goBackToHome() {
+            navigationHistory = [];
             if (timerInterval) clearInterval(timerInterval);
             document.getElementById('dynamic-view').style.display = 'none';
             document.getElementById('home-menu').style.display = 'flex';
