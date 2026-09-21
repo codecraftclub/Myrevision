@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang="ml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>കേരള പിഎസ്‌സി എൽഡിസി - സിംഗിൾ പേജ് പോർട്ടൽ</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { 
+            background: linear-gradient(135deg, #f8fafc 100%, #e2e8f0 0%); 
+            padding: 16px 10px; 
+            text-align: center; 
+            min-height: 100vh; 
+            color: #1e293b;
+        }
+        
+        .header { 
+            background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%); 
+            color: white; 
+            padding: 20px 15px; 
+            border-radius: 16px; 
+            box-shadow: 0 10px 25px -5px rgba(30, 58, 138, 0.3); 
+            max-width: 600px; 
+            margin: 0 auto 20px auto; 
+            border-bottom: 4px solid #3b82f6;
+        }
+        .header h1 { font-size: 1.3rem; font-weight: 800; margin-bottom: 4px; }
+        .header p { font-size: 0.85rem; opacity: 0.9; }
+
+        .container { display: flex; flex-direction: column; gap: 12px; max-width: 600px; margin: 0 auto; }
+        
+        .main-box { 
+            background: #ffffff; 
+            padding: 14px 16px; 
+            border-radius: 12px; 
+            box-shadow: 0 4px 12px rgba(0,0,0,0.04); 
+            text-align: left; 
+            border-left: 6px solid #059669; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            gap: 10px; 
+        }
+
+        .main-box.wrong-box { border-left-color: #dc2626; background: #fff1f2; }
+        .main-box.wrong-box .btn-link { background: #dc2626; }
+        
+        .main-box.revision-box { border-left-color: #7c3aed; background: #f5f3ff; }
+        .main-box.revision-box .btn-link { background: #7c3aed; }
+        .main-box.revision-box .btn-link:hover { background: #6d28d9; }
+
+        .main-box h3 { color: #1e293b; font-size: 0.95rem; font-weight: 700; margin: 0; flex: 1; word-break: break-word; }
+
+        .btn-link { 
+            padding: 9px 14px; 
+            background: #059669; 
+            color: white; 
+            text-decoration: none; 
+            border-radius: 8px; 
+            font-size: 0.85rem; 
+            font-weight: 700; 
+            text-align: center; 
+            white-space: nowrap; 
+            border: none;
+            cursor: pointer;
+            display: inline-block;
+        }
+        .btn-link:hover { background: #047857; }
+
+        #dynamic-view {
+            display: none;
+            background: #ffffff;
+            padding: 15px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            text-align: left;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        #view-title { color: #1e3a8a; font-size: 1.1rem; margin-bottom: 15px; border-bottom: 2px solid #e2e8f0; padding-bottom: 8px; }
+        
+        .subtopic-card {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+        .subtopic-card h4 { font-size: 0.95rem; color: #334155; margin-bottom: 8px; }
+        .action-buttons { display: flex; gap: 8px; flex-wrap: wrap; }
+        
+        .btn-mock { background: #059669; }
+        .btn-flash { background: #4f46e5; }
+        
+        .btn-back {
+            display: block;
+            width: 100%;
+            background: #334155;
+            color: white;
+            padding: 12px;
+            border-radius: 8px;
+            border: none;
+            font-weight: 700;
+            cursor: pointer;
+            text-align: center;
+            margin-top: 15px;
+        }
+        .btn-back:hover { background: #1e293b; }
+
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; font-weight: bold; margin-bottom: 6px; font-size: 0.9rem; color: #334155; }
+        .form-control { width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 0.9rem; background: #f8fafc; }
+
+        .quiz-container { background: #ffffff; padding: 5px; border-radius: 10px; }
+        .quiz-top-bar { display: flex; justify-content: space-between; align-items: center; background: #f1f5f9; padding: 8px 12px; border-radius: 8px; margin-bottom: 15px; font-size: 0.85rem; font-weight: bold; color: #334155; }
+        .timer-box { color: #dc2626; display: flex; align-items: center; gap: 5px; }
+        
+        .top-action-btns { display: flex; gap: 6px; align-items: center; }
+        .pause-btn { background: #e2e8f0; border: none; padding: 5px 8px; border-radius: 4px; cursor: pointer; font-size: 0.75rem; font-weight: bold; color: #334155; }
+        .finish-top-btn { background: #dc2626; border: none; padding: 5px 8px; border-radius: 4px; cursor: pointer; font-size: 0.75rem; font-weight: bold; color: white; }
+
+        .quiz-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; font-size: 0.85rem; font-weight: bold; color: #64748b; }
+        .bookmark-btn { background: none; border: none; font-size: 1.3rem; cursor: pointer; color: #cbd5e1; }
+        .bookmark-btn.active { color: #f59e0b; }
+        
+        .question-text { font-size: 0.95rem; color: #1e293b; font-weight: 600; margin-bottom: 15px; line-height: 1.4; }
+        .options-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 20px; }
+        .option-item { 
+            padding: 10px 12px; 
+            background: #f8fafc; 
+            border: 2px solid #e2e8f0; 
+            border-radius: 8px; 
+            cursor: pointer; 
+            font-size: 0.9rem; 
+            text-align: left;
+            transition: all 0.2s;
+        }
+        .option-item:hover { background: #f1f5f9; border-color: #cbd5e1; }
+        .option-item.selected { background: #e0f2fe; border-color: #0284c7; color: #0369a1; font-weight: 600; }
+
+        .quiz-nav { display: flex; justify-content: space-between; gap: 8px; margin-bottom: 15px; }
+        .nav-btn { padding: 10px 15px; background: #334155; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; flex: 1; font-size: 0.85rem; }
+        .nav-btn:disabled { background: #cbd5e1; cursor: not-allowed; }
+
+        .palette-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(32px, 1fr)); gap: 6px; margin-top: 15px; padding-top: 15px; border-top: 1px solid #e2e8f0; }
+        .palette-btn { width: 32px; height: 32px; border-radius: 6px; border: 1px solid #cbd5e1; background: #f8fafc; font-weight: bold; font-size: 0.8rem; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+        .palette-btn.attempted { background: #dcfce7; border-color: #22c55e; color: #15803d; }
+        .palette-btn.current { border-color: #3b82f6; box-shadow: 0 0 0 2px rgba(59,130,246,0.3); }
+        .palette-btn.bookmarked { border-color: #f59e0b; background: #fef3c7; }
+
+        .result-card { background: #f8fafc; padding: 15px; border-radius: 10px; text-align: center; }
+        .filter-buttons { display: flex; gap: 5px; justify-content: center; margin: 15px 0; flex-wrap: wrap; }
+        .filter-btn { padding: 6px 10px; font-size: 0.75rem; border-radius: 6px; border: 1px solid #cbd5e1; background: #fff; cursor: pointer; font-weight: bold; }
+        .filter-btn.active { background: #3b82f6; color: white; border-color: #3b82f6; }
+
+        .result-action-btn {
+            display: block;
+            width: 100%;
+            padding: 12px 15px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: bold;
+            color: white;
+            border: none;
+            cursor: pointer;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .btn-retry { background: #059669; margin-top: 12px; }
+        .btn-save-rev { background: #dc2626; margin-top: 10px; }
+
+        #pause-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(15, 23, 42, 0.85);
+            z-index: 999;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            color: white;
+            padding: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h1>🎯 എൽഡിസി മിഷൻ പോർട്ടൽ</h1>
+        <p>ഒരൊറ്റ പേജിലുള്ള സ്മാർട്ട് ഡാഷ്‌ബോർഡ്</p>
+    </div>
+
+    <!-- പ്രധാന ഹോം മെനു -->
+    <div class="container" id="home-menu">
+        <div class="main-box tracker-box">
+            <h3>📖 സ്റ്റഡി ട്രാക്കർ (Study Tracker)</h3>
+            <button class="btn-link" onclick="openTracker()">തുറക്കുക →</button>
+        </div>
+
+        <div class="main-box revision-box">
+            <h3>🔄 കസ്റ്റം റിവിഷൻ ടെസ്റ്റ് (Revision Test)</h3>
+            <button class="btn-link" onclick="openRevisionSetup()">തുടങ്ങുക →</button>
+        </div>
+
+        <div class="main-box wrong-box">
+            <h3>❌ തെറ്റിയ ഉത്തരങ്ങൾ റിവ്യൂ ചെയ്യുക</h3>
+            <button class="btn-link" onclick="openWrongReview()">റിവ്യൂ ചെയ്യുക →</button>
+        </div>
+
+        <!-- 20 മോഡ്യൂളുകൾ -->
+        <div class="main-box"><h3>MODULE 1</h3><button class="btn-link" onclick="loadModuleContent('mod_1', 'MODULE 1')">ഉള്ളടക്കം കാണുക →</button></div>
+        <div class="main-box"><h3>MODULE 2</h3><button class="btn-link" onclick="loadModuleContent('mod_2', 'MODULE 2')">ഉള്ളടക്കം കാണുക →</button></div>
+        <div class="main-box"><h3>MODULE 3</h3><button class="btn-link" onclick="loadModuleContent('mod_3', 'MODULE 3')">ഉള്ളടക്കം കാണുക →</button></div>
+        <div class="main-box"><h3>MODULE 4</h3><button class="btn-link" onclick="loadModuleContent('mod_4', 'MODULE 4')">ഉള്ളടക്കം കാണുക →</button></div>
+        <div class="main-box"><h3>MODULE 5</h3><button class="btn-link" onclick="loadModuleContent('mod_5', 'MODULE 5')">ഉള്ളടക്കം കാണുക →</button></div>
+        <div class="main-box"><h3>MODULE 6</h3><button class="btn-link" onclick="loadModuleContent('mod_6', 'MODULE 6')">ഉള്ളടക്കം കാണുക →</button></div>
+        <div class="main-box"><h3>MODULE 7</h3><button class="btn-link" onclick="loadModuleContent('mod_7', 'MODULE 7')">ഉള്ളടക്കം കാണുക →</button></div>
+        <div class="main-box"><h3>MODULE 8</h3><button class="btn-link" onclick="loadModuleContent('mod_8', 'MODULE 8')">ഉള്ളടക്കം കാണുക →</button></div>
+        <div class="main-box"><h3>MODULE 9</h3><button class="btn-link" onclick="loadModuleContent('mod_9', 'MODULE 9')">ഉള്ളടക്കം കാണുക →</button></div>
+        <div class="main-box"><h3>MODULE 10</h3><button class="btn-link" onclick="loadModuleContent('mod_10', 'MODULE 10')">ഉള്ളടക്കം കാണുക →</button></div>
+        <div class="main-box"><h3>MODULE 11</h3><button class="btn-link" onclick="loadModuleContent('mod_11', 'MODULE 11')">ഉള്ളടക്കം കാണുക →</button></div>
+        <div class="main-box"><h3>MODULE 12</h3><button class="btn-link" onclick="loadModuleContent('mod_12', 'MODULE 12')">ഉള്ളടക്കം കാണുക →</button></div>
+        <div class="main-box"><h3>MODULE 13</h3><button class="btn-link" onclick="loadModuleContent('mod_13', 'MODULE 13')">ഉള്ളടക്കം കാണുക →</button></div>
+        <div class="main-box"><h3>MODULE 14</h3><button class="btn-link" onclick="loadModuleContent('mod_14', 'MODULE 14')">ഉള്ളടക്കം കാണുക →</button></div>
+        <div class="main-box"><h3>MODULE 15</h3><button class="btn-link" onclick="loadModuleContent('mod_15', 'MODULE 15')">ഉള്ളടക്കം കാണുക →</button></div>
+        <div class="main-box"><h3>MODULE 16</h3><button class="btn-link" onclick="loadModuleContent('mod_16', 'MODULE 16')">ഉള്ളടക്കം കാണുക →</button></div>
+        <div class="main-box"><h3>MODULE 17</h3><button class="btn-link" onclick="loadModuleContent('mod_17', 'MODULE 17')">ഉള്ളടക്കം കാണുക →</button></div>
+        <div class="main-box"><h3>MODULE 18</h3><button class="btn-link" onclick="loadModuleContent('mod_18', 'MODULE 18')">ഉള്ളടക്കം കാണുക →</button></div>
+        <div class="main-box"><h3>MODULE 19</h3><button class="btn-link" onclick="loadModuleContent('mod_19', 'MODULE 19')">ഉള്ളടക്കം കാണുക →</button></div>
+        <div class="main-box"><h3>MODULE 20</h3><button class="btn-link" onclick="loadModuleContent('mod_20', 'MODULE 20')">ഉള്ളടക്കം കാണുക →</button></div>
+    </div>
+
+    <!-- ഡൈനാമിക് കണ്ടന്റ് ലോഡ് ആകുന്ന ഏരിയ -->
+    <div id="dynamic-view">
+        <h2 id="view-title">ടൈറ്റിൽ</h2>
+        <div id="subtopics-container"></div>
+        <button class="btn-back" onclick="goBackToHome()" id="back-btn">← ഹോം പേജിലേക്ക് മടങ്ങുക</button>
+    </div>
+
+    <!-- പോസ് ചെയ്യുമ്പോൾ വരുന്ന വിൻഡോ -->
+    <div id="pause-overlay">
+        <h2 style="margin-bottom: 15px; font-size: 1.2rem;">⏸️ ടെസ്റ്റ് താൽക്കാലികമായി നിർത്തിവച്ചിരിക്കുന്നു</h2>
+        <button class="btn-link btn-mock" style="padding: 10px 20px; font-size: 0.95rem;" onclick="resumeQuiz()">തുടരുക (Resume)</button>
+    </div>
+
+    <!-- ഫയർബേസ് SDKs -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
+        import { getFirestore, collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyDA1XwfYzlPCL_Soxia0d-JpNekGGCaJMM",
+            authDomain: "mypscrevison.firebaseapp.com",
+            projectId: "mypscrevison",
+            storageBucket: "mypscrevison.firebasestorage.app",
+            messagingSenderId: "89979950079",
+            appId: "1:89979950079:web:707815264541bba457cdca",
+            measurementId: "G-GC849S4G0N"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        window.saveToFirebase = async function(customName, questionsArray) {
+            try {
+                await addDoc(collection(db, "revision_sets"), {
+                    name: customName,
+                    questions: questionsArray,
+                    createdAt: new Date().toISOString()
+                });
+                alert(`✓ "${customName}" ഫയർബേസിൽ വിജയകരമായി സേവ് ചെയ്തു!`);
+            } catch (e) {
+                console.error("Firebase Error: ", e);
+                alert("ഫയർബേസിൽ സേവ് ചെയ്യുന്നതിൽ പരാജയപ്പെട്ടു.");
+            }
+        };
+
+        window.loadFromFirebase = async function() {
+            try {
+                let querySnapshot = await getDocs(collection(db, "revision_sets"));
+                let sets = [];
+                querySnapshot.forEach((doc) => {
+                    sets.push(doc.data());
+                });
+                return sets;
+            } catch (e) {
+                console.error("Firebase Load Error: ", e);
+                return [];
+            }
+        };
+    </script>
+
+    <script>
+        const questionsDB = {
+            "mod_3_sub_1": [
+                { q: "ആധുനിക സാമ്പത്തികശാസ്ത്രത്തിന്റെ പിതാവ് ആര്?", options: ["എ) ആൽഫ്രഡ് മാർഷൽ", "ബി) ആഡം സ്മിത്ത്", "സി) ദാദാഭായി നൗറോജി", "ഡി) ലയണൽ റോബിൻസ്"], answer: 1, explanation: "ആഡം സ്മിത്ത് ആണ്." },
+                { q: "'ലൈസേ ഫെയർ' (Laissez-faire) നയവുമായി ബന്ധപ്പെട്ട് ശരിയേത്?<br>1. ഫ്രഞ്ച് പദം<br>2. കുറഞ്ഞ സർക്കാർ ഇടപെടൽ", options: ["എ) 1 മാത്രം", "ബി) 2 മാത്രം", "സി) 1 ഉം 2 ഉം ശരിയാണ്", "ഡി) രണ്ടും തെറ്റാണ്"], answer: 2, explanation: "രണ്ടും ശരിയാണ്." }
+            ],
+            "mod_3_sub_2": [
+                { q: "സൂക്ഷ്മ സാമ്പത്തികശാസ്ത്രത്തിന്റെ പിതാവ് ആര്?", options: ["എ) ആഡം സ്മിത്ത്", "ബി) മാർട്ടിൻ ലൂതർ", "സി) ലയണൽ റോബിൻസ്", "ഡി) കാൾ മാർക്സ്"], answer: 0, explanation: "ആഡം സ്മിത്ത്." }
+            ]
+        };
+
+        const moduleData = {
+            "mod_1": [], "mod_2": [], 
+            "mod_3": [
+                { id: "mod_3_sub_1", title: "Economics basics 1", hasMock: true, hasFlash: true },
+                { id: "mod_3_sub_2", title: "Economics basics 2", hasMock: true, hasFlash: true }
+            ], 
+            "mod_4": [], "mod_5": [], "mod_6": [], "mod_7": [], "mod_8": [], "mod_9": [], "mod_10": [],
+            "mod_11": [], "mod_12": [], "mod_13": [], "mod_14": [], "mod_15": [],
+            "mod_16": [], "mod_17": [], "mod_18": [], "mod_19": [], "mod_20": []
+        };
+
+        let currentQuestions = [];
+        let currentIdx = 0;
+        let userAnswers = {};
+        let bookmarked = {};
+        let totalSeconds = 0;
+        let timerInterval = null;
+        let isPaused = false;
+
+        function loadModuleContent(key, name) {
+            document.getElementById('home-menu').style.display = 'none';
+            let viewDiv = document.getElementById('dynamic-view');
+            viewDiv.style.display = 'block';
+
+            document.getElementById('view-title').innerText = name;
+            let container = document.getElementById('subtopics-container');
+            container.innerHTML = '';
+            document.getElementById('back-btn').style.display = 'block';
+
+            let topics = moduleData[key];
+            if (!topics || topics.length === 0) {
+                container.innerHTML = `<p style="color: #64748b; padding: 10px 0; text-align: center;">സബ് ടോപ്പിക്കുകൾ ഉടൻ ചേർക്കുന്നതാണ്...</p>`;
+                return;
+            }
+
+            topics.forEach((topic, index) => {
+                container.innerHTML += `
+                    <div class="subtopic-card">
+                        <h4>${topic.title}</h4>
+                        <div class="action-buttons">
+                            ${topic.hasMock ? `<button class="btn-link btn-mock" onclick="openSpecificMock('${topic.id}', '${topic.title}')">📝 മോക്ക് ടെസ്റ്റ്</button>` : ''}
+                            ${topic.hasFlash ? `<button class="btn-link btn-flash" onclick="alert('ഫ്ലാഷ് കാർഡ് ഉടൻ ലഭ്യമാകും')">⚡ ഫ്ലാഷ് കാർഡ്</button>` : ''}
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        // ഡ്രോപ്പ്ഡൗൺ ലിസ്റ്റിലേക്ക് മോഡ്യൂളുകളും സബ് ടോപ്പിക്കുകളും ഓട്ടോമാറ്റിക്കായി ജനറേറ്റ് ചെയ്യുന്ന ഫങ്ഷൻ
+        function openRevisionSetup() {
+            document.getElementById('home-menu').style.display = 'none';
+            let viewDiv = document.getElementById('dynamic-view');
+            viewDiv.style.display = 'block';
+
+            document.getElementById('view-title').innerText = "🔄 കസ്റ്റം റിവിഷൻ ടെസ്റ്റ് ക്രമീകരിക്കുക";
+            let container = document.getElementById('subtopics-container');
+
+            let optionsHtml = `<optgroup label="പൊതുവായവ (General)"><option value="all_studied">ഇതുവരെ പഠിച്ച എല്ലാ മോഡ്യൂളുകളിൽ നിന്നും (All Studied Modules)</option></optgroup>`;
+
+            // moduleData ലൂപ്പ് ചെയ്ത് മോഡ്യൂളുകളും സബ് ടോപ്പിക്കുകളും ഓട്ടോമാറ്റിക്കായി ആഡ് ചെയ്യുന്നു
+            for (let modKey in moduleData) {
+                let topics = moduleData[modKey];
+                if (topics && topics.length > 0) {
+                    let modNum = modKey.replace("mod_", "MODULE ");
+                    
+                    // 1. മുഴുവൻ മോഡ്യൂളിനായി ഒരു ഓപ്ഷൻ
+                    optionsHtml += `<optgroup label="${modNum}">`;
+                    optionsHtml += `<option value="mod_full_${modKey}">${modNum} (മുഴുവൻ)</option>`;
+
+                    // 2. ആ മോഡ്യൂളിലെ ഓരോ സബ് ടോപ്പിക്കിനും വെവ്വേറെ ഓപ്ഷനുകൾ
+                    topics.forEach(t => {
+                        optionsHtml += `<option value="sub_${t.id}">-- ${t.title}</option>`;
+                    });
+                    optionsHtml += `</optgroup>`;
+                }
+            }
+
+            container.innerHTML = `
+                <div class="form-group">
+                    <label>മോഡ്യൂൾ / സബ് ടോപ്പിക്ക് തിരഞ്ഞെടുക്കുക:</label>
+                    <select id="rev-target" class="form-control">
+                        ${optionsHtml}
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>ചോദ്യങ്ങളുടെ എണ്ണം തിരഞ്ഞെടുക്കുക:</label>
+                    <select id="rev-count" class="form-control">
+                        <option value="10">10 ചോദ്യങ്ങൾ</option>
+                        <option value="20">20 ചോദ്യങ്ങൾ</option>
+                        <option value="30">30 ചോദ്യങ്ങൾ</option>
+                        <option value="50">50 ചോദ്യങ്ങൾ</option>
+                        <option value="100">100 ചോദ്യങ്ങൾ</option>
+                    </select>
+                </div>
+                <button class="result-action-btn btn-retry" onclick="generateCustomRevision()">ടെസ്റ്റ് ആരംഭിക്കുക</button>
+            `;
+            document.getElementById('back-btn').style.display = 'block';
+        }
+
+        // സെലക്ട് ചെയ്ത ഓപ്ഷൻ അനുസരിച്ച് റാന്റം ചോദ്യങ്ങൾ എടുക്കുന്ന ഫങ്ഷൻ
+        function generateCustomRevision() {
+            let target = document.getElementById('rev-target').value;
+            let count = parseInt(document.getElementById('rev-count').value);
+            let pool = [];
+
+            if (target.startsWith("sub_")) {
+                let subId = target.replace("sub_", "");
+                pool = questionsDB[subId] || [];
+            } else if (target.startsWith("mod_full_")) {
+                let modKey = target.replace("mod_full_", "");
+                let modTopics = moduleData[modKey] || [];
+                modTopics.forEach(t => {
+                    if (questionsDB[t.id]) {
+                        pool = pool.concat(questionsDB[t.id]);
+                    }
+                });
+            } else if (target === "all_studied") {
+                Object.keys(questionsDB).forEach(key => {
+                    pool = pool.concat(questionsDB[key]);
+                });
+            }
+
+            if (pool.length === 0) {
+                alert('ഈ വിഭാഗത്തിൽ ചോദ്യങ്ങൾ ഒന്നും ലഭ്യമല്ല.');
+                return;
+            }
+
+            pool.sort(() => Math.random() - 0.5);
+            let selectedQuestions = pool.slice(0, count);
+
+            startQuiz(selectedQuestions);
+        }
+
+        function openSpecificMock(subId, title) {
+            let qList = questionsDB[subId] || [];
+            if (qList.length === 0) {
+                alert('ചോദ്യങ്ങൾ ഉടൻ ചേർക്കുന്നതാണ്.');
+                return;
+            }
+            startQuiz(JSON.parse(JSON.stringify(qList)));
+        }
+
+        function startQuiz(questionsArray) {
+            currentQuestions = questionsArray;
+            currentIdx = 0;
+            userAnswers = {};
+            bookmarked = {};
+            
+            totalSeconds = currentQuestions.length * 50;
+            isPaused = false;
+            
+            startTimer();
+            renderQuizQuestion();
+        }
+
+        function startTimer() {
+            if (timerInterval) clearInterval(timerInterval);
+            timerInterval = setInterval(() => {
+                if (!isPaused) {
+                    if (totalSeconds > 0) {
+                        totalSeconds--;
+                        updateTimerDisplay();
+                    } else {
+                        clearInterval(timerInterval);
+                        alert('സമയം കഴിഞ്ഞിരിക്കുന്നു!');
+                        showResult();
+                    }
+                }
+            }, 1000);
+        }
+
+        function updateTimerDisplay() {
+            let timerSpan = document.getElementById('time-left');
+            if (timerSpan) {
+                let mins = Math.floor(totalSeconds / 60);
+                let secs = totalSeconds % 60;
+                timerSpan.innerText = `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+            }
+        }
+
+        function pauseQuiz() {
+            isPaused = true;
+            document.getElementById('pause-overlay').style.display = 'flex';
+        }
+
+        function resumeQuiz() {
+            isPaused = false;
+            document.getElementById('pause-overlay').style.display = 'none';
+        }
+
+        function renderQuizQuestion() {
+            let container = document.getElementById('subtopics-container');
+            document.getElementById('view-title').innerText = `📝 ടെസ്റ്റ് (ചോദ്യം ${currentIdx + 1} / ${currentQuestions.length})`;
+            document.getElementById('back-btn').style.display = 'none';
+            
+            let q = currentQuestions[currentIdx];
+            let isBookmarked = bookmarked[currentIdx] ? 'active' : '';
+            let selectedOpt = userAnswers[currentIdx];
+
+            let optionsHtml = '';
+            q.options.forEach((opt, i) => {
+                let statusClass = selectedOpt === i ? 'selected' : '';
+                optionsHtml += `<div class="option-item ${statusClass}" onclick="selectOption(${i})">${opt}</div>`;
+            });
+
+            let mins = Math.floor(totalSeconds / 60);
+            let secs = totalSeconds % 60;
+            let timeString = `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+            let isLast = currentIdx === currentQuestions.length - 1;
+
+            container.innerHTML = `
+                <div class="quiz-container">
+                    <div class="quiz-top-bar">
+                        <div class="timer-box">⏳ സമയം: <span id="time-left">${timeString}</span></div>
+                        <div class="top-action-btns">
+                            <button class="pause-btn" onclick="pauseQuiz()">⏸️ Pause</button>
+                            <button class="finish-top-btn" onclick="showResult()">🏁 Finish</button>
+                        </div>
+                    </div>
+                    <div class="quiz-header">
+                        <span>ചോദ്യം ${currentIdx + 1} / ${currentQuestions.length}</span>
+                        <button class="bookmark-btn ${isBookmarked}" onclick="toggleBookmark(${currentIdx})">★</button>
+                    </div>
+                    <div class="question-text">${q.q}</div>
+                    <div class="options-list">${optionsHtml}</div>
+                    
+                    <div class="quiz-nav">
+                        <button class="nav-btn" onclick="prevQuestion()" ${currentIdx === 0 ? 'disabled' : ''}>മുമ്പത്തെ</button>
+                        ${isLast 
+                            ? `<button class="nav-btn" style="background:#059669;" onclick="showResult()">സബ്മിറ്റ് ചെയ്യുക</button>` 
+                            : `<button class="nav-btn" onclick="nextQuestion()">അടുത്തത്</button>`
+                        }
+                    </div>
+                    <button class="btn-back" onclick="stopAndGoBack()">← തിരികെ പോവുക</button>
+                    <div class="palette-grid" id="palette-grid"></div>
+                </div>
+            `;
+            renderPalette();
+        }
+
+        function selectOption(optIndex) {
+            userAnswers[currentIdx] = optIndex;
+            renderQuizQuestion();
+        }
+
+        function nextQuestion() {
+            if (currentIdx < currentQuestions.length - 1) {
+                currentIdx++;
+                renderQuizQuestion();
+            }
+        }
+
+        function prevQuestion() {
+            if (currentIdx > 0) {
+                currentIdx--;
+                renderQuizQuestion();
+            }
+        }
+
+        function toggleBookmark(idx) {
+            bookmarked[idx] = !bookmarked[idx];
+            renderQuizQuestion();
+        }
+
+        function renderPalette() {
+            let grid = document.getElementById('palette-grid');
+            if(!grid) return;
+            grid.innerHTML = '';
+            currentQuestions.forEach((_, i) => {
+                let btn = document.createElement('button');
+                btn.className = 'palette-btn';
+                btn.innerText = i + 1;
+                if (i === currentIdx) btn.classList.add('current');
+                if (userAnswers[i] !== undefined) btn.classList.add('attempted');
+                if (bookmarked[i]) btn.classList.add('bookmarked');
+                btn.onclick = () => { currentIdx = i; renderQuizQuestion(); };
+                grid.appendChild(btn);
+            });
+        }
+
+        function showResult(filter = 'all') {
+            if (timerInterval) clearInterval(timerInterval);
+            let container = document.getElementById('subtopics-container');
+            document.getElementById('view-title').innerText = "📊 ടെസ്റ്റ് ഫലം";
+
+            let correct = 0, wrong = 0, unattempted = 0;
+            currentQuestions.forEach((q, i) => {
+                if (userAnswers[i] === undefined) unattempted++;
+                else if (userAnswers[i] === q.answer) correct++;
+                else wrong++;
+            });
+
+            let filteredQs = currentQuestions.filter((q, i) => {
+                if (filter === 'correct') return userAnswers[i] === q.answer;
+                if (filter === 'wrong') return userAnswers[i] !== undefined && userAnswers[i] !== q.answer;
+                if (filter === 'unattempted') return userAnswers[i] === undefined;
+                return true;
+            });
+
+            let listHtml = filteredQs.map((q) => {
+                let idx = currentQuestions.indexOf(q);
+                let userAns = userAnswers[idx];
+                let statusColor = userAns === q.answer ? 'color: #15803d;' : 'color: #b91c1c;';
+                return `
+                    <div class="subtopic-card" style="text-align: left;">
+                        <p style="font-weight: bold; margin-bottom: 5px;">ചോദ്യം ${idx + 1}: ${q.q}</p>
+                        <p style="font-size: 0.85rem; ${statusColor}">നിങ്ങളുടെ ഉത്തരം: ${userAns !== undefined ? q.options[userAns] : 'അറ്റൻഡ് ചെയ്തിട്ടില്ല'}</p>
+                        <p style="font-size: 0.85rem; color: #15803d;">ശരിയായ ഉത്തരം: ${q.options[q.answer]}</p>
+                        <p style="font-size: 0.85rem; color: #713f12; margin-top: 5px;">വിശദീകരണം: ${q.explanation}</p>
+                    </div>
+                `;
+            }).join('');
+
+            container.innerHTML = `
+                <div class="result-card">
+                    <h3>ഫലം വിലയിരുത്തൽ</h3>
+                    <p style="margin: 8px 0; font-size: 0.9rem; font-weight: bold;">ആകെ: ${currentQuestions.length} | ശരി: ${correct} | തെറ്റ്: ${wrong} | ചെയ്യാത്തവ: ${unattempted}</p>
+                    
+                    <div class="filter-buttons">
+                        <button class="filter-btn ${filter === 'all' ? 'active' : ''}" onclick="showResult('all')">എല്ലാം</button>
+                        <button class="filter-btn ${filter === 'correct' ? 'active' : ''}" onclick="showResult('correct')">ശരിയായവ</button>
+                        <button class="filter-btn ${filter === 'wrong' ? 'active' : ''}" onclick="showResult('wrong')">തെറ്റിയവ</button>
+                        <button class="filter-btn ${filter === 'unattempted' ? 'active' : ''}" onclick="showResult('unattempted')">ചെയ്യാത്തവ</button>
+                    </div>
+
+                    <div style="max-height: 240px; overflow-y: auto; margin-top: 10px;">
+                        ${listHtml}
+                    </div>
+
+                    <button class="result-action-btn btn-retry" onclick="retryWrongQuestions()">🔄 തെറ്റിയവയും അറ്റൻഡ് ചെയ്യാത്തവയും വെച്ച് വീണ്ടും എക്സാം എഴുതുക</button>
+                    <button class="result-action-btn btn-save-rev" onclick="promptSaveCustomSet()">💾 ഫയർബേസിൽ സേവ് ചെയ്യുക</button>
+                    
+                    <button class="btn-back" style="margin-top: 10px; padding: 10px; font-size: 0.85rem;" onclick="goBackToHome()">← ഹോം പേജിലേക്ക് മടങ്ങുക</button>
+                </div>
+            `;
+        }
+
+        function retryWrongQuestions() {
+            let wrongOrUnattempted = currentQuestions.filter((q, i) => userAnswers[i] === undefined || userAnswers[i] !== q.answer);
+            if (wrongOrUnattempted.length === 0) {
+                alert('തെറ്റിയോ വിട്ടുപോയതോ ആയ ചോദ്യങ്ങൾ ഒന്നും ഇല്ല!');
+                return;
+            }
+            startQuiz(wrongOrUnattempted);
+        }
+
+        function promptSaveCustomSet() {
+            let wrongOrUnattempted = currentQuestions.filter((q, i) => userAnswers[i] === undefined || userAnswers[i] !== q.answer);
+            if (wrongOrUnattempted.length === 0) {
+                alert('സേവ് ചെയ്യാൻ തെറ്റിയോ വിട്ടുപോയതോ ആയ ചോദ്യങ്ങൾ ഒന്നും ഇല്ല!');
+                return;
+            }
+
+            let customName = prompt("ഈ ടെസ്റ്റിന് ഒരു പേര് നൽകുക:", "My Revision Set");
+            if (!customName || customName.trim() === "") return;
+
+            window.saveToFirebase(customName.trim(), wrongOrUnattempted);
+        }
+
+        function stopAndGoBack() {
+            if (timerInterval) clearInterval(timerInterval);
+            goBackToHome();
+        }
+
+        let touchstartX = 0;
+        let touchendX = 0;
+        function checkDirection() {
+            if (touchendX < touchstartX - 50) nextQuestion(); 
+            if (touchendX > touchstartX + 50) prevQuestion(); 
+        }
+        document.addEventListener('touchstart', e => { touchstartX = e.changedTouches[0].screenX; });
+        document.addEventListener('touchend', e => { touchendX = e.changedTouches[0].screenX; checkDirection(); });
+
+        function openTracker() {
+            document.getElementById('home-menu').style.display = 'none';
+            let viewDiv = document.getElementById('dynamic-view');
+            viewDiv.style.display = 'block';
+            document.getElementById('view-title').innerText = "📖 സ്റ്റഡി ട്രാക്കർ (Study Tracker)";
+            document.getElementById('subtopics-container').innerHTML = `<p style="color: #64748b; text-align: center;">പുരോഗതി ഇവിടെ കാണാം.</p>`;
+            document.getElementById('back-btn').style.display = 'block';
+        }
+
+        async function openWrongReview() {
+            document.getElementById('home-menu').style.display = 'none';
+            let viewDiv = document.getElementById('dynamic-view');
+            viewDiv.style.display = 'block';
+            document.getElementById('view-title').innerText = "❌ തെറ്റിയ ഉത്തരങ്ങൾ റിവ്യൂ ചെയ്യുക";
+            
+            let container = document.getElementById('subtopics-container');
+            container.innerHTML = `<p style="color: #64748b; text-align: center; padding: 20px;">ഫയർബേസിൽ നിന്ന് ഡാറ്റ ലോഡ് ചെയ്യുന്നു...</p>`;
+
+            let savedSets = await window.loadFromFirebase();
+            
+            if (savedSets.length === 0) {
+                container.innerHTML = `<p style="color: #64748b; text-align: center; padding: 20px;">ഫയർബേസിൽ സേവ് ചെയ്ത സെറ്റുകൾ ഒന്നും ലഭ്യമല്ല.</p>`;
+            } else {
+                let setsHtml = savedSets.map((set, index) => `
+                    <div class="subtopic-card" style="display: flex; justify-content: space-between; align-items: center; gap: 10px;">
+                        <div>
+                            <h4 style="margin-bottom: 2px;">${set.name}</h4>
+                            <p style="font-size: 0.8rem; color: #64748b;">ചോദ്യങ്ങൾ: ${set.questions.length}</p>
+                        </div>
+                        <div>
+                            <button class="btn-link btn-mock" onclick="startQuiz(JSON.parse(decodeURIComponent('${encodeURIComponent(JSON.stringify(set.questions))}') ))">എഴുതുക</button>
+                        </div>
+                    </div>
+                `).join('');
+
+                container.innerHTML = `
+                    <p style="margin-bottom: 12px; font-size: 0.9rem; color: #475569;">ഫയർബേസിൽ സേവ് ചെയ്ത റിവിഷൻ സെറ്റുകൾ:</p>
+                    <div style="max-height: 320px; overflow-y: auto;">${setsHtml}</div>
+                `;
+            }
+            document.getElementById('back-btn').style.display = 'block';
+        }
+
+        function goBackToHome() {
+            if (timerInterval) clearInterval(timerInterval);
+            document.getElementById('dynamic-view').style.display = 'none';
+            document.getElementById('home-menu').style.display = 'flex';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    </script>
+
+</body>
+</html>
