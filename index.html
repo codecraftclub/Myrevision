@@ -135,7 +135,7 @@
 
         .quiz-container { background: #ffffff; padding: 5px; border-radius: 10px; text-align: center; }
         
-        /* 🌟 3D ഫ്ലിപ്പ് ആനിമേഷനും കൂടിയ ഹൈറ്റ് ഉള്ള ഫ്ലാഷ് കാർഡ് ഡിസൈൻ */
+        /* 3D ഫ്ലിപ്പ് ആനിമേഷനും കൂടിയ ഹൈറ്റ് ഉള്ള ഫ്ലാഷ് കാർഡ് ഡിസൈൻ */
         .flashcard-container { 
             display: flex; 
             flex-direction: column; 
@@ -319,32 +319,33 @@
         </div>
 
         <!-- 20 മോഡ്യൂളുകൾ -->
-        <div class="main-box"><h3>MODULE 1</h3><button class="btn-link" onclick="loadModuleContent('mod_1', 'MODULE 1')">ഉള്ളടക്കം കാണുക →</button></div>
-        <div class="main-box"><h3>MODULE 2</h3><button class="btn-link" onclick="loadModuleContent('mod_2', 'MODULE 2')">ഉള്ളടക്കം കാണുക →</button></div>
-        <div class="main-box"><h3>MODULE 3</h3><button class="btn-link" onclick="loadModuleContent('mod_3', 'MODULE 3')">ഉള്ളടക്കം കാണുക →</button></div>
-        <div class="main-box"><h3>MODULE 4</h3><button class="btn-link" onclick="loadModuleContent('mod_4', 'MODULE 4')">ഉള്ളടക്കം കാണുക →</button></div>
-        <div class="main-box"><h3>MODULE 5</h3><button class="btn-link" onclick="loadModuleContent('mod_5', 'MODULE 5')">ഉള്ളടക്കം കാണുക →</button></div>
-        <div class="main-box"><h3>MODULE 6</h3><button class="btn-link" onclick="loadModuleContent('mod_6', 'MODULE 6')">ഉള്ളടക്കം കാണുക →</button></div>
-        <div class="main-box"><h3>MODULE 7</h3><button class="btn-link" onclick="loadModuleContent('mod_7', 'MODULE 7')">ഉള്ളടക്കം കാണുക →</button></div>
-        <div class="main-box"><h3>MODULE 8</h3><button class="btn-link" onclick="loadModuleContent('mod_8', 'MODULE 8')">ഉള്ളടക്കം കാണുക →</button></div>
-        <div class="main-box"><h3>MODULE 9</h3><button class="btn-link" onclick="loadModuleContent('mod_9', 'MODULE 9')">ഉള്ളടക്കം കാണുക →</button></div>
-        <div class="main-box"><h3>MODULE 10</h3><button class="btn-link" onclick="loadModuleContent('mod_10', 'MODULE 10')">ഉള്ളടക്കം കാണുക →</button></div>
-        <div class="main-box"><h3>MODULE 11</h3><button class="btn-link" onclick="loadModuleContent('mod_11', 'MODULE 11')">ഉള്ളടക്കം കാണുക →</button></div>
-        <div class="main-box"><h3>MODULE 12</h3><button class="btn-link" onclick="loadModuleContent('mod_12', 'MODULE 12')">ഉള്ളടക്കം കാണുക →</button></div>
-        <div class="main-box"><h3>MODULE 13</h3><button class="btn-link" onclick="loadModuleContent('mod_13', 'MODULE 13')">ഉള്ളടക്കം കാണുക →</button></div>
-        <div class="main-box"><h3>MODULE 14</h3><button class="btn-link" onclick="loadModuleContent('mod_14', 'MODULE 14')">ഉള്ളടക്കം കാണുക →</button></div>
-        <div class="main-box"><h3>MODULE 15</h3><button class="btn-link" onclick="loadModuleContent('mod_15', 'MODULE 15')">ഉള്ളടക്കം കാണുക →</button></div>
-        <div class="main-box"><h3>MODULE 16</h3><button class="btn-link" onclick="loadModuleContent('mod_16', 'MODULE 16')">ഉള്ളടക്കം കാണുക →</button></div>
-        <div class="main-box"><h3>MODULE 17</h3><button class="btn-link" onclick="loadModuleContent('mod_17', 'MODULE 17')">ഉള്ളടക്കം കാണുക →</button></div>
-        <div class="main-box"><h3>MODULE 18</h3><button class="btn-link" onclick="loadModuleContent('mod_18', 'MODULE 18')">ഉള്ളടക്കം കാണുക →</button></div>
-        <div class="main-box"><h3>MODULE 19</h3><button class="btn-link" onclick="loadModuleContent('mod_19', 'MODULE 19')">ഉള്ളടക്കം കാണുക →</button></div>
-        <div class="main-box"><h3>MODULE 20</h3><button class="btn-link" onclick="loadModuleContent('mod_20', 'MODULE 20')">ഉള്ളടക്കം കാണുക →</button></div>
+        <div class="main-box" id="box-mod_1"><h3>MODULE 1</h3><button class="btn-link" onclick="loadModuleContent('mod_1', 'MODULE 1')">ഉള്ളടക്കം കാണുക →</button></div>
+        <div class="main-box" id="box-mod_2"><h3>MODULE 2</h3><button class="btn-link" onclick="loadModuleContent('mod_2', 'MODULE 2')">ഉള്ളടക്കം കാണുക →</button></div>
+        <div class="main-box" id="box-mod_3"><h3>MODULE 3</h3><button class="btn-link" onclick="loadModuleContent('mod_3', 'MODULE 3')">ഉള്ളടക്കം കാണുക →</button></div>
+        <div class="main-box" id="box-mod_4"><h3>MODULE 4</h3><button class="btn-link" onclick="loadModuleContent('mod_4', 'MODULE 4')">ഉള്ളടക്കം കാണുക →</button></div>
+        <div class="main-box" id="box-mod_5"><h3>MODULE 5</h3><button class="btn-link" onclick="loadModuleContent('mod_5', 'MODULE 5')">ഉള്ളടക്കം കാണുക →</button></div>
+        <div class="main-box" id="box-mod_6"><h3>MODULE 6</h3><button class="btn-link" onclick="loadModuleContent('mod_6', 'MODULE 6')">ഉള്ളടക്കം കാണുക →</button></div>
+        <div class="main-box" id="box-mod_7"><h3>MODULE 7</h3><button class="btn-link" onclick="loadModuleContent('mod_7', 'MODULE 7')">ഉള്ളടക്കം കാണുക →</button></div>
+        <div class="main-box" id="box-mod_8"><h3>MODULE 8</h3><button class="btn-link" onclick="loadModuleContent('mod_8', 'MODULE 8')">ഉള്ളടക്കം കാണുക →</button></div>
+        <div class="main-box" id="box-mod_9"><h3>MODULE 9</h3><button class="btn-link" onclick="loadModuleContent('mod_9', 'MODULE 9')">ഉള്ളടക്കം കാണുക →</button></div>
+        <div class="main-box" id="box-mod_10"><h3>MODULE 10</h3><button class="btn-link" onclick="loadModuleContent('mod_10', 'MODULE 10')">ഉള്ളടക്കം കാണുക →</button></div>
+        <div class="main-box" id="box-mod_11"><h3>MODULE 11</h3><button class="btn-link" onclick="loadModuleContent('mod_11', 'MODULE 11')">ഉള്ളടക്കം കാണുക →</button></div>
+        <div class="main-box" id="box-mod_12"><h3>MODULE 12</h3><button class="btn-link" onclick="loadModuleContent('mod_12', 'MODULE 12')">ഉള്ളടക്കം കാണുക →</button></div>
+        <div class="main-box" id="box-mod_13"><h3>MODULE 13</h3><button class="btn-link" onclick="loadModuleContent('mod_13', 'MODULE 13')">ഉള്ളടക്കം കാണുക →</button></div>
+        <div class="main-box" id="box-mod_14"><h3>MODULE 14</h3><button class="btn-link" onclick="loadModuleContent('mod_14', 'MODULE 14')">ഉള്ളടക്കം കാണുക →</button></div>
+        <div class="main-box" id="box-mod_15"><h3>MODULE 15</h3><button class="btn-link" onclick="loadModuleContent('mod_15', 'MODULE 15')">ഉള്ളടക്കം കാണുക →</button></div>
+        <div class="main-box" id="box-mod_16"><h3>MODULE 16</h3><button class="btn-link" onclick="loadModuleContent('mod_16', 'MODULE 16')">ഉള്ളടക്കം കാണുക →</button></div>
+        <div class="main-box" id="box-mod_17"><h3>MODULE 17</h3><button class="btn-link" onclick="loadModuleContent('mod_17', 'MODULE 17')">ഉള്ളടക്കം കാണുക →</button></div>
+        <div class="main-box" id="box-mod_18"><h3>MODULE 18</h3><button class="btn-link" onclick="loadModuleContent('mod_18', 'MODULE 18')">ഉള്ളടക്കം കാണുക →</button></div>
+        <div class="main-box" id="box-mod_19"><h3>MODULE 19</h3><button class="btn-link" onclick="loadModuleContent('mod_19', 'MODULE 19')">ഉള്ളടക്കം കാണുക →</button></div>
+        <div class="main-box" id="box-mod_20"><h3>MODULE 20</h3><button class="btn-link" onclick="loadModuleContent('mod_20', 'MODULE 20')">ഉള്ളടക്കം കാണുക →</button></div>
     </div>
 
     <!-- ഡൈനാമിക് കണ്ടന്റ് ലോഡ് ആകുന്ന ഏരിയ -->
     <div id="dynamic-view">
         <div class="nav-top-bar">
-            <button class="small-nav-btn" onclick="goBackToPrevious()">← ബാക്ക്</button>
+            <!-- 🌟 മോഡ്യൂൾ പേജിൽ നിന്നുള്ള ബാക്ക് ബട്ടൺ ക്ലിക്ക് ചെയ്യുമ്പോൾ ഹോം പേജിലേക്ക് കൃത്യമായി പോകാൻ ക്രമീകരിച്ചിരിക്കുന്നു -->
+            <button class="small-nav-btn" onclick="goBackToHome()">← ബാക്ക്</button>
             <button class="small-nav-btn" onclick="goBackToHome()">🏠 ഹോം</button>
         </div>
         <h2 id="view-title">ടൈറ്റിൽ</h2>
@@ -453,7 +454,6 @@
         window.allSavedFlashSets = [];
         let navigationHistory = [];
 
-        /* 🌟 21/09/2026 ഉൾപ്പെടെയുള്ള ചോദ്യങ്ങൾ അപ്ഡേറ്റ് ചെയ്തിരിക്കുന്നു */
         const questionsDB = {
             "mod_4_sub_1": [
                 { q: "ആധുനിക സാമ്പത്തികശാസ്ത്രത്തിന്റെ പിതാവ് ആര്?", options: ["എ) ആൽഫ്രഡ് മാർഷൽ", "ബി) ആഡം സ്മിത്ത്", "സി) ദാദാഭായി നൗറോജി", "ഡി) ലയണൽ റോബിൻസ്"], answer: 1, explanation: "ആഡം സ്മിത്ത് ആണ്." },
@@ -496,6 +496,15 @@
                 { q: "2026 സെപ്റ്റംബറിൽ അന്താരാഷ്ട്ര സമുദ്രമേഖലയിൽ ഇന്ത്യൻ നാവികസേനയുടെ യുദ്ധക്കപ്പലിൽ വന്നിടിച്ച പാകിസ്ഥാൻ നാവികസേനയുടെ ഓഫ്‌ഷോർ പെട്രോളിംഗ് വെസ്സലിന്റെ പേര് എന്താണ്?", options: ["A. പിഎൻഎസ് മുഹാഫിദ്", "B. പിഎൻഎസ് അസ്ലത്", "C. പിഎൻഎസ് ഹുനൈൻ (F-273)", "D. പിഎൻഎസ് യാർമുക്ക്"], answer: 2, explanation: "പിഎൻഎസ് ഹുനൈൻ (F-273) ആണ്." },
                 { q: "ഇന്ത്യൻ നാവികസേനയുടെ കപ്പലുമായി പാകിസ്ഥാൻ കപ്പൽ കൂട്ടിയിടിച്ച സംഭവം നടന്നത് എവിടെ വെച്ചാണ്?", options: ["A. നോർത്ത് അറേബ്യൻ കടലിൽ (ഒമാൻ തീരത്തുനിന്ന് ഏകദേശം 120 നോട്ടിക്കൽ മൈൽ അകലെ)", "B. ബംഗാൾ ഉൾക്കടലിൽ", "C. അറബിക്കടലിൽ ലക്ഷദ്വീപിന് സമീപം", "D. ഇന്ത്യൻ മഹാസമുദ്രത്തിൽ ദക്ഷിണേഷ്യൻ തീരത്ത്"], answer: 0, explanation: "നോർത്ത് അറേബ്യൻ കടലിൽ വെച്ചാണ് സംഭവം നടന്നത്." },
                 { q: "അങ്കണവാടികളിലെ പ്രീ-സ്കൂൾ വിദ്യാഭ്യാസം വിജയകരമായി പൂർത്തിയാക്കി സ്കൂളുകളിലേക്ക് പോകുന്ന കുട്ടികൾക്കായി സർക്കാർ നൽകുന്ന ഔദ്യോഗിക സർട്ടിഫിക്കറ്റിന്റെ പേര് എന്ത്?", options: ["A. പ്രീ-സ്കൂൾ ഡിപ്ലോമ", "B. വിദ്യാരംഭം സർട്ടിഫിക്കറ്റ്", "C. ബാല്യകാല സർട്ടിഫിക്കറ്റ്", "D. അങ്കണവാടി പ്രവേശന സർട്ടിഫിക്കറ്റ്"], answer: 1, explanation: "വിദ്യാരംഭം സർട്ടിഫിക്കറ്റ് എന്നാണ് പേര്." }
+            ],
+            "mod_4_sub_6": [
+                { q: "2024-ലെ ദാദാസാഹെബ് ഫാൽക്കെ പുരസ്കാരത്തിന് അർഹനായ പ്രശസ്ത കന്നഡ നടൻ ആര്?", options: ["A) ശിവരാജ്കുമാർ", "B) അനന്ത് നാഗ്", "C) രജനീകാന്ത്", "D) കമൽഹാസൻ"], answer: 1, explanation: "അനന്ത് നാഗ് ആണ് 2024-ലെ ദാദാസാഹെബ് ഫാൽക്കെ പുരസ്കാരത്തിന് അർഹനായത്." },
+                { q: "2023-ലെ ദാദാസാഹെബ് ഫാൽക്കെ പുരസ്കാരത്തിന് അർഹനായ മലയാള ചലച്ചിത്ര നടൻ ആര്?", options: ["A) മമ്മൂട്ടി", "B) സുരേഷ് ഗോപി", "C) മോഹൻലാൽ", "D) പൃഥ്വിരാജ്"], answer: 2, explanation: "മോഹൻലാൽ ആണ് 2023-ലെ പുരസ്കാരത്തിന് അർഹനായത്." },
+                { q: "ജപ്പാനിലെ ഐച്ചി-നഗോയയിൽ നടക്കുന്ന 20-ാമത് ഏഷ്യൻ ഗെയിംസിലെ ടേബിൾ ടെന്നീസ് മത്സരങ്ങളുടെ സ്പോർട്സ് മാനേജരായി തിരഞ്ഞെടുക്കപ്പെട്ട മലയാളി ആര്?", options: ["A) ബിജു തോമസ്", "B) സാജു ജെയിംസ്", "C) അനീഷ് ജോർജ്", "D) രാഹുൽ മേനോൻ"], answer: 1, explanation: "സാജു ജെയിംസ് ആണ് തിരഞ്ഞെടുക്കപ്പെട്ടത്." },
+                { q: "കൊല്ലം സ്വദേശിയായ സാജു ജെയിംസ് ജപ്പാനിൽ സ്ഥിരതാമസമാക്കിയതിനാൽ ഏത് പേരിലാണ് അറിയപ്പെടുന്നത്?", options: ["A) ജാപ്പനീസ് മലയാളി", "B) ടോക്യോ മലയാളി", "C) നിപ്പാൻ മലയാളി", "D) ഏഷ്യൻ മലയാളി"], answer: 0, explanation: "അദ്ദേഹം 'ജാപ്പനീസ് മലയാളി' എന്നറിയപ്പെടുന്നു." },
+                { q: "ഇന്ത്യയും മംഗോളിയയും തമ്മിൽ നടത്തുന്ന സംയുക്ത സൈനികാഭ്യാസമായ 'നോമാഡിക് എലിഫന്റ്' 2026-ന്റെ വേദി എവിടെയാണ്?", options: ["A) ഉലാൻബാതാർ, മംഗോളിയ", "B) പൂനെ, മഹാരാഷ്ട്ര", "C) പിത്തോഡഗഡ്, ഉത്തരാഖണ്ഡ്", "D) ലേ, ലഡാക്ക്"], answer: 2, explanation: "പിത്തോഡഗഡ്, ഉത്തരാഖണ്ഡ് ആണ് വേദി." },
+                { q: "18-ാമത് ഇന്റർനാഷണൽ ഡോക്യുമെന്ററി ആന്റ് ഷോർട്ട്ഫിലിം ഫെസ്റ്റിവൽ ഓഫ് കേരള (IDSFFK) ലൈഫ്ടൈം അച്ചീവ്മെന്റ് പുരസ്കാരത്തിന് അർഹയായ പ്രശസ്ത അനിമേഷൻ ചലച്ചിത്രകാരി ആര്?", options: ["A) ആർ. ചന്ദ്രകുമാരി", "B) ബീന പോൾ", "C) രേവതി", "D) നീന സബ്ധാനി"], answer: 3, explanation: "നീന സബ്ധാനി ആണ് അവാർഡിന് അർഹയായത്." },
+                { q: "അന്താരാഷ്ട്ര ട്വന്റി20-യിൽ 100 സിക്സറുകൾ തികയ്ക്കുന്ന ആദ്യ ഇന്ത്യൻ വനിതാ താരം ആര്?", options: ["A) ഹർമൻപ്രീത് കൗർ", "B) ജെമീമ റോഡ്രിഗസ്", "C) ഷഫാലി വർമ്മ", "D) സ്മൃതി മന്ദാന"], answer: 3, explanation: "സ്മൃതി മന്ദാന ആണ് ഈ നേട്ടം കൈവരിച്ചത്." }
             ]
         };
 
@@ -557,6 +566,14 @@
                 { front: "2026 സെപ്റ്റംബറിൽ ഇന്ത്യൻ നാവികസേനയുടെ കപ്പലിൽ വന്നിടിച്ച പാകിസ്ഥാൻ കപ്പലിന്റെ പേര്", back: "പിഎൻഎസ് ഹുനൈൻ (F-273)" },
                 { front: "പാകിസ്ഥാൻ കപ്പൽ ഇന്ത്യൻ കപ്പലുമായി കൂട്ടിയിടിച്ച സ്ഥലം", back: "നോർത്ത് അറേബ്യൻ കടൽ (ഒമാൻ തീരത്തുനിന്ന് ഏകദേശം 120 നോട്ടിക്കൽ മൈൽ അകലെ)" },
                 { front: "അങ്കണവാടി പ്രീ-സ്കൂൾ വിദ്യാഭ്യാസം പൂർത്തിയാക്കുന്ന കുട്ടികൾക്കായി സർക്കാർ നൽകുന്ന സർട്ടിഫിക്കറ്റ്", back: "വിദ്യാരംഭം സർട്ടിഫിക്കറ്റ്" }
+            ],
+            "mod_4_sub_6": [
+                { front: "2024-ലെ ദാദാസാഹെബ് ഫാൽക്കെ പുരസ്കാരത്തിന് അർഹനായ കന്നഡ നടൻ", back: "അനന്ത് നാഗ്" },
+                { front: "2023-ലെ ദാദാസാഹെബ് ഫാൽക്കെ പുരസ്കാരത്തിന് അർഹനായ മലയാള നടൻ", back: "മോഹൻലാൽ" },
+                { front: "ഐച്ചി-നഗോയ ഏഷ്യൻ ഗെയിംസ് ടേബിൾ ടെന്നീസ് സ്പോർട്സ് മാനേജർ", back: "സാജു ജെയിംസ് (ജാപ്പനീസ് മലയാളി)" },
+                { front: "'നോമാഡിക് എലിഫന്റ്' 2026 സംയുക്ത സൈനികാഭ്യാസ വേദി", back: "പിത്തോഡഗഡ്, ഉത്തരാഖണ്ഡ്" },
+                { front: "18-ാമത് IDSFFK ലൈഫ്ടൈം അച്ചീവ്മെന്റ് പുരസ്കാരം നേടിയ അനിമേഷൻ ചലച്ചിത്രകാരി", back: "നീന സബ്ധാനി" },
+                { front: "അന്താരാഷ്ട്ര ട്വന്റി20-യിൽ 100 സിക്സറുകൾ തികയ്ക്കുന്ന ആദ്യ ഇന്ത്യൻ വനിതാ താരം", back: "സ്മൃതി മന്ദാന" }
             ]
         };
 
@@ -567,7 +584,8 @@
                 { id: "mod_4_sub_2", title: "Economics basics 2", hasMock: false, hasFlash: false },
                 { id: "mod_4_sub_3", title: "കറന്റ് അഫയേഴ്സ് 19.09.2026", hasMock: true, hasFlash: true },
                 { id: "mod_4_sub_4", title: "കറന്റ് അഫയേഴ്സ് 20.09.2026", hasMock: true, hasFlash: true },
-                { id: "mod_4_sub_5", title: "കറന്റ് അഫയേഴ്സ് 21.09.2026", hasMock: true, hasFlash: true }
+                { id: "mod_4_sub_5", title: "കറന്റ് അഫയേഴ്സ് 21.09.2026", hasMock: true, hasFlash: true },
+                { id: "mod_4_sub_6", title: "കറന്റ് അഫയേഴ്സ് 22.09.2026", hasMock: true, hasFlash: true }
             ], 
             "mod_5": [], "mod_6": [], "mod_7": [], "mod_8": [], "mod_9": [], "mod_10": [],
             "mod_11": [], "mod_12": [], "mod_13": [], "mod_14": [], "mod_15": [],
@@ -587,8 +605,14 @@
         let flashKnownCount = 0;
         let flashUnknownList = [];
 
+        let currentActiveSubIdForMock = "";
+        let currentSubtopicTitle = "";
+        let currentModuleKey = "";
+        let currentModuleName = "";
+
         function loadModuleContent(key, name) {
-            navigationHistory.push({ type: 'home' });
+            currentModuleKey = key;
+            currentModuleName = name;
             document.getElementById('home-menu').style.display = 'none';
             let viewDiv = document.getElementById('dynamic-view');
             viewDiv.style.display = 'block';
@@ -624,7 +648,6 @@
         }
 
         async function openRevisionProgress() {
-            navigationHistory.push({ type: 'home' });
             document.getElementById('home-menu').style.display = 'none';
             let viewDiv = document.getElementById('dynamic-view');
             viewDiv.style.display = 'block';
@@ -704,7 +727,10 @@
         };
 
         function openSpecificMock(subId, title, modKey, modName) {
-            navigationHistory.push({ type: 'module', key: modKey, name: modName });
+            currentActiveSubIdForMock = subId;
+            currentSubtopicTitle = title;
+            currentModuleKey = modKey;
+            currentModuleName = modName;
             let qList = questionsDB[subId] || [];
             if (qList.length === 0) {
                 alert('ചോദ്യങ്ങൾ ഉടൻ ചേർക്കുന്നതാണ്.');
@@ -714,7 +740,9 @@
         }
 
         function openFlashcardSession(subId, title, modKey, modName) {
-            navigationHistory.push({ type: 'module', key: modKey, name: modName });
+            currentSubtopicTitle = title;
+            currentModuleKey = modKey;
+            currentModuleName = modName;
             currentActiveSubId = subId;
             currentFlashcards = flashcardDB[subId] || [];
             if (currentFlashcards.length === 0) {
@@ -731,7 +759,7 @@
             document.getElementById('home-menu').style.display = 'none';
             let viewDiv = document.getElementById('dynamic-view');
             viewDiv.style.display = 'block';
-            document.getElementById('view-title').innerText = `⚡ ഫ്ലാഷ് കാർഡ് (${flashIdx + 1} / ${currentFlashcards.length})`;
+            document.getElementById('view-title').innerText = `⚡ ഫ്ലാഷ് കാർഡ് (${flashIdx + 1} / ${currentFlashcards.length}) - ${currentSubtopicTitle}`;
             let container = document.getElementById('subtopics-container');
 
             let card = currentFlashcards[flashIdx];
@@ -789,7 +817,7 @@
             updateStudyTrackerProgress(subId, 'flashcard');
 
             let container = document.getElementById('subtopics-container');
-            document.getElementById('view-title').innerText = "📊 ഫ്ലാഷ് കാർഡ് റിസൾട്ട്";
+            document.getElementById('view-title').innerText = `📊 ഫ്ലാഷ് കാർഡ് റിസൾട്ട്: ${currentSubtopicTitle}`;
 
             let unknownCount = flashUnknownList.length;
 
@@ -852,7 +880,6 @@
         }
 
         async function openTracker() {
-            navigationHistory.push({ type: 'home' });
             document.getElementById('home-menu').style.display = 'none';
             let viewDiv = document.getElementById('dynamic-view');
             viewDiv.style.display = 'block';
@@ -910,7 +937,6 @@
         }
 
         async function openFlashReviewSets() {
-            navigationHistory.push({ type: 'home' });
             document.getElementById('home-menu').style.display = 'none';
             let viewDiv = document.getElementById('dynamic-view');
             viewDiv.style.display = 'block';
@@ -964,7 +990,6 @@
         }
 
         function openRevisionSetup() {
-            navigationHistory.push({ type: 'home' });
             document.getElementById('home-menu').style.display = 'none';
             let viewDiv = document.getElementById('dynamic-view');
             viewDiv.style.display = 'block';
@@ -1048,7 +1073,6 @@
             startQuiz(selectedQuestions, target);
         }
 
-        let currentActiveSubIdForMock = "";
         function startQuiz(questionsArray, subId) {
             currentActiveSubIdForMock = subId;
             currentQuestions = questionsArray;
@@ -1102,7 +1126,7 @@
             document.getElementById('home-menu').style.display = 'none';
             let viewDiv = document.getElementById('dynamic-view');
             viewDiv.style.display = 'block';
-            document.getElementById('view-title').innerText = `📝 ടെസ്റ്റ് (ചോദ്യം ${currentIdx + 1} / ${currentQuestions.length})`;
+            document.getElementById('view-title').innerText = `📝 ടെസ്റ്റ് (${currentSubtopicTitle}) - ചോദ്യം ${currentIdx + 1} / ${currentQuestions.length}`;
             
             let q = currentQuestions[currentIdx];
             let isBookmarked = bookmarked[currentIdx] ? 'active' : '';
@@ -1150,7 +1174,6 @@
             initQuizSwipe();
         }
 
-        /* 🌟 മോക്ക് ടെസ്റ്റിൽ സ്വൈപ്പ് വർക്ക് ചെയ്യാൻ വേണ്ടി ചേർത്ത ഫംഗ്ഷൻ */
         function initQuizSwipe() {
             let swipeArea = document.getElementById('quiz-swipe-area');
             if (!swipeArea) return;
@@ -1230,7 +1253,7 @@
             }
 
             let container = document.getElementById('subtopics-container');
-            document.getElementById('view-title').innerText = "📊 ടെസ്റ്റ് ഫലം";
+            document.getElementById('view-title').innerText = `📊 ടെസ്റ്റ് ഫലം: ${currentSubtopicTitle}`;
 
             let correct = 0, wrong = 0, unattempted = 0;
             currentQuestions.forEach((q, i) => {
@@ -1304,22 +1327,15 @@
             window.saveToFirebase(customName.trim(), wrongOrUnattempted, "revision_sets");
         }
 
+        /* 🌟 മോഡ്യൂൾ പേജിലെ ബാക്ക് ബട്ടൺ ക്ലിക്ക് ചെയ്യുമ്പോൾ കൃത്യമായി ഹോം പേജിലേക്ക് പോകാൻ സജ്ജമാക്കിയിരിക്കുന്നു */
         function goBackToPrevious() {
             if (timerInterval) clearInterval(timerInterval);
-            if (navigationHistory.length > 0) {
-                let lastState = navigationHistory.pop();
-                if (lastState.type === 'module') {
-                    loadModuleContent(lastState.key, lastState.name);
-                } else {
-                    goBackToHome();
-                }
-            } else {
-                goBackToHome();
-            }
+            document.getElementById('dynamic-view').style.display = 'none';
+            document.getElementById('home-menu').style.display = 'flex';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
         async function openWrongReview() {
-            navigationHistory.push({ type: 'home' });
             document.getElementById('home-menu').style.display = 'none';
             let viewDiv = document.getElementById('dynamic-view');
             viewDiv.style.display = 'block';
@@ -1346,14 +1362,13 @@
                 `).join('');
 
                 container.innerHTML = `
-                    <p style="margin-bottom: 12px; font-size: 0.9rem; color: #475569;">ഫയർബേസിൽ സേവ് ചെയ്ത റിവിഷൻ സെറ്റുകൾ:</p>
+                    <p style="margin-bottom: 12px; font-size: 0.9rem; color: #475569;">ഫയർബേസിൽ സേവ് ചെയ്തു വെച്ച റിവിഷൻ സെറ്റുകൾ:</p>
                     <div style="max-height: 320px; overflow-y: auto;">${setsHtml}</div>
                 `;
             }
         }
 
         function goBackToHome() {
-            navigationHistory = [];
             if (timerInterval) clearInterval(timerInterval);
             document.getElementById('dynamic-view').style.display = 'none';
             document.getElementById('home-menu').style.display = 'flex';
