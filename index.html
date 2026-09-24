@@ -135,7 +135,6 @@
 
         .quiz-container { background: #ffffff; padding: 5px; border-radius: 10px; text-align: center; }
         
-        /* 3D ഫ്ലിപ്പ് ആനിമേഷനും കൂടിയ ഹൈറ്റ് ഉള്ള ഫ്ലാഷ് കാർഡ് ഡിസൈൻ */
         .flashcard-container { 
             display: flex; 
             flex-direction: column; 
@@ -293,59 +292,45 @@
 
     <!-- പ്രധാന ഹോം മെനു -->
     <div class="container" id="home-menu">
-        <div class="main-box my-rev-box">
-            <h3>📈 MY REVISION PROGRESS</h3>
-            <button class="btn-link" onclick="openRevisionProgress()">തുറക്കുക →</button>
+        <!-- Analysis ബട്ടൺ -->
+        <div class="main-box" style="border-left-color: #3b82f6; background: #eff6ff;">
+            <h3>📊 Analysis</h3>
+            <button class="btn-link" style="background: #3b82f6;" onclick="openAnalysisMenu()">തുറക്കുക →</button>
         </div>
 
-        <div class="main-box tracker-box">
-            <h3>📖 സ്റ്റഡി ട്രാക്കർ (Study Tracker)</h3>
-            <button class="btn-link" onclick="openTracker()">തുറക്കുക →</button>
-        </div>
-
-        <div class="main-box revision-box">
-            <h3>🔄 കസ്റ്റം റിവിഷൻ ടെസ്റ്റ് (Revision Test)</h3>
-            <button class="btn-link" onclick="openRevisionSetup()">തുടങ്ങുക →</button>
-        </div>
-
-        <div class="main-box wrong-box">
-            <h3>❌ തെറ്റിയ മോക്ക് ടെസ്റ്റ് ചോദ്യങ്ങൾ റിവ്യൂ ചെയ്യുക</h3>
-            <button class="btn-link" onclick="openWrongReview()">റിവ്യൂ ചെയ്യുക →</button>
-        </div>
-
-        <div class="main-box flash-review-box">
-            <h3>⚡ തെറ്റിയ ഫ്ലാഷ് കാർഡുകൾ റിവ്യൂ ചെയ്യുക</h3>
-            <button class="btn-link" onclick="openFlashReviewSets()">റിവ്യൂ ചെയ്യുക →</button>
+        <!-- 🌟 My Revision ബട്ടൺ -->
+        <div class="main-box" style="border-left-color: #7c3aed; background: #f5f3ff;">
+            <h3>🔄 My Revision</h3>
+            <button class="btn-link" style="background: #7c3aed;" onclick="openMyRevisionMenu()">തുറക്കുക →</button>
         </div>
 
         <!-- 20 മോഡ്യൂളുകൾ -->
-        <div class="main-box" id="box-mod_1"><h3>MODULE 1</h3><button class="btn-link" onclick="loadModuleContent('mod_1', 'MODULE 1')">ഉള്ളടക്കം കാണുക →</button></div>
-        <div class="main-box" id="box-mod_2"><h3>MODULE 2</h3><button class="btn-link" onclick="loadModuleContent('mod_2', 'MODULE 2')">ഉള്ളടക്കം കാണുക →</button></div>
-        <div class="main-box" id="box-mod_3"><h3>MODULE 3</h3><button class="btn-link" onclick="loadModuleContent('mod_3', 'MODULE 3')">ഉള്ളടക്കം കാണുക →</button></div>
-        <div class="main-box" id="box-mod_4"><h3>MODULE 4</h3><button class="btn-link" onclick="loadModuleContent('mod_4', 'MODULE 4')">ഉള്ളടക്കം കാണുക →</button></div>
-        <div class="main-box" id="box-mod_5"><h3>MODULE 5</h3><button class="btn-link" onclick="loadModuleContent('mod_5', 'MODULE 5')">ഉള്ളടക്കം കാണുക →</button></div>
-        <div class="main-box" id="box-mod_6"><h3>MODULE 6</h3><button class="btn-link" onclick="loadModuleContent('mod_6', 'MODULE 6')">ഉള്ളടക്കം കാണുക →</button></div>
-        <div class="main-box" id="box-mod_7"><h3>MODULE 7</h3><button class="btn-link" onclick="loadModuleContent('mod_7', 'MODULE 7')">ഉള്ളടക്കം കാണുക →</button></div>
-        <div class="main-box" id="box-mod_8"><h3>MODULE 8</h3><button class="btn-link" onclick="loadModuleContent('mod_8', 'MODULE 8')">ഉള്ളടക്കം കാണുക →</button></div>
-        <div class="main-box" id="box-mod_9"><h3>MODULE 9</h3><button class="btn-link" onclick="loadModuleContent('mod_9', 'MODULE 9')">ഉള്ളടക്കം കാണുക →</button></div>
-        <div class="main-box" id="box-mod_10"><h3>MODULE 10</h3><button class="btn-link" onclick="loadModuleContent('mod_10', 'MODULE 10')">ഉള്ളടക്കം കാണുക →</button></div>
-        <div class="main-box" id="box-mod_11"><h3>MODULE 11</h3><button class="btn-link" onclick="loadModuleContent('mod_11', 'MODULE 11')">ഉള്ളടക്കം കാണുക →</button></div>
-        <div class="main-box" id="box-mod_12"><h3>MODULE 12</h3><button class="btn-link" onclick="loadModuleContent('mod_12', 'MODULE 12')">ഉള്ളടക്കം കാണുക →</button></div>
-        <div class="main-box" id="box-mod_13"><h3>MODULE 13</h3><button class="btn-link" onclick="loadModuleContent('mod_13', 'MODULE 13')">ഉള്ളടക്കം കാണുക →</button></div>
-        <div class="main-box" id="box-mod_14"><h3>MODULE 14</h3><button class="btn-link" onclick="loadModuleContent('mod_14', 'MODULE 14')">ഉള്ളടക്കം കാണുക →</button></div>
-        <div class="main-box" id="box-mod_15"><h3>MODULE 15</h3><button class="btn-link" onclick="loadModuleContent('mod_15', 'MODULE 15')">ഉള്ളടക്കം കാണുക →</button></div>
-        <div class="main-box" id="box-mod_16"><h3>MODULE 16</h3><button class="btn-link" onclick="loadModuleContent('mod_16', 'MODULE 16')">ഉള്ളടക്കം കാണുക →</button></div>
-        <div class="main-box" id="box-mod_17"><h3>MODULE 17</h3><button class="btn-link" onclick="loadModuleContent('mod_17', 'MODULE 17')">ഉള്ളടക്കം കാണുക →</button></div>
-        <div class="main-box" id="box-mod_18"><h3>MODULE 18</h3><button class="btn-link" onclick="loadModuleContent('mod_18', 'MODULE 18')">ഉള്ളടക്കം കാണുക →</button></div>
-        <div class="main-box" id="box-mod_19"><h3>MODULE 19</h3><button class="btn-link" onclick="loadModuleContent('mod_19', 'MODULE 19')">ഉള്ളടക്കം കാണുക →</button></div>
-        <div class="main-box" id="box-mod_20"><h3>MODULE 20</h3><button class="btn-link" onclick="loadModuleContent('mod_20', 'MODULE 20')">ഉള്ളടക്കം കാണുക →</button></div>
+        <div class="main-box"><h3>MODULE 1</h3><button class="btn-link" onclick="loadModuleContent('mod_1', 'MODULE 1')">ഉള്ളടക്കം കാണുക →</button></div>
+        <div class="main-box"><h3>MODULE 2</h3><button class="btn-link" onclick="loadModuleContent('mod_2', 'MODULE 2')">ഉള്ളടക്കം കാണുക →</button></div>
+        <div class="main-box"><h3>MODULE 3</h3><button class="btn-link" onclick="loadModuleContent('mod_3', 'MODULE 3')">ഉള്ളടക്കം കാണുക →</button></div>
+        <div class="main-box"><h3>MODULE 4</h3><button class="btn-link" onclick="loadModuleContent('mod_4', 'MODULE 4')">ഉള്ളടക്കം കാണുക →</button></div>
+        <div class="main-box"><h3>MODULE 5</h3><button class="btn-link" onclick="loadModuleContent('mod_5', 'MODULE 5')">ഉള്ളടക്കം കാണുക →</button></div>
+        <div class="main-box"><h3>MODULE 6</h3><button class="btn-link" onclick="loadModuleContent('mod_6', 'MODULE 6')">ഉള്ളടക്കം കാണുക →</button></div>
+        <div class="main-box"><h3>MODULE 7</h3><button class="btn-link" onclick="loadModuleContent('mod_7', 'MODULE 7')">ഉള്ളടക്കം കാണുക →</button></div>
+        <div class="main-box"><h3>MODULE 8</h3><button class="btn-link" onclick="loadModuleContent('mod_8', 'MODULE 8')">ഉള്ളടക്കം കാണുക →</button></div>
+        <div class="main-box"><h3>MODULE 9</h3><button class="btn-link" onclick="loadModuleContent('mod_9', 'MODULE 9')">ഉള്ളടക്കം കാണുക →</button></div>
+        <div class="main-box"><h3>MODULE 10</h3><button class="btn-link" onclick="loadModuleContent('mod_10', 'MODULE 10')">ഉള്ളടക്കം കാണുക →</button></div>
+        <div class="main-box"><h3>MODULE 11</h3><button class="btn-link" onclick="loadModuleContent('mod_11', 'MODULE 11')">ഉള്ളടക്കം കാണുക →</button></div>
+        <div class="main-box"><h3>MODULE 12</h3><button class="btn-link" onclick="loadModuleContent('mod_12', 'MODULE 12')">ഉള്ളടക്കം കാണുക →</button></div>
+        <div class="main-box"><h3>MODULE 13</h3><button class="btn-link" onclick="loadModuleContent('mod_13', 'MODULE 13')">ഉള്ളടക്കം കാണുക →</button></div>
+        <div class="main-box"><h3>MODULE 14</h3><button class="btn-link" onclick="loadModuleContent('mod_14', 'MODULE 14')">ഉള്ളടക്കം കാണുക →</button></div>
+        <div class="main-box"><h3>MODULE 15</h3><button class="btn-link" onclick="loadModuleContent('mod_15', 'MODULE 15')">ഉള്ളടക്കം കാണുക →</button></div>
+        <div class="main-box"><h3>MODULE 16</h3><button class="btn-link" onclick="loadModuleContent('mod_16', 'MODULE 16')">ഉള്ളടക്കം കാണുക →</button></div>
+        <div class="main-box"><h3>MODULE 17</h3><button class="btn-link" onclick="loadModuleContent('mod_17', 'MODULE 17')">ഉള്ളടക്കം കാണുക →</button></div>
+        <div class="main-box"><h3>MODULE 18</h3><button class="btn-link" onclick="loadModuleContent('mod_18', 'MODULE 18')">ഉള്ളടക്കം കാണുക →</button></div>
+        <div class="main-box"><h3>MODULE 19</h3><button class="btn-link" onclick="loadModuleContent('mod_19', 'MODULE 19')">ഉള്ളടക്കം കാണുക →</button></div>
+        <div class="main-box"><h3>MODULE 20</h3><button class="btn-link" onclick="loadModuleContent('mod_20', 'MODULE 20')">ഉള്ളടക്കം കാണുക →</button></div>
     </div>
 
     <!-- ഡൈനാമിക് കണ്ടന്റ് ലോഡ് ആകുന്ന ഏരിയ -->
     <div id="dynamic-view">
         <div class="nav-top-bar">
-            <!-- 🌟 മോഡ്യൂൾ പേജിൽ നിന്നുള്ള ബാക്ക് ബട്ടൺ ക്ലിക്ക് ചെയ്യുമ്പോൾ ഹോം പേജിലേക്ക് കൃത്യമായി പോകാൻ ക്രമീകരിച്ചിരിക്കുന്നു -->
-            <button class="small-nav-btn" onclick="goBackToHome()">← ബാക്ക്</button>
+            <button class="small-nav-btn" onclick="goBackToPrevious()">← ബാക്ക്</button>
             <button class="small-nav-btn" onclick="goBackToHome()">🏠 ഹോം</button>
         </div>
         <h2 id="view-title">ടൈറ്റിൽ</h2>
@@ -422,6 +407,30 @@
                 });
             } catch (e) {
                 console.error("Tracker Save Error: ", e);
+            }
+        };
+
+        window.saveMockCountsToFirebase = async function(countsData) {
+            try {
+                await setDoc(doc(db, "user_progress", "mock_counts"), {
+                    counts: countsData,
+                    updatedAt: new Date().toISOString()
+                });
+            } catch (e) {
+                console.error("Mock Count Save Error: ", e);
+            }
+        };
+
+        window.loadMockCountsFromFirebase = async function() {
+            try {
+                let docSnap = await getDoc(doc(db, "user_progress", "mock_counts"));
+                if (docSnap.exists()) {
+                    return docSnap.data().counts || {};
+                }
+                return {};
+            } catch (e) {
+                console.error("Mock Count Load Error: ", e);
+                return {};
             }
         };
 
@@ -505,6 +514,24 @@
                 { q: "ഇന്ത്യയും മംഗോളിയയും തമ്മിൽ നടത്തുന്ന സംയുക്ത സൈനികാഭ്യാസമായ 'നോമാഡിക് എലിഫന്റ്' 2026-ന്റെ വേദി എവിടെയാണ്?", options: ["A) ഉലാൻബാതാർ, മംഗോളിയ", "B) പൂനെ, മഹാരാഷ്ട്ര", "C) പിത്തോഡഗഡ്, ഉത്തരാഖണ്ഡ്", "D) ലേ, ലഡാക്ക്"], answer: 2, explanation: "പിത്തോഡഗഡ്, ഉത്തരാഖണ്ഡ് ആണ് വേദി." },
                 { q: "18-ാമത് ഇന്റർനാഷണൽ ഡോക്യുമെന്ററി ആന്റ് ഷോർട്ട്ഫിലിം ഫെസ്റ്റിവൽ ഓഫ് കേരള (IDSFFK) ലൈഫ്ടൈം അച്ചീവ്മെന്റ് പുരസ്കാരത്തിന് അർഹയായ പ്രശസ്ത അനിമേഷൻ ചലച്ചിത്രകാരി ആര്?", options: ["A) ആർ. ചന്ദ്രകുമാരി", "B) ബീന പോൾ", "C) രേവതി", "D) നീന സബ്ധാനി"], answer: 3, explanation: "നീന സബ്ധാനി ആണ് അവാർഡിന് അർഹയായത്." },
                 { q: "അന്താരാഷ്ട്ര ട്വന്റി20-യിൽ 100 സിക്സറുകൾ തികയ്ക്കുന്ന ആദ്യ ഇന്ത്യൻ വനിതാ താരം ആര്?", options: ["A) ഹർമൻപ്രീത് കൗർ", "B) ജെമീമ റോഡ്രിഗസ്", "C) ഷഫാലി വർമ്മ", "D) സ്മൃതി മന്ദാന"], answer: 3, explanation: "സ്മൃതി മന്ദാന ആണ് ഈ നേട്ടം കൈവരിച്ചത്." }
+            ],
+            "mod_4_sub_7": [
+                { q: "അന്താരാഷ്ട്ര വനിതാ ടിന്റി-20യിൽ ഏറ്റവും കൂടുതൽ റൺസ് നേടുന്ന താരമെന്ന റെക്കോർഡ് സ്വന്തമാക്കിയത് ആര്?", options: ["എ) സൂസി ബേറ്റ്സ്", "ബി) സ്മൃതി മന്ദാന", "സി) ഹർമൻപ്രീത് കൗർ", "ഡി) എല്ലിസ് പെറി"], answer: 1, explanation: "സ്മൃതി മന്ദാനയാണ് ഈ റെക്കോർഡ് സ്വന്തമാക്കിയത്." },
+                { q: "അന്താരാഷ്ട്ര വനിതാ ടിന്റി-20യിൽ ന്യൂസിലൻഡിന്റെ സൂസി ബേറ്റ്സിന്റെ എത്ര റൺസ് എന്ന റെക്കോർഡാണ് സ്മൃതി മന്ദാന മറികടന്നത്?", options: ["എ) 3,758 റൺസ്", "ബി) 4,258 റൺസ്", "സി) 4,758 റൺസ്", "ഡി) 5,158 റൺസ്"], answer: 2, explanation: "4,758 റൺസ്." },
+                { q: "അന്താരാഷ്ട്ര ടിന്റി-20യിൽ ഇന്ത്യക്കായി ഏറ്റവും വേഗമേറിയ സെഞ്ച്വറി സ്വന്തമാക്കിയ ബാറ്റർ ആര്?", options: ["എ) രോഹിത് ശർമ്മ", "ബി) സൂര്യകുമാർ യാദവ്", "സി) അഭിഷേക് ശർമ്മ", "ഡി) വിരാട് കോഹ്‌ലി"], answer: 2, explanation: "അഭിഷേക് ശർമ്മ." },
+                { q: "ഇന്ത്യൻ ഓപ്പണർ അഭിഷേക് ശർമ്മ എത്ര പന്തുകളിൽ നിന്നാണ് സെഞ്ച്വറി സ്വന്തമാക്കിയത്?", options: ["എ) 25 പന്തുകൾ", "ബി) 30 പന്തുകൾ", "സി) 35 പന്തുകൾ", "ഡി) 40 പന്തുകൾ"], answer: 1, explanation: "30 പന്തുകൾ." },
+                { q: "അഭിഷേക് ശർമ്മ തകർത്ത, മുൻ ഇന്ത്യൻ ക്യാപ്റ്റൻ രോഹിത് ശർമ്മ എത്ര പന്തിൽ സെഞ്ച്വറി നേടിയ റെക്കോർഡാണ്?", options: ["എ) 30 പന്തിൽ", "ബി) 32 പന്തിൽ", "സി) 35 പന്തിൽ", "ഡി) 38 പന്തിൽ"], answer: 2, explanation: "35 പന്തിൽ." },
+                { q: "ഇന്ത്യയും ശ്രീലങ്കയും തമ്മിലുള്ള ഉഭയകക്ഷി നാവികാഭ്യാസമായ 'SLINEX-26' ന്റെ വേദി എവിടെയാണ്?", options: ["എ) കൊച്ചി, കേരളം", "ബി) വിശാഖപട്ടണം, ആന്ധ്രാപ്രദേശ്", "സി) കൊളംബോ, ശ്രീലങ്ക", "ഡി) ചെന്നൈ, തമിഴ്നാട്"], answer: 1, explanation: "വിശാഖപട്ടണം, ആന്ധ്രാപ്രദേശ്." },
+                { q: "ഇന്ത്യയും ശ്രീലങ്കയും തമ്മിലുള്ള SLINEX നാവികാഭ്യാസത്തിന്റെ എത്രാമത്തെ പതിപ്പാണ് നടക്കുന്നത്?", options: ["എ) 10-ാമത് പതിപ്പ്", "ബി) 11-ാമത് പതിപ്പ്", "സി) 12-ാമത് പതിപ്പ്", "ഡി) 13-ാമത് പതിപ്പ്"], answer: 3, explanation: "13-ാമത് പതിപ്പ്." },
+                { q: "ഇന്ത്യയിലെ നദീതീര സംസ്കാരത്തെയും പൈതൃകത്തെയും ജനങ്ങളിലേക്ക് എത്തിക്കുന്നതിനായി ഇന്ദിരാഗാന്ധി നാഷണൽ സെന്റർ ഫോർ ദി ആർട്സ് (IGNCA) സംഘടിപ്പിക്കുന്ന പ്രശസ്തമായ വാർഷിക ഉത്സവം ഏത്?", options: ["എ) നദി ഉത്സവ്", "ബി) ഗംഗാ ഉത്സവ്", "സി) സംസ്കൃതി ഉത്സവ്", "ഡി) പൈതൃക ഉത്സവ്"], answer: 0, explanation: "നദി ഉത്സവ്." },
+                { q: "2026 സെപ്റ്റംബറിൽ ജപ്പാനിൽ കനത്ത നാശം വിതച്ച ചുഴലിക്കാറ്റ് ഏത്?", options: ["എ) ടാങ്കോ ചുഴലിക്കാറ്റ്", "ബി) ദുജ്ജാൻ ചുഴലിക്കാറ്റ് (Typhoon Dujuan)", "സി) ഹിനോകി ചുഴലിക്കാറ്റ്", "ഡി) ലാൻ ചുഴലിക്കാറ്റ്"], answer: 1, explanation: "ദുജ്ജാൻ ചുഴലിക്കാറ്റ് (Typhoon Dujuan)." },
+                { q: "കേരള സർക്കാർ സംസ്ഥാന ബഡ്ജറ്റിൽ പ്രഖ്യാപിച്ച ഭൂപരിഷ്കരണം 2.0 നടപ്പിലാക്കുന്നതിനെക്കുറിച്ച് പഠിക്കാൻ നിയോഗിച്ച അഞ്ചംഗ സമിതിയുടെ അധ്യക്ഷൻ ആര്?", options: ["എ) ഡോ. ടി. എം. തോമസ് ഐസക്", "ബി) എ.ടി ജെയിംസ്", "സി) ജസ്റ്റിസ് കെ.മാധവൻ", "ഡി) എം.എ ബേബി"], answer: 1, explanation: "എ.ടി ജെയിംസ്." },
+                { q: "വനിതാ ഹോക്കിയിൽ ഒരു മത്സരത്തിൽ ഏറ്റവും കൂടുതൽ ഗോളുകൾ നേടുന്ന താരമെന്ന റെക്കോർഡ് സ്വന്തമാക്കിയത് ആര്?", options: ["എ) ദീപിക സെഹ്റാവത്ത് (8 ഗോളുകൾ)", "ബി) വന്ദന കട്ടാര്യ", "സി) റാണി റാംപാൽ", "ഡി) നവ്നീത് കൗർ"], answer: 0, explanation: "ദീപിക സെഹ്റാവത്ത് (8 ഗോളുകൾ)." },
+                { q: "ഏഷ്യൻ ഗെയിംസ് ചരിത്രത്തിൽ ഇന്ത്യ്ക്ക് വേണ്ടി ആദ്യമായി മിക്സ്ഡ് മാർഷൽ ആർട്സിൽ (MMA) മെഡൽ നേടിയ കായിക താരം ആര്?", options: ["എ) പൂജ തോമർ", "ബി) സുചിക തരിയാൽ", "സി) റിതു ഫോഗട്ട്", "ഡി) അനിത ദേവി"], answer: 1, explanation: "സുചിക തരിയാൽ." },
+                { q: "ഇന്ത്യൻ വനിതാ ഹോക്കി ചരിത്രത്തിൽ ഏറ്റവും കൂടുതൽ അന്താരാഷ്ട്ര മത്സരങ്ങൾ കളിച്ച താരം എന്ന റെക്കോർഡ് സ്വന്തമാക്കിയത് ആര്?", options: ["എ) റാണി റാംപാൽ", "ബി) ദീപിക സെഹ്റാവത്ത്", "സി) സവിത പൂനിയ", "ഡി) ഗ്രേസ് ഉൾ അക്ക"], answer: 2, explanation: "സവിത പൂനിയ." },
+                { q: "2026 സെപ്റ്റംബറിൽ വേൾഡ് വൈഡ് ഫണ്ട് ഫോർ നേച്ചറിന്റെ (WWF) ഗ്ലോബൽ കൺസർവേഷൻ കോൺഫറൻസിന് വേദിയായ ഇന്ത്യൻ നഗരം ഏത്?", options: ["എ) ന്യൂഡൽഹി", "ബി) ജയ്പൂർ", "സി) മുംബൈ", "ഡി) ബെംഗളൂരു"], answer: 1, explanation: "ജയ്പൂർ." },
+                { q: "കേരളത്തിലെ മുഴുവൻ സ്കൂൾ വിദ്യാർത്ഥികളുടെയും വിവരങ്ങൾ ഏകോപിപ്പിക്കുന്നതിനായി സർക്കാർ വിപുലീകരിച്ച പോർട്ടൽ ഏത്?", options: ["എ) കൈറ്റ് വിക്ടേഴ്സ്", "ബി) സമ്പൂർണ്ണ", "സി) സമഗ്ര", "ഡി) ഹാർബർ"], answer: 1, explanation: "സമ്പൂർണ്ണ." },
+                { q: "ഔദ്യോഗിക ഭാഷാ നടത്തിപ്പിലെ മികവിന് കേന്ദ്ര സർക്കാരിന്റെ 'രാജ്ഭാഷ കീർത്തി പുരസ്കാരം' (2025-26) കരസ്ഥമാക്കിയ പൊതുമേഖലാ ബാങ്ക് ഏത്?", options: ["എ) സ്റ്റേറ്റ് ബാങ്ക് ഓഫ് ഇന്ത്യ", "ബി) പഞ്ചാബ് നാഷണൽ ബാങ്ക്", "സി) ബാങ്ക് ഓഫ് ബറോഡ", "ഡി) കാനറ ബാങ്ക്"], answer: 2, explanation: "ബാങ്ക് ഓഫ് ബറോഡ." }
             ]
         };
 
@@ -572,8 +599,24 @@
                 { front: "2023-ലെ ദാദാസാഹെബ് ഫാൽക്കെ പുരസ്കാരത്തിന് അർഹനായ മലയാള നടൻ", back: "മോഹൻലാൽ" },
                 { front: "ഐച്ചി-നഗോയ ഏഷ്യൻ ഗെയിംസ് ടേബിൾ ടെന്നീസ് സ്പോർട്സ് മാനേജർ", back: "സാജു ജെയിംസ് (ജാപ്പനീസ് മലയാളി)" },
                 { front: "'നോമാഡിക് എലിഫന്റ്' 2026 സംയുക്ത സൈനികാഭ്യാസ വേദി", back: "പിത്തോഡഗഡ്, ഉത്തരാഖണ്ഡ്" },
-                { front: "18-ാമത് IDSFFK ലൈഫ്ടൈം അച്ചീവ്മെന്റ് പുരസ്കാരം നേടിയ അനിമേഷൻ ചലച്ചിത്രകാരി", back: "നീന സബ്ധാനി" },
+                { front: "18-ാമത് ഇന്റർനാഷണൽ ഡോക്യുമെന്ററി ആന്റ് ഷോർട്ട്ഫിലിം ഫെസ്റ്റിവൽ ഓഫ് കേരള (IDSFFK) ലൈഫ്ടൈം അച്ചീവ്മെന്റ് പുരസ്കാരം നേടിയ അനിമേഷൻ ചലച്ചിത്രകാരി", back: "നീന സബ്ധാനി" },
                 { front: "അന്താരാഷ്ട്ര ട്വന്റി20-യിൽ 100 സിക്സറുകൾ തികയ്ക്കുന്ന ആദ്യ ഇന്ത്യൻ വനിതാ താരം", back: "സ്മൃതി മന്ദാന" }
+            ],
+            "mod_4_sub_7": [
+                { front: "അന്താരാഷ്ട്ര വനിതാ ടിന്റി-20യിൽ ഏറ്റവും കൂടുതൽ റൺസ് നേടുന്ന താരം", back: "സ്മൃതി മന്ദാന" },
+                { front: "സ്മൃതി മന്ദാന മറികടന്ന സൂസി ബേറ്റ്സിന്റെ റൺസ് റെക്കോർഡ്", back: "4,758 റൺസ്" },
+                { front: "അന്താരാഷ്ട്ര ടിന്റി-20യിൽ ഇന്ത്യക്കായി ഏറ്റവും വേഗമേറിയ സെഞ്ച്വറി", back: "അഭിഷേക് ശർമ്മ (30 പന്തുകളിൽ)" },
+                { front: "അഭിഷേക് ശർമ്മ തകർത്ത രോഹിത് ശർമ്മയുടെ സെഞ്ച്വറി റെക്കോർഡ് പന്തുകൾ", back: "35 പന്തിൽ" },
+                { front: "ഇന്ത്യയും ശ്രീലങ്കയും തമ്മിലുള്ള 'SLINEX-26' നാവികാഭ്യാസ വേദി", back: "വിശാഖപട്ടണം, ആന്ധ്രാപ്രദേശ് (13-ാമത് പതിപ്പ്)" },
+                { front: "ഇന്ദിരാഗാന്ധി നാഷണൽ സെന്റർ ഫോർ ദി ആർട്സ് (IGNCA) സംഘടിപ്പിക്കുന്ന വാർഷിക നദീതീര ഉത്സവ്", back: "നദി ഉത്സവ്" },
+                { front: "2026 സെപ്റ്റംബറിൽ ജപ്പാനിൽ കനത്ത നാശം വിതച്ച ചുഴലിക്കാറ്റ്", back: "ദുജ്ജാൻ ചുഴലിക്കാറ്റ് (Typhoon Dujuan)" },
+                { front: "ഭൂപരിഷ്കരണം 2.0 പഠിക്കാൻ നിയോഗിച്ച അഞ്ചംഗ സമിതി അധ്യക്ഷൻ", back: "എ.ടി ജെയിംസ്" },
+                { front: "വനിതാ ഹോക്കിയിൽ ഒരു മത്സരത്തിൽ ഏറ്റവും കൂടുതൽ ഗോളുകൾ (8 ഗോളുകൾ) നേടിയ താരം", back: "ദീപിക സെഹ്റാവത്ത്" },
+                { front: "ഏഷ്യൻ ഗെയിംസ് ചരിത്രത്തിൽ ഇന്ത്യ്ക്ക് വേണ്ടി ആദ്യമായി മിക്സ്ഡ് മാർഷൽ ആർട്സിൽ (MMA) മെഡൽ", back: "സുചിക തരിയാൽ" },
+                { front: "ഇന്ത്യൻ വനിതാ ഹോക്കി ചരിത്രത്തിൽ ഏറ്റവും കൂടുതൽ അന്താരാഷ്ട്ര മത്സരങ്ങൾ കളിച്ച താരം", back: "സവിത പൂനിയ" },
+                { front: "2026 സെപ്റ്റംബറിൽ WWF ഗ്ലോബൽ കൺസർവേഷൻ കോൺഫറൻസ് വേദി", back: "ജയ്പൂർ" },
+                { front: "കേരളത്തിലെ സ്കൂൾ വിദ്യാർത്ഥികളുടെ വിവരങ്ങൾ ഏകോപിപ്പിക്കുന്ന പോർട്ടൽ", back: "സമ്പൂർണ്ണ" },
+                { front: "രാജ്ഭാഷ കീർത്തി പുരസ്കാരം (2025-26) കരസ്ഥമാക്കിയ പൊതുമേഖലാ ബാങ്ക്", back: "ബാങ്ക് ഓഫ് ബറോഡ" }
             ]
         };
 
@@ -585,7 +628,8 @@
                 { id: "mod_4_sub_3", title: "കറന്റ് അഫയേഴ്സ് 19.09.2026", hasMock: true, hasFlash: true },
                 { id: "mod_4_sub_4", title: "കറന്റ് അഫയേഴ്സ് 20.09.2026", hasMock: true, hasFlash: true },
                 { id: "mod_4_sub_5", title: "കറന്റ് അഫയേഴ്സ് 21.09.2026", hasMock: true, hasFlash: true },
-                { id: "mod_4_sub_6", title: "കറന്റ് അഫയേഴ്സ് 22.09.2026", hasMock: true, hasFlash: true }
+                { id: "mod_4_sub_6", title: "കറന്റ് അഫയേഴ്സ് 22.09.2026", hasMock: true, hasFlash: true },
+                { id: "mod_4_sub_7", title: "കറന്റ് അഫയേഴ്സ് 23.09.2026", hasMock: true, hasFlash: true }
             ], 
             "mod_5": [], "mod_6": [], "mod_7": [], "mod_8": [], "mod_9": [], "mod_10": [],
             "mod_11": [], "mod_12": [], "mod_13": [], "mod_14": [], "mod_15": [],
@@ -647,13 +691,57 @@
             });
         }
 
-        async function openRevisionProgress() {
+        /* 🌟 Analysis മെനു തുറക്കുന്ന ഫംഗ്ഷൻ */
+        function openAnalysisMenu() {
             document.getElementById('home-menu').style.display = 'none';
             let viewDiv = document.getElementById('dynamic-view');
             viewDiv.style.display = 'block';
-            document.getElementById('view-title').innerText = "📈 MY REVISION PROGRESS";
+            document.getElementById('view-title').innerText = "📊 Analysis";
             let container = document.getElementById('subtopics-container');
 
+            container.innerHTML = `
+                <div class="subtopic-card" style="background: #ffffff; border-left: 4px solid #2563eb;">
+                    <h4 style="color: #1e3a8a; margin-bottom: 8px;">📈 MY REVISION PROGRESS</h4>
+                    <button class="btn-link" style="background: #2563eb; width: 100%;" onclick="openRevisionProgressView()">തുറക്കുക →</button>
+                </div>
+                <div class="subtopic-card" style="background: #ffffff; border-left: 4px solid #059669;">
+                    <h4 style="color: #065f46; margin-bottom: 8px;">📖 സ്റ്റഡി ട്രാക്കർ (Study Tracker)</h4>
+                    <button class="btn-link" style="background: #059669; width: 100%;" onclick="openTrackerView()">തുറക്കുക →</button>
+                </div>
+                <div class="subtopic-card" style="background: #ffffff; border-left: 4px solid #0284c7;">
+                    <h4 style="color: #0369a1; margin-bottom: 8px;">📊 മോക്ക് ടെസ്റ്റ് ട്രാക്കർ (Mock Test Tracker)</h4>
+                    <button class="btn-link" style="background: #0284c7; width: 100%;" onclick="openMockTrackerView()">തുറക്കുക →</button>
+                </div>
+            `;
+        }
+
+        /* 🌟 My Revision സബ് ടോപ്പിക്ക് പേജ് തുറക്കുന്ന ഫംഗ്ഷൻ (കസ്റ്റം റിവിഷൻ, തെറ്റിയ മോക്ക് ടെസ്റ്റ്, തെറ്റിയ ഫ്ലാഷ് കാർഡ്) */
+        function openMyRevisionMenu() {
+            document.getElementById('home-menu').style.display = 'none';
+            let viewDiv = document.getElementById('dynamic-view');
+            viewDiv.style.display = 'block';
+            document.getElementById('view-title').innerText = "🔄 My Revision";
+            let container = document.getElementById('subtopics-container');
+
+            container.innerHTML = `
+                <div class="subtopic-card" style="background: #ffffff; border-left: 4px solid #7c3aed;">
+                    <h4 style="color: #5b21b6; margin-bottom: 8px;">🔄 കസ്റ്റം റിവിഷൻ ടെസ്റ്റ് (Revision Test)</h4>
+                    <button class="btn-link" style="background: #7c3aed; width: 100%;" onclick="openRevisionSetup()">തുടങ്ങുക →</button>
+                </div>
+                <div class="subtopic-card" style="background: #ffffff; border-left: 4px solid #dc2626;">
+                    <h4 style="color: #991b1b; margin-bottom: 8px;">❌ തെറ്റിയ മോക്ക് ടെസ്റ്റ് ചോദ്യങ്ങൾ റിവ്യൂ ചെയ്യുക</h4>
+                    <button class="btn-link" style="background: #dc2626; width: 100%;" onclick="openWrongReview()">റിവ്യൂ ചെയ്യുക →</button>
+                </div>
+                <div class="subtopic-card" style="background: #ffffff; border-left: 4px solid #d97706;">
+                    <h4 style="color: #92400e; margin-bottom: 8px;">⚡ തെറ്റിയ ഫ്ലാഷ് കാർഡുകൾ റിവ്യൂ ചെയ്യുക</h4>
+                    <button class="btn-link" style="background: #d97706; width: 100%;" onclick="openFlashReviewSets()">റിവ്യൂ ചെയ്യുക →</button>
+                </div>
+            `;
+        }
+
+        async function openRevisionProgressView() {
+            document.getElementById('view-title').innerText = "📈 MY REVISION PROGRESS";
+            let container = document.getElementById('subtopics-container');
             container.innerHTML = `<p style="color: #64748b; text-align: center; padding: 20px;">ഡാറ്റ ലോഡ് ചെയ്യുന്നു...</p>`;
 
             let counts = await window.loadRevisionCountsFromFirebase();
@@ -725,6 +813,118 @@
 
             await window.saveRevisionCountsToFirebase(counts);
         };
+
+        async function openMockTrackerView() {
+            document.getElementById('view-title').innerText = "📊 മോക്ക് ടെസ്റ്റ് ട്രാക്കർ";
+            let container = document.getElementById('subtopics-container');
+            container.innerHTML = `<p style="color: #64748b; text-align: center; padding: 20px;">ഡാറ്റ ലോഡ് ചെയ്യുന്നു...</p>`;
+
+            let mockCounts = await window.loadMockCountsFromFirebase();
+            if (Object.keys(mockCounts).length === 0) {
+                mockCounts = JSON.parse(localStorage.getItem('psc_mock_counts') || '{}');
+            }
+
+            let htmlContent = '';
+            let hasAnyContent = false;
+
+            for (let modKey in moduleData) {
+                let topics = moduleData[modKey];
+                let modNum = modKey.replace("mod_", "MODULE ");
+                let modTopicsHtml = '';
+                let modHasTopics = false;
+
+                if (topics && topics.length > 0) {
+                    topics.forEach(t => {
+                        if (t.hasMock) {
+                            modHasTopics = true;
+                            hasAnyContent = true;
+                            let count = mockCounts[t.id] || 0;
+                            modTopicsHtml += `
+                                <div class="rev-row">
+                                    <span style="font-size: 0.9rem; font-weight: 600; color: #334155; text-align: left; flex: 1;">${t.title}</span>
+                                    <div style="background: #0284c7; color: white; padding: 4px 10px; border-radius: 6px; font-weight: bold; font-size: 0.9rem; min-width: 36px; text-align: center; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                                        ${count}
+                                    </div>
+                                </div>
+                            `;
+                        }
+                    });
+
+                    if (modHasTopics) {
+                        htmlContent += `
+                            <div class="subtopic-card" style="background: #ffffff; border-left: 4px solid #0284c7;">
+                                <h4 style="color: #0369a1; margin-bottom: 6px; border-bottom: 1px solid #e2e8f0; padding-bottom: 4px;">${modNum}</h4>
+                                ${modTopicsHtml}
+                            </div>
+                        `;
+                    }
+                }
+            }
+
+            if (!hasAnyContent) {
+                container.innerHTML = `<p style="color: #64748b; text-align: center; padding: 20px;">നിലവിൽ മോക്ക് ടെസ്റ്റുകൾ ഒന്നും ലഭ്യമല്ല.</p>`;
+            } else {
+                container.innerHTML = `
+                    <p style="margin-bottom: 12px; font-size: 0.85rem; color: #64748b;">ഓരോ മോക്ക് ടെസ്റ്റും അറ്റൻഡ് ചെയ്തതിന്റെ കൗണ്ട്:</p>
+                    <div style="max-height: 400px; overflow-y: auto;">
+                        ${htmlContent}
+                    </div>
+                `;
+            }
+        }
+
+        async function openTrackerView() {
+            document.getElementById('view-title').innerText = "📖 സ്റ്റഡി ട്രാക്കർ (Study Tracker)";
+            let container = document.getElementById('subtopics-container');
+            let tracker = JSON.parse(localStorage.getItem('psc_study_tracker') || '{}');
+
+            let totalSubs = 0;
+            let completedSubs = 0;
+
+            let modulesHtml = '';
+            for (let modKey in moduleData) {
+                let topics = moduleData[modKey];
+                if (topics && topics.length > 0) {
+                    let modNum = modKey.replace("mod_", "MODULE ");
+                    let modCompleted = 0;
+                    let modTotal = topics.length;
+
+                    topics.forEach(t => {
+                        totalSubs++;
+                        if (tracker[t.id] && (tracker[t.id].mock || tracker[t.id].flash)) {
+                            completedSubs++;
+                            modCompleted++;
+                        }
+                    });
+
+                    let percent = Math.round((modCompleted / modTotal) * 100);
+                    modulesHtml += `
+                        <div class="subtopic-card">
+                            <h4>${modNum} (${percent}% പൂർത്തിയായി)</h4>
+                            <div class="progress-bar-container">
+                                <div class="progress-bar-fill" style="width: ${percent}%;"></div>
+                            </div>
+                        </div>
+                    `;
+                }
+            }
+
+            let overallPercent = totalSubs > 0 ? Math.round((completedSubs / totalSubs) * 100) : 0;
+
+            container.innerHTML = `
+                <div class="result-card" style="margin-bottom: 15px;">
+                    <h3 style="color: #1e3a8a; margin-bottom: 5px;">മൊത്തത്തിലുള്ള പഠന പുരോഗതി</h3>
+                    <p style="font-size: 1.2rem; font-weight: bold; color: #059669; margin: 10px 0;">${overallPercent}% പൂർത്തിയായി</p>
+                    <div class="progress-bar-container" style="height: 14px;">
+                        <div class="progress-bar-fill" style="width: ${overallPercent}%;"></div>
+                    </div>
+                </div>
+                <h4 style="font-size: 0.95rem; color: #334155; margin-bottom: 10px;">മോഡ്യൂൾ തിരിച്ചുളള പ്രോഗ്രസ്സ്:</h4>
+                <div style="max-height: 280px; overflow-y: auto;">
+                    ${modulesHtml}
+                </div>
+            `;
+        }
 
         function openSpecificMock(subId, title, modKey, modName) {
             currentActiveSubIdForMock = subId;
@@ -879,114 +1079,13 @@
             window.saveTrackerData(tracker);
         }
 
-        async function openTracker() {
-            document.getElementById('home-menu').style.display = 'none';
-            let viewDiv = document.getElementById('dynamic-view');
-            viewDiv.style.display = 'block';
-            document.getElementById('view-title').innerText = "📖 സ്റ്റഡി ട്രാക്കർ (Study Tracker)";
-            let container = document.getElementById('subtopics-container');
-
-            let tracker = JSON.parse(localStorage.getItem('psc_study_tracker') || '{}');
-
-            let totalSubs = 0;
-            let completedSubs = 0;
-
-            let modulesHtml = '';
-            for (let modKey in moduleData) {
-                let topics = moduleData[modKey];
-                if (topics && topics.length > 0) {
-                    let modNum = modKey.replace("mod_", "MODULE ");
-                    let modCompleted = 0;
-                    let modTotal = topics.length;
-
-                    topics.forEach(t => {
-                        totalSubs++;
-                        if (tracker[t.id] && (tracker[t.id].mock || tracker[t.id].flash)) {
-                            completedSubs++;
-                            modCompleted++;
-                        }
-                    });
-
-                    let percent = Math.round((modCompleted / modTotal) * 100);
-                    modulesHtml += `
-                        <div class="subtopic-card">
-                            <h4>${modNum} (${percent}% പൂർത്തിയായി)</h4>
-                            <div class="progress-bar-container">
-                                <div class="progress-bar-fill" style="width: ${percent}%;"></div>
-                            </div>
-                        </div>
-                    `;
-                }
-            }
-
-            let overallPercent = totalSubs > 0 ? Math.round((completedSubs / totalSubs) * 100) : 0;
-
-            container.innerHTML = `
-                <div class="result-card" style="margin-bottom: 15px;">
-                    <h3 style="color: #1e3a8a; margin-bottom: 5px;">മൊത്തത്തിലുള്ള പഠന പുരോഗതി</h3>
-                    <p style="font-size: 1.2rem; font-weight: bold; color: #059669; margin: 10px 0;">${overallPercent}% പൂർത്തിയായി</p>
-                    <div class="progress-bar-container" style="height: 14px;">
-                        <div class="progress-bar-fill" style="width: ${overallPercent}%;"></div>
-                    </div>
-                </div>
-                <h4 style="font-size: 0.95rem; color: #334155; margin-bottom: 10px;">മോഡ്യൂൾ തിരിച്ചുളള പ്രോഗ്രസ്സ്:</h4>
-                <div style="max-height: 280px; overflow-y: auto;">
-                    ${modulesHtml}
-                </div>
-            `;
-        }
-
-        async function openFlashReviewSets() {
-            document.getElementById('home-menu').style.display = 'none';
-            let viewDiv = document.getElementById('dynamic-view');
-            viewDiv.style.display = 'block';
-            document.getElementById('view-title').innerText = "⚡ തെറ്റിയ ഫ്ലാഷ് കാർഡുകൾ റിവ്യൂ ചെയ്യുക";
-            let container = document.getElementById('subtopics-container');
-
-            container.innerHTML = `<p style="color: #64748b; text-align: center; padding: 20px;">ഫയർബേസിൽ നിന്ന് ഡാറ്റ ലോഡ് ചെയ്യുന്നു...</p>`;
-
-            let savedSets = await window.loadFromFirebase("flashcard_revision_sets");
-            window.allSavedFlashSets = savedSets;
-
-            if (savedSets.length === 0) {
-                container.innerHTML = `<p style="color: #64748b; text-align: center; padding: 20px;">സേവ് ചെയ്ത ഫ്ലാഷ് കാർഡ് റിവിഷൻ സെറ്റുകൾ ഒന്നും ലഭ്യമല്ല.</p>`;
-            } else {
-                let setsHtml = savedSets.map((set, index) => `
-                    <div class="subtopic-card" style="display: flex; justify-content: space-between; align-items: center; gap: 10px;">
-                        <div>
-                            <h4 style="margin-bottom: 2px;">${set.name}</h4>
-                            <p style="font-size: 0.8rem; color: #64748b;">കാർഡുകൾ: ${set.items.length}</p>
-                        </div>
-                        <div style="display: flex; gap: 6px;">
-                            <button class="btn-link btn-flash" onclick="startSavedFlashSession(${index})">പഠിക്കുക</button>
-                            <button class="btn-link" style="background:#dc2626;" onclick="deleteFlashSet('${set.id}')">ഡിലീറ്റ്</button>
-                        </div>
-                    </div>
-                `).join('');
-
-                container.innerHTML = `
-                    <p style="margin-bottom: 12px; font-size: 0.9rem; color: #475569;">ഫയർബേസിൽ സേവ് ചെയ്തു വെച്ച ഫ്ലാഷ് കാർഡ് സെറ്റുകൾ:</p>
-                    <div style="max-height: 320px; overflow-y: auto;">${setsHtml}</div>
-                `;
-            }
-        }
-
-        async function deleteFlashSet(docId) {
-            if (confirm("ഈ ഫ്ലാഷ് കാർഡ് സെറ്റ് ഡിലീറ്റ് ചെയ്യണമെന്ന് ഉറപ്പാണോ?")) {
-                await window.deleteFromFirebase(docId, "flashcard_revision_sets");
-                openFlashReviewSets();
-            }
-        }
-
-        function startSavedFlashSession(index) {
-            let set = window.allSavedFlashSets[index];
-            if (set && set.items) {
-                currentFlashcards = set.items;
-                flashIdx = 0;
-                flashKnownCount = 0;
-                flashUnknownList = [];
-                renderFlashcard("saved_set");
-            }
+        async function updateMockCount(subId) {
+            if (!subId || subId === "custom_set") return;
+            let mockCounts = JSON.parse(localStorage.getItem('psc_mock_counts') || '{}');
+            let currentCount = mockCounts[subId] || 0;
+            mockCounts[subId] = currentCount + 1;
+            localStorage.setItem('psc_mock_counts', JSON.stringify(mockCounts));
+            await window.saveMockCountsToFirebase(mockCounts);
         }
 
         function openRevisionSetup() {
@@ -1250,6 +1349,7 @@
 
             if (currentActiveSubIdForMock) {
                 updateStudyTrackerProgress(currentActiveSubIdForMock, 'mock');
+                updateMockCount(currentActiveSubIdForMock);
             }
 
             let container = document.getElementById('subtopics-container');
@@ -1327,7 +1427,6 @@
             window.saveToFirebase(customName.trim(), wrongOrUnattempted, "revision_sets");
         }
 
-        /* 🌟 മോഡ്യൂൾ പേജിലെ ബാക്ക് ബട്ടൺ ക്ലിക്ക് ചെയ്യുമ്പോൾ കൃത്യമായി ഹോം പേജിലേക്ക് പോകാൻ സജ്ജമാക്കിയിരിക്കുന്നു */
         function goBackToPrevious() {
             if (timerInterval) clearInterval(timerInterval);
             document.getElementById('dynamic-view').style.display = 'none';
