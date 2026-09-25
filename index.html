@@ -1450,7 +1450,953 @@
             } else {
                 let setsHtml = savedSets.map((set) => `
                     <div class="subtopic-card" style="display: flex; justify-content: space-between; align-items: center; gap: 10px;">
-                        <div>
+                        <<!DOCTYPE html>
+<html lang="ml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>കേരള പിഎസ്‌സി എൽഡിസി - സിംഗിൾ പേജ് പോർട്ടൽ</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { 
+            background: linear-gradient(135deg, #f8fafc 100%, #e2e8f0 0%); 
+            padding: 16px 10px; 
+            text-align: center; 
+            min-height: 100vh; 
+            color: #1e293b;
+        }
+        
+        .header { 
+            background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%); 
+            color: white; 
+            padding: 20px 15px; 
+            border-radius: 16px; 
+            box-shadow: 0 10px 25px -5px rgba(30, 58, 138, 0.3); 
+            max-width: 600px; 
+            margin: 0 auto 20px auto; 
+            border-bottom: 4px solid #3b82f6;
+        }
+        .header h1 { font-size: 1.3rem; font-weight: 800; margin-bottom: 4px; }
+        .header p { font-size: 0.85rem; opacity: 0.9; }
+
+        .container { display: flex; flex-direction: column; gap: 12px; max-width: 600px; margin: 0 auto; }
+        
+        .main-box { 
+            background: #ffffff; 
+            padding: 14px 16px; 
+            border-radius: 12px; 
+            box-shadow: 0 4px 12px rgba(0,0,0,0.04); 
+            text-align: left; 
+            border-left: 6px solid #059669; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            gap: 10px; 
+            cursor: pointer;
+        }
+
+        .main-box h3 { color: #1e293b; font-size: 0.95rem; font-weight: 700; margin: 0; flex: 1; word-break: break-word; }
+
+        .btn-link { 
+            padding: 9px 14px; 
+            background: #059669; 
+            color: white; 
+            text-decoration: none; 
+            border-radius: 8px; 
+            font-size: 0.85rem; 
+            font-weight: 700; 
+            text-align: center; 
+            white-space: nowrap; 
+            border: none;
+            cursor: pointer;
+            display: inline-block;
+        }
+        .btn-link:hover { background: #047857; }
+
+        .nav-top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+        .small-nav-btn {
+            background: #334155;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .small-nav-btn:hover { background: #1e293b; }
+
+        #dynamic-view {
+            display: none;
+            background: #ffffff;
+            padding: 15px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            text-align: left;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        #view-title { color: #1e3a8a; font-size: 1.1rem; margin-bottom: 15px; border-bottom: 2px solid #e2e8f0; padding-bottom: 8px; }
+        
+        .subtopic-card {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+        .subtopic-card h4 { font-size: 0.95rem; color: #334155; margin-bottom: 8px; }
+        
+        /* ബ്ലിങ്കിംഗ് റിവിഷൻ നീഡഡ് കാർഡ് സ്റ്റൈൽ */
+        @keyframes urgent-blink {
+            0% { border-color: #dc2626; background-color: #fff1f2; }
+            50% { border-color: #fca5a5; background-color: #ffffff; }
+            100% { border-color: #dc2626; background-color: #fff1f2; }
+        }
+        .subtopic-card.needs-revision-blink {
+            animation: urgent-blink 1.2s infinite;
+            border-width: 2px;
+        }
+
+        .action-buttons { 
+            display: flex; 
+            justify-content: space-between; 
+            gap: 10px; 
+            flex-wrap: wrap;
+        }
+        .action-buttons .btn-link {
+            flex: 1;
+        }
+        
+        .btn-mock { background: #059669; }
+        .btn-flash { background: #4f46e5; }
+        
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; font-weight: bold; margin-bottom: 6px; font-size: 0.9rem; color: #334155; }
+        .form-control { width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 0.9rem; background: #f8fafc; }
+
+        .quiz-container { background: #ffffff; padding: 5px; border-radius: 10px; text-align: center; }
+        
+        .flashcard-container { 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            padding: 10px 0; 
+            perspective: 1000px; 
+        }
+        .flash-card-scene {
+            width: 100%;
+            height: 280px;
+            perspective: 1000px;
+            margin-bottom: 20px;
+            cursor: pointer;
+        }
+        .flash-card-box {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.6s cubic-bezier(0.4, 0.2, 0.2, 1);
+            border-radius: 18px;
+            box-shadow: 0 12px 30px -8px rgba(0, 0, 0, 0.12);
+        }
+        .flash-card-box.flipped {
+            transform: rotateY(180deg);
+        }
+        .flash-card-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: 18px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 25px;
+            text-align: center;
+            border: 2px solid #e2e8f0;
+        }
+        .flash-card-front {
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+            color: #1e3a8a;
+            border-top: 6px solid #4f46e5;
+        }
+        .flash-card-back {
+            background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+            color: #166534;
+            border-top: 6px solid #059669;
+            transform: rotateY(180deg);
+        }
+
+        .flash-btns { display: flex; gap: 12px; width: 100%; }
+        .btn-known { 
+            background: linear-gradient(135deg, #059669 0%, #047857 100%); 
+            color: white; flex: 1; padding: 14px; border: none; border-radius: 12px; font-weight: bold; cursor: pointer; 
+        }
+        .btn-unknown { 
+            background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%); 
+            color: white; flex: 1; padding: 14px; border: none; border-radius: 12px; font-weight: bold; cursor: pointer; 
+        }
+
+        .quiz-top-bar { display: flex; justify-content: space-between; align-items: center; background: #f1f5f9; padding: 8px 12px; border-radius: 8px; margin-bottom: 15px; font-size: 0.85rem; font-weight: bold; color: #334155; }
+        .timer-box { color: #dc2626; display: flex; align-items: center; gap: 5px; }
+        
+        .top-action-btns { display: flex; gap: 6px; align-items: center; }
+        .pause-btn { background: #e2e8f0; border: none; padding: 5px 8px; border-radius: 4px; cursor: pointer; font-size: 0.75rem; font-weight: bold; color: #334155; }
+        .finish-top-btn { background: #dc2626; border: none; padding: 5px 8px; border-radius: 4px; cursor: pointer; font-size: 0.75rem; font-weight: bold; color: white; }
+
+        .quiz-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; font-size: 0.85rem; font-weight: bold; color: #64748b; }
+        .bookmark-btn { background: none; border: none; font-size: 1.3rem; cursor: pointer; color: #cbd5e1; }
+        .bookmark-btn.active { color: #f59e0b; }
+        
+        .question-text { font-size: 0.95rem; color: #1e293b; font-weight: 600; margin-bottom: 15px; line-height: 1.4; text-align: left; }
+        .options-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 20px; }
+        .option-item { 
+            padding: 10px 12px; 
+            background: #f8fafc; 
+            border: 2px solid #e2e8f0; 
+            border-radius: 8px; 
+            cursor: pointer; 
+            font-size: 0.9rem; 
+            text-align: left;
+        }
+        .option-item:hover { background: #f1f5f9; border-color: #cbd5e1; }
+        .option-item.selected { background: #e0f2fe; border-color: #0284c7; color: #0369a1; font-weight: 600; }
+
+        .quiz-nav { display: flex; justify-content: space-between; gap: 8px; margin-bottom: 15px; }
+        .nav-btn { padding: 10px 15px; background: #334155; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; flex: 1; font-size: 0.85rem; }
+        .nav-btn:disabled { background: #cbd5e1; cursor: not-allowed; }
+
+        .palette-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(32px, 1fr)); gap: 6px; margin-top: 15px; padding-top: 15px; border-top: 1px solid #e2e8f0; }
+        .palette-btn { width: 32px; height: 32px; border-radius: 6px; border: 1px solid #cbd5e1; background: #f8fafc; font-weight: bold; font-size: 0.8rem; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+        .palette-btn.attempted { background: #dcfce7; border-color: #22c55e; color: #15803d; }
+        .palette-btn.current { border-color: #3b82f6; box-shadow: 0 0 0 2px rgba(59,130,246,0.3); }
+        .palette-btn.bookmarked { border-color: #f59e0b; background: #fef3c7; }
+
+        .result-card { background: #f8fafc; padding: 15px; border-radius: 10px; text-align: center; }
+        .filter-buttons { display: flex; gap: 5px; justify-content: center; margin: 15px 0; flex-wrap: wrap; }
+        .filter-btn { padding: 6px 10px; font-size: 0.75rem; border-radius: 6px; border: 1px solid #cbd5e1; background: #fff; cursor: pointer; font-weight: bold; }
+        .filter-btn.active { background: #3b82f6; color: white; border-color: #3b82f6; }
+
+        .result-action-btn {
+            display: block;
+            width: 100%;
+            padding: 12px 15px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: bold;
+            color: white;
+            border: none;
+            cursor: pointer;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .btn-retry { background: #059669; margin-top: 12px; }
+        .btn-save-rev { background: #dc2626; margin-top: 10px; }
+
+        .progress-bar-container { background: #e2e8f0; border-radius: 8px; height: 10px; width: 100%; overflow: hidden; margin-top: 5px; }
+        .progress-bar-fill { background: #059669; height: 100%; width: 0%; transition: width 0.3s ease; }
+
+        .rev-row { display: flex; justify-content: space-between; align-items: center; background: #fff; padding: 8px 12px; border-radius: 6px; margin-top: 6px; border: 1px solid #e2e8f0; }
+        .counter-box { display: flex; align-items: center; gap: 8px; }
+        .count-btn { background: #334155; color: white; border: none; width: 28px; height: 28px; border-radius: 4px; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+        .count-btn:hover { background: #1e293b; }
+        .count-display { font-weight: bold; font-size: 0.95rem; min-width: 24px; text-align: center; color: #2563eb; }
+
+        .revision-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: bold;
+            color: white;
+        }
+        .red-dot {
+            width: 8px;
+            height: 8px;
+            background-color: white;
+            border-radius: 50%;
+            display: inline-block;
+        }
+
+        #pause-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(15, 23, 42, 0.85);
+            z-index: 999;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            color: white;
+            padding: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h1>🎯 എൽഡിസി മിഷൻ പോർട്ടൽ</h1>
+        <p>ഒരൊറ്റ പേജിലുള്ള സ്മാർട്ട് ഡാഷ്‌ബോർഡ്</p>
+    </div>
+
+    <!-- പ്രധാന ഹോം മെനു -->
+    <div class="container" id="home-menu">
+        <div class="main-box" style="border-left-color: #3b82f6; background: #eff6ff;">
+            <h3>📊 Analysis</h3>
+            <button class="btn-link" style="background: #3b82f6;" onclick="openAnalysisMenu()">തുറക്കുക →</button>
+        </div>
+
+        <div class="main-box" style="border-left-color: #7c3aed; background: #f5f3ff;">
+            <h3>🔄 My Revision</h3>
+            <button class="btn-link" style="background: #7c3aed;" onclick="openMyRevisionMenu()">തുറക്കുക →</button>
+        </div>
+
+        <!-- 20 മോഡ്യൂളുകൾ -->
+        <div class="main-box" onclick="loadModuleContent('mod_1', 'MODULE 1')"><h3>MODULE 1</h3><button class="btn-link">ഉള്ളടക്കം കാണുക →</button></div>
+        <div class="main-box" onclick="loadModuleContent('mod_2', 'MODULE 2')"><h3>MODULE 2</h3><button class="btn-link">ഉള്ളടക്കം കാണുക →</button></div>
+        <div class="main-box" onclick="loadModuleContent('mod_3', 'MODULE 3')"><h3>MODULE 3</h3><button class="btn-link">ഉള്ളടക്കം കാണുക →</button></div>
+        <div class="main-box" onclick="loadModuleContent('mod_4', 'MODULE 4')"><h3>MODULE 4</h3><button class="btn-link">ഉള്ളടക്കം കാണുക →</button></div>
+        <div class="main-box" onclick="loadModuleContent('mod_5', 'MODULE 5')"><h3>MODULE 5</h3><button class="btn-link">ഉള്ളടക്കം കാണുക →</button></div>
+        <div class="main-box" onclick="loadModuleContent('mod_6', 'MODULE 6')"><h3>MODULE 6</h3><button class="btn-link">ഉള്ളടക്കം കാണുക →</button></div>
+        <div class="main-box" onclick="loadModuleContent('mod_7', 'MODULE 7')"><h3>MODULE 7</h3><button class="btn-link">ഉള്ളടക്കം കാണുക →</button></div>
+        <div class="main-box" onclick="loadModuleContent('mod_8', 'MODULE 8')"><h3>MODULE 8</h3><button class="btn-link">ഉള്ളടക്കം കാണുക →</button></div>
+        <div class="main-box" onclick="loadModuleContent('mod_9', 'MODULE 9')"><h3>MODULE 9</h3><button class="btn-link">ഉള്ളടക്കം കാണുക →</button></div>
+        <div class="main-box" onclick="loadModuleContent('mod_10', 'MODULE 10')"><h3>MODULE 10</h3><button class="btn-link">ഉള്ളടക്കം കാണുക →</button></div>
+        <div class="main-box" onclick="loadModuleContent('mod_11', 'MODULE 11')"><h3>MODULE 11</h3><button class="btn-link">ഉള്ളടക്കം കാണുക →</button></div>
+        <div class="main-box" onclick="loadModuleContent('mod_12', 'MODULE 12')"><h3>MODULE 12</h3><button class="btn-link">ഉള്ളടക്കം കാണുക →</button></div>
+        <div class="main-box" onclick="loadModuleContent('mod_13', 'MODULE 13')"><h3>MODULE 13</h3><button class="btn-link">ഉള്ളടക്കം കാണുക →</button></div>
+        <div class="main-box" onclick="loadModuleContent('mod_14', 'MODULE 14')"><h3>MODULE 14</h3><button class="btn-link">ഉള്ളടക്കം കാണുക →</button></div>
+        <div class="main-box" onclick="loadModuleContent('mod_15', 'MODULE 15')"><h3>MODULE 15</h3><button class="btn-link">ഉള്ളടക്കം കാണുക →</button></div>
+        <div class="main-box" onclick="loadModuleContent('mod_16', 'MODULE 16')"><h3>MODULE 16</h3><button class="btn-link">ഉള്ളടക്കം കാണുക →</button></div>
+        <div class="main-box" onclick="loadModuleContent('mod_17', 'MODULE 17')"><h3>MODULE 17</h3><button class="btn-link">ഉള്ളടക്കം കാണുക →</button></div>
+        <div class="main-box" onclick="loadModuleContent('mod_18', 'MODULE 18')"><h3>MODULE 18</h3><button class="btn-link">ഉള്ളടക്കം കാണുക →</button></div>
+        <div class="main-box" onclick="loadModuleContent('mod_19', 'MODULE 19')"><h3>MODULE 19</h3><button class="btn-link">ഉള്ളടക്കം കാണുക →</button></div>
+        <div class="main-box" onclick="loadModuleContent('mod_20', 'MODULE 20')"><h3>MODULE 20</h3><button class="btn-link">ഉള്ളടക്കം കാണുക →</button></div>
+    </div>
+
+    <!-- ഡൈനാമിക് കണ്ടന്റ് ലോഡ് ആകുന്ന ഏരിയ -->
+    <div id="dynamic-view">
+        <div class="nav-top-bar">
+            <button class="small-nav-btn" onclick="goBackToHome(false)">← ബാക്ക്</button>
+            <button class="small-nav-btn" onclick="goBackToHome(true)">🏠 ഹോം</button>
+        </div>
+        <h2 id="view-title">ടൈറ്റിൽ</h2>
+        <div id="subtopics-container"></div>
+    </div>
+
+    <!-- പോസ് ചെയ്യുമ്പോൾ വരുന്ന വിൻഡോ -->
+    <div id="pause-overlay">
+        <h2 style="margin-bottom: 15px; font-size: 1.2rem;">⏸️ ടെസ്റ്റ് താൽക്കാലികമായി നിർത്തിവച്ചിരിക്കുന്നു</h2>
+        <button class="btn-link btn-mock" style="padding: 10px 20px; font-size: 0.95rem;" onclick="resumeQuiz()">തുടരുക (Resume)</button>
+    </div>
+
+    <!-- ഫയർബേസ് SDKs -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
+        import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyDA1XwfYzlPCL_Soxia0d-JpNekGGCaJMM",
+            authDomain: "mypscrevison.firebaseapp.com",
+            projectId: "mypscrevison",
+            storageBucket: "mypscrevison.firebasestorage.app",
+            messagingSenderId: "89979950079",
+            appId: "1:89979950079:web:707815264541bba457cdca",
+            measurementId: "G-GC849S4G0N"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        window.saveToFirebase = async function(customName, itemsArray, collectionName = "revision_sets") {
+            try {
+                await addDoc(collection(db, collectionName), {
+                    name: customName,
+                    items: itemsArray,
+                    createdAt: new Date().toISOString()
+                });
+                alert(`✓ "${customName}" ഫയർബേസിൽ വിജയകരമായി സേവ് ചെയ്തു!`);
+            } catch (e) {
+                console.error("Firebase Error: ", e);
+                alert("ഫയർബേസിൽ സേവ് ചെയ്യുന്നതിൽ പരാജയപ്പെട്ടു.");
+            }
+        };
+
+        window.loadFromFirebase = async function(collectionName = "revision_sets") {
+            try {
+                let querySnapshot = await getDocs(collection(db, collectionName));
+                let sets = [];
+                querySnapshot.forEach((document) => {
+                    sets.push({ id: document.id, ...document.data() });
+                });
+                return sets;
+            } catch (e) {
+                console.error("Firebase Load Error: ", e);
+                return [];
+            }
+        };
+
+        window.deleteFromFirebase = async function(docId, collectionName = "revision_sets") {
+            try {
+                await deleteDoc(doc(db, collectionName, docId));
+                alert("സെറ്റ് വിജയകരമായി ഡിലീറ്റ് ചെയ്തു!");
+            } catch (e) {
+                console.error("Firebase Delete Error: ", e);
+                alert("ഡിലീറ്റ് ചെയ്യുന്നതിൽ പരാജയപ്പെട്ടു.");
+            }
+        };
+
+        window.saveTrackerData = async function(trackerData) {
+            try {
+                await addDoc(collection(db, "study_tracker"), {
+                    data: trackerData,
+                    updatedAt: new Date().toISOString()
+                });
+            } catch (e) {
+                console.error("Tracker Save Error: ", e);
+            }
+        };
+
+        window.saveMockCountsToFirebase = async function(countsData) {
+            try {
+                await setDoc(doc(db, "user_progress", "mock_counts"), {
+                    counts: countsData,
+                    updatedAt: new Date().toISOString()
+                });
+            } catch (e) {
+                console.error("Mock Count Save Error: ", e);
+            }
+        };
+
+        window.loadMockCountsFromFirebase = async function() {
+            try {
+                let docSnap = await getDoc(doc(db, "user_progress", "mock_counts"));
+                if (docSnap.exists()) {
+                    return docSnap.data().counts || {};
+                }
+                return {};
+            } catch (e) {
+                console.error("Mock Count Load Error: ", e);
+                return {};
+            }
+        };
+
+        window.saveRevisionCountsToFirebase = async function(countsData) {
+            try {
+                await setDoc(doc(db, "user_progress", "revision_counts"), {
+                    counts: countsData,
+                    updatedAt: new Date().toISOString()
+                });
+            } catch (e) {
+                console.error("Revision Count Save Error: ", e);
+            }
+        };
+
+        window.loadRevisionCountsFromFirebase = async function() {
+            try {
+                let docSnap = await getDoc(doc(db, "user_progress", "revision_counts"));
+                if (docSnap.exists()) {
+                    return docSnap.data().counts || {};
+                }
+                return {};
+            } catch (e) {
+                console.error("Revision Count Load Error: ", e);
+                return {};
+            }
+        };
+    </script>
+
+    <script>
+        window.allSavedFlashSets = [];
+        let lastClickedModuleKey = "";
+        let currentModuleKey = "";
+        let currentModuleName = "";
+        let currentSubtopicTitle = "";
+
+        const moduleData = {
+            "mod_1": [], "mod_2": [], "mod_3": [], 
+            "mod_4": [
+                {
+                    category: "Economics",
+                    topics: [
+                        { id: "mod_4_sub_1", title: "Economics basics 1", hasMock: true, hasFlash: true },
+                        { id: "mod_4_sub_2", title: "Economics basics 2", hasMock: false, hasFlash: false }
+                    ]
+                },
+                {
+                    category: "Daily Current Affairs",
+                    topics: [
+                        { id: "mod_4_sub_3", title: "കറന്റ് അഫയേഴ്സ് 19.09.2026", hasMock: true, hasFlash: true },
+                        { id: "mod_4_sub_4", title: "കറന്റ് അഫയേഴ്സ് 20.09.2026", hasMock: true, hasFlash: true },
+                        { id: "mod_4_sub_5", title: "കറന്റ് അഫയേഴ്സ് 21.09.2026", hasMock: true, hasFlash: true },
+                        { id: "mod_4_sub_6", title: "കറന്റ് അഫയേഴ്സ് 22.09.2026", hasMock: true, hasFlash: true },
+                        { id: "mod_4_sub_7", title: "കറന്റ് അഫയേഴ്സ് 23.09.2026", hasMock: true, hasFlash: true }
+                    ]
+                }
+            ], 
+            "mod_5": [], "mod_6": [], "mod_7": [], "mod_8": [], "mod_9": [], "mod_10": [],
+            "mod_11": [], "mod_12": [], "mod_13": [], "mod_14": [], "mod_15": [],
+            "mod_16": [], "mod_17": [], "mod_18": [], "mod_19": [], "mod_20": []
+        };
+
+        const questionsDB = {
+            "mod_4_sub_1": [
+                { q: "ആധുനിക സാമ്പത്തികശാസ്ത്രത്തിന്റെ പിതാവ് ആര്?", options: ["എ) ആൽഫ്രഡ് മാർഷൽ", "ബി) ആഡം സ്മിത്ത്", "സി) ദാദാഭായി നൗറോജി", "ഡി) ലയണൽ റോബിൻസ്"], answer: 1, explanation: "ആഡം സ്മിത്ത് ആണ്." },
+                { q: "'ലൈസേ ഫെയർ' (Laissez-faire) നയവുമായി ബന്ധപ്പെട്ട് ശരിയേത്?", options: ["എ) 1 മാത്രം", "ബി) 2 മാത്രം", "സി) 1 ഉം 2 ഉം ശരിയാണ്", "ഡി) രണ്ടും തെറ്റാണ്"], answer: 2, explanation: "രണ്ടും ശരിയാണ്." }
+            ],
+            "mod_4_sub_2": [],
+            "mod_4_sub_3": [
+                { q: "2026-ലെ ബ്രിക്സ് ഉച്ചകോടിക്ക് ആതിഥേയത്വം വഹിച്ച രാജ്യം ഏതാണ്?", options: ["A. ചൈന", "B. ഇന്ത്യ", "C. റഷ്യ", "D. ബ്രസീൽ"], answer: 1, explanation: "ഇന്ത്യയാണ് 2026-ലെ ബ്രിക്സ് ഉച്ചകോടിക്ക് ആതിഥേയത്വം വഹിച്ചത്." },
+                { q: "2026-ൽ ഇന്ത്യ ആതിഥേയത്വം വഹിച്ച ബ്രിക്സ് (BRICS) ഉച്ചകോടി എത്രാമത്തെ ഉച്ചകോടിയാണ്?", options: ["A. 15-ാമത്", "B. 16-ാമത്", "C. 17-ാമത്", "D. 18-ാമത്"], answer: 3, explanation: "ഇത് 18-ാമത് ബ്രിക്സ് ഉച്ചകോടിയാണ്." },
+                { q: "2026-ലെ ബ്രിക്സ് ഉച്ചകോടിയുടെ പ്രമേയം (Theme) എന്തായിരുന്നു?", options: ["A. Building for Resilience, Innovation, Cooperation and Sustainability", "B. Partnership for Global Growth and Security", "C. Strengthening Multilateralism for Just Global Development", "D. Innovation for a Greener Future"], answer: 0, explanation: "പ്രമേയം: Building for Resilience, Innovation, Cooperation and Sustainability." }
+            ],
+            "mod_4_sub_4": [
+                { q: "വേൾഡ് ഇക്കണോമിക് ഫോറം (WEF) പ്രസിദ്ധീകരിച്ച ഗ്ലോബൽ ജെൻഡർ ഗ്യാപ് ഇൻഡെക്സ് 2026-ൽ ഇന്ത്യയുടെ റാങ്ക് എത്രയാണ്?", options: ["A. 130", "B. 131", "C. 132", "D. 133"], answer: 1, explanation: "ഗ്ലോബൽ ജെൻഡർ ഗ്യാപ് ഇൻഡെക്സ് 2026-ൽ ഇന്ത്യയുടെ റാങ്ക് 131 ആണ്." }
+            ],
+            "mod_4_sub_5": [
+                { q: "ലോക സമാധാന ദിനം (World Peace Day) ആചരിക്കുന്നത് എപ്പോഴാണ്?", options: ["A. സെപ്റ്റംബർ 20", "B. സെപ്റ്റംബർ 21", "C. സെപ്റ്റംബർ 22", "D. സെപ്റ്റംബർ 25"], answer: 1, explanation: "സെപ്റ്റംബർ 21 ആണ് ലോക സമാധാന ദിനം." }
+            ],
+            "mod_4_sub_6": [
+                { q: "2024-ലെ ദാദാസാഹെബ് ഫാൽക്കെ പുരസ്കാരത്തിന് അർഹനായ പ്രശസ്ത കന്നഡ നടൻ ആര്?", options: ["A) ശിവരാജ്കുമാർ", "B) അനന്ത് നാഗ്", "C) രജനീകാന്ത്", "D) കമൽഹാസൻ"], answer: 1, explanation: "അനന്ത് നാഗ് ആണ് 2024-ലെ ദാദാസാഹെബ് ഫാൽക്കെ പുരസ്കാരത്തിന് അർഹനായത്." }
+            ],
+            "mod_4_sub_7": [
+                { q: "അന്താരാഷ്ട്ര വനിതാ ടിന്റി-20യിൽ ഏറ്റവും കൂടുതൽ റൺസ് നേടുന്ന താരമെന്ന റെക്കോർഡ് സ്വന്തമാക്കിയത് ആര്?", options: ["എ) സൂസി ബേറ്റ്സ്", "ബി) സ്മൃതി മന്ദാന", "സി) ഹർമൻപ്രീത് കൗർ", "ഡി) എല്ലിസ് പെറി"], answer: 1, explanation: "സ്മൃതി മന്ദാനയാണ് ഈ റെക്കോർഡ് സ്വന്തമാക്കിയത്." }
+            ]
+        };
+
+        const flashcardDB = {
+            "mod_4_sub_1": [
+                { front: "മനുഷ്യരുടെ ആവശ്യങ്ങളും പരിമിതമായ വിഭവങ്ങളും തമ്മിലുള്ള ബന്ധം", back: "സാമ്പത്തികശാസ്ത്രം (Economics)" },
+                { front: "ആധുനിക സാമ്പത്തികശാസ്ത്രത്തിന്റെ പിതാവ് ആര്?", back: "ആഡം സ്മിത്ത് (Adam Smith)" }
+            ],
+            "mod_4_sub_2": [],
+            "mod_4_sub_3": [
+                { front: "2026-ലെ ബ്രിക്സ് ഉച്ചകോടിക്ക് ആതിഥേയത്വം വഹിച്ച രാജ്യം", back: "ഇന്ത്യ" }
+            ],
+            "mod_4_sub_4": [
+                { front: "ഗ്ലോബൽ ജെൻഡർ ഗ്യാപ് ഇൻഡെക്സ് 2026-ൽ ഇന്ത്യയുടെ റാങ്ക്", back: "131" }
+            ],
+            "mod_4_sub_5": [
+                { front: "ലോക സമാധാന ദിനം (World Peace Day)", back: "സെപ്റ്റംബർ 21" }
+            ],
+            "mod_4_sub_6": [
+                { front: "2024-ലെ ദാദാസാഹെബ് ഫാൽക്കെ പുരസ്കാരം (കന്നഡ നടൻ)", back: "അനന്ത് നാഗ്" }
+            ],
+            "mod_4_sub_7": [
+                { front: "അന്താരാഷ്ട്ര വനിതാ ടിന്റി-20യിൽ ഏറ്റവും കൂടുതൽ റൺസ്", back: "സ്മൃതി മന്ദാന" }
+            ]
+        };
+
+        window.loadModuleContent = function(key, name) {
+            lastClickedModuleKey = key;
+            currentModuleKey = key;
+            currentModuleName = name;
+            document.getElementById('home-menu').style.display = 'none';
+            let viewDiv = document.getElementById('dynamic-view');
+            viewDiv.style.display = 'block';
+
+            document.getElementById('view-title').innerText = name;
+            let container = document.getElementById('subtopics-container');
+            container.innerHTML = '';
+
+            let categories = moduleData[key];
+            if (!categories || categories.length === 0) {
+                container.innerHTML = `<p style="color: #64748b; padding: 10px 0; text-align: center;">ഉള്ളടക്കം ഉടൻ ചേർക്കുന്നതാണ്...</p>`;
+                return;
+            }
+
+            categories.forEach((cat, catIndex) => {
+                container.innerHTML += `
+                    <div class="subtopic-card" style="background: #f0fdf4; border-left: 5px solid #059669; margin-bottom: 15px; text-align: left; padding: 16px;">
+                        <h3 style="color: #065f46; font-size: 1.05rem; margin-bottom: 10px;">📚 ${cat.category}</h3>
+                        <button class="btn-link" style="background: #059669; width: 100%; padding: 10px;" onclick="openCategoryTopics('${key}', ${catIndex})">ക്ലാസുകളും മോക്ക് ടെസ്റ്റുകളും കാണുക →</button>
+                    </div>
+                `;
+            });
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        };
+
+        window.openCategoryTopics = function(modKey, catIndex) {
+            let cat = moduleData[modKey][catIndex];
+            document.getElementById('view-title').innerText = `${currentModuleName || 'മോഡ്യൂൾ'} - ${cat.category}`;
+            let container = document.getElementById('subtopics-container');
+            container.innerHTML = '';
+
+            let topicsHtml = '';
+            cat.topics.forEach((topic) => {
+                let actionBtnsHtml = '';
+                if (topic.hasMock || topic.hasFlash) {
+                    if (topic.hasMock) actionBtnsHtml += `<button class="btn-link btn-mock" onclick="openSpecificMock('${topic.id}', '${topic.title}', '${modKey}')">📝 മോക്ക് ടെസ്റ്റ്</button>`;
+                    if (topic.hasFlash) actionBtnsHtml += `<button class="btn-link btn-flash" onclick="openFlashcardSession('${topic.id}', '${topic.title}', '${modKey}')">⚡ ഫ്ലാഷ് കാർഡ്</button>`;
+                } else {
+                    actionBtnsHtml += `<p style="font-size: 0.85rem; color: #64748b; text-align: center; width: 100%;">ഉള്ളടക്കം ഉടൻ ചേർക്കുന്നതാണ്...</p>`;
+                }
+
+                // 🌟 മോക്ക് ടെസ്റ്റിനും ഫ്ലാഷ് കാർഡിനും വെവ്വേറെ റിവിഷൻ സ്റ്റാറ്റസുകൾ പരിശോധിക്കുന്നു
+                let mockRevDate = localStorage.getItem(`rev_date_mock_${topic.id}`);
+                let flashRevDate = localStorage.getItem(`rev_date_flash_${topic.id}`);
+
+                function getStatusBadge(dateStr, labelPrefix) {
+                    if (dateStr) {
+                        let daysPassed = Math.floor((new Date() - new Date(dateStr)) / (1000 * 60 * 60 * 24));
+                        let targetInterval = 3; 
+                        let daysRemaining = targetInterval - daysPassed;
+
+                        if (daysRemaining > 0) {
+                            return `<div class="revision-badge" style="background: #16a34a;"><span class="red-dot"></span> ${labelPrefix} - in ${daysRemaining}d</div>`;
+                        } else {
+                            return `<div class="revision-badge" style="background: #dc2626;"><span class="red-dot"></span> ${labelPrefix} - Revise!</div>`;
+                        }
+                    } else {
+                        return `<div class="revision-badge" style="background: #2563eb;"><span class="red-dot"></span> ${labelPrefix} - New</div>`;
+                    }
+                }
+
+                let mockBadge = getStatusBadge(mockRevDate, "Mock");
+                let flashBadge = getStatusBadge(flashRevDate, "Flash");
+
+                let needsBlinking = (!mockRevDate || !flashRevDate) || 
+                    (mockRevDate && Math.floor((new Date() - new Date(mockRevDate)) / (1000 * 60 * 60 * 24)) >= 3) ||
+                    (flashRevDate && Math.floor((new Date() - new Date(flashRevDate)) / (1000 * 60 * 60 * 24)) >= 3);
+
+                let cardClass = needsBlinking ? "subtopic-card needs-revision-blink" : "subtopic-card";
+
+                topicsHtml += `
+                    <div class="${cardClass}">
+                        <div style="margin-bottom: 8px;">
+                            <h4 style="margin: 0 0 6px 0; color: #1e293b;">${topic.title}</h4>
+                            <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+                                ${mockBadge}
+                                ${flashBadge}
+                            </div>
+                        </div>
+                        <div class="action-buttons">
+                            ${actionBtnsHtml}
+                        </div>
+                    </div>
+                `;
+            });
+
+            container.innerHTML = `
+                <button class="small-nav-btn" style="margin-bottom: 12px;" onclick="loadModuleContent('${modKey}', 'MODULE ${modKey.replace("mod_", "")}')">← വിഷയങ്ങളിലേക്ക് തിരികെ പോവുക</button>
+                ${topicsHtml}
+            `;
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        };
+
+        window.openAnalysisMenu = function() {
+            document.getElementById('home-menu').style.display = 'none';
+            let viewDiv = document.getElementById('dynamic-view');
+            viewDiv.style.display = 'block';
+            document.getElementById('view-title').innerText = "📊 Analysis";
+            let container = document.getElementById('subtopics-container');
+
+            container.innerHTML = `
+                <div class="subtopic-card" style="background: #ffffff; border-left: 4px solid #2563eb;">
+                    <h4 style="color: #1e3a8a; margin-bottom: 8px;">📈 MY REVISION PROGRESS</h4>
+                    <button class="btn-link" style="background: #2563eb; width: 100%;" onclick="openRevisionProgressView()">തുറക്കുക →</button>
+                </div>
+                <div class="subtopic-card" style="background: #ffffff; border-left: 4px solid #059669;">
+                    <h4 style="color: #065f46; margin-bottom: 8px;">📖 സ്റ്റഡി ട്രാക്കർ (Study Tracker)</h4>
+                    <button class="btn-link" style="background: #059669; width: 100%;" onclick="openTrackerView()">തുറക്കുക →</button>
+                </div>
+                <div class="subtopic-card" style="background: #ffffff; border-left: 4px solid #0284c7;">
+                    <h4 style="color: #0369a1; margin-bottom: 8px;">📊 മോക്ക് ടെസ്റ്റ് ട്രാക്കർ (Mock Test Tracker)</h4>
+                    <button class="btn-link" style="background: #0284c7; width: 100%;" onclick="openMockTrackerView()">തുറക്കുക →</button>
+                </div>
+            `;
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        };
+
+        window.openMyRevisionMenu = function() {
+            document.getElementById('home-menu').style.display = 'none';
+            let viewDiv = document.getElementById('dynamic-view');
+            viewDiv.style.display = 'block';
+            document.getElementById('view-title').innerText = "🔄 My Revision";
+            let container = document.getElementById('subtopics-container');
+
+            container.innerHTML = `
+                <div class="subtopic-card" style="background: #ffffff; border-left: 4px solid #7c3aed;">
+                    <h4 style="color: #5b21b6; margin-bottom: 8px;">🔄 കസ്റ്റം റിവിഷൻ ടെസ്റ്റ് (Revision Test)</h4>
+                    <button class="btn-link" style="background: #7c3aed; width: 100%;" onclick="openRevisionSetup()">തുടങ്ങുക →</button>
+                </div>
+                <div class="subtopic-card" style="background: #ffffff; border-left: 4px solid #dc2626;">
+                    <h4 style="color: #991b1b; margin-bottom: 8px;">❌ തെറ്റിയ മോക്ക് ടെസ്റ്റ് ചോദ്യങ്ങൾ റിവ്യൂ ചെയ്യുക</h4>
+                    <button class="btn-link" style="background: #dc2626; width: 100%;" onclick="openWrongReview()">റിവ്യൂ ചെയ്യുക →</button>
+                </div>
+                <div class="subtopic-card" style="background: #ffffff; border-left: 4px solid #d97706;">
+                    <h4 style="color: #92400e; margin-bottom: 8px;">⚡ തെറ്റിയ ഫ്ലാഷ് കാർഡുകൾ റിവ്യൂ ചെയ്യുക</h4>
+                    <button class="btn-link" style="background: #d97706; width: 100%;" onclick="openFlashReviewSets()">റിവ്യൂ ചെയ്യുക →</button>
+                </div>
+            `;
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        };
+
+        window.goBackToHome = function(isHome = false) {
+            document.getElementById('dynamic-view').style.display = 'none';
+            document.getElementById('home-menu').style.display = 'flex';
+
+            if (isHome) {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            } else if (lastClickedModuleKey) {
+                let moduleNum = lastClickedModuleKey.replace("mod_", "");
+                let boxes = document.querySelectorAll('#home-menu .main-box');
+                let targetBox = boxes[parseInt(moduleNum) + 1]; 
+                if (targetBox) {
+                    targetBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                } else {
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                }
+            } else {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        };
+
+        window.openRevisionProgressView = async function() {
+            document.getElementById('view-title').innerText = "📈 MY REVISION PROGRESS";
+            let container = document.getElementById('subtopics-container');
+            container.innerHTML = `<p style="color: #64748b; text-align: center; padding: 20px;">റിവിഷൻ പ്രോഗ്രസ്സ് വിവരങ്ങൾ ഇവിടെ ലഭ്യമാകും.</p>`;
+        };
+
+        // 🌟 മോക്ക് ടെസ്റ്റ് ട്രാക്കർ ഫംഗ്ഷൻ ശരിയായി കണക്കാക്കി ഡാറ്റ കാണിക്കുന്ന രീതി
+        window.openMockTrackerView = async function() {
+            document.getElementById('view-title').innerText = "📊 മോക്ക് ടെസ്റ്റ് ട്രാക്കർ";
+            let container = document.getElementById('subtopics-container');
+            container.innerHTML = `<p style="color: #64748b; text-align: center; padding: 20px;">ഡാറ്റ ലോഡ് ചെയ്യുന്നു...</p>`;
+
+            let mockCounts = await window.loadMockCountsFromFirebase();
+            if (Object.keys(mockCounts).length === 0) {
+                mockCounts = JSON.parse(localStorage.getItem('psc_mock_counts') || '{}');
+            }
+
+            let htmlContent = '';
+            let hasAnyContent = false;
+
+            for (let modKey in moduleData) {
+                let cats = moduleData[modKey];
+                let modNum = modKey.replace("mod_", "MODULE ");
+                let modTopicsHtml = '';
+                let modHasTopics = false;
+
+                if (cats && cats.length > 0) {
+                    cats.forEach(cat => {
+                        cat.topics.forEach(t => {
+                            if (t.hasMock) {
+                                modHasTopics = true;
+                                hasAnyContent = true;
+                                let count = mockCounts[t.id] || 0;
+                                modTopicsHtml += `
+                                    <div class="rev-row">
+                                        <span style="font-size: 0.9rem; font-weight: 600; color: #334155; text-align: left; flex: 1;">${t.title}</span>
+                                        <div style="background: #0284c7; color: white; padding: 4px 10px; border-radius: 6px; font-weight: bold; font-size: 0.9rem; min-width: 36px; text-align: center;">
+                                            ${count}
+                                        </div>
+                                    </div>
+                                `;
+                            }
+                        });
+                    });
+
+                    if (modHasTopics) {
+                        htmlContent += `
+                            <div class="subtopic-card" style="background: #ffffff; border-left: 4px solid #0284c7;">
+                                <h4 style="color: #0369a1; margin-bottom: 6px; border-bottom: 1px solid #e2e8f0; padding-bottom: 4px;">${modNum}</h4>
+                                ${modTopicsHtml}
+                            </div>
+                        `;
+                    }
+                }
+            }
+
+            if (!hasAnyContent) {
+                container.innerHTML = `<p style="color: #64748b; text-align: center; padding: 20px;">നിലവിൽ മോക്ക് ടെസ്റ്റ് കൗണ്ടുകൾ ഒന്നും ലഭ്യമല്ല.</p>`;
+            } else {
+                container.innerHTML = `
+                    <p style="margin-bottom: 12px; font-size: 0.85rem; color: #64748b;">ഓരോ മോക്ക് ടെസ്റ്റും അറ്റൻഡ് ചെയ്തതിന്റെ എണ്ണം:</p>
+                    <div style="max-height: 400px; overflow-y: auto;">
+                        ${htmlContent}
+                    </div>
+                `;
+            }
+        };
+
+        window.openTrackerView = async function() {
+            document.getElementById('view-title').innerText = "📖 സ്റ്റഡി ട്രാക്കർ (Study Tracker)";
+            let container = document.getElementById('subtopics-container');
+            container.innerHTML = `<p style="color: #64748b; text-align: center; padding: 20px;">സ്റ്റഡി ട്രാക്കർ വിവരങ്ങൾ ഇവിടെ ലഭ്യമാകും.</p>`;
+        };
+
+        window.openWrongReview = async function() {
+            document.getElementById('view-title').innerText = "❌ തെറ്റിയ ചോദ്യങ്ങൾ";
+        };
+
+        window.openRevisionSetup = function() {
+            document.getElementById('view-title').innerText = "🔄 കസ്റ്റം റിവിഷൻ ടെസ്റ്റ്";
+        };
+
+        window.openSpecificMock = function(subId, title, modKey) {
+            currentSubtopicTitle = title;
+            window.currentActiveSubIdForMock = subId;
+            let qList = questionsDB[subId] || [];
+            if (qList.length === 0) {
+                alert('ഈ ടോപ്പിക്കിൽ ചോദ്യങ്ങൾ ഉടൻ ചേർക്കുന്നതാണ്.');
+                return;
+            }
+            startQuiz(JSON.parse(JSON.stringify(qList)), subId);
+        };
+
+        window.openFlashcardSession = function(subId, title, modKey) {
+            currentSubtopicTitle = title;
+            window.currentActiveSubId = subId;
+            let fList = flashcardDB[subId] || [];
+            if (fList.length === 0) {
+                alert('ഈ ടോപ്പിക്കിൽ ഫ്ലാഷ് കാർഡുകൾ ഉടൻ ചേർക്കുന്നതാണ്.');
+                return;
+            }
+            window.currentFlashcards = fList;
+            window.flashIdx = 0;
+            window.flashKnownCount = 0;
+            window.flashUnknownList = [];
+            renderFlashcard(subId);
+        };
+
+        function renderFlashcard(subId) {
+            document.getElementById('home-menu').style.display = 'none';
+            let viewDiv = document.getElementById('dynamic-view');
+            viewDiv.style.display = 'block';
+            document.getElementById('view-title').innerText = `⚡ ഫ്ലാഷ് കാർഡ് (${window.flashIdx + 1} / ${window.currentFlashcards.length}) - ${currentSubtopicTitle}`;
+            let container = document.getElementById('subtopics-container');
+
+            let card = window.currentFlashcards[window.flashIdx];
+            container.innerHTML = `
+                <div class="flashcard-container">
+                    <div class="flash-card-scene" onclick="flipCard()">
+                        <div class="flash-card-box" id="fcard-inner">
+                            <div class="flash-card-face flash-card-front">
+                                <span style="font-size: 0.75rem; color: #64748b; font-weight: bold; margin-bottom: 10px;">ചോദ്യം / വിഷയം</span>
+                                <div style="font-size: 1.1rem; font-weight: bold; line-height: 1.5;">${card.front}</div>
+                            </div>
+                            <div class="flash-card-face flash-card-back">
+                                <span style="font-size: 0.75rem; color: #15803d; font-weight: bold; margin-bottom: 10px;">ഉത്തരം</span>
+                                <div style="font-size: 1.15rem; font-weight: bold; line-height: 1.5;">${card.back}</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flash-btns">
+                        <button class="btn-unknown" onclick="markFlash(false, '${subId}')">❌ അറിയില്ല</button>
+                        <button class="btn-known" onclick="markFlash(true, '${subId}')">✓ അറിയാം</button>
+                    </div>
+                </div>
+            `;
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        window.flipCard = function() {
+            let cardInner = document.getElementById('fcard-inner');
+            if (cardInner) cardInner.classList.toggle('flipped');
+        };
+
+        window.markFlash = function(isKnown, subId) {
+            if (isKnown) window.flashKnownCount++;
+            else window.flashUnknownList.push(window.currentFlashcards[window.flashIdx]);
+            window.flashIdx++;
+            if (window.flashIdx < window.currentFlashcards.length) {
+                renderFlashcard(subId);
+            } else {
+                localStorage.setItem(`rev_date_flash_${subId}`, new Date().toISOString());
+                alert("ഫ്ലാഷ് കാർഡ് പരിശീലനം പൂർത്തിയായി! റിവിഷൻ തീയതി അപ്ഡേറ്റ് ചെയ്തു.");
+                goBackToHome(false);
+            }
+        };
+
+        function startQuiz(qArray, subId) {
+            window.currentQuestions = qArray;
+            window.currentIdx = 0;
+            window.userAnswers = {};
+            renderQuizQuestion();
+        }
+
+        function renderQuizQuestion() {
+            document.getElementById('home-menu').style.display = 'none';
+            let viewDiv = document.getElementById('dynamic-view');
+            viewDiv.style.display = 'block';
+            document.getElementById('view-title').innerText = `📝 മോക്ക് ടെസ്റ്റ് - ചോദ്യം ${window.currentIdx + 1} / ${window.currentQuestions.length}`;
+            
+            let q = window.currentQuestions[window.currentIdx];
+            let selectedOpt = window.userAnswers[window.currentIdx];
+
+            let optionsHtml = '';
+            q.options.forEach((opt, i) => {
+                let statusClass = selectedOpt === i ? 'selected' : '';
+                optionsHtml += `<div class="option-item ${statusClass}" onclick="selectOption(${i})">${opt}</div>`;
+            });
+
+            let container = document.getElementById('subtopics-container');
+            container.innerHTML = `
+                <div class="quiz-container">
+                    <div class="question-text">${q.q}</div>
+                    <div class="options-list">${optionsHtml}</div>
+                    <div class="quiz-nav">
+                        <button class="nav-btn" onclick="prevQ()" ${window.currentIdx === 0 ? 'disabled' : ''}>മുമ്പത്തെ</button>
+                        ${window.currentIdx === window.currentQuestions.length - 1 
+                            ? `<button class="nav-btn btn-mock" onclick="finishQuiz()">സബ്മിറ്റ് ചെയ്യുക</button>` 
+                            : `<button class="nav-btn" onclick="nextQ()">അടുത്തത്</button>`
+                        }
+                    </div>
+                </div>
+            `;
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        window.selectOption = function(idx) {
+            window.userAnswers[window.currentIdx] = idx;
+            renderQuizQuestion();
+        };
+
+        window.nextQ = function() {
+            if (window.currentIdx < window.currentQuestions.length - 1) {
+                window.currentIdx++;
+                renderQuizQuestion();
+            }
+        };
+
+        window.prevQ = function() {
+            if (window.currentIdx > 0) {
+                window.currentIdx--;
+                renderQuizQuestion();
+            }
+        };
+
+        window.finishQuiz = function() {
+            if (window.currentActiveSubIdForMock) {
+                localStorage.setItem(`rev_date_mock_${window.currentActiveSubIdForMock}`, new Date().toISOString());
+                
+                // മോക്ക് കൗണ്ട് ലോക്കൽ സ്റ്റോറേജിലും ഫയർബേസിലും അപ്ഡേറ്റ് ചെയ്യുന്നു
+                let mockCounts = JSON.parse(localStorage.getItem('psc_mock_counts') || '{}');
+                mockCounts[window.currentActiveSubIdForMock] = (mockCounts[window.currentActiveSubIdForMock] || 0) + 1;
+                localStorage.setItem('psc_mock_counts', JSON.stringify(mockCounts));
+                window.saveMockCountsToFirebase(mockCounts);
+            }
+            alert("മോക്ക് ടെസ്റ്റ് വിജയകരമായി പൂർത്തിയായി! ട്രാക്കറും റിവിഷൻ തീയതിയും അപ്ഡേറ്റ് ചെയ്തു.");
+            goBackToHome(false);
+        };
+    </script>
+
+</body>
+</html>
+>
                             <h4 style="margin-bottom: 2px;">${set.name}</h4>
                             <p style="font-size: 0.8rem; color: #64748b;">ചോദ്യങ്ങൾ: ${set.items.length}</p>
                         </div>
