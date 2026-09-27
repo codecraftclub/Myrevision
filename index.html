@@ -54,12 +54,20 @@
             font-size: 0.85rem; 
             font-weight: 700; 
             text-align: center; 
-            white-space: nowrap; 
+            white-space: normal; 
+            word-break: break-word;
             border: none;
             cursor: pointer;
             display: inline-block;
         }
         .btn-link:hover { background: #047857; }
+
+        .nav-top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
 
         .small-nav-btn {
             background: #334155;
@@ -179,6 +187,7 @@
         .btn-unknown { background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%); color: white; flex: 1; padding: 14px; border: none; border-radius: 12px; font-weight: bold; cursor: pointer; }
 
         .quiz-top-bar { display: flex; justify-content: space-between; align-items: center; background: #f1f5f9; padding: 8px 12px; border-radius: 8px; margin-bottom: 12px; font-size: 0.85rem; font-weight: bold; color: #334155; }
+        .timer-display { background: #fee2e2; color: #b91c1c; padding: 4px 8px; border-radius: 6px; font-size: 0.85rem; font-weight: bold; }
         .bookmark-btn { background: none; border: none; font-size: 1.3rem; cursor: pointer; color: #cbd5e1; }
         .bookmark-btn.active { color: #f59e0b; }
         
@@ -279,8 +288,8 @@
     <!-- ഡൈനാമിക് കണ്ടന്റ് ലോഡ് ആകുന്ന ഏരിയ -->
     <div id="dynamic-view">
         <div class="nav-top-bar" id="dynamic-nav-bar">
-            <button class="small-nav-btn" onclick="goBack()">← ബാക്ക്</button>
             <button class="small-nav-btn" onclick="goHome()">🏠 ഹോം</button>
+            <button class="small-nav-btn" onclick="goBack()">← ബാക്ക്</button>
         </div>
         <h2 id="view-title">ടൈറ്റിൽ</h2>
         <div id="subtopics-container"></div>
@@ -383,19 +392,47 @@
         let selectedSubtopicTitle = "";
 
         const moduleData = {
-            "mod_1": [], "mod_2": [], "mod_3": [], 
+            "mod_1": [
+                { category: "1. ഭൂമിയുടെ ഘടന", topics: [] },
+                { category: "2. ഐക്യകേരളം", topics: [] },
+                { category: "3. അമേരിക്കൻ സ്വാതന്ത്ര്യസമരം", topics: [] },
+                { category: "4. ഉത്തരപർവ്വതനിര", topics: [] },
+                { category: "5. നീതി ആയോഗ്", topics: [] },
+                { category: "6. ഭരണഘടനാ നിർമ്മാണസമിതി", topics: [] },
+                { category: "7. ദുരന്തനിവാരണം", topics: [] },
+                { category: "8. ജീവകങ്ങൾ ധാതുക്കൾ", topics: [] },
+                { category: "9. ഭൗതിക അളവുകളും യൂണിറ്റുകളും", topics: [] },
+                { category: "10. HOT TOPICS റിവിഷൻ എക്സാം", topics: [] }
+            ], 
+            "mod_2": [
+                { category: "1. രോഗങ്ങളും രോഗകാരികളും", topics: [] },
+                { category: "2. Tense", topics: [] },
+                { category: "3. സംഖ്യകൾ", topics: [] },
+                { category: "4. പദശുദ്ധി", topics: [] },
+                { category: "5. സ്പോർട്സ്", topics: [] },
+                { category: "6. ബ്രിട്ടീഷുകാരുടെ രാഷ്ട്രീയ ചരിത്രവും അധികാരവും", topics: [] },
+                { category: "7. Second റിവിഷൻ എക്സാം", topics: [] }
+            ], 
+            "mod_3": [
+                { category: "1. ഇംഗ്ലണ്ടിലെ മഹത്തായ വിപ്ലവം", topics: [] },
+                { category: "2. യൂറോപ്യന്മാരുടെ വരവ്", topics: [] },
+                { category: "3. ദശാംശ സംഖ്യകൾ, ഭിന്നസംഖ്യകൾ", topics: [] },
+                { category: "4. കേരള ഭൂപ്രകൃതി", topics: [] },
+                { category: "5. ആറ്റം", topics: [] },
+                { category: "6. റിവിഷൻ എക്സാം", topics: [] }
+            ], 
             "mod_4": [
-                { category: "Sentence", topics: [] },
-                { category: "കേരള ഭരണ സംവിധാനം", topics: [] },
-                { category: "വൻകര സ്ഥാപനസിദ്ധാന്തം & ഫലകചലന സിദ്ധാന്തം", topics: [] },
-                { category: "ശതമാനം", topics: [] },
-                { category: "വാക്യശുദ്ധി", topics: [] },
-                { category: "1857ലെ വിപ്ലവം", topics: [] },
-                { category: "3rd Revision Exam", topics: [] }
+                { category: "1. Sentence", topics: [] },
+                { category: "2. കേരള ഭരണ സംവിധാനം", topics: [] },
+                { category: "3. വൻകര സ്ഥാപനസിദ്ധാന്തം & ഫലകചലന സിദ്ധാന്തം", topics: [] },
+                { category: "4. ശതമാനം", topics: [] },
+                { category: "5. വാക്യശുദ്ധി", topics: [] },
+                { category: "6. 1857ലെ വിപ്ലവം", topics: [] },
+                { category: "7. 3rd Revision Exam", topics: [] }
             ], 
             "mod_5": [
                 {
-                    category: "Daily Current Affairs",
+                    category: "1. Daily Current Affairs",
                     topics: [
                         { id: "mod_4_sub_3", title: "കറന്റ് അഫയേഴ്സ് 19.09.2026", hasMock: true, hasFlash: true },
                         { id: "mod_4_sub_4", title: "കറന്റ് അഫയേഴ്സ് 20.09.2026", hasMock: true, hasFlash: true },
@@ -405,15 +442,20 @@
                     ]
                 },
                 {
-                    category: "Economics Basics",
+                    category: "2. Economics Basics",
                     topics: [
                         { id: "mod_4_sub_1", title: "Economics basics 1", hasMock: true, hasFlash: true },
                         { id: "mod_4_sub_2", title: "Economics basics 2", hasMock: false, hasFlash: false }
                     ]
                 },
-                { category: "Parts of Speech", topics: [] },
-                { category: "ഉപദ്വീപിയ പീഠഭൂമി", topics: [] },
-                { category: "ഭരണഘടന - ആമുഖം", topics: [] }
+                { category: "3. Parts of Speech", topics: [] },
+                { category: "4. ഉപദ്വീപിയ പീഠഭൂമി", topics: [] },
+                { 
+                    category: "5. ഭരണഘടന - ആമുഖം", 
+                    topics: [
+                        { id: "mod_5_sub_preamble", title: "ഭരണഘടന - ആമുഖം 1", hasMock: true, hasFlash: true }
+                    ] 
+                }
             ], 
             "mod_6": [], "mod_7": [], "mod_8": [], "mod_9": [], "mod_10": [],
             "mod_11": [], "mod_12": [], "mod_13": [], "mod_14": [], "mod_15": [],
@@ -480,7 +522,41 @@
                 { q: "ഇന്ത്യയും ശ്രീലങ്കയും തമ്മിലുള്ള SLINEX നാവികാഭ്യാസത്തിന്റെ എത്രാമത്തെ പതിപ്പാണ് നടക്കുന്നത്?", options: ["എ) 10-ാമത് പതിപ്പ്", "ബി) 11-ാമത് പതിപ്പ്", "സി) 12-ാമത് പതിപ്പ്", "ഡി) 13-ാമത് പതിപ്പ്"], answer: 3, explanation: "13-ാമത് പതിപ്പ്." },
                 { q: "ഇന്ത്യയിലെ നദീതീര സംസ്കാരത്തെയും പൈതൃകത്തെയും ജനങ്ങളിലേക്ക് എത്തിക്കുന്നതിനായി ഇന്ദിരാഗാന്ധി നാഷണൽ സെന്റർ ഫോർ ദി ആർട്സ് (IGNCA) സംഘടിപ്പിക്കുന്ന പ്രശസ്തമായ വാർഷിക ഉത്സവം ഏത്?", options: ["എ) നദി ഉത്സവ്", "ബി) ഗംഗാ ഉത്സവ്", "സി) സംസ്കൃതി ഉത്സവ്", "ഡി) പൈതൃക ഉത്സവ്"], answer: 0, explanation: "നദി ഉത്സവ്." },
                 { q: "2026 സെപ്റ്റംബറിൽ ജപ്പാനിൽ കനത്ത നാശം വിതച്ച ചുഴലിക്കാറ്റ് ഏത്?", options: ["എ) ടാങ്കോ ചുഴലിക്കാറ്റ്", "ബി) ദുജ്ജാൻ ചുഴലിക്കാറ്റ് (Typhoon Dujuan)", "സി) ഹിനോകി ചുഴലിക്കാറ്റ്", "ഡി) ലാൻ ചുഴലിക്കാറ്റ്"], answer: 1, explanation: "ദുജ്ജാൻ ചുഴലിക്കാറ്റ് (Typhoon Dujuan)." },
-                { q: "കേരള സർക്കാർ സംസ്ഥാന ബഡ്ജറ്റിൽ പ്രഖ്യാപിച്ച ഭൂപരിഷ്കരണം 2.0 നടപ്പിലാക്കുന്നതിനെക്കുറിച്ച് പഠിക്കാൻ നിയോഗിച്ച അഞ്ചംഗ സമിതിയുടെ അധ്യക്ഷൻ ആര്?", options: ["എ) ഡോ. ടി. എം. തോമസ് ഐസക്", "ബി) എ.ടി ജെയിംസ്", "സി) ജസ്റ്റിസ് കെ.മാധവൻ", "ഡി) എം.എ ബേബി"], answer: 1, explanation: "എ.ടി ജെയിംസ്." }
+                { q: "കേരള സർക്കാർ സംസ്ഥാന ബഡ്ജറ്റിൽ പ്രഖ്യാപിച്ച ഭൂപരിഷ്കരണം 2.0 നടപ്പിലാക്കുന്നതിനെക്കുറിച്ച് പഠിക്കാൻ നിയോഗിച്ച അഞ്ചംഗ സമിതിയുടെ അധ്യക്ഷൻ ആര്?", options: ["എ) ഡോ. ടി. എം. തോമസ് ഐസക്", "ബി) എ.ടി ജെയിംസ്", "സി) ജസ്റ്റിസ് കെ.മാധവൻ", "ഡി) എം.എ ബാബി"], answer: 1, explanation: "എ.ടി ജെയിംസ്." }
+            ],
+            "mod_5_sub_preamble": [
+                { q: "ഭാരതത്തെ എങ്ങനെയുള്ള ഒരു രാജ്യമായിട്ടാണ് ആമുഖത്തിൽ സംവിധാനം ചെയ്യുവാൻ തീരുമാനിച്ചിരിക്കുന്നത്?", options: ["എ) പരമാധികാര സ്ഥിതിസമത്വ മതേതര ജനാധിപത്യ റിപ്പബ്ലിക്", "ബി) പരമാധികാര സോഷ്യലിസ്റ്റ് മതേതര റിപ്പബ്ലിക്", "സി) പരമാധികാര ജനാധിപത്യ സോഷ്യലിസ്റ്റ് റിപ്പബ്ലിക്", "ഡി) പരമാധികാര മതേതര ജനാധിപത്യ സോഷ്യലിസ്റ്റ് റിപ്പബ്ലിക്"], answer: 0, explanation: "പരമാധികാര സ്ഥിതിസമത്വ മതേതര ജനാധിപത്യ റിപ്പബ്ലിക്" },
+                { q: "ഭാരതത്തിന്റെ ഭരണഘടന ആമുഖത്തിൽ പൗരന്മാർക്ക് എത്ര തരത്തിലുള്ള നീതിയാണ് ഉറപ്പുനൽകുന്നത്?", options: ["എ) രണ്ട്", "ബി) മൂന്ന്", "സി) നാല്", "ഡി) അഞ്ച്"], answer: 1, explanation: "മൂന്ന്" },
+                { q: "ഭാരത ഭരണഘടനയുടെ ആമുഖത്തിൽ താഴെ പറയുന്നവയിൽ ഏതൊക്കെ നീതികളാണ് പൗരന്മാർക്ക് വാഗ്ദാനം ചെയ്യുന്നത്?", options: ["എ) സാമൂഹ്യവും സാമ്പത്തികവും സാംസ്കാരികവുമായ നീതി", "ബി) സാമൂഹ്യവും സാമ്പത്തികവും രാഷ്ട്രീയവുമായ നീതി", "സി) രാഷ്ട്രീയവും നിയമപരവും സാമ്പത്തികവുമായ നീതി", "ഡി) മതപരവും സാമൂഹ്യവും രാഷ്ട്രീയവുമായ നീതി"], answer: 1, explanation: "സാമൂഹ്യവും സാമ്പത്തികവും രാഷ്ട്രീയവുമായ നീതി" },
+                { q: "ആമുഖത്തിൽ എത്ര തരത്തിലുള്ള സ്വാതന്ത്ര്യങ്ങളെക്കുറിച്ചാണ് പ്രതിപാദിച്ചിരിക്കുന്നത്?", options: ["എ) മൂന്ന്", "ബി) നാല്", "സി) അഞ്ച്", "ഡി) ആറ്"], answer: 2, explanation: "അഞ്ച്" },
+                { q: "താഴെ പറയുന്നവയിൽ ഭരണഘടനയുടെ ആമുഖത്തിൽ പരാമർശിച്ചിരിക്കുന്ന സ്വാതന്ത്ര്യങ്ങളിൽ ഉൾപ്പെടാത്തത് ഏത്?", options: ["എ) ചിന്തയ്ക്കുള്ള സ്വാതന്ത്ര്യം", "ബി) ആശയപ്രകടനത്തിനുള്ള സ്വാതന്ത്ര്യം", "സി) തൊഴിലെടുക്കാനുള്ള സ്വാതന്ത്ര്യം", "ഡി) ആരാധനയ്ക്കുള്ള സ്വാതന്ത്ര്യം"], answer: 2, explanation: "തൊഴിലെടുക്കാനുള്ള സ്വാതന്ത്ര്യം" },
+                { q: "പൗരന്മാർക്ക് ഏതൊക്കെ കാര്യങ്ങളിലാണ് സമത്വം ഉറപ്പുവരുത്താൻ ആമുഖത്തിൽ ലക്ഷ്യമിടുന്നത്?", options: ["എ) പദവിയിലും അവസരത്തിലും", "ബി) സമ്പത്തിലും പദവിയിലും", "സി) വിദ്യാഭ്യാസത്തിലും തൊഴിലിലും", "ഡി) നിയമത്തിലും നീതിയിലും"], answer: 0, explanation: "പദവിയിലും അവസരത്തിലും" },
+                { q: "ആരുടെ അന്തസ്സും രാഷ്ട്രത്തിന്റെ ഐക്യവും അഖണ്ഡതയും ഉറപ്പുവരുത്തിക്കൊണ്ട് സാഹോദര്യം പുലർത്താനാണ് ആമുഖത്തിൽ തീരുമാനിച്ചിരിക്കുന്നത്?", options: ["എ) സഭയുടെ", "ബി) വ്യക്തിയുടെ", "സി) സമൂഹത്തിന്റെ", "ഡി) ജനങ്ങളുടെ"], answer: 1, explanation: "വ്യക്തിയുടെ" },
+                { q: "നമ്മുടെ ഭരണഘടനാ നിർമ്മാണസഭ ഈ ഭരണഘടനയെ സ്വീകരിക്കുകയും നിയമമാക്കുകയും നമുക്കുതന്നെ പ്രദാനം ചെയ്യുകയും ചെയ്ത തീയതി ഏത്?", options: ["എ) 1950 ജനുവരി 26", "ബി) 1949 നവംബർ 26", "സി) 1947 ആഗസ്റ്റ് 15", "ഡി) 1949 ജനുവരി 26"], answer: 1, explanation: "1949 നവംബർ 26" },
+                { q: "ആമുഖത്തിൽ \"പരമാധികാര ജനാധിപത്യ റിപ്പബ്ലിക്\" എന്നതിന് പകരം \"പരമാധികാര സ്ഥിതിസമത്വ മതേതര ജനാധിപത്യ റിപ്പബ്ലിക്\" എന്ന് കൂട്ടിച്ചേർത്ത ഭരണഭേദഗതി ആക്റ്റ് ഏത്?", options: ["എ) 1976-ലെ 42-ാം ഭേദഗതി", "ബി) 1978-ലെ 44-ാം ഭേദഗതി", "സി) 1985-ലെ 52-ാം ഭേദഗതി", "ഡി) 1992-ലെ 73-ാം ഭേദഗതി"], answer: 0, explanation: "1976-ലെ 42-ാം ഭേദഗതി" },
+                { q: "42-ാം ഭരണഘടനാ ഭേദഗതി പ്രകാരം ആമുഖത്തിൽ വരുത്തിയ മാറ്റങ്ങൾ പ്രാബല്യത്തിൽ വന്ന തീയതി ഏത്?", options: ["എ) 1976 നവംബർ 26", "ബി) 1977 ജനുവരി 3", "സി) 1950 ജനുവരി 26", "ഡി) 1976 ഡിസംബർ 18"], answer: 1, explanation: "1977 ജനുവരി 3" },
+                { q: "ഭരണഘടനയുടെ ആമുഖത്തിൽ \"രാഷ്ട്രത്തിന്റെ ഐക്യം\" എന്നതിന് പകരം \"രാഷ്ട്രത്തിന്റെ ഐക്യവും അഖണ്ഡതയും\" എന്ന് കൂട്ടിച്ചേർത്ത വർഷം ഏത്?", options: ["എ) 1950", "ബി) 1976", "സി) 1978", "ഡി) 1985"], answer: 1, explanation: "1976" },
+                { q: "രാജ്യത്തിന്റെ സ്വഭാവമായി ആമുഖത്തിൽ പറയുന്ന 'Sovereign' എന്ന വാക്കിന്റെ മലയാളം അർത്ഥം എന്ത്?", options: ["എ) സ്ഥിതിസമത്വം", "ബി) മതേതരത്വം", "സി) പരമാധികാരം", "ഡി) റിപ്പബ്ലിക്ക്"], answer: 2, explanation: "പരമാധികാരം" },
+                { q: "ഭരണഘടനയുടെ ആമുഖത്തിൽ പരാമർശിച്ചിരിക്കുന്ന 'Secular' എന്ന ഇംഗ്ലീഷ് വാക്കിന്റെ അർത്ഥം എന്ത്?", options: ["എ) പരമാധികാരം", "ബി) സ്ഥിതിസമത്വം", "സി) ജനാധിപത്യം", "ഡി) മതേതരത്വം"], answer: 3, explanation: "മതേതരത്വം" },
+                { q: "താഴെ പറയുന്നവയിൽ ഭരണഘടനയുടെ ലക്ഷ്യങ്ങളിൽ ഉൾപ്പെടാത്ത പദം ഏത്?", options: ["എ) Liberty (സ്വാതന്ത്ര്യം)", "ബി) Equality (സമത്വം)", "സി) Sovereign (പരമാധികാരം)", "ഡി) Fraternity (സാഹോദര്യം)"], answer: 2, explanation: "Sovereign (പരമാധികാരം)" },
+                { q: "ഭരണഘടനയുടെ ആമുഖം ആരംഭിക്കുന്നത് ഏത് ഇംഗ്ലീഷ് വാചകത്തോടെയാണ്?", options: ["എ) We the people of India", "ബി) India is a sovereign republic", "സി) We the citizens of India", "ഡി) Constitution of India"], answer: 0, explanation: "We the people of India" },
+                { q: "ഭാരതീയ ഭരണഘടനയുടെ ആമുഖം ആരംഭിക്കുന്ന \"നാം ഭാരതത്തിലെ ജനങ്ങൾ\" എന്നത് ആരെയാണ് സൂചിപ്പിക്കുന്നത്?", options: ["എ) ഭരണഘടനാ നിർമ്മാണ സഭയെ", "ബി) ഇന്ത്യയിലെ ജനങ്ങളെ", "സി) സർക്കാരിനെ", "ഡി) രാഷ്ട്രീയ നേതാക്കളെ"], answer: 1, explanation: "ഇന്ത്യയിലെ ജനങ്ങളെ" },
+                { q: "ഭരണഘടനയുടെ ആമുഖത്തിൽ വ്യക്തമായി പരാമർശിച്ചിരിക്കുന്ന ഒരേയൊരു തീയതി ഏതാണ്?", options: ["എ) 1950 ജനുവരി 26", "ബി) 1947 ആഗസ്റ്റ് 15", "സി) 1949 നവംബർ 26", "ഡി) 1946 ഡിസംബർ 13"], answer: 2, explanation: "1949 നവംബർ 26" },
+                { q: "ഭരണഘടനാ നിർമ്മാണ സഭയിൽ ലക്ഷ്യപ്രമേയം അവതരിപ്പിച്ചത് ആര്?", options: ["എ) ഡോ. ബി. ആർ. അംബേദ്കർ", "ബി) ജവഹർലാൽ നെഹ്റു", "സി) ഡോ. രാജേന്ദ്ര പ്രസാദ്", "ഡി) സർദാർ വല്ലഭഭായ് പട്ടേൽ"], answer: 1, explanation: "ജവഹർലാൽ നെഹ്റു" },
+                { q: "ജവഹർലാൽ നെഹ്റു ലക്ഷ്യപ്രമേയം അവതരിപ്പിച്ച തീയതി ഏത്?", options: ["എ) 1946 ഡിസംബർ 13", "ബി) 1947 ജനുവരി 22", "സി) 1949 നവംബർ 26", "ഡി) 1950 ജനുവരി 26"], answer: 0, explanation: "1946 ഡിസംബർ 13" },
+                { q: "ജവഹർലാൽ നെഹ്റു അവതരിപ്പിച്ച ലക്ഷ്യപ്രമേയം ഭരണഘടനാ നിർമ്മാണ സഭ ആമുഖമായി അംഗീകരിച്ച തീയതി ഏത്?", options: ["എ) 1946 ഡിസംബർ 13", "ബി) 1947 ജനുവരി 22", "സി) 1949 നവംബർ 26", "ഡി) 1950 ജനുവരി 26"], answer: 1, explanation: "1947 ജനുവരി 22" },
+                { q: "ഭരണഘടനയുടെ ആമുഖം എത്ര തവണയാണ് ഭേദഗതി ചെയ്തിട്ടുള്ളത്?", options: ["എ) ഒരിക്കൽ മാത്രം", "ബി) രണ്ടുതവണ", "സി) മൂന്നുവവണ", "ഡി) ഒരിക്കലും ചെയ്തിട്ടില്ല"], answer: 0, explanation: "ഒരിക്കൽ മാത്രം" },
+                { q: "ഭരണഘടനയുടെ ആമുഖം ഭേദഗതി ചെയ്ത വർഷം ഏത്?", options: ["എ) 1950", "ബി) 1976", "സി) 1978", "ഡി) 1985"], answer: 1, explanation: "1976" },
+                { q: "ആമുഖം ഭേദഗതി ചെയ്ത 42-ാം ഭരണഘടനാ ഭേദഗതി കാലത്ത് ഇന്ത്യയുടെ പ്രധാനമന്ത്രി ആരായിരുന്നു?", options: ["എ) മൊറാർജി ദേശായി", "ബി) ഇന്ദിരാഗാന്ധി", "സി) ജവഹർലാൽ നെഹ്റു", "ഡി) രാജ്ഗീരസിങ്"], answer: 1, explanation: "ഇന്ദിരാഗാന്ധി" },
+                { q: "42-ാം ഭരണഘടനാ ഭേദഗതി നടപ്പിലാക്കിയ സമയത്ത് ഇന്ത്യയുടെ രാഷ്ട്രപതി ആരായിരുന്നു?", options: ["എ) ഡോ. എസ്. രാധാകൃഷ്ണൻ", "ബി) വി. വി. ഗിരി", "സി) ഫക്രുദ്ദീൻ അലി അഹമ്മദ്", "ഡി) ആർ. വെങ്കട്ടരാമൻ"], answer: 2, explanation: "ഫക്രുദ്ദീൻ അലി അഹമ്മദ്" },
+                { q: "1976-ലെ 42-ാം ഭേദഗതിയിലൂടെ ആമുഖത്തിൽ പുതുതായി കൂട്ടിച്ചേർത്ത വാക്കുകളുടെ എണ്ണം എത്ര?", options: ["എ) രണ്ട്", "ബി) മൂന്ന്", "സി) നാല്", "ഡി) അഞ്ച്"], answer: 1, explanation: "മൂന്ന്" },
+                { q: "42-ാം ഭരണഘടനാ ഭേദഗതിയിലൂടെ ആമുഖത്തിൽ ഉൾപ്പെടുത്തിയ മൂന്ന് വാക്കുകൾ താഴെ പറയുന്നവയിൽ ഏവയാണ്?", options: ["എ) സോഷ്യലിസ്റ്റ്, മതേതരത്വം, അഖണ്ഡത", "ബി) പരമാധികാരം, ജനാധിപത്യം, റിപ്പബ്ലിക്", "സി) സ്വാതന്ത്ര്യം, സമത്വം, സാഹോദര്യം", "ഡി) നീതി, സാഹോദര്യം, ഐക്യം"], answer: 0, explanation: "സോഷ്യലിസ്റ്റ്, മതേതരത്വം, അഖണ്ഡത" },
+                { q: "'മിനി ഭരണഘടന' (Mini Constitution) എന്നറിയപ്പെടുന്നത് ഏതാണ്?", options: ["എ) 44-ാം ഭേദഗതി ആക്റ്റ്", "ബി) 42-ാം ഭേദഗതി ആക്റ്റ്", "സി) 52-ാം ഭേദഗതി ആക്റ്റ്", "ഡി) 73-ാം ഭേദഗതി ആക്റ്റ്"], answer: 1, explanation: "42-ാം ഭേദഗതി ആക്റ്റ്" },
+                { q: "42-ാം ഭരണഘടനാ ഭേദഗതി ആക്റ്റ് പൂർണ്ണമായി നിലവിൽ വന്ന തീയതി ഏത്?", options: ["എ) 1976 നവംബർ 26", "ബി) 1977 ജനുവരി 3", "സി) 1950 ജനുവരി 26", "ഡി) 1976 ഡിസംബർ 31"], answer: 1, explanation: "1977 ജനുവരി 3" },
+                { q: "ആമുഖത്തിന്റെ പിതാവ് (Father of Preamble) എന്നറിയപ്പെടുന്നത് ആര്?", options: ["എ) ഡോ. ബി. ആർ. അംബേദ്കർ", "ബി) ജവഹർലാൽ നെഹ്റു", "സി) രാജേന്ദ്ര പ്രസാദ്", "ഡി) ബി. എൻ. റാവു"], answer: 1, explanation: "ജവഹർലാൽ നെഹ്റു" },
+                { q: "ഭാരതീയ ഭരണഘടനയുടെ ആമുഖത്തിന്റെ ആശയം ഏത് രാജ്യത്തിന്റെ ഭരണഘടനയിൽ നിന്നാണ് കടമെടുത്തിരിക്കുന്നത്?", options: ["എ) ബ്രിട്ടൻ", "ബി) അയർലൻഡ്", "സി) അമേരിക്ക", "ഡി) കാനഡ"], answer: 2, explanation: "അമേരിക്ക" },
+                { q: "“നെഹ്റുവും ലക്ഷ്യപ്രമേയവും ചരിത്രപരമായ വീക്ഷണത്തിൽ” (Nehru & objective resolution: A historical perspective) എന്ന ഗ്രന്ഥത്തിന്റെ രചയിതാവ് ആര്?", options: ["എ) ജെ. കെ. മിത്തർ", "ബി) ജെ. കെ. സിങ്", "സി) ജെ. കെ. റാവു", "ഡി) ജെ. കെ. മേത്ത"], answer: 0, explanation: "ജെ. കെ. മിത്തർ" },
+                { q: "ആമുഖത്തിലെ \"WE\" (നാം) എന്ന പദം ആരെയാണ് വ്യക്തമാക്കുന്നത്?", options: ["എ) ഭരണഘടനാ സഭയിലെ അംഗങ്ങളെ", "ബി) ഇന്ത്യയിലെ ജനങ്ങളെ", "സി) സർക്കാരിനെ", "ഡി) ജനപ്രതിനിധികളെ"], answer: 1, explanation: "ഇന്ത്യയിലെ ജനങ്ങളെ" }
             ]
         };
 
@@ -493,6 +569,40 @@
             "mod_4_sub_3": [
                 { front: "2026-ലെ ബ്രിക്സ് ഉച്ചകോടിക്ക് ആതിഥേയത്വം വഹിച്ച രാജ്യം", back: "ഇന്ത്യ" },
                 { front: "2026-ൽ ഇന്ത്യ ആതിഥേയത്വം വഹിച്ച ബ്രിക്സ് ഉച്ചകോടി എത്രാമത്തെതാണ്?", back: "18-ാമത് ഉച്ചകോടി" }
+            ],
+            "mod_5_sub_preamble": [
+                { front: "ഭാരതത്തെ എങ്ങനെയുള്ള ഒരു രാജ്യമായിട്ടാണ് ആമുഖത്തിൽ സംവിധാനം ചെയ്യുവാൻ തീരുമാനിച്ചിരിക്കുന്നത്?", back: "പരമാധികാര സ്ഥിതിസമത്വ മതേതര ജനാധിപത്യ റിപ്പബ്ലിക്" },
+                { front: "ഭാരതത്തിന്റെ ഭരണഘടന ആമുഖത്തിൽ പൗരന്മാർക്ക് എത്ര തരത്തിലുള്ള നീതിയാണ് ഉറപ്പുനൽകുന്നത്?", back: "മൂന്ന്" },
+                { front: "ഭാരത ഭരണഘടനയുടെ ആമുഖത്തിൽ താഴെ പറയുന്നവയിൽ ഏതൊക്കെ നീതികളാണ് പൗരന്മാർക്ക് വാഗ്ദാനം ചെയ്യുന്നത്?", back: "സാമൂഹ്യവും സാമ്പത്തികവും രാഷ്ട്രീയവുമായ നീതി" },
+                { front: "ആമുഖത്തിൽ എത്ര തരത്തിലുള്ള സ്വാതന്ത്ര്യങ്ങളെക്കുറിച്ചാണ് പ്രതിപാദിച്ചിരിക്കുന്നത്?", back: "അഞ്ച്" },
+                { front: "ഭരണഘടനയുടെ ആമുഖത്തിൽ പരാമർശിച്ചിരിക്കുന്ന സ്വാതന്ത്ര്യങ്ങളിൽ ഉൾപ്പെടാത്തത് ഏത്?", back: "തൊഴിലെടുക്കാനുള്ള സ്വാതന്ത്ര്യം" },
+                { front: "പൗരന്മാർക്ക് ഏതൊക്കെ കാര്യങ്ങളിലാണ് സമത്വം ഉറപ്പുവരുത്താൻ ആമുഖത്തിൽ ലക്ഷ്യമിടുന്നത്?", back: "പദവിയിലും അവസരത്തിലും" },
+                { front: "ആരുടെ അന്തസ്സും രാഷ്ട്രത്തിന്റെ ഐക്യവും അഖണ്ഡതയും ഉറപ്പുവരുത്തിക്കൊണ്ട് സാഹോദര്യം പുലർത്താനാണ് ആമുഖത്തിൽ തീരുമാനിച്ചിരിക്കുന്നത്?", back: "വ്യക്തിയുടെ" },
+                { front: "നമ്മുടെ ഭരണഘടനാ നിർമ്മാണസഭ ഈ ഭരണഘടനയെ സ്വീകരിക്കുകയും നിയമമാക്കുകയും നമുക്കുതന്നെ പ്രദാനം ചെയ്യുകയും ചെയ്ത തീയതി ഏത്?", back: "1949 നവംബർ 26" },
+                { front: "ആമുഖത്തിൽ \"പരമാധികാര ജനാധിപത്യ റിപ്പബ്ലിക്\" എന്നതിന് പകരം \"പരമാധികാര സ്ഥിതിസമത്വ മതേതര ജനാധിപത്യ റിപ്പബ്ലിക്\" എന്ന് കൂട്ടിച്ചേർത്ത ഭരണഭേദഗതി ആക്റ്റ് ഏത്?", back: "1976-ലെ 42-ാം ഭേദഗതി" },
+                { front: "42-ാം ഭരണഘടനാ ഭേദഗതി പ്രകാരം ആമുഖത്തിൽ വരുത്തിയ മാറ്റങ്ങൾ പ്രാബല്യത്തിൽ വന്ന തീയതി ഏത്?", back: "1977 ജനുവരി 3" },
+                { front: "ഭരണഘടനയുടെ ആമുഖത്തിൽ \"രാഷ്ട്രത്തിന്റെ ഐക്യം\" എന്നതിന് പകരം \"രാഷ്ട്രത്തിന്റെ ഐക്യവും അഖണ്ഡതയും\" എന്ന് കൂട്ടിച്ചേർത്ത വർഷം ഏത്?", back: "1976" },
+                { front: "രാജ്യത്തിന്റെ സ്വഭാവമായി ആമുഖത്തിൽ പറയുന്ന 'Sovereign' എന്ന വാക്കിന്റെ മലയാളം അർത്ഥം എന്ത്?", back: "പരമാധികാരം" },
+                { front: "ഭരണഘടനയുടെ ആമുഖത്തിൽ പരാമർശിച്ചിരിക്കുന്ന 'Secular' എന്ന ഇംഗ്ലീഷ് വാക്കിന്റെ അർത്ഥം എന്ത്?", back: "മതേതരത്വം" },
+                { front: "താഴെ പറയുന്നവയിൽ ഭരണഘടനയുടെ ലക്ഷ്യങ്ങളിൽ ഉൾപ്പെടാത്ത പദം ഏത്?", back: "Sovereign (പരമാധികാരം)" },
+                { front: "ഭരണഘടനയുടെ ആമുഖം ആരംഭിക്കുന്നത് ഏത് ഇംഗ്ലീഷ് വാചകത്തോടെയാണ്?", back: "We the people of India" },
+                { front: "ഭാരതീയ ഭരണഘടനയുടെ ആമുഖം ആരംഭിക്കുന്ന \"നാം ഭാരതത്തിലെ ജനങ്ങൾ\" എന്നത് ആരെയാണ് സൂചിപ്പിക്കുന്നത്?", back: "ഇന്ത്യയിലെ ജനങ്ങളെ" },
+                { front: "ഭരണഘടനയുടെ ആമുഖത്തിൽ വ്യക്തമായി പരാമർശിച്ചിരിക്കുന്ന ഒരേയൊരു തീയതി ഏതാണ്?", back: "1949 നവംബർ 26" },
+                { front: "ഭരണഘടനാ നിർമ്മാണ സഭയിൽ ലക്ഷ്യപ്രമേയം അവതരിപ്പിച്ചത് ആര്?", back: "ജവഹർലാൽ നെഹ്റു" },
+                { front: "ജവഹർലാൽ നെഹ്റു ലക്ഷ്യപ്രമേയം അവതരിപ്പിച്ച തീയതി ഏത്?", back: "1946 ഡിസംബർ 13" },
+                { front: "ജവഹർലാൽ നെഹ്റു അവതരിപ്പിച്ച ലക്ഷ്യപ്രമേയം ഭരണഘടനാ നിർമ്മാണ സഭ ആമുഖമായി അംഗീകരിച്ച തീയതി ഏത്?", back: "1947 ജനുവരി 22" },
+                { front: "ഭരണഘടനയുടെ ആമുഖം എത്ര തവണയാണ് ഭേദഗതി ചെയ്തിട്ടുള്ളത്?", back: "ഒരിക്കൽ മാത്രം" },
+                { front: "ഭരണഘടനയുടെ ആമുഖം ഭേദഗതി ചെയ്ത വർഷം ഏത്?", back: "1976" },
+                { front: "ആമുഖം ഭേദഗതി ചെയ്ത 42-ാം ഭരണഘടനാ ഭേദഗതി കാലത്ത് ഇന്ത്യയുടെ പ്രധാനമന്ത്രി ആരായിരുന്നു?", back: "ഇന്ദിരാഗാന്ധി" },
+                { front: "42-ാം ഭരണഘടനാ ഭേദഗതി നടപ്പിലാക്കിയ സമയത്ത് ഇന്ത്യയുടെ രാഷ്ട്രപതി ആരായിരുന്നു?", back: "ഫക്രുദ്ദീൻ അലി അഹമ്മദ്" },
+                { front: "1976-ലെ 42-ാം ഭേദഗതിയിലൂടെ ആമുഖത്തിൽ പുതുതായി കൂട്ടിച്ചേർത്ത വാക്കുകളുടെ എണ്ണം എത്ര?", back: "മൂന്ന്" },
+                { front: "42-ാം ഭരണഘടനാ ഭേദഗതിയിലൂടെ ആമുഖത്തിൽ ഉൾപ്പെടുത്തിയ മൂന്ന് വാക്കുകൾ താഴെ പറയുന്നവയിൽ ഏവയാണ്?", back: "സോഷ്യലിസ്റ്റ്, മതേതരത്വം, അഖണ്ഡത" },
+                { front: "'മിനി ഭരണഘടന' (Mini Constitution) എന്നറിയപ്പെടുന്നത് ഏതാണ്?", back: "42-ാം ഭേദഗതി ആക്റ്റ്" },
+                { front: "42-ാം ഭരണഘടനാ ഭേദഗതി ആക്റ്റ് പൂർണ്ണമായി നിലവിൽ വന്ന തീയതി ഏത്?", back: "1977 ജനുവരി 3" },
+                { front: "ആമുഖത്തിന്റെ പിതാവ് (Father of Preamble) എന്നറിയപ്പെടുന്നത് ആര്?", back: "ജവഹർലാൽ നെഹ്റു" },
+                { front: "ഭാരതീയ ഭരണഘടനയുടെ ആമുഖത്തിന്റെ ആശയം ഏത് രാജ്യത്തിന്റെ ഭരണഘടനയിൽ നിന്നാണ് കടമെടുത്തിരിക്കുന്നത്?", back: "അമേരിക്ക" },
+                { front: "“നെഹ്റുവും ലക്ഷ്യപ്രമേയവും ചരിത്രപരമായ വീക്ഷണത്തിൽ” (Nehru & objective resolution: A historical perspective) എന്ന ഗ്രന്ഥത്തിന്റെ രചയിതാവ് ആര്?", back: "ജെ. കെ. മിത്തർ" },
+                { front: "ആമുഖത്തിലെ \"WE\" (നാം) എന്ന പദം ആരെയാണ് വ്യക്തമാക്കുന്നത്?", back: "ഇന്ത്യയിലെ ജനങ്ങളെ" }
             ]
         };
 
@@ -606,18 +716,49 @@
             document.getElementById('view-title').innerText = "📊 വിശകലനം (Analysis)";
             let container = document.getElementById('subtopics-container');
 
+            let mockAttemptsSummaryHtml = '';
+            for (let modKey in moduleData) {
+                let modNum = modKey.replace("mod_", "MODULE ");
+                let modHasAttempts = false;
+                let modHtml = '';
+
+                moduleData[modKey].forEach(cat => {
+                    cat.topics.forEach(t => {
+                        let attempts = JSON.parse(localStorage.getItem(`mock_attempts_${t.id}`) || '[]');
+                        if (attempts.length > 0) {
+                            modHasAttempts = true;
+                            let attStr = attempts.map((att, i) => `അറ്റംറ്റ് ${i+1}: ${att.score} (${att.date})`).join(' | ');
+                            modHtml += `
+                                <div class="rev-row" style="flex-direction: column; align-items: flex-start; gap: 4px;">
+                                    <span style="font-weight: 600; font-size: 0.9rem; color: #1e293b;">${t.title}</span>
+                                    <span style="font-size: 0.8rem; color: #047857; font-weight: bold;">${attStr}</span>
+                                </div>
+                            `;
+                        }
+                    });
+                });
+
+                if (modHasAttempts) {
+                    mockAttemptsSummaryHtml += `<div class="subtopic-card" style="margin-top:10px;"><h4 style="color:#1e3a8a; border-bottom:1px solid #e2e8f0; padding-bottom:4px; margin-bottom:8px;">${modNum} - മോക്ക് ടെസ്റ്റ് സ്കോറുകൾ</h4>${modHtml}</div>`;
+                }
+            }
+
             container.innerHTML = `
-                <div class="subtopic-card" style="background: #ffffff; border-left: 4px solid #2563eb;">
+                <div class="subtopic-card" style="background: #ffffff; border-left: 4px solid #2563eb; margin-bottom: 10px;">
                     <h4 style="color: #1e3a8a; margin-bottom: 8px;">📈 റിവിഷൻ പുരോഗതി (My Revision Progress)</h4>
                     <button class="btn-link" style="background: #2563eb; width: 100%;" onclick="openRevisionProgressView()">തുറക്കുക →</button>
                 </div>
-                <div class="subtopic-card" style="background: #ffffff; border-left: 4px solid #059669;">
+                <div class="subtopic-card" style="background: #ffffff; border-left: 4px solid #059669; margin-bottom: 10px;">
                     <h4 style="color: #065f46; margin-bottom: 8px;">📖 സ്റ്റഡി ട്രാക്കർ (Study Tracker)</h4>
                     <button class="btn-link" style="background: #059669; width: 100%;" onclick="openTrackerView()">തുറക്കുക →</button>
                 </div>
-                <div class="subtopic-card" style="background: #ffffff; border-left: 4px solid #0284c7;">
+                <div class="subtopic-card" style="background: #ffffff; border-left: 4px solid #0284c7; margin-bottom: 10px;">
                     <h4 style="color: #0369a1; margin-bottom: 8px;">📊 മോക്ക് ടെസ്റ്റ് ട്രാക്കർ (Mock Test Tracker)</h4>
                     <button class="btn-link" style="background: #0284c7; width: 100%;" onclick="openMockTrackerView()">തുറക്കുക →</button>
+                </div>
+                <div style="margin-top: 15px;">
+                    <h3 style="font-size: 1rem; color: #1e3a8a; margin-bottom: 10px;">🏆 മോക്ക് ടെസ്റ്റ് അറ്റംറ്റ് ഹിസ്റ്ററി</h3>
+                    ${mockAttemptsSummaryHtml || '<p style="color: #64748b; font-size: 0.85rem; text-align: center; padding: 10px;">മോക്ക് ടെസ്റ്റ് അറ്റംറ്റുകൾ ഇതുവരെ രേഖപ്പെടുത്തിയിട്ടില്ല.</p>'}
                 </div>
             `;
             window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -744,7 +885,7 @@
                 <div class="subtopic-card" style="display: flex; justify-content: space-between; align-items: center; gap: 10px;">
                     <div><h4>${set.name}</h4><p style="font-size: 0.8rem; color: #64748b;">ചോദ്യങ്ങൾ: ${set.items.length}</p></div>
                     <div style="display: flex; gap: 6px;">
-                        <button class="btn-link btn-mock" onclick='startQuiz(${JSON.stringify(set.items)})'>എഴുതുക</button>
+                        <button class="btn-link btn-mock" onclick='startQuiz(${JSON.stringify(set.items)}, "${set.name}")'>എഴുതുക</button>
                         <button class="btn-delete-rev" onclick="deleteMockSet('${set.id}')">ഡിലീറ്റ്</button>
                     </div>
                 </div>
@@ -797,7 +938,6 @@
             renderFlashcard();
         };
 
-        // കസ്റ്റം റിവിഷൻ സെറ്റ് ഡ്രോപ്പ് ഡൗൺ (മോഡ്യൂളുകളും ചോദ്യങ്ങൾ/ഫ്ലാഷ് കാർഡുകൾ ഉള്ള സബ്‌ടോപ്പിക്കുകളും മാത്രം)
         window.openRevisionSetup = function() {
             document.getElementById('view-title').innerText = "🔄 കസ്റ്റം റിവിഷൻ ടെസ്റ്റ് ക്രമീകരിക്കുക";
             let container = document.getElementById('subtopics-container');
@@ -823,9 +963,7 @@
 
                 if (hasAnyQuestionInMod) {
                     optionsHtml += `<optgroup label="${modNum}">`;
-                    // മുഴുവൻ മോഡ്യൂളും സെലക്ട് ചെയ്യാനുള്ള ഓപ്ഷൻ
                     optionsHtml += `<option value="mod_full_${modKey}">📁 ${modNum} - മുഴുവൻ മോഡ്യൂളും</option>`;
-                    
                     validTopics.forEach(item => {
                         optionsHtml += `<option value="sub_${item.topic.id}">↳ ${item.catName} - ${item.topic.title}</option>`;
                     });
@@ -866,11 +1004,18 @@
             let val = selectElem.value;
             let targetCount = parseInt(countElem.value);
             let pool = [];
+            let customName = "കസ്റ്റം റിവിഷൻ ടെസ്റ്റ്";
 
             if (val.startsWith("sub_")) {
                 let subId = val.replace("sub_", "");
                 pool = questionsDB[subId] || [];
-                selectedSubtopicTitle = "കസ്റ്റം സബ്‌ടോപ്പിക്ക് ടെസ്റ്റ്";
+                for (let mKey in moduleData) {
+                    moduleData[mKey].forEach(cat => {
+                        cat.topics.forEach(t => {
+                            if (t.id === subId) customName = t.title;
+                        });
+                    });
+                }
             } else if (val.startsWith("mod_full_")) {
                 let modKey = val.replace("mod_full_", "");
                 let cats = moduleData[modKey] || [];
@@ -881,7 +1026,7 @@
                         }
                     });
                 });
-                selectedSubtopicTitle = `${modKey.replace("mod_", "MODULE ")} മുഴുവൻ ടെസ്റ്റ്`;
+                customName = `${modKey.replace("mod_", "MODULE ")} മുഴുവൻ ടെസ്റ്റ്`;
             }
 
             if (pool.length === 0) {
@@ -889,28 +1034,28 @@
                 return;
             }
 
-            // ചോദ്യങ്ങളുടെ എണ്ണം പരിശോധിക്കുന്നു (ഉദാ: 50 സെലക്ട് ചെയ്തു, പക്ഷെ 21 ഉള്ളപ്പോൾ)
             if (pool.length < targetCount) {
                 let confirmProceed = confirm(`ഈ വിഭാഗത്തിൽ ${targetCount} ചോദ്യങ്ങൾ ലഭ്യമല്ല. ലഭ്യമായ ${pool.length} ചോദ്യങ്ങൾ വെച്ച് എക്സാം എഴുതണോ?`);
                 if (!confirmProceed) return;
                 targetCount = pool.length;
             }
 
-            // ഓരോ തവണയും ചോദ്യങ്ങൾ മാറിമാറി (Shuffle) വരുന്നു
             pool.sort(() => Math.random() - 0.5);
             let finalQuestions = pool.slice(0, targetCount);
 
             currentViewLevel = "mock";
-            startQuiz(finalQuestions);
+            startQuiz(finalQuestions, customName);
         };
 
         window.goBack = function() {
+            if (quizTimerInterval) clearInterval(quizTimerInterval);
             if (currentViewLevel === "topics") loadModuleContent(selectedModuleKey, selectedModuleName);
             else if (currentViewLevel === "flashcard" || currentViewLevel === "mock") openCategoryTopics(selectedModuleKey, selectedCatIndex);
             else goHome();
         };
 
         window.goHome = function() {
+            if (quizTimerInterval) clearInterval(quizTimerInterval);
             currentViewLevel = "home";
             document.getElementById('dynamic-view').style.display = 'none';
             document.getElementById('home-menu').style.display = 'flex';
@@ -928,7 +1073,7 @@
             }
             let shuffledList = JSON.parse(JSON.stringify(qList));
             shuffledList.sort(() => Math.random() - 0.5);
-            startQuiz(shuffledList);
+            startQuiz(shuffledList, title);
         };
 
         let flashCardsList = [];
@@ -1017,12 +1162,35 @@
         let quizQuestions = [];
         let userAnswers = {};
         let bookmarked = {};
+        let quizTimerInterval = null;
+        let timeLeftSeconds = 0;
 
-        function startQuiz(qArray) {
+        function startQuiz(qArray, customTitle = null) {
             quizQuestions = qArray;
+            if (customTitle) selectedSubtopicTitle = customTitle;
             qIndex = 0;
             userAnswers = {};
             bookmarked = {};
+            
+            if (quizTimerInterval) clearInterval(quizTimerInterval);
+            timeLeftSeconds = quizQuestions.length * 50;
+            
+            quizTimerInterval = setInterval(() => {
+                if (timeLeftSeconds > 0) {
+                    timeLeftSeconds--;
+                    let timerElem = document.getElementById('quiz-timer-span');
+                    if (timerElem) {
+                        let m = Math.floor(timeLeftSeconds / 60);
+                        let s = timeLeftSeconds % 60;
+                        timerElem.innerText = `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+                    }
+                } else {
+                    clearInterval(quizTimerInterval);
+                    alert("സമയം അവസാനിച്ചിരിക്കുന്നു!");
+                    finishQuizSession();
+                }
+            }, 1000);
+
             renderQuizInterface();
         }
 
@@ -1035,6 +1203,10 @@
             let q = quizQuestions[qIndex];
             let isMarked = bookmarked[qIndex] ? 'active' : '';
             let selectedOpt = userAnswers[qIndex];
+
+            let m = Math.floor(timeLeftSeconds / 60);
+            let s = timeLeftSeconds % 60;
+            let timeStr = `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
 
             let optionsHtml = '';
             q.options.forEach((opt, i) => {
@@ -1056,6 +1228,7 @@
                 <div class="quiz-container" id="quiz-swipe-area">
                     <div class="quiz-top-bar">
                         <span>ചോദ്യം ${qIndex + 1} / ${quizQuestions.length}</span>
+                        <div class="timer-display">⏳ <span id="quiz-timer-span">${timeStr}</span></div>
                         <button class="bookmark-btn ${isMarked}" onclick="toggleBookmark()">⭐ ബുക്ക്മാർക്ക്</button>
                     </div>
                     <div class="question-text">${q.q}</div>
@@ -1106,8 +1279,26 @@
         }
 
         window.finishQuizSession = async function() {
+            if (quizTimerInterval) clearInterval(quizTimerInterval);
+            
+            let correctCount = 0;
+            let wrongCount = 0;
+            quizQuestions.forEach((q, idx) => {
+                let userAns = userAnswers[idx];
+                if (userAns !== undefined) {
+                    if (userAns === q.answer) correctCount++;
+                    else wrongCount++;
+                }
+            });
+            let totalScore = Math.max(0, (correctCount * 1.0) - (wrongCount * 0.33)).toFixed(2);
+
             if (selectedSubtopicId) {
                 localStorage.setItem(`rev_date_mock_${selectedSubtopicId}`, new Date().toISOString());
+                
+                let attemptsKey = `mock_attempts_${selectedSubtopicId}`;
+                let attempts = JSON.parse(localStorage.getItem(attemptsKey) || '[]');
+                attempts.push({ date: new Date().toLocaleDateString(), score: totalScore });
+                localStorage.setItem(attemptsKey, JSON.stringify(attempts));
                 
                 let mockCounts = await window.loadMockCountsFromFirebase();
                 if(Object.keys(mockCounts).length === 0) {
@@ -1123,6 +1314,49 @@
         function renderResultView(filterType) {
             document.getElementById('view-title').innerText = "📊 മോക്ക് ടെസ്റ്റ് ഫലങ്ങളും വിശദീകരണങ്ങളും";
             let container = document.getElementById('subtopics-container');
+
+            let correctCount = 0;
+            let wrongCount = 0;
+            let unattendedCount = 0;
+
+            quizQuestions.forEach((q, idx) => {
+                let userAns = userAnswers[idx];
+                if (userAns === undefined) {
+                    unattendedCount++;
+                } else if (userAns === q.answer) {
+                    correctCount++;
+                } else {
+                    wrongCount++;
+                }
+            });
+
+            let totalScore = (correctCount * 1.0) - (wrongCount * 0.33);
+            totalScore = Math.max(0, totalScore).toFixed(2);
+
+            let attemptsHtml = '';
+            if (selectedSubtopicId) {
+                let attempts = JSON.parse(localStorage.getItem(`mock_attempts_${selectedSubtopicId}`) || '[]');
+                if (attempts.length > 0) {
+                    let attemptListItems = attempts.map((att, index) => `<li>${index + 1}-ാം അറ്റംറ്റ് (${att.date}): <strong>${att.score} മാർക്ക്</strong></li>`).join('');
+                    attemptsHtml = `
+                        <div style="margin-top: 10px; padding-top: 8px; border-top: 1px dashed #cbd5e1;">
+                            <p style="font-size: 0.85rem; font-weight: bold; color: #1e3a8a; margin-bottom: 4px;">📈 മുൻകാല അറ്റംറ്റുകൾ:</p>
+                            <ul style="padding-left: 18px; font-size: 0.85rem; color: #334155;">${attemptListItems}</ul>
+                        </div>
+                    `;
+                }
+            }
+
+            let summaryHtml = `
+                <div class="subtopic-card" style="background: #eff6ff; border-left: 5px solid #3b82f6; text-align: left; padding: 15px; margin-bottom: 15px;">
+                    <h3 style="color: #1e3a8a; margin-bottom: 8px;">📚 ടെസ്റ്റ് വിഷയം: ${selectedSubtopicTitle || 'മോക്ക് ടെസ്റ്റ്'}</h3>
+                    <p style="font-size: 0.9rem; color: #334155; margin-bottom: 4px;">✅ ശരിയായ ഉത്തരങ്ങൾ: <strong>${correctCount}</strong></p>
+                    <p style="font-size: 0.9rem; color: #334155; margin-bottom: 4px;">❌ തെറ്റിയ ഉത്തരങ്ങൾ: <strong>${wrongCount}</strong></p>
+                    <p style="font-size: 0.9rem; color: #334155; margin-bottom: 4px;">❓ അറ്റൻഡ് ചെയ്യാത്തവ: <strong>${unattendedCount}</strong></p>
+                    <p style="font-size: 1rem; color: #047857; font-weight: bold; margin-top: 8px;">🎯 ആകെ മാർക്ക്: ${totalScore} <span style="font-size: 0.75rem; color: #64748b;">(ശരിക്ക് +1, തെറ്റിന് -0.33)</span></p>
+                    ${attemptsHtml}
+                </div>
+            `;
 
             let filterHtml = `
                 <div class="filter-buttons">
@@ -1165,6 +1399,7 @@
             }
 
             container.innerHTML = `
+                ${summaryHtml}
                 <p style="font-size: 0.85rem; color: #64748b; text-align: center; margin-bottom: 5px;">താഴെയുള്ള ഏതെങ്കിലും ഒരു വിഭാഗം തിരഞ്ഞെടുക്കുക:</p>
                 ${filterHtml}
                 <div style="max-height: 350px; overflow-y: auto; margin-top: 10px;">${questionsHtml}</div>
@@ -1192,7 +1427,7 @@
                 alert("റിവ്യൂ ചെയ്യാൻ തെറ്റിയോ അറ്റൻഡ് ചെയ്യാതെയോ ചോദ്യങ്ങൾ ഒന്നുമില്ല!");
                 return;
             }
-            startQuiz(list);
+            startQuiz(list, "തെറ്റിയവയും അറ്റൻഡ് ചെയ്യാത്തവയും റിവ്യൂ");
         };
 
         window.createRevisionSetAndSave = async function() {
