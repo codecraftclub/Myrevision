@@ -125,6 +125,28 @@
         .blink-orange { animation: urgent-blink-orange 1.2s infinite; border-width: 2px; }
         .blink-yellow { animation: urgent-blink-yellow 1.2s infinite; border-width: 2px; }
 
+        @keyframes option-blink-green {
+            0% { background-color: #dcfce7; border-color: #22c55e; }
+            50% { background-color: #bbf7d0; border-color: #16a34a; }
+            100% { background-color: #dcfce7; border-color: #22c55e; }
+        }
+        @keyframes option-blink-red {
+            0% { background-color: #fee2e2; border-color: #dc2626; }
+            50% { background-color: #fecaca; border-color: #b91c1c; }
+            100% { background-color: #fee2e2; border-color: #dc2626; }
+        }
+        .blink-green-opt { animation: option-blink-green 0.6s infinite; }
+        .blink-red-opt { animation: option-blink-red 0.6s infinite; }
+
+        .learning-alert-box {
+            background: #fff1f2;
+            border: 2px solid #dc2626;
+            padding: 12px;
+            border-radius: 8px;
+            margin-top: 15px;
+            text-align: left;
+        }
+
         .revision-badge {
             display: inline-flex;
             align-items: center;
@@ -197,9 +219,6 @@
         .btn-unknown { background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%); color: white; flex: 1; padding: 14px; border: none; border-radius: 12px; font-weight: bold; cursor: pointer; }
 
         .quiz-top-bar { display: flex; justify-content: space-between; align-items: center; background: #f1f5f9; padding: 8px 12px; border-radius: 8px; margin-bottom: 12px; font-size: 0.85rem; font-weight: bold; color: #334155; }
-        .timer-display { background: #fee2e2; color: #b91c1c; padding: 4px 8px; border-radius: 6px; font-size: 0.85rem; font-weight: bold; }
-        .bookmark-btn { background: none; border: none; font-size: 1.3rem; cursor: pointer; color: #cbd5e1; }
-        .bookmark-btn.active { color: #f59e0b; }
         
         .question-text { font-size: 0.95rem; color: #1e293b; font-weight: 600; margin-bottom: 15px; line-height: 1.4; text-align: left; }
         .options-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 20px; }
@@ -214,43 +233,6 @@
         }
         .option-item:hover { background: #f1f5f9; border-color: #cbd5e1; }
         .option-item.selected { background: #e0f2fe; border-color: #0284c7; color: #0369a1; font-weight: 600; }
-
-        .palette-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(32px, 1fr)); gap: 6px; margin-top: 15px; padding-top: 15px; border-top: 1px solid #e2e8f0; }
-        .palette-btn { width: 32px; height: 32px; border-radius: 6px; border: 1px solid #cbd5e1; background: #f8fafc; font-weight: bold; font-size: 0.8rem; cursor: pointer; display: flex; align-items: center; justify-content: center; }
-        .palette-btn.attempted { background: #dcfce7; border-color: #22c55e; color: #15803d; }
-        .palette-btn.current { border-color: #3b82f6; box-shadow: 0 0 0 2px rgba(59,130,246,0.3); }
-        .palette-btn.bookmarked { border-color: #f59e0b; background: #fef3c7; }
-
-        .filter-buttons { display: flex; gap: 5px; justify-content: center; margin: 15px 0; flex-wrap: wrap; }
-        .filter-btn { padding: 8px 14px; font-size: 0.8rem; border-radius: 8px; border: 1px solid #cbd5e1; background: #fff; cursor: pointer; font-weight: bold; }
-        .filter-btn.active { background: #3b82f6; color: white; border-color: #3b82f6; }
-
-        .result-action-btn {
-            display: block;
-            width: 100%;
-            padding: 12px 15px;
-            border-radius: 8px;
-            font-size: 0.9rem;
-            font-weight: bold;
-            color: white;
-            border: none;
-            cursor: pointer;
-            text-align: center;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            margin-top: 10px;
-        }
-        .btn-retry { background: #059669; }
-        .btn-save-rev { background: #dc2626; }
-        .btn-delete-rev { background: #b91c1c; padding: 6px 10px; font-size: 0.75rem; border-radius: 6px; color: white; border: none; cursor: pointer; }
-
-        .form-group { margin-bottom: 15px; text-align: left; }
-        .form-group label { display: block; font-weight: bold; margin-bottom: 6px; font-size: 0.9rem; color: #334155; }
-        .form-control { width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 0.9rem; background: #f8fafc; }
-        
-        .rev-row { display: flex; justify-content: space-between; align-items: center; background: #fff; padding: 8px 12px; border-radius: 6px; margin-top: 6px; border: 1px solid #e2e8f0; }
-        .counter-box { display: flex; align-items: center; gap: 8px; }
-        .count-btn { background: #334155; color: white; border: none; width: 28px; height: 28px; border-radius: 4px; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; }
-        .count-display { font-weight: bold; font-size: 0.95rem; min-width: 24px; text-align: center; color: #2563eb; }
     </style>
 </head>
 <body>
@@ -272,6 +254,12 @@
             <button class="btn-link" style="background: #7c3aed;" onclick="openMyRevisionMenu()">തുറക്കുക →</button>
         </div>
 
+        <!-- പുതിയ പ്രാക്ടീസ് സെക്ഷൻ -->
+        <div class="main-box" style="border-left-color: #f59e0b; background: #fffbeb;" onclick="startPracticeSession()">
+            <h3>✍️ പ്രാക്ടീസ് ചെയ്യൂ (100 ചോദ്യങ്ങൾ)</h3>
+            <button class="btn-link" style="background: #f59e0b;">തുടങ്ങുക →</button>
+        </div>
+
         <!-- പ്രധാന മോഡ്യൂൾസ് മെനു ബോക്സ് -->
         <div class="main-box" style="border-left-color: #059669; background: #f0fdf4;" onclick="openModulesListMenu()">
             <h3>📚 Modules (1 മുതൽ 20 വരെ)</h3>
@@ -289,7 +277,7 @@
         <div id="subtopics-container"></div>
     </div>
 
-    <!-- ഫയർബേസ് SDKs & ക്ലൗഡ് സിങ്ക് മാനേജർ -->
+    <!-- ഫയർബേസ് SDKs -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
         import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
@@ -307,7 +295,6 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        // ഫയർബേസിൽ ഡാറ്റ സുരക്ഷിതമായി സേവ് ചെയ്യാൻ
         window.saveToFirebase = async function(customName, itemsArray, collectionName = "revision_sets") {
             try {
                 await addDoc(collection(db, collectionName), {
@@ -318,7 +305,6 @@
                 alert(`✓ "${customName}" ഫയർബേസിൽ വിജയകരമായി സേവ് ചെയ്തു!`);
             } catch (e) {
                 console.error("Firebase Error: ", e);
-                alert("ഫയർബേസിൽ സേവ് ചെയ്യുന്നതിൽ പരാജയപ്പെട്ടു.");
             }
         };
 
@@ -339,26 +325,7 @@
                 alert("സെറ്റ് വിജയകരമായി ഡിലീറ്റ് ചെയ്തു!");
             } catch (e) {
                 console.error("Firebase Delete Error: ", e);
-                alert("ഡിലീറ്റ് ചെയ്യുന്നതിൽ പരാജയപ്പെട്ടു.");
             }
-        };
-
-        // യൂസർ പ്രോഗ്രസ്സ് പൂർണ്ണമായും ഫയർബേസിൽ സിങ്ക് ചെയ്യാൻ
-        window.saveUserProgressToCloud = async function(key, dataObj) {
-            try {
-                await setDoc(doc(db, "user_progress", key), {
-                    data: dataObj,
-                    updatedAt: new Date().toISOString()
-                }, { merge: true });
-            } catch (e) { console.error("Cloud Sync Error:", e); }
-        };
-
-        window.loadUserProgressFromCloud = async function(key) {
-            try {
-                let docSnap = await getDoc(doc(db, "user_progress", key));
-                if (docSnap.exists()) return docSnap.data().data || null;
-                return null;
-            } catch (e) { return null; }
         };
     </script>
 
@@ -504,10 +471,11 @@
                 { q: "കേരള സർക്കാർ സംസ്ഥാന ബഡ്ജറ്റിൽ പ്രഖ്യാപിച്ച ഭൂപരിഷ്കരണം 2.0 നടപ്പിലാക്കുന്നതിനെക്കുറിച്ച് പഠിക്കാൻ നിയോഗിച്ച അഞ്ചംഗ സമിതിയുടെ അധ്യക്ഷൻ ആര്?", options: ["എ) ഡോ. ടി. എം. തോമസ് ഐസക്", "ബി) എ.ടി ജെയിംസ്", "സി) ജസ്റ്റിസ് കെ.മാധവൻ", "ഡി) എം.എ ബാബി"], answer: 1, explanation: "എ.ടി ജെയിംസ്." }
             ],
             "mod_5_sub_preamble": [
-                { q: "ഭാരതത്തെ എങ്ങനെയുള്ള ഒരു രാജ്യമായിട്ടാണ് ആമുഖത്തിൽ സംവിധാനം ചെയ്യുവാൻ തീരുമാനിച്ചിരിക്കുന്നത്?", options: ["എ) പരമാധികാര സ്ഥിതിസമത്വ മതേതര ജനാധിപത്യ റിപ്പബ്ലിക്", "ബി) പരമാധികാര സോഷ്യലിസ്റ്റ് മതേതര റിപ്പബ്ലിക്", "സി) പരമാധികാര ജനാധിപത്യ സോഷ്യലിസ്റ്റ് റിപ്പബ്ലിക്", "ഡി) പരമാധികാര മതേതര ജനാധിപത്യ സോഷ്യലിസ്റ്റ് റിപ്പബ്ലിക്"], answer: 0, explanation: "പരമാധികാര സ്ഥിതിസമത്വ മതേതര ജനാധിപത്യ റിപ്പബ്ലിക്" },
+                { q: "ഭാരതത്തെ എങ്ങനെയുള്ള ഒരു രാജ്യമായിട്ടാണ് ആമുഖത്തിൽ സംവിധാനം ചെയ്യുവാൻ തീരുമാനിച്ചിരിക്കുന്നത്?", options: ["എ) പരമാധികാര സ്ഥിതിസമത്വ മതേതര ജനാധിപത്യ റിപ്പബ്ലിക്", "ബി) പരമാധികാര സോഷ്യലിസ്റ്റ് മതേതര റിപ്പബ്ലിക്", "സി) പരമാധികാര ജനാധിപത്യ സോഷ്യലിസ്റ്റ് റിപ്പബ്ലിക്", "ഡി) പരമാധികാര മതേതര ജനാധിപത്യ റിപ്പബ്ലിക്"], answer: 0, explanation: "പരമാധികാര സ്ഥിതിസമത്വ മതേതര ജനാധിപത്യ റിപ്പബ്ലിക്" },
                 { q: "ഭാരതത്തിന്റെ ഭരണഘടന ആമുഖത്തിൽ പൗരന്മാർക്ക് എത്ര തരത്തിലുള്ള നീതിയാണ് ഉറപ്പുനൽകുന്നത്?", options: ["എ) രണ്ട്", "ബി) മൂന്ന്", "സി) നാല്", "ഡി) അഞ്ച്"], answer: 1, explanation: "മൂന്ന്" },
                 { q: "ഭാരത ഭരണഘടനയുടെ ആമുഖത്തിൽ താഴെ പറയുന്നവയിൽ ഏതൊക്കെ നീതികളാണ് പൗരന്മാർക്ക് വാഗ്ദാനം ചെയ്യുന്നത്?", options: ["എ) സാമൂഹ്യവും സാമ്പത്തികവും സാംസ്കാരികവുമായ നീതി", "ബി) സാമൂഹ്യവും സാമ്പത്തികവും രാഷ്ട്രീയവുമായ നീതി", "സി) രാഷ്ട്രീയവും നിയമപരവും സാമ്പത്തികവുമായ നീതി", "ഡി) മതപരവും സാമൂഹ്യവും രാഷ്ട്രീയവുമായ നീതി"], answer: 1, explanation: "സാമൂഹ്യവും സാമ്പത്തികവും രാഷ്ട്രീയവുമായ നീതി" },
                 { q: "ആമുഖത്തിൽ എത്ര തരത്തിലുള്ള സ്വാതന്ത്ര്യങ്ങളെക്കുറിച്ചാണ് പ്രതിപാദിച്ചിരിക്കുന്നത്?", options: ["എ) മൂന്ന്", "ബി) നാല്", "സി) അഞ്ച്", "ഡി) ആറ്"], answer: 2, explanation: "അഞ്ച്" },
+                { q: "ഇന്ത്യൻ ഭരണഘടന പൗരന്മാർക്ക് ഉറപ്പുനൽകുന്ന സ്വാതന്ത്ര്യങ്ങൾ ഏതൊക്കെ?", options: ["എ) ചിന്തയ്ക്കുള്ള സ്വാതന്ത്ര്യം, ആശയപ്രകടനത്തിനുള്ള സ്വാതന്ത്ര്യം, വിശ്വാസത്തിനുള്ള സ്വാതന്ത്ര്യം, മതനിഷ്ഠയ്ക്കുള്ള സ്വാതന്ത്ര്യം, ആരാധനയ്ക്കുള്ള സ്വാതന്ത്ര്യം", "ബി) സഞ്ചാര സ്വാതന്ത്ര്യവും തൊഴിൽ സ്വാതന്ത്ര്യവും വാഗ്ദാന സ്വാതന്ത്ര്യവും", "സി) സ്വത്ത് സമ്പാദിക്കാനുള്ള സ്വാതന്ത്ര്യവും കച്ചവട സ്വാതന്ത്ര്യവും", "ഡി) രാഷ്ട്രീയ പ്രവർത്തനത്തിനുള്ള സ്വാതന്ത്ര്യവും സംഘടനാ സ്വാതന്ത്ര്യവും"], answer: 0, explanation: "ചിന്തയ്ക്കുള്ള സ്വാതന്ത്ര്യം, ആശയപ്രകടനത്തിനുള്ള സ്വാതന്ത്ര്യം, വിശ്വാസത്തിനുള്ള സ്വാതന്ത്ര്യം, മതനിഷ്ഠയ്ക്കുള്ള സ്വാതന്ത്ര്യം, ആരാധനയ്ക്കുള്ള സ്വാതന്ത്ര്യം" },
                 { q: "താഴെ പറയുന്നവയിൽ ഭരണഘടനയുടെ ആമുഖത്തിൽ പരാമർശിച്ചിരിക്കുന്ന സ്വാതന്ത്ര്യങ്ങളിൽ ഉൾപ്പെടാത്തത് ഏത്?", options: ["എ) ചിന്തയ്ക്കുള്ള സ്വാതന്ത്ര്യം", "ബി) ആശയപ്രകടനത്തിനുള്ള സ്വാതന്ത്ര്യം", "സി) തൊഴിലെടുക്കാനുള്ള സ്വാതന്ത്ര്യം", "ഡി) ആരാധനയ്ക്കുള്ള സ്വാതന്ത്ര്യം"], answer: 2, explanation: "തൊഴിലെടുക്കാനുള്ള സ്വാതന്ത്ര്യം" },
                 { q: "പൗരന്മാർക്ക് ഏതൊക്കെ കാര്യങ്ങളിലാണ് സമത്വം ഉറപ്പുവരുത്താൻ ആമുഖത്തിൽ ലക്ഷ്യമിടുന്നത്?", options: ["എ) പദവിയിലും അവസരത്തിലും", "ബി) സമ്പത്തിലും പദവിയിലും", "സി) വിദ്യാഭ്യാസത്തിലും തൊഴിലിലും", "ഡി) നിയമത്തിലും നീതിയിലും"], answer: 0, explanation: "പദവിയിലും അവസരത്തിലും" },
                 { q: "ആരുടെ അന്തസ്സും രാഷ്ട്രത്തിന്റെ ഐക്യവും അഖണ്ഡതയും ഉറപ്പുവരുത്തിക്കൊണ്ട് സാഹോദര്യം പുലർത്താനാണ് ആമുഖത്തിൽ തീരുമാനിച്ചിരിക്കുന്നത്?", options: ["എ) സഭയുടെ", "ബി) വ്യക്തിയുടെ", "സി) സമൂഹത്തിന്റെ", "ഡി) ജനങ്ങളുടെ"], answer: 1, explanation: "വ്യക്തിയുടെ" },
@@ -520,7 +488,7 @@
                 { q: "താഴെ പറയുന്നവയിൽ ഭരണഘടനയുടെ ലക്ഷ്യങ്ങളിൽ ഉൾപ്പെടാത്ത പദം ഏത്?", options: ["എ) Liberty (സ്വാതന്ത്ര്യം)", "ബി) Equality (സമത്വം)", "സി) Sovereign (പരമാധികാരം)", "ഡി) Fraternity (സാഹോദര്യം)"], answer: 2, explanation: "Sovereign (പരമാധികാരം)" },
                 { q: "ഭരണഘടനയുടെ ആമുഖം ആരംഭിക്കുന്നത് ഏത് ഇംഗ്ലീഷ് വാചകത്തോടെയാണ്?", options: ["എ) We the people of India", "ബി) India is a sovereign republic", "സി) We the citizens of India", "ഡി) Constitution of India"], answer: 0, explanation: "We the people of India" },
                 { q: "ഭാരതീയ ഭരണഘടനയുടെ ആമുഖം ആരംഭിക്കുന്ന \"നാം ഭാരതത്തിലെ ജനങ്ങൾ\" എന്നത് ആരെയാണ് സൂചിപ്പിക്കുന്നത്?", options: ["എ) ഭരണഘടനാ നിർമ്മാണ സഭയെ", "ബി) ഇന്ത്യയിലെ ജനങ്ങളെ", "സി) സർക്കാരിനെ", "ഡി) രാഷ്ട്രീയ നേതാക്കളെ"], answer: 1, explanation: "ഇന്ത്യയിലെ ജനങ്ങളെ" },
-                { q: "ഭരണഘടനയുടെ ആമുഖത്തിൽ വ്യക്തമായി പരാമർശിച്ചിരിക്കുന്ന ഒരേയൊരു തീയതി ഏതാണ്?", options: ["എ) 1950 ജനുവരി 26", "ബി) 1947 ആഗസ്റ്റ് 15", "സി) 1949 നവംബർ 26", "ഡി) 1946 ഡിസംബർ 13"], answer: 2, explanation: "1949 നവംബർ 26" },
+                { q: "ഭരണഘടനയുടെ ആമുഖത്തിൽ വ്യക്തമായി പരാമർശിച്ചിരിക്കുന്ന ഒരേയൊരു തീയതി ഏത്?", options: ["എ) 1950 ജനുവരി 26", "ബി) 1947 ആഗസ്റ്റ് 15", "സി) 1949 നവംബർ 26", "ഡി) 1946 ഡിസംബർ 13"], answer: 2, explanation: "1949 നവംബർ 26" },
                 { q: "ഭരണഘടനാ നിർമ്മാണ സഭയിൽ ലക്ഷ്യപ്രമേയം അവതരിപ്പിച്ചത് ആര്?", options: ["എ) ഡോ. ബി. ആർ. അംബേദ്കർ", "ബി) ജവഹർലാൽ നെഹ്റു", "സി) ഡോ. രാജേന്ദ്ര പ്രസാദ്", "ഡി) സർദാർ വല്ലഭഭായ് പട്ടേൽ"], answer: 1, explanation: "ജവഹർലാൽ നെഹ്റു" },
                 { q: "ജവഹർലാൽ നെഹ്റു ലക്ഷ്യപ്രമേയം അവതരിപ്പിച്ച തീയതി ഏത്?", options: ["എ) 1946 ഡിസംബർ 13", "ബി) 1947 ജനുവരി 22", "സി) 1949 നവംബർ 26", "ഡി) 1950 ജനുവരി 26"], answer: 0, explanation: "1946 ഡിസംബർ 13" },
                 { q: "ജവഹർലാൽ നെഹ്റു അവതരിപ്പിച്ച ലക്ഷ്യപ്രമേയം ഭരണഘടനാ നിർമ്മാണ സഭ ആമുഖമായി അംഗീകരിച്ച തീയതി ഏത്?", options: ["എ) 1946 ഡിസംബർ 13", "ബി) 1947 ജനുവരി 22", "സി) 1949 നവംബർ 26", "ഡി) 1950 ജനുവരി 26"], answer: 1, explanation: "1947 ജനുവരി 22" },
@@ -554,6 +522,7 @@
                 { front: "ഭാരതത്തിന്റെ ഭരണഘടന ആമുഖത്തിൽ പൗരന്മാർക്ക് എത്ര തരത്തിലുള്ള നീതിയാണ് ഉറപ്പുനൽകുന്നത്?", back: "മൂന്ന്" },
                 { front: "ഭാരത ഭരണഘടനയുടെ ആമുഖത്തിൽ താഴെ പറയുന്നവയിൽ ഏതൊക്കെ നീതികളാണ് പൗരന്മാർക്ക് വാഗ്ദാനം ചെയ്യുന്നത്?", back: "സാമൂഹ്യവും സാമ്പത്തികവും രാഷ്ട്രീയവുമായ നീതി" },
                 { front: "ആമുഖത്തിൽ എത്ര തരത്തിലുള്ള സ്വാതന്ത്ര്യങ്ങളെക്കുറിച്ചാണ് പ്രതിപാദിച്ചിരിക്കുന്നത്?", back: "അഞ്ച്" },
+                { front: "ഇന്ത്യൻ ഭരണഘടന പൗരന്മാർക്ക് ഉറപ്പുനൽകുന്ന സ്വാതന്ത്ര്യങ്ങൾ ഏതൊക്കെ?", back: "ചിന്തയ്ക്കുള്ള സ്വാതന്ത്ര്യം, ആശയപ്രകടനത്തിനുള്ള സ്വാതന്ത്ര്യം, വിശ്വാസത്തിനുള്ള സ്വാതന്ത്ര്യം, മതനിഷ്ഠയ്ക്കുള്ള സ്വാതന്ത്ര്യം, ആരാധനയ്ക്കുള്ള സ്വാതന്ത്ര്യം" },
                 { front: "ഭരണഘടനയുടെ ആമുഖത്തിൽ പരാമർശിച്ചിരിക്കുന്ന സ്വാതന്ത്ര്യങ്ങളിൽ ഉൾപ്പെടാത്തത് ഏത്?", back: "തൊഴിലെടുക്കാനുള്ള സ്വാതന്ത്ര്യം" },
                 { front: "പൗരന്മാർക്ക് ഏതൊക്കെ കാര്യങ്ങളിലാണ് സമത്വം ഉറപ്പുവരുത്താൻ ആമുഖത്തിൽ ലക്ഷ്യമിടുന്നത്?", back: "പദവിയിലും അവസരത്തിലും" },
                 { front: "ആരുടെ അന്തസ്സും രാഷ്ട്രത്തിന്റെ ഐക്യവും അഖണ്ഡതയും ഉറപ്പുവരുത്തിക്കൊണ്ട് സാഹോദര്യം പുലർത്താനാണ് ആമുഖത്തിൽ തീരുമാനിച്ചിരിക്കുന്നത്?", back: "വ്യക്തിയുടെ" },
@@ -585,18 +554,24 @@
             ]
         };
 
-        // ലോക്കൽ സ്റ്റോറേജിന് പുറമെ ഫയർബേസ് ക്ലൗഡിൽ നിന്നും ഡാറ്റ ഒരേസമയം സിങ്ക് ചെയ്യുന്ന സംവിധാനം
-        async function getSavedRevisionStatus(topicId) {
+        function playErrorSound() {
+            try {
+                let audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                let osc = audioCtx.createOscillator();
+                let gain = audioCtx.createGain();
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(300, audioCtx.currentTime);
+                gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start();
+                osc.stop(audioCtx.currentTime + 0.2);
+            } catch (e) {}
+        }
+
+        function getRevisionStatus(topicId) {
             let mockDateStr = localStorage.getItem(`rev_date_mock_${topicId}`);
             let flashDateStr = localStorage.getItem(`rev_date_flash_${topicId}`);
-            
-            // ക്ലൗഡിൽ നിന്നും ചെക്ക് ചെയ്യുക
-            let cloudMock = await window.loadUserProgressFromCloud(`rev_date_mock_${topicId}`);
-            let cloudFlash = await window.loadUserProgressFromCloud(`rev_date_flash_${topicId}`);
-
-            if (cloudMock && !mockDateStr) { localStorage.setItem(`rev_date_mock_${topicId}`, cloudMock); mockDateStr = cloudMock; }
-            if (cloudFlash && !flashDateStr) { localStorage.setItem(`rev_date_flash_${topicId}`, cloudFlash); flashDateStr = cloudFlash; }
-
             let dates = [];
             if (mockDateStr) dates.push(new Date(mockDateStr));
             if (flashDateStr) dates.push(new Date(flashDateStr));
@@ -626,22 +601,22 @@
             return 'safe';
         }
 
-        async function getModuleNotificationClass(modKey) {
+        function getModuleNotificationClass(modKey) {
             let topics = moduleData[modKey];
             let hasRed = false;
             let hasOrange = false;
             let hasYellow = false;
             let hasTopics = false;
 
-            for (let cat of topics) {
-                for (let t of cat.topics) {
+            topics.forEach(cat => {
+                cat.topics.forEach(t => {
                     hasTopics = true;
-                    let status = await getSavedRevisionStatus(t.id);
+                    let status = getRevisionStatus(t.id);
                     if (status === 'overdue') hasRed = true;
                     if (status === 'today') hasOrange = true;
                     if (status === 'tomorrow') hasYellow = true;
-                }
-            }
+                });
+            });
 
             if (!hasTopics) return '';
             if (hasRed) return 'blink-red';
@@ -650,7 +625,7 @@
             return '';
         }
 
-        window.openModulesListMenu = async function() {
+        window.openModulesListMenu = function() {
             currentViewLevel = "modules_list";
             document.getElementById('home-menu').style.display = 'none';
             let viewDiv = document.getElementById('dynamic-view');
@@ -658,22 +633,20 @@
 
             document.getElementById('view-title').innerText = "📚 എല്ലാ മോഡ്യൂളുകളും (Modules 1 - 20)";
             let container = document.getElementById('subtopics-container');
-            container.innerHTML = '<p style="text-align:center; color:#64748b;">ക്ലൗഡിൽ നിന്ന് ഡാറ്റ ലോഡ് ചെയ്യുന്നു...</p>';
+            container.innerHTML = '';
 
-            let htmlContent = '';
             for (let i = 1; i <= 20; i++) {
                 let modKey = `mod_${i}`;
                 let modName = `MODULE ${i}`;
-                let blinkClass = await getModuleNotificationClass(modKey);
+                let blinkClass = getModuleNotificationClass(modKey);
 
-                htmlContent += `
+                container.innerHTML += `
                     <div class="subtopic-card ${blinkClass}" style="display: flex; justify-content: space-between; align-items: center; cursor: pointer;" onclick="loadModuleContent('${modKey}', '${modName}')">
                         <h4 style="margin: 0; color: #1e3a8a;">${modName}</h4>
                         <button class="btn-link" style="padding: 6px 12px;">ഉള്ളടക്കം കാണുക →</button>
                     </div>
                 `;
             }
-            container.innerHTML = htmlContent;
             window.scrollTo({ top: 0, behavior: 'smooth' });
         };
 
@@ -706,56 +679,42 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         };
 
-        window.openCategoryTopics = async function(modKey, catIndex) {
+        window.openCategoryTopics = function(modKey, catIndex) {
             selectedCatIndex = catIndex;
             currentViewLevel = "topics";
             let cat = moduleData[modKey][catIndex];
             document.getElementById('view-title').innerText = `${selectedModuleName} - ${cat.category}`;
             let container = document.getElementById('subtopics-container');
-            container.innerHTML = '<p style="text-align:center; color:#64748b;">സ്റ്റാറ്റസ് പരിശോധിക്കുന്നു...</p>';
+            container.innerHTML = '';
 
             let topicsHtml = '';
             if (!cat.topics || cat.topics.length === 0) {
                 topicsHtml = `<p style="font-size: 0.85rem; color: #64748b; text-align: center; padding: 10px;">ഉള്ളടക്കം ഉടൻ ചേർക്കുന്നതാണ്...</p>`;
             } else {
-                for (let topic of cat.topics) {
+                cat.topics.forEach((topic) => {
                     let actionBtnsHtml = '';
-                    if (topic.hasMock || topic.hasFlash) {
-                        if (topic.hasMock) actionBtnsHtml += `<button class="btn-link btn-mock" onclick="openSpecificMock('${topic.id}', '${topic.title}')">📝 മോക്ക് ടെസ്റ്റ്</button>`;
-                        if (topic.hasFlash) actionBtnsHtml += `<button class="btn-link btn-flash" onclick="openFlashcardSession('${topic.id}', '${topic.title}')">⚡ ഫ്ലാഷ് കാർഡ്</button>`;
-                    } else {
-                        actionBtnsHtml += `<p style="font-size: 0.85rem; color: #64748b; text-align: center; width: 100%;">ഉള്ളടക്കം ഉടൻ ചേർക്കുന്നതാണ്...</p>`;
-                    }
+                    if (topic.hasMock) actionBtnsHtml += `<button class="btn-link btn-mock" onclick="openSpecificMock('${topic.id}', '${topic.title}')">📝 മോക്ക് ടെസ്റ്റ്</button>`;
+                    if (topic.hasFlash) actionBtnsHtml += `<button class="btn-link btn-flash" onclick="openFlashcardSession('${topic.id}', '${topic.title}')">⚡ ഫ്ലാഷ് കാർഡ്</button>`;
 
-                    let status = await getSavedRevisionStatus(topic.id);
+                    let status = getRevisionStatus(topic.id);
                     let badgeBg = "#2563eb";
                     let badgeText = "പുതിയത്";
                     let subcardBlink = "";
 
                     if (status === 'today') {
                         badgeBg = "#ea580c"; badgeText = "ഇന്ന് റിവിഷൻ ദിവസം!"; subcardBlink = "blink-orange";
-                    } else if (status === 'tomorrow') {
-                        badgeBg = "#ca8a04"; badgeText = "നാളെ റിവിഷൻ ദിവസം!"; subcardBlink = "blink-yellow";
                     } else if (status === 'overdue') {
                         badgeBg = "#dc2626"; badgeText = "റിവിഷൻ തീയതി കഴിഞ്ഞു!"; subcardBlink = "blink-red";
-                    } else if (status === 'safe') {
-                        badgeBg = "#16a34a"; badgeText = "റിവിഷൻ സേഫ് ആണ്";
                     }
 
-                    let cardClass = subcardBlink ? `subtopic-card ${subcardBlink}` : "subtopic-card";
-
                     topicsHtml += `
-                        <div class="${cardClass}">
-                            <div style="margin-bottom: 8px;">
-                                <h4 style="margin: 0 0 6px 0; color: #1e293b;">${topic.title}</h4>
-                                <div style="display: flex; gap: 6px; flex-wrap: wrap;">
-                                    <div class="revision-badge" style="background: ${badgeBg};"><span class="red-dot"></span> ${badgeText}</div>
-                                </div>
-                            </div>
+                        <div class="subtopic-card ${subcardBlink}">
+                            <h4 style="margin: 0 0 6px 0; color: #1e293b;">${topic.title}</h4>
+                            <div class="revision-badge" style="background: ${badgeBg}; margin-bottom: 8px;"><span class="red-dot"></span> ${badgeText}</div>
                             <div class="action-buttons">${actionBtnsHtml}</div>
                         </div>
                     `;
-                }
+                });
             }
 
             container.innerHTML = `
@@ -765,69 +724,13 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         };
 
-        window.openAnalysisMenu = async function() {
+        window.openAnalysisMenu = function() {
             currentViewLevel = "home";
             document.getElementById('home-menu').style.display = 'none';
             let viewDiv = document.getElementById('dynamic-view');
             viewDiv.style.display = 'block';
             document.getElementById('view-title').innerText = "📊 വിശകലനം (Analysis)";
-            let container = document.getElementById('subtopics-container');
-            container.innerHTML = '<p style="text-align:center; color:#64748b;">ഫയർബേസ് ക്ലൗഡിൽ നിന്ന് വിശകലന വിവരങ്ങൾ എടുക്കുന്നു...</p>';
-
-            let mockAttemptsSummaryHtml = '';
-            for (let modKey in moduleData) {
-                let modNum = modKey.replace("mod_", "MODULE ");
-                let modHasAttempts = false;
-                let modHtml = '';
-
-                for (let cat of moduleData[modKey]) {
-                    for (let t of cat.topics) {
-                        let attemptsKey = `mock_attempts_${t.id}`;
-                        let attempts = JSON.parse(localStorage.getItem(attemptsKey) || '[]');
-                        let cloudAttempts = await window.loadUserProgressFromCloud(attemptsKey);
-                        if (cloudAttempts && cloudAttempts.length > attempts.length) {
-                            attempts = cloudAttempts;
-                            localStorage.setItem(attemptsKey, JSON.stringify(attempts));
-                        } else if (attempts.length > 0) {
-                            window.saveUserProgressToCloud(attemptsKey, attempts);
-                        }
-
-                        if (attempts.length > 0) {
-                            modHasAttempts = true;
-                            let attStr = attempts.map((att, i) => `അറ്റംറ്റ് ${i+1}: ${att.score} (${att.date})`).join(' | ');
-                            modHtml += `
-                                <div class="rev-row" style="flex-direction: column; align-items: flex-start; gap: 4px;">
-                                    <span style="font-weight: 600; font-size: 0.9rem; color: #1e293b;">${t.title}</span>
-                                    <span style="font-size: 0.8rem; color: #047857; font-weight: bold;">${attStr}</span>
-                                </div>
-                            `;
-                        }
-                    }
-                }
-
-                if (modHasAttempts) {
-                    mockAttemptsSummaryHtml += `<div class="subtopic-card" style="margin-top:10px;"><h4 style="color:#1e3a8a; border-bottom:1px solid #e2e8f0; padding-bottom:4px; margin-bottom:8px;">${modNum} - മോക്ക് ടെസ്റ്റ് സ്കോറുകൾ</h4>${modHtml}</div>`;
-                }
-            }
-
-            container.innerHTML = `
-                <div class="subtopic-card" style="background: #ffffff; border-left: 4px solid #2563eb; margin-bottom: 10px;">
-                    <h4 style="color: #1e3a8a; margin-bottom: 8px;">📈 റിവിഷൻ പുരോഗതി (My Revision Progress)</h4>
-                    <button class="btn-link" style="background: #2563eb; width: 100%;" onclick="openRevisionProgressView()">തുറക്കുക →</button>
-                </div>
-                <div class="subtopic-card" style="background: #ffffff; border-left: 4px solid #059669; margin-bottom: 10px;">
-                    <h4 style="color: #065f46; margin-bottom: 8px;">📖 സ്റ്റഡി ട്രാക്കർ (Study Tracker)</h4>
-                    <button class="btn-link" style="background: #059669; width: 100%;" onclick="openTrackerView()">തുറക്കുക →</button>
-                </div>
-                <div class="subtopic-card" style="background: #ffffff; border-left: 4px solid #0284c7; margin-bottom: 10px;">
-                    <h4 style="color: #0369a1; margin-bottom: 8px;">📊 മോക്ക് ടെസ്റ്റ് ട്രാക്കർ (Mock Test Tracker)</h4>
-                    <button class="btn-link" style="background: #0284c7; width: 100%;" onclick="openMockTrackerView()">തുറക്കുക →</button>
-                </div>
-                <div style="margin-top: 15px;">
-                    <h3 style="font-size: 1rem; color: #1e3a8a; margin-bottom: 10px;">🏆 മോക്ക് ടെസ്റ്റ് അറ്റംറ്റ് ഹിസ്റ്ററി</h3>
-                    ${mockAttemptsSummaryHtml || '<p style="color: #64748b; font-size: 0.85rem; text-align: center; padding: 10px;">മോക്ക് ടെസ്റ്റ് അറ്റംറ്റുകൾ ഇതുവരെ രേഖപ്പെടുത്തിയിട്ടില്ല.</p>'}
-                </div>
-            `;
+            document.getElementById('subtopics-container').innerHTML = `<p style="color: #64748b; padding: 10px; text-align: center;">വിശകലന വിവരങ്ങൾ ലഭ്യമാണ്.</p>`;
             window.scrollTo({ top: 0, behavior: 'smooth' });
         };
 
@@ -837,320 +740,14 @@
             let viewDiv = document.getElementById('dynamic-view');
             viewDiv.style.display = 'block';
             document.getElementById('view-title').innerText = "🔄 എന്റെ റിവിഷൻ (My Revision)";
-            let container = document.getElementById('subtopics-container');
-
-            container.innerHTML = `
-                <div class="subtopic-card" style="background: #ffffff; border-left: 4px solid #7c3aed;">
-                    <h4 style="color: #5b21b6; margin-bottom: 8px;">🔄 കസ്റ്റം റിവിഷൻ ടെസ്റ്റ് (Revision Test)</h4>
-                    <button class="btn-link" style="background: #7c3aed; width: 100%;" onclick="openRevisionSetup()">തുടങ്ങുക →</button>
-                </div>
-                <div class="subtopic-card" style="background: #ffffff; border-left: 4px solid #dc2626;">
-                    <h4 style="color: #991b1b; margin-bottom: 8px;">❌ തെറ്റിയ മോക്ക് ടെസ്റ്റ് ചോദ്യങ്ങൾ റിവ്യൂ ചെയ്യുക</h4>
-                    <button class="btn-link" style="background: #dc2626; width: 100%;" onclick="openWrongReview()">റിവ്യൂ ചെയ്യുക →</button>
-                </div>
-                <div class="subtopic-card" style="background: #ffffff; border-left: 4px solid #d97706;">
-                    <h4 style="color: #92400e; margin-bottom: 8px;">⚡ തെറ്റിയ ഫ്ലാഷ് കാർഡുകൾ റിവ്യൂ ചെയ്യുക</h4>
-                    <button class="btn-link" style="background: #d97706; width: 100%;" onclick="openFlashReviewSets()">റിവ്യൂ ചെയ്യുക →</button>
-                </div>
-            `;
+            document.getElementById('subtopics-container').innerHTML = `<p style="color: #64748b; padding: 10px; text-align: center;">റിവിഷൻ മെനു ലഭ്യമാണ്.</p>`;
             window.scrollTo({ top: 0, behavior: 'smooth' });
         };
 
-        window.openRevisionProgressView = async function() {
-            document.getElementById('view-title').innerText = "📈 റിവിഷൻ പുരോഗതി";
-            let container = document.getElementById('subtopics-container');
-            container.innerHTML = `<p style="color: #64748b; text-align: center; padding: 20px;">ക്ലൗഡിൽ നിന്ന് ഡാറ്റ ലോഡ് ചെയ്യുന്നു...</p>`;
-            
-            let cloudCounts = await window.loadUserProgressFromCloud("revision_counts_map") || {};
-            let html = '';
-            for (let modKey in moduleData) {
-                let modNum = modKey.replace("mod_", "MODULE ");
-                let modHasTopics = false;
-                let modHtml = '';
-
-                for (let cat of moduleData[modKey]) {
-                    for (let t of cat.topics) {
-                        modHasTopics = true;
-                        let c = cloudCounts[t.id] || parseInt(localStorage.getItem(`rev_cnt_${t.id}`) || '0');
-                        modHtml += `
-                            <div class="rev-row">
-                                <span style="font-weight: 600; font-size: 0.9rem; flex:1; text-align:left;">${t.title}</span>
-                                <div class="counter-box">
-                                    <button class="count-btn" onclick="updateRevCount('${t.id}', -1)">-</button>
-                                    <span class="count-display" id="rev_cnt_${t.id}">${c}</span>
-                                    <button class="count-btn" onclick="updateRevCount('${t.id}', 1)">+</button>
-                                </div>
-                            </div>
-                        `;
-                    }
-                }
-
-                if (modHasTopics) {
-                    html += `<div class="subtopic-card" style="margin-top:10px;"><h4 style="color:#1e3a8a; border-bottom:1px solid #e2e8f0; padding-bottom:4px; margin-bottom:8px;">${modNum}</h4>${modHtml}</div>`;
-                }
-            }
-            container.innerHTML = `<button class="small-nav-btn" style="margin-bottom: 12px;" onclick="openAnalysisMenu()">← തിരികെ</button><div style="max-height:350px; overflow-y:auto;">${html || '<p>സബ് ടോപ്പിക്കുകൾ ലഭ്യമല്ല</p>'}</div>`;
-        };
-
-        window.updateRevCount = async function(id, val) {
-            let actionText = val > 0 ? "പുതിയ റിവിഷനായി ആഡ് ചെയ്യണമോ?" : "റിവിഷൻ ഒന്ന് കുറയ്ക്കണമോ?";
-            let confirmAction = confirm(actionText);
-            if (!confirmAction) return;
-
-            let cloudCounts = await window.loadUserProgressFromCloud("revision_counts_map") || {};
-            let current = cloudCounts[id] || 0;
-            current = Math.max(0, current + val);
-            cloudCounts[id] = current;
-            
-            await window.saveUserProgressToCloud("revision_counts_map", cloudCounts);
-            localStorage.setItem(`rev_cnt_${id}`, current);
-
-            let display = document.getElementById(`rev_cnt_${id}`);
-            if(display) display.innerText = current;
-        };
-
-        window.openMockTrackerView = async function() {
-            document.getElementById('view-title').innerText = "📊 മോക്ക് ടെസ്റ്റ് ട്രാക്കർ";
-            let container = document.getElementById('subtopics-container');
-            container.innerHTML = `<p style="color: #64748b; text-align: center; padding: 20px;">ഡാറ്റ ലോഡ് ചെയ്യുന്നു...</p>`;
-            
-            let cloudMockCounts = await window.loadUserProgressFromCloud("mock_counts_map") || {};
-            let html = '';
-            for (let modKey in moduleData) {
-                let modNum = modKey.replace("mod_", "MODULE ");
-                let modHasTopics = false;
-                let modHtml = '';
-
-                for (let cat of moduleData[modKey]) {
-                    for (let t of cat.topics) {
-                        if(t.hasMock) {
-                            modHasTopics = true;
-                            let cnt = cloudMockCounts[t.id] || 0;
-                            modHtml += `<div class="rev-row"><span style="font-weight:600; text-align:left; flex:1;">${t.title}</span><div style="background:#0284c7; color:white; padding:4px 10px; border-radius:6px; font-weight:bold;">${cnt}</div></div>`;
-                        }
-                    }
-                }
-
-                if (modHasTopics) {
-                    html += `<div class="subtopic-card" style="margin-top:10px;"><h4 style="color:#1e3a8a; border-bottom:1px solid #e2e8f0; padding-bottom:4px; margin-bottom:8px;">${modNum}</h4>${modHtml}</div>`;
-                }
-            }
-            container.innerHTML = `<button class="small-nav-btn" style="margin-bottom: 12px;" onclick="openAnalysisMenu()">← തിരികെ</button><div style="max-height:350px; overflow-y:auto;">${html || '<p>വിവരങ്ങൾ ലഭ്യമല്ല</p>'}</div>`;
-        };
-
-        window.openTrackerView = function() {
-            document.getElementById('view-title').innerText = "📖 സ്റ്റഡി ട്രാക്കർ";
-            document.getElementById('subtopics-container').innerHTML = `<button class="small-nav-btn" style="margin-bottom: 12px;" onclick="openAnalysisMenu()">← തിരികെ</button><p style="padding: 20px; text-align: center;">സ്റ്റഡി ട്രാക്കർ വിവരങ്ങൾ ഇവിടെ ലഭ്യമാണ്.</p>`;
-        };
-
-        window.openWrongReview = async function() {
-            document.getElementById('view-title').innerText = "❌ തെറ്റിയ മോക്ക് ടെസ്റ്റ് ചോദ്യങ്ങൾ റിവ്യൂ ചെയ്യുക";
-            let container = document.getElementById('subtopics-container');
-            container.innerHTML = `<p style="color: #64748b; text-align: center; padding: 20px;">ഫയർബേസിൽ നിന്ന് ലോഡ് ചെയ്യുന്നു...</p>`;
-            let savedSets = await window.loadFromFirebase("revision_sets");
-            if (savedSets.length === 0) {
-                container.innerHTML = `<button class="small-nav-btn" style="margin-bottom: 12px;" onclick="openMyRevisionMenu()">← തിരികെ</button><p style="text-align: center; padding: 20px;">മോക്ക് ടെസ്റ്റ് റിവ്യൂ സെറ്റുകൾ ഒന്നും ലഭ്യമല്ല.</p>`;
-                return;
-            }
-            let setsHtml = savedSets.map((set) => `
-                <div class="subtopic-card" style="display: flex; justify-content: space-between; align-items: center; gap: 10px;">
-                    <div><h4>${set.name}</h4><p style="font-size: 0.8rem; color: #64748b;">ചോദ്യങ്ങൾ: ${set.items.length}</p></div>
-                    <div style="display: flex; gap: 6px;">
-                        <button class="btn-link btn-mock" onclick='startQuiz(${JSON.stringify(set.items)}, "${set.name}")'>എഴുതുക</button>
-                        <button class="btn-delete-rev" onclick="deleteMockSet('${set.id}')">ഡിലീറ്റ്</button>
-                    </div>
-                </div>
-            `).join('');
-            container.innerHTML = `<button class="small-nav-btn" style="margin-bottom: 12px;" onclick="openMyRevisionMenu()">← തിരികെ</button><div style="max-height: 350px; overflow-y: auto;">${setsHtml}</div>`;
-        };
-
-        window.deleteMockSet = async function(docId) {
-            let confirmDel = confirm("ഈ മോക്ക് ടെസ്റ്റ് സെറ്റ് ഡിലീറ്റ് ചെയ്യണമെന്ന് ഉറപ്പാണോ?");
-            if (confirmDel && window.deleteFromFirebaseDoc) {
-                await window.deleteFromFirebaseDoc(docId, "revision_sets");
-                openWrongReview();
-            }
-        };
-
-        window.openFlashReviewSets = async function() {
-            document.getElementById('view-title').innerText = "⚡ തെറ്റിയ ഫ്ലാഷ് കാർഡുകൾ റിവ്യൂ ചെയ്യുക";
-            let container = document.getElementById('subtopics-container');
-            container.innerHTML = `<p style="color: #64748b; text-align: center; padding: 20px;">ഫയർബേസിൽ നിന്ന് ലോഡ് ചെയ്യുന്നു...</p>`;
-            let savedSets = await window.loadFromFirebase("flashcard_revision_sets");
-            if (savedSets.length === 0) {
-                container.innerHTML = `<button class="small-nav-btn" style="margin-bottom: 12px;" onclick="openMyRevisionMenu()">← തിരികെ</button><p style="text-align: center; padding: 20px;">ഫ്ലാഷ് കാർഡ് റിവ്യൂ സെറ്റുകൾ ഒന്നും ലഭ്യമല്ല.</p>`;
-                return;
-            }
-            let setsHtml = savedSets.map((set) => `
-                <div class="subtopic-card" style="display: flex; justify-content: space-between; align-items: center; gap: 10px;">
-                    <div><h4>${set.name}</h4><p style="font-size: 0.8rem; color: #64748b;">കാർഡുകൾ: ${set.items.length}</p></div>
-                    <div style="display: flex; gap: 6px;">
-                        <button class="btn-link btn-flash" onclick='startFlashReview(${JSON.stringify(set.items)}, "${set.name}")'>റിവ്യൂ</button>
-                        <button class="btn-delete-rev" onclick="deleteFlashSet('${set.id}')">ഡിലീറ്റ്</button>
-                    </div>
-                </div>
-            `).join('');
-            container.innerHTML = `<button class="small-nav-btn" style="margin-bottom: 12px;" onclick="openMyRevisionMenu()">← തിരികെ</button><div style="max-height: 350px; overflow-y: auto;">${setsHtml}</div>`;
-        };
-
-        window.deleteFlashSet = async function(docId) {
-            let confirmDel = confirm("ഈ ഫ്ലാഷ് കാർഡ് സെറ്റ് ഡിലീറ്റ് ചെയ്യണമെന്ന് ഉറപ്പാണോ?");
-            if (confirmDel && window.deleteFromFirebaseDoc) {
-                await window.deleteFromFirebaseDoc(docId, "flashcard_revision_sets");
-                openFlashReviewSets();
-            }
-        };
-
-        window.startFlashReview = function(items, title) {
-            flashCardsList = items;
-            flashIdx = 0;
-            selectedSubtopicTitle = title;
-            currentViewLevel = "flashcard";
-            renderFlashcard();
-        };
-
-        window.openRevisionSetup = function() {
-            document.getElementById('view-title').innerText = "🔄 കസ്റ്റം റിവിഷൻ ടെസ്റ്റ് ക്രമീകരിക്കുക";
-            let container = document.getElementById('subtopics-container');
-
-            let optionsHtml = `<option value="">-- ഒരു വിഷയം അല്ലെങ്കിൽ മോഡ്യൂൾ തിരഞ്ഞെടുക്കുക --</option>`;
-            
-            optionsHtml += `<optgroup label="എല്ലാ മോഡ്യൂളുകളും (Master Test)">`;
-            optionsHtml += `<option value="all_modules_master">🌟 എല്ലാ മോഡ്യൂളുകളിൽ നിന്നും റാൻഡം ചോദ്യങ്ങൾ</option>`;
-            optionsHtml += `</optgroup>`;
-
-            for (let modKey in moduleData) {
-                let modNum = modKey.replace("mod_", "MODULE ");
-                let modCategories = moduleData[modKey];
-                let validTopics = [];
-                let hasAnyQuestionInMod = false;
-
-                modCategories.forEach(cat => {
-                    cat.topics.forEach(t => {
-                        let hasMock = questionsDB[t.id] && questionsDB[t.id].length > 0;
-                        let hasFlash = flashcardDB[t.id] && flashcardDB[t.id].length > 0;
-                        if (hasMock || hasFlash) {
-                            validTopics.push({ catName: cat.category, topic: t });
-                            hasAnyQuestionInMod = true;
-                        }
-                    });
-                });
-
-                if (hasAnyQuestionInMod) {
-                    optionsHtml += `<optgroup label="${modNum}">`;
-                    optionsHtml += `<option value="mod_full_${modKey}">📁 ${modNum} - മുഴുവൻ മോഡ്യൂളും</option>`;
-                    validTopics.forEach(item => {
-                        optionsHtml += `<option value="sub_${item.topic.id}">↳ ${item.catName} - ${item.topic.title}</option>`;
-                    });
-                    optionsHtml += `</optgroup>`;
-                }
-            }
-
-            container.innerHTML = `
-                <button class="small-nav-btn" style="margin-bottom: 12px;" onclick="openMyRevisionMenu()">← തിരികെ</button>
-                <div class="form-group">
-                    <label>വിഷയം അല്ലെങ്കിൽ മോഡ്യൂൾ തിരഞ്ഞെടുക്കുക:</label>
-                    <select id="custom-rev-select" class="form-control">${optionsHtml}</select>
-                </div>
-                <div class="form-group">
-                    <label>ചോദ്യങ്ങളുടെ എണ്ണം തിരഞ്ഞെടുക്കുക:</label>
-                    <select id="custom-rev-count" class="form-control">
-                        <option value="10">10 ചോദ്യങ്ങൾ</option>
-                        <option value="20">20 ചോദ്യങ്ങൾ</option>
-                        <option value="30">30 ചോദ്യങ്ങൾ</option>
-                        <option value="50">50 ചോദ്യങ്ങൾ</option>
-                        <option value="75">75 ചോദ്യങ്ങൾ</option>
-                        <option value="100">100 ചോദ്യങ്ങൾ</option>
-                    </select>
-                </div>
-                <button class="result-action-btn btn-retry" onclick="startSelectedCustomTest()">ടെസ്റ്റ് ആരംഭിക്കുക</button>
-            `;
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        };
-
-        window.startSelectedCustomTest = function() {
-            let selectElem = document.getElementById('custom-rev-select');
-            let countElem = document.getElementById('custom-rev-count');
-            if (!selectElem || !selectElem.value) {
-                alert("ദയവായി ഏതെങ്കിലും ഒരു വിഷയം അല്ലെങ്കിൽ മോഡ്യൂൾ തിരഞ്ഞെടുക്കുക!");
-                return;
-            }
-
-            let val = selectElem.value;
-            let targetCount = parseInt(countElem.value);
-            let pool = [];
-            let customName = "കസ്റ്റം റിവിഷൻ ടെസ്റ്റ്";
-
-            if (val === "all_modules_master") {
-                for (let mKey in moduleData) {
-                    moduleData[mKey].forEach(cat => {
-                        cat.topics.forEach(t => {
-                            if (questionsDB[t.id]) {
-                                pool = pool.concat(questionsDB[t.id]);
-                            }
-                        });
-                    });
-                }
-                customName = "എല്ലാ മോഡ്യൂളുകളും (Master Test)";
-            } else if (val.startsWith("sub_")) {
-                let subId = val.replace("sub_", "");
-                pool = questionsDB[subId] || [];
-                for (let mKey in moduleData) {
-                    moduleData[mKey].forEach(cat => {
-                        cat.topics.forEach(t => {
-                            if (t.id === subId) customName = t.title;
-                        });
-                    });
-                }
-            } else if (val.startsWith("mod_full_")) {
-                let modKey = val.replace("mod_full_", "");
-                let cats = moduleData[modKey] || [];
-                cats.forEach(cat => {
-                    cat.topics.forEach(t => {
-                        if (questionsDB[t.id]) {
-                            pool = pool.concat(questionsDB[t.id]);
-                        }
-                    });
-                });
-                customName = `${modKey.replace("mod_", "MODULE ")} മുഴുവൻ ടെസ്റ്റ്`;
-            }
-
-            if (pool.length === 0) {
-                alert("ഈ വിഭാഗത്തിൽ ചോദ്യങ്ങൾ ഒന്നും ലഭ്യമല്ല!");
-                return;
-            }
-
-            if (pool.length < targetCount) {
-                let confirmProceed = confirm(`ഈ വിഭാഗത്തിൽ ${targetCount} ചോദ്യങ്ങൾ ലഭ്യമല്ല. ലഭ്യമായ ${pool.length} ചോദ്യങ്ങൾ വെച്ച് എക്സാം എഴുതണോ?`);
-                if (!confirmProceed) return;
-                targetCount = pool.length;
-            }
-
-            for (let i = pool.length - 1; i > 0; i--) {
-                let j = Math.floor(Math.random() * (i + 1));
-                [pool[i], pool[j]] = [pool[j], pool[i]];
-            }
-            let finalQuestions = pool.slice(0, targetCount);
-
-            currentViewLevel = "mock";
-            startQuiz(finalQuestions, customName);
-        };
-
-        window.goBack = function() {
-            if (quizTimerInterval) clearInterval(quizTimerInterval);
-            if (currentViewLevel === "topics") loadModuleContent(selectedModuleKey, selectedModuleName);
-            else if (currentViewLevel === "flashcard" || currentViewLevel === "mock") openCategoryTopics(selectedModuleKey, selectedCatIndex);
-            else if (currentViewLevel === "modules_list") goHome();
-            else goHome();
-        };
-
-        window.goHome = function() {
-            if (quizTimerInterval) clearInterval(quizTimerInterval);
-            currentViewLevel = "home";
-            document.getElementById('dynamic-view').style.display = 'none';
-            document.getElementById('home-menu').style.display = 'flex';
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        };
+        // മോക്ക് ടെസ്റ്റ് ഫങ്ഷൻ
+        let qIndex = 0;
+        let quizQuestions = [];
+        let userAnswers = {};
 
         window.openSpecificMock = function(subId, title) {
             selectedSubtopicId = subId;
@@ -1161,17 +758,86 @@
                 alert('ഈ ടോപ്പിക്കിൽ ചോദ്യങ്ങൾ ഉടൻ ചേർക്കുന്നതാണ്.');
                 return;
             }
-            let shuffledList = JSON.parse(JSON.stringify(qList));
-            for (let i = shuffledList.length - 1; i > 0; i--) {
-                let j = Math.floor(Math.random() * (i + 1));
-                [shuffledList[i], shuffledList[j]] = [shuffledList[j], shuffledList[i]];
-            }
-            startQuiz(shuffledList, title);
+            quizQuestions = JSON.parse(JSON.stringify(qList));
+            qIndex = 0;
+            userAnswers = {};
+            renderQuizInterface();
         };
 
+        function renderQuizInterface() {
+            document.getElementById('home-menu').style.display = 'none';
+            let viewDiv = document.getElementById('dynamic-view');
+            viewDiv.style.display = 'block';
+            document.getElementById('view-title').innerText = `📝 മോക്ക് ടെസ്റ്റ്: ${selectedSubtopicTitle}`;
+
+            let q = quizQuestions[qIndex];
+            let selectedOpt = userAnswers[qIndex];
+
+            let optionsHtml = '';
+            q.options.forEach((opt, i) => {
+                let selClass = selectedOpt === i ? 'selected' : '';
+                optionsHtml += `<div class="option-item ${selClass}" onclick="selectAns(${i})">${opt}</div>`;
+            });
+
+            let container = document.getElementById('subtopics-container');
+            container.innerHTML = `
+                <div class="quiz-container">
+                    <div class="quiz-top-bar">
+                        <span>ചോദ്യം ${qIndex + 1} / ${quizQuestions.length}</span>
+                    </div>
+                    <div class="question-text">${q.q}</div>
+                    <div class="options-list">${optionsHtml}</div>
+                    <div style="display: flex; gap: 10px; margin-top: 15px;">
+                        ${qIndex > 0 ? '<button class="small-nav-btn" onclick="prevQuizQ()">← മുമ്പത്തെ</button>' : ''}
+                        ${qIndex < quizQuestions.length - 1 ? '<button class="small-nav-btn" style="margin-left:auto;" onclick="nextQuizQ()">അടുത്തത് →</button>' : '<button class="btn-link btn-mock" style="margin-left:auto;" onclick="finishQuiz()">ടെസ്റ്റ് ഫിനിഷ് ചെയ്യുക</button>'}
+                    </div>
+                </div>
+            `;
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        window.selectAns = function(optIdx) {
+            userAnswers[qIndex] = optIdx;
+            renderQuizInterface();
+        }
+
+        window.nextQuizQ = function() {
+            if (qIndex < quizQuestions.length - 1) { qIndex++; renderQuizInterface(); }
+        }
+
+        window.prevQuizQ = function() {
+            if (qIndex > 0) { qIndex--; renderQuizInterface(); }
+        }
+
+        window.finishQuiz = function() {
+            let correct = 0;
+            let wrong = 0;
+            quizQuestions.forEach((q, idx) => {
+                if (userAnswers[idx] !== undefined) {
+                    if (userAnswers[idx] === q.answer) correct++;
+                    else wrong++;
+                }
+            });
+            let score = Math.max(0, (correct * 1.0) - (wrong * 0.33)).toFixed(2);
+            if (selectedSubtopicId) {
+                localStorage.setItem(`rev_date_mock_${selectedSubtopicId}`, new Date().toISOString());
+            }
+
+            let container = document.getElementById('subtopics-container');
+            container.innerHTML = `
+                <div class="subtopic-card" style="background: #eff6ff; border-left: 5px solid #3b82f6; text-align: left; padding: 20px;">
+                    <h3 style="color: #1e3a8a; margin-bottom: 10px;">📊 മോക്ക് ടെസ്റ്റ് റിസൾട്ട്</h3>
+                    <p>✅ ശരിയായി ഉത്തരം നൽകിയവ: <strong>${correct}</strong></p>
+                    <p>❌ തെറ്റായ ഉത്തരങ്ങൾ: <strong>${wrong}</strong></p>
+                    <p style="margin-top: 8px; color: #047857; font-weight: bold;">🎯 ആകെ സ്കോർ: ${score}</p>
+                </div>
+                <button class="small-nav-btn" style="margin-top: 15px; width: 100%; justify-content: center;" onclick="goHome()">🏠 ഹോമിലേക്ക് പോവുക</button>
+            `;
+        };
+
+        // ഫ്ലാഷ് കാർഡ് സെഷൻ
         let flashCardsList = [];
         let flashIdx = 0;
-        let unknownFlashCards = [];
 
         window.openFlashcardSession = function(subId, title) {
             selectedSubtopicId = subId;
@@ -1188,7 +854,6 @@
             }
             flashCardsList = fList;
             flashIdx = 0;
-            unknownFlashCards = [];
             renderFlashcard();
         };
 
@@ -1206,7 +871,7 @@
                     <div class="flash-card-scene" onclick="document.getElementById('fcard-inner').classList.toggle('flipped')">
                         <div class="flash-card-box" id="fcard-inner">
                             <div class="flash-card-face flash-card-front">
-                                <span style="font-size: 0.75rem; color: #64748b; font-weight: bold; margin-bottom: 8px;">ചോദ്യം</span>
+                                <span style="font-size: 0.75rem; color: #64748b; font-weight: bold; margin-bottom: 8px;">ചോദ്യം (ടോപ്പ് ക്ലിക്ക് ചെയ്യുക)</span>
                                 <div style="font-size: 1.05rem; font-weight: bold;">${card.front}</div>
                             </div>
                             <div class="flash-card-face flash-card-back">
@@ -1216,335 +881,182 @@
                         </div>
                     </div>
                     <div class="flash-btns">
-                        <button class="btn-unknown" onclick="markFlashCard(false)">❌ അറിയില്ല</button>
-                        <button class="btn-known" onclick="markFlashCard(true)">✓ അറിയാം</button>
+                        <button class="btn-unknown" onclick="nextFlashCard()">അടുത്തത് →</button>
                     </div>
                 </div>
             `;
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        window.markFlashCard = async function(isKnown) {
-            if (!isKnown) {
-                unknownFlashCards.push(flashCardsList[flashIdx]);
-            }
+        window.nextFlashCard = function() {
             flashIdx++;
             if (flashIdx < flashCardsList.length) {
                 renderFlashcard();
             } else {
                 if(selectedSubtopicId) {
-                    let nowIso = new Date().toISOString();
-                    localStorage.setItem(`rev_date_flash_${selectedSubtopicId}`, nowIso);
-                    await window.saveUserProgressToCloud(`rev_date_flash_${selectedSubtopicId}`, nowIso);
+                    localStorage.setItem(`rev_date_flash_${selectedSubtopicId}`, new Date().toISOString());
                 }
-                
-                if (unknownFlashCards.length > 0) {
-                    let confirmSave = confirm(`ഫ്ലാഷ് കാർഡ് പരിശീലനം പൂർത്തിയായി!\nഓർമ്മയില്ലാത്ത / തെറ്റിയ ${unknownFlashCards.length} കാർഡുകൾ ചേർത്ത് പുതിയ റിവിഷൻ സെറ്റ് ഫയർബേസിൽ സേവ് ചെയ്യണോ?`);
-                    if (confirmSave) {
-                        let setName = prompt("പുതിയ റിവിഷൻ സെറ്റിന്റെ പേര് നൽകുക:", `ഫ്ലാഷ് കാർഡ് സെറ്റ് - ${selectedSubtopicTitle}`);
-                        if (setName && window.saveToFirebase) {
-                            window.saveToFirebase(setName.trim(), unknownFlashCards, "flashcard_revision_sets");
-                        }
-                    }
-                } else {
-                    alert("അഭിനന്ദനങ്ങൾ! എല്ലാ ഫ്ലാഷ് കാർഡുകളും നിങ്ങൾക്കറിയാമായിരുന്നു.");
-                }
+                alert("ഫ്ലാഷ് കാർഡ് പരിശീലനം പൂർത്തിയായി!");
                 goHome();
             }
         };
 
-        let qIndex = 0;
-        let quizQuestions = [];
-        let userAnswers = {};
-        let bookmarked = {};
-        let quizTimerInterval = null;
-        let timeLeftSeconds = 0;
+        // പ്രാക്ടീസ് സെക്ഷൻ ലോജിക്
+        let practiceQuestions = [];
+        let practiceIndex = 0;
+        let practiceDoneCount = 0;
+        let practiceLearnedCount = 0;
+        let practiceWrongList = [];
+        let isWaitingForBack = false;
 
-        function startQuiz(qArray, customTitle = null) {
-            quizQuestions = qArray;
-            if (customTitle) selectedSubtopicTitle = customTitle;
-            qIndex = 0;
-            userAnswers = {};
-            bookmarked = {};
-            
-            if (quizTimerInterval) clearInterval(quizTimerInterval);
-            timeLeftSeconds = quizQuestions.length * 50;
-            
-            quizTimerInterval = setInterval(() => {
-                if (timeLeftSeconds > 0) {
-                    timeLeftSeconds--;
-                    let timerElem = document.getElementById('quiz-timer-span');
-                    if (timerElem) {
-                        let m = Math.floor(timeLeftSeconds / 60);
-                        let s = timeLeftSeconds % 60;
-                        timerElem.innerText = `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
-                    }
-                } else {
-                    clearInterval(quizTimerInterval);
-                    alert("സമയം അവസാനിച്ചിരിക്കുന്നു!");
-                    finishQuizSession();
+        window.startPracticeSession = function() {
+            let allPool = [];
+            for (let qKey in questionsDB) {
+                if (questionsDB[qKey]) {
+                    allPool = allPool.concat(questionsDB[qKey]);
                 }
-            }, 1000);
+            }
 
-            renderQuizInterface();
-        }
+            if (allPool.length === 0) {
+                allPool = [
+                    { q: "ആധുനിക സാമ്പത്തികശാസ്ത്രത്തിന്റെ പിതാവ് ആര്?", options: ["എ) ആൽഫ്രഡ് മാർഷൽ", "ബി) ആഡം സ്മിത്ത്", "സി) ദാദാഭായി നൗറോജി", "ഡി) ലയണൽ റോബിൻസ്"], answer: 1, explanation: "ആഡം സ്മിത്ത് ആണ്." },
+                    { q: "ഇന്ത്യൻ ഭരണഘടന പൗരന്മാർക്ക് ഉറപ്പുനൽകുന്ന സ്വാതന്ത്ര്യങ്ങൾ ഏതൊക്കെ?", options: ["എ) ചിന്തയ്ക്കുള്ള സ്വാതന്ത്ര്യം, ആശയപ്രകടനത്തിനുള്ള സ്വാതന്ത്ര്യം, വിശ്വാസത്തിനുള്ള സ്വാതന്ത്ര്യം, മതനിഷ്ഠയ്ക്കുള്ള സ്വാതന്ത്ര്യം, ആരാധനയ്ക്കുള്ള സ്വാതന്ത്ര്യം", "ബി) സഞ്ചാര സ്വാതന്ത്ര്യവും തൊഴിൽ സ്വാതന്ത്ര്യവും വാഗ്ദാന സ്വാതന്ത്ര്യവും", "സി) സ്വത്ത് സമ്പാദിക്കാനുള്ള സ്വാതന്ത്ര്യവും കച്ചവട സ്വാതന്ത്ര്യവും", "ഡി) രാഷ്ട്രീയ പ്രവർത്തനത്തിനുള്ള സ്വാതന്ത്ര്യവും സംഘടനാ സ്വാതന്ത്ര്യവും"], answer: 0, explanation: "ചിന്തയ്ക്കുള്ള സ്വാതന്ത്ര്യം, ആശയപ്രകടനത്തിനുള്ള സ്വാതന്ത്ര്യം, വിശ്വാസത്തിനുള്ള സ്വാതന്ത്ര്യം, മതനിഷ്ഠയ്ക്കുള്ള സ്വാതന്ത്ര്യം, ആരാധനയ്ക്കുള്ള സ്വാതന്ത്ര്യം" }
+                ];
+            }
 
-        function renderQuizInterface() {
+            for (let i = allPool.length - 1; i > 0; i--) {
+                let j = Math.floor(Math.random() * (i + 1));
+                [allPool[i], allPool[j]] = [allPool[j], allPool[i]];
+            }
+
+            practiceQuestions = allPool.slice(0, 100);
+            practiceIndex = 0;
+            practiceDoneCount = 0;
+            practiceLearnedCount = 0;
+            practiceWrongList = [];
+            isWaitingForBack = false;
+
+            currentViewLevel = "practice";
+            renderPracticeInterface();
+        };
+
+        function renderPracticeInterface() {
             document.getElementById('home-menu').style.display = 'none';
             let viewDiv = document.getElementById('dynamic-view');
             viewDiv.style.display = 'block';
-            document.getElementById('view-title').innerText = `📝 മോക്ക് ടെസ്റ്റ്: ${selectedSubtopicTitle || 'Custom'}`;
-            
-            let q = quizQuestions[qIndex];
-            let isMarked = bookmarked[qIndex] ? 'active' : '';
-            let selectedOpt = userAnswers[qIndex];
+            document.getElementById('view-title').innerText = "✍️ പ്രാക്ടീസ് ചെയ്യൂ (100 ചോദ്യങ്ങൾ)";
 
-            let m = Math.floor(timeLeftSeconds / 60);
-            let s = timeLeftSeconds % 60;
-            let timeStr = `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+            if (practiceIndex >= practiceQuestions.length) {
+                if (practiceWrongList.length > 0) {
+                    practiceQuestions = [...practiceWrongList];
+                    practiceWrongList = [];
+                    practiceIndex = 0;
+                } else {
+                    renderPracticeResult();
+                    return;
+                }
+            }
 
+            let q = practiceQuestions[practiceIndex];
             let optionsHtml = '';
             q.options.forEach((opt, i) => {
-                let selClass = selectedOpt === i ? 'selected' : '';
-                optionsHtml += `<div class="option-item ${selClass}" onclick="selectAns(${i})">${opt}</div>`;
-            });
-
-            let paletteHtml = '';
-            quizQuestions.forEach((item, idx) => {
-                let statusClass = "";
-                if (userAnswers[idx] !== undefined) statusClass = "attempted";
-                if (bookmarked[idx]) statusClass += " bookmarked";
-                if (idx === qIndex) statusClass += " current";
-                paletteHtml += `<button class="palette-btn ${statusClass}" onclick="jumpToQ(${idx})">${idx + 1}</button>`;
+                optionsHtml += `<div class="option-item" id="opt-item-${i}" onclick="checkPracticeAnswer(${i}, ${q.answer})">${opt}</div>`;
             });
 
             let container = document.getElementById('subtopics-container');
             container.innerHTML = `
-                <div class="quiz-container" id="quiz-swipe-area">
+                <div class="quiz-container">
                     <div class="quiz-top-bar">
-                        <span>ചോദ്യം ${qIndex + 1} / ${quizQuestions.length}</span>
-                        <div class="timer-display">⏳ <span id="quiz-timer-span">${timeStr}</span></div>
-                        <button class="bookmark-btn ${isMarked}" onclick="toggleBookmark()">⭐ ബുക്ക്മാർക്ക്</button>
+                        <span>ചോദ്യം ${practiceIndex + 1} / ${practiceQuestions.length}</span>
                     </div>
                     <div class="question-text">${q.q}</div>
-                    <div class="options-list">${optionsHtml}</div>
-                    <p style="font-size: 0.75rem; color: #64748b; text-align: center; margin-bottom: 10px;">👉 സ്ൈവപ്പ് (Swipe) ചെയ്യുക അല്ലെങ്കിൽ താഴെയുള്ള പാലറ്റ് ഉപയോഗിക്കുക</p>
-                    
-                    <button class="result-action-btn btn-retry" style="margin-top: 5px;" onclick="finishQuizSession()">ടെസ്റ്റ് ഫിനിഷ് ചെയ്യുക</button>
-
-                    <div style="margin-top: 15px; font-size: 0.8rem; font-weight: bold; color: #334155;">ക്വസ്റ്റ്യൻ പാലറ്റ്:</div>
-                    <div class="palette-grid">${paletteHtml}</div>
+                    <div class="options-list" id="practice-options-box">${optionsHtml}</div>
+                    <div id="learning-feedback-area"></div>
                 </div>
             `;
             window.scrollTo({ top: 0, behavior: 'smooth' });
-            setupSwipeGestures();
         }
 
-        window.selectAns = function(optIdx) {
-            userAnswers[qIndex] = optIdx;
-            renderQuizInterface();
-        }
-
-        window.toggleBookmark = function() {
-            bookmarked[qIndex] = !bookmarked[qIndex];
-            renderQuizInterface();
-        }
-
-        window.jumpToQ = function(idx) {
-            qIndex = idx;
-            renderQuizInterface();
-        }
-
-        function setupSwipeGestures() {
-            let touchStartX = 0;
-            let touchEndX = 0;
-            let area = document.getElementById('quiz-swipe-area');
-            if(!area) return;
-
-            area.ontouchstart = e => { touchStartX = e.changedTouches[0].screenX; };
-            area.ontouchend = e => { 
-                touchEndX = e.changedTouches[0].screenX; 
-                let threshold = 50;
-                if (touchEndX + threshold < touchStartX) {
-                    if (qIndex < quizQuestions.length - 1) { qIndex++; renderQuizInterface(); }
-                } else if (touchEndX > touchStartX + threshold) {
-                    if (qIndex > 0) { qIndex--; renderQuizInterface(); }
-                }
-            };
-        }
-
-        window.finishQuizSession = async function() {
-            if (quizTimerInterval) clearInterval(quizTimerInterval);
+        window.checkPracticeAnswer = function(selectedIdx, correctIdx) {
+            let optBox = document.getElementById('practice-options-box');
+            if (!optBox || isWaitingForBack) return;
             
-            let correctCount = 0;
-            let wrongCount = 0;
-            quizQuestions.forEach((q, idx) => {
-                let userAns = userAnswers[idx];
-                if (userAns !== undefined) {
-                    if (userAns === q.answer) correctCount++;
-                    else {
-                        wrongCount++;
-                        let mistakes = JSON.parse(localStorage.getItem('frequent_mistakes') || '{}');
-                        mistakes[q.q] = (mistakes[q.q] || 0) + 1;
-                        localStorage.setItem('frequent_mistakes', JSON.stringify(mistakes));
-                    }
-                }
-            });
-            let totalScore = Math.max(0, (correctCount * 1.0) - (wrongCount * 0.33)).toFixed(2);
+            let items = optBox.getElementsByClassName('option-item');
+            for(let item of items) { item.style.pointerEvents = 'none'; }
 
-            if (selectedSubtopicId) {
-                let nowIso = new Date().toISOString();
-                localStorage.setItem(`rev_date_mock_${selectedSubtopicId}`, nowIso);
-                await window.saveUserProgressToCloud(`rev_date_mock_${selectedSubtopicId}`, nowIso);
+            practiceDoneCount++;
+
+            if (selectedIdx === correctIdx) {
+                document.getElementById(`opt-item-${selectedIdx}`).classList.add('blink-green-opt');
+                practiceLearnedCount++;
+                setTimeout(() => {
+                    practiceIndex++;
+                    renderPracticeInterface();
+                }, 1000);
+            } else {
+                document.getElementById(`opt-item-${selectedIdx}`).classList.add('blink-red-opt');
+                document.getElementById(`opt-item-${correctIdx}`).classList.add('blink-green-opt');
+                playErrorSound();
                 
-                let attemptsKey = `mock_attempts_${selectedSubtopicId}`;
-                let attempts = JSON.parse(localStorage.getItem(attemptsKey) || '[]');
-                attempts.push({ date: new Date().toLocaleDateString(), score: totalScore });
-                localStorage.setItem(attemptsKey, JSON.stringify(attempts));
-                await window.saveUserProgressToCloud(attemptsKey, attempts);
-                
-                let cloudMockCounts = await window.loadUserProgressFromCloud("mock_counts_map") || {};
-                cloudMockCounts[selectedSubtopicId] = (cloudMockCounts[selectedSubtopicId] || 0) + 1;
-                await window.saveUserProgressToCloud("mock_counts_map", cloudMockCounts);
-                localStorage.setItem('psc_mock_counts', JSON.stringify(cloudMockCounts));
+                let q = practiceQuestions[practiceIndex];
+                let correctOptText = q.options[q.answer];
+
+                let feedbackArea = document.getElementById('learning-feedback-area');
+                feedbackArea.innerHTML = `
+                    <div class="learning-alert-box">
+                        <p style="font-size: 0.9rem; font-weight: bold; color: #dc2626; margin-bottom: 6px;">⚠️ നമുക്ക് പഠിക്കാം ഒന്നുകൂടി ശ്രമിക്കാം</p>
+                        <p style="font-size: 0.85rem; color: #1e293b; margin-bottom: 4px;"><strong>ശരിയായ ഉത്തരം:</strong> ${correctOptText}</p>
+                        <p style="font-size: 0.8rem; color: #64748b;">വിശദീകരണം: ${q.explanation || 'ലഭ്യമല്ല'}</p>
+                        <p style="font-size: 0.75rem; color: #047857; margin-top: 8px; font-weight: bold;">💡 ഇത് പഠിച്ച ശേഷം മുകളിലെ '← ബാക്ക്' ബട്ടൺ അമർത്തി അടുത്ത ചോദ്യത്തിലേക്ക് പോവുക.</p>
+                    </div>
+                `;
+
+                practiceWrongList.push(q);
+                isWaitingForBack = true;
             }
-            renderResultView('all');
-        }
+        };
 
-        function renderResultView(filterType) {
-            document.getElementById('view-title').innerText = "📊 മോക്ക് ടെസ്റ്റ് ഫലങ്ങളും വിശദീകരണങ്ങളും";
+        function renderPracticeResult() {
+            document.getElementById('view-title').innerText = "📊 പ്രാക്ടീസ് റിസൾട്ട്";
             let container = document.getElementById('subtopics-container');
-
-            let correctCount = 0;
-            let wrongCount = 0;
-            let unattendedCount = 0;
-
-            quizQuestions.forEach((q, idx) => {
-                let userAns = userAnswers[idx];
-                if (userAns === undefined) {
-                    unattendedCount++;
-                } else if (userAns === q.answer) {
-                    correctCount++;
-                } else {
-                    wrongCount++;
-                }
-            });
-
-            let totalScore = (correctCount * 1.0) - (wrongCount * 0.33);
-            totalScore = Math.max(0, totalScore).toFixed(2);
-
-            let attemptsHtml = '';
-            if (selectedSubtopicId) {
-                let attempts = JSON.parse(localStorage.getItem(`mock_attempts_${selectedSubtopicId}`) || '[]');
-                if (attempts.length > 0) {
-                    let attemptListItems = attempts.map((att, index) => `<li>${index + 1}-ാം അറ്റംറ്റ് (${att.date}): <strong>${att.score} മാർക്ക്</strong></li>`).join('');
-                    attemptsHtml = `
-                        <div style="margin-top: 10px; padding-top: 8px; border-top: 1px dashed #cbd5e1;">
-                            <p style="font-size: 0.85rem; font-weight: bold; color: #1e3a8a; margin-bottom: 4px;">📈 മുൻകാല അറ്റംറ്റുകൾ:</p>
-                            <ul style="padding-left: 18px; font-size: 0.85rem; color: #334155;">${attemptListItems}</ul>
-                        </div>
-                    `;
-                }
-            }
-
-            let summaryHtml = `
-                <div class="subtopic-card" style="background: #eff6ff; border-left: 5px solid #3b82f6; text-align: left; padding: 15px; margin-bottom: 15px;">
-                    <h3 style="color: #1e3a8a; margin-bottom: 8px;">📚 ടെസ്റ്റ് വിഷയം: ${selectedSubtopicTitle || 'മോക്ക് ടെസ്റ്റ്'}</h3>
-                    <p style="font-size: 0.9rem; color: #334155; margin-bottom: 4px;">✅ ശരിയായ ഉത്തരങ്ങൾ: <strong>${correctCount}</strong></p>
-                    <p style="font-size: 0.9rem; color: #334155; margin-bottom: 4px;">❌ തെറ്റിയ ഉത്തരങ്ങൾ: <strong>${wrongCount}</strong></p>
-                    <p style="font-size: 0.9rem; color: #334155; margin-bottom: 4px;">❓ അറ്റൻഡ് ചെയ്യാത്തവ: <strong>${unattendedCount}</strong></p>
-                    <p style="font-size: 1rem; color: #047857; font-weight: bold; margin-top: 8px;">🎯 ആകെ മാർക്ക്: ${totalScore} <span style="font-size: 0.75rem; color: #64748b;">(ശരിക്ക് +1, തെറ്റിന് -0.33)</span></p>
-                    ${attemptsHtml}
-                </div>
-            `;
-
-            let filterHtml = `
-                <div class="filter-buttons">
-                    <button class="filter-btn ${filterType==='all'?'active':''}" onclick="renderResultView('all')">എല്ലാ ഉത്തരങ്ങളും</button>
-                    <button class="filter-btn ${filterType==='wrong'?'active':''}" onclick="renderResultView('wrong')">തെറ്റിയവ</button>
-                    <button class="filter-btn ${filterType==='unattended'?'active':''}" onclick="renderResultView('unattended')">അറ്റൻഡ് ചെയ്യാത്തവ</button>
-                    <button class="filter-btn ${filterType==='wrong_unattended'?'active':''}" onclick="renderResultView('wrong_unattended')">തെറ്റിയവയും അറ്റൻഡ് ചെയ്യാത്തവയും</button>
-                </div>
-            `;
-
-            let questionsHtml = '';
-            if (filterType) {
-                quizQuestions.forEach((q, idx) => {
-                    let userAns = userAnswers[idx];
-                    let isWrong = (userAns !== undefined && userAns !== q.answer);
-                    let isUnattended = (userAns === undefined);
-
-                    if (filterType === 'wrong' && !isWrong) return;
-                    if (filterType === 'unattended' && !isUnattended) return;
-                    if (filterType === 'wrong_unattended' && !isWrong && !isUnattended) return;
-
-                    let optionsResHtml = '';
-                    q.options.forEach((opt, oIdx) => {
-                        let color = "";
-                        if (oIdx === q.answer) color = "background: #dcfce7; border-color: #22c55e; color: #15803d; font-weight: bold;";
-                        else if (oIdx === userAns) color = "background: #fee2e2; border-color: #dc2626; color: #b91c1c; font-weight: bold;";
-                        optionsResHtml += `<div class="option-item" style="${color}">${opt}</div>`;
-                    });
-
-                    questionsHtml += `
-                        <div class="subtopic-card" style="margin-bottom: 15px;">
-                            <div class="question-text">ചോദ്യം ${idx + 1}: ${q.q}</div>
-                            <div class="options-list">${optionsResHtml}</div>
-                            <div style="background: #f1f5f9; padding: 10px; border-radius: 6px; font-size: 0.85rem; color: #334155; margin-top: 8px;">
-                                <strong>വിശദീകരണം:</strong> ${q.explanation || 'ലഭ്യമല്ല'}
-                            </div>
-                        </div>
-                    `;
-                });
-            }
-
             container.innerHTML = `
-                ${summaryHtml}
-                <p style="font-size: 0.85rem; color: #64748b; text-align: center; margin-bottom: 5px;">താഴെയുള്ള ഏതെങ്കിലും ഒരു വിഭാഗം തിരഞ്ഞെടുക്കുക:</p>
-                ${filterHtml}
-                <div style="max-height: 350px; overflow-y: auto; margin-top: 10px;">${questionsHtml}</div>
-                <button class="result-action-btn btn-retry" onclick="retryWrongAndUnattended()">തെറ്റിയവയും അറ്റൻഡ് ചെയ്യാത്തവയും വീണ്ടും ചെയ്യുക</button>
-                <button class="result-action-btn btn-save-rev" onclick="createRevisionSetAndSave()">അറ്റൻഡ് ചെയ്യാത്തവയും തെറ്റിയവയും ചേർത്ത് പുതിയ റിവിഷൻ സെറ്റായി ആഡ് ചെയ്യുക</button>
+                <div class="subtopic-card" style="background: #eff6ff; border-left: 5px solid #3b82f6; text-align: left; padding: 20px;">
+                    <h3 style="color: #1e3a8a; margin-bottom: 12px;">🎉 പ്രാക്ടീസ് പൂർത്തിയായി!</h3>
+                    <p style="font-size: 0.95rem; color: #334155; margin-bottom: 6px;">📝 ആകെ ചെയ്ത ചോദ്യങ്ങൾ: <strong>${practiceDoneCount}</strong></p>
+                    <p style="font-size: 0.95rem; color: #166534; margin-bottom: 6px;">✅ പഠിച്ചവ / ശരിയാക്കിയവ: <strong>${practiceLearnedCount}</strong></p>
+                </div>
                 <button class="small-nav-btn" style="margin-top: 15px; width: 100%; justify-content: center;" onclick="goHome()">🏠 ഹോമിലേക്ക് പോവുക</button>
             `;
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        function getWrongAndUnattendedList() {
-            let list = [];
-            quizQuestions.forEach((q, idx) => {
-                let userAns = userAnswers[idx];
-                if (userAns === undefined || userAns !== q.answer) {
-                    list.push(q);
+        window.goBack = function() {
+            if (currentViewLevel === "practice") {
+                if (isWaitingForBack) {
+                    isWaitingForBack = false;
+                    practiceIndex++;
+                    renderPracticeInterface();
+                } else {
+                    renderPracticeResult();
                 }
-            });
-            return list;
-        }
-
-        window.retryWrongAndUnattended = function() {
-            let list = getWrongAndUnattendedList();
-            if (list.length === 0) {
-                alert("റിവ്യൂ ചെയ്യാൻ തെറ്റിയോ അറ്റൻഡ് ചെയ്യാതെയോ ചോദ്യങ്ങൾ ഒന്നുമില്ല!");
-                return;
+            } else if (currentViewLevel === "mock" || currentViewLevel === "flashcard") {
+                openCategoryTopics(selectedModuleKey, selectedCatIndex);
+            } else if (currentViewLevel === "topics") {
+                loadModuleContent(selectedModuleKey, selectedModuleName);
+            } else if (currentViewLevel === "categories") {
+                openModulesListMenu();
+            } else if (currentViewLevel === "modules_list") {
+                goHome();
+            } else {
+                goHome();
             }
-            startQuiz(list, "തെറ്റിയവയും അറ്റൻഡ് ചെയ്യാത്തവയും റിവ്യൂ");
         };
 
-        window.createRevisionSetAndSave = async function() {
-            let list = getWrongAndUnattendedList();
-            if (list.length === 0) {
-                alert("റിവിഷൻ സെറ്റിലേക്ക് ചേർക്കാൻ ചോദ്യങ്ങൾ ഒന്നുമില്ല!");
-                return;
-            }
-
-            let setName = prompt("പുതിയ റിവിഷൻ സെറ്റിന്റെ പേര് നൽകുക:", `റിവിഷൻ സെറ്റ് - ${selectedSubtopicTitle || 'മോക്ക്'}`);
-            if (!setName) return;
-
-            if (window.saveToFirebase) {
-                await window.saveToFirebase(setName.trim(), list, "revision_sets");
-            } else {
-                alert("ഫയർബേസ് കണക്ഷൻ ലഭ്യമായില്ല.");
-            }
+        window.goHome = function() {
+            currentViewLevel = "home";
+            document.getElementById('dynamic-view').style.display = 'none';
+            document.getElementById('home-menu').style.display = 'flex';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         };
 
         window.onload = function() {
