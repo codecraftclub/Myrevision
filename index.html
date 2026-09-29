@@ -289,7 +289,7 @@
         <div id="subtopics-container"></div>
     </div>
 
-    <!-- ഫയർബേസ് SDKs -->
+    <!-- ഫയർബേസ് SDKs & ക്ലൗഡ് സിങ്ക് മാനേജർ -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
         import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
@@ -307,6 +307,7 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
+        // ഫയർബേസിൽ ഡാറ്റ സുരക്ഷിതമായി സേവ് ചെയ്യാൻ
         window.saveToFirebase = async function(customName, itemsArray, collectionName = "revision_sets") {
             try {
                 await addDoc(collection(db, collectionName), {
@@ -342,38 +343,22 @@
             }
         };
 
-        window.saveMockCountsToFirebase = async function(countsData) {
+        // യൂസർ പ്രോഗ്രസ്സ് പൂർണ്ണമായും ഫയർബേസിൽ സിങ്ക് ചെയ്യാൻ
+        window.saveUserProgressToCloud = async function(key, dataObj) {
             try {
-                await setDoc(doc(db, "user_progress", "mock_counts"), {
-                    counts: countsData,
+                await setDoc(doc(db, "user_progress", key), {
+                    data: dataObj,
                     updatedAt: new Date().toISOString()
-                });
-            } catch (e) {}
+                }, { merge: true });
+            } catch (e) { console.error("Cloud Sync Error:", e); }
         };
 
-        window.loadMockCountsFromFirebase = async function() {
+        window.loadUserProgressFromCloud = async function(key) {
             try {
-                let docSnap = await getDoc(doc(db, "user_progress", "mock_counts"));
-                if (docSnap.exists()) return docSnap.data().counts || {};
-                return {};
-            } catch (e) { return {}; }
-        };
-
-        window.saveRevisionCountsToFirebase = async function(countsData) {
-            try {
-                await setDoc(doc(db, "user_progress", "revision_counts"), {
-                    counts: countsData,
-                    updatedAt: new Date().toISOString()
-                });
-            } catch (e) {}
-        };
-
-        window.loadRevisionCountsFromFirebase = async function() {
-            try {
-                let docSnap = await getDoc(doc(db, "user_progress", "revision_counts"));
-                if (docSnap.exists()) return docSnap.data().counts || {};
-                return {};
-            } catch (e) { return {}; }
+                let docSnap = await getDoc(doc(db, "user_progress", key));
+                if (docSnap.exists()) return docSnap.data().data || null;
+                return null;
+            } catch (e) { return null; }
         };
     </script>
 
@@ -600,9 +585,18 @@
             ]
         };
 
-        function getRevisionStatus(topicId) {
+        // ലോക്കൽ സ്റ്റോറേജിന് പുറമെ ഫയർബേസ് ക്ലൗഡിൽ നിന്നും ഡാറ്റ ഒരേസമയം സിങ്ക് ചെയ്യുന്ന സംവിധാനം
+        async function getSavedRevisionStatus(topicId) {
             let mockDateStr = localStorage.getItem(`rev_date_mock_${topicId}`);
             let flashDateStr = localStorage.getItem(`rev_date_flash_${topicId}`);
+            
+            // ക്ലൗഡിൽ നിന്നും ചെക്ക് ചെയ്യുക
+            let cloudMock = await window.loadUserProgressFromCloud(`rev_date_mock_${topicId}`);
+            let cloudFlash = await window.loadUserProgressFromCloud(`rev_date_flash_${topicId}`);
+
+            if (cloudMock && !mockDateStr) { localStorage.setItem(`rev_date_mock_${topicId}`, cloudMock); mockDateStr = cloudMock; }
+            if (cloudFlash && !flashDateStr) { localStorage.setItem(`rev_date_flash_${topicId}`, cloudFlash); flashDateStr = cloudFlash; }
+
             let dates = [];
             if (mockDateStr) dates.push(new Date(mockDateStr));
             if (flashDateStr) dates.push(new Date(flashDateStr));
@@ -632,22 +626,22 @@
             return 'safe';
         }
 
-        function getModuleNotificationClass(modKey) {
+        async function getModuleNotificationClass(modKey) {
             let topics = moduleData[modKey];
             let hasRed = false;
             let hasOrange = false;
             let hasYellow = false;
             let hasTopics = false;
 
-            topics.forEach(cat => {
-                cat.topics.forEach(t => {
+            for (let cat of topics) {
+                for (let t of cat.topics) {
                     hasTopics = true;
-                    let status = getRevisionStatus(t.id);
+                    let status = await getSavedRevisionStatus(t.id);
                     if (status === 'overdue') hasRed = true;
                     if (status === 'today') hasOrange = true;
                     if (status === 'tomorrow') hasYellow = true;
-                });
-            });
+                }
+            }
 
             if (!hasTopics) return '';
             if (hasRed) return 'blink-red';
@@ -656,8 +650,7 @@
             return '';
         }
 
-        // മോഡ്യൂളുകൾ ലിസ്റ്റ് വ്യൂ തുറക്കുന്ന ഫംഗ്ഷൻ
-        window.openModulesListMenu = function() {
+        window.openModulesListMenu = async function() {
             currentViewLevel = "modules_list";
             document.getElementById('home-menu').style.display = 'none';
             let viewDiv = document.getElementById('dynamic-view');
@@ -665,20 +658,22 @@
 
             document.getElementById('view-title').innerText = "📚 എല്ലാ മോഡ്യൂളുകളും (Modules 1 - 20)";
             let container = document.getElementById('subtopics-container');
-            container.innerHTML = '';
+            container.innerHTML = '<p style="text-align:center; color:#64748b;">ക്ലൗഡിൽ നിന്ന് ഡാറ്റ ലോഡ് ചെയ്യുന്നു...</p>';
 
+            let htmlContent = '';
             for (let i = 1; i <= 20; i++) {
                 let modKey = `mod_${i}`;
                 let modName = `MODULE ${i}`;
-                let blinkClass = getModuleNotificationClass(modKey);
+                let blinkClass = await getModuleNotificationClass(modKey);
 
-                container.innerHTML += `
+                htmlContent += `
                     <div class="subtopic-card ${blinkClass}" style="display: flex; justify-content: space-between; align-items: center; cursor: pointer;" onclick="loadModuleContent('${modKey}', '${modName}')">
                         <h4 style="margin: 0; color: #1e3a8a;">${modName}</h4>
                         <button class="btn-link" style="padding: 6px 12px;">ഉള്ളടക്കം കാണുക →</button>
                     </div>
                 `;
             }
+            container.innerHTML = htmlContent;
             window.scrollTo({ top: 0, behavior: 'smooth' });
         };
 
@@ -711,19 +706,19 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         };
 
-        window.openCategoryTopics = function(modKey, catIndex) {
+        window.openCategoryTopics = async function(modKey, catIndex) {
             selectedCatIndex = catIndex;
             currentViewLevel = "topics";
             let cat = moduleData[modKey][catIndex];
             document.getElementById('view-title').innerText = `${selectedModuleName} - ${cat.category}`;
             let container = document.getElementById('subtopics-container');
-            container.innerHTML = '';
+            container.innerHTML = '<p style="text-align:center; color:#64748b;">സ്റ്റാറ്റസ് പരിശോധിക്കുന്നു...</p>';
 
             let topicsHtml = '';
             if (!cat.topics || cat.topics.length === 0) {
                 topicsHtml = `<p style="font-size: 0.85rem; color: #64748b; text-align: center; padding: 10px;">ഉള്ളടക്കം ഉടൻ ചേർക്കുന്നതാണ്...</p>`;
             } else {
-                cat.topics.forEach((topic) => {
+                for (let topic of cat.topics) {
                     let actionBtnsHtml = '';
                     if (topic.hasMock || topic.hasFlash) {
                         if (topic.hasMock) actionBtnsHtml += `<button class="btn-link btn-mock" onclick="openSpecificMock('${topic.id}', '${topic.title}')">📝 മോക്ക് ടെസ്റ്റ്</button>`;
@@ -732,7 +727,7 @@
                         actionBtnsHtml += `<p style="font-size: 0.85rem; color: #64748b; text-align: center; width: 100%;">ഉള്ളടക്കം ഉടൻ ചേർക്കുന്നതാണ്...</p>`;
                     }
 
-                    let status = getRevisionStatus(topic.id);
+                    let status = await getSavedRevisionStatus(topic.id);
                     let badgeBg = "#2563eb";
                     let badgeText = "പുതിയത്";
                     let subcardBlink = "";
@@ -760,7 +755,7 @@
                             <div class="action-buttons">${actionBtnsHtml}</div>
                         </div>
                     `;
-                });
+                }
             }
 
             container.innerHTML = `
@@ -770,13 +765,14 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         };
 
-        window.openAnalysisMenu = function() {
+        window.openAnalysisMenu = async function() {
             currentViewLevel = "home";
             document.getElementById('home-menu').style.display = 'none';
             let viewDiv = document.getElementById('dynamic-view');
             viewDiv.style.display = 'block';
             document.getElementById('view-title').innerText = "📊 വിശകലനം (Analysis)";
             let container = document.getElementById('subtopics-container');
+            container.innerHTML = '<p style="text-align:center; color:#64748b;">ഫയർബേസ് ക്ലൗഡിൽ നിന്ന് വിശകലന വിവരങ്ങൾ എടുക്കുന്നു...</p>';
 
             let mockAttemptsSummaryHtml = '';
             for (let modKey in moduleData) {
@@ -784,9 +780,18 @@
                 let modHasAttempts = false;
                 let modHtml = '';
 
-                moduleData[modKey].forEach(cat => {
-                    cat.topics.forEach(t => {
-                        let attempts = JSON.parse(localStorage.getItem(`mock_attempts_${t.id}`) || '[]');
+                for (let cat of moduleData[modKey]) {
+                    for (let t of cat.topics) {
+                        let attemptsKey = `mock_attempts_${t.id}`;
+                        let attempts = JSON.parse(localStorage.getItem(attemptsKey) || '[]');
+                        let cloudAttempts = await window.loadUserProgressFromCloud(attemptsKey);
+                        if (cloudAttempts && cloudAttempts.length > attempts.length) {
+                            attempts = cloudAttempts;
+                            localStorage.setItem(attemptsKey, JSON.stringify(attempts));
+                        } else if (attempts.length > 0) {
+                            window.saveUserProgressToCloud(attemptsKey, attempts);
+                        }
+
                         if (attempts.length > 0) {
                             modHasAttempts = true;
                             let attStr = attempts.map((att, i) => `അറ്റംറ്റ് ${i+1}: ${att.score} (${att.date})`).join(' | ');
@@ -797,8 +802,8 @@
                                 </div>
                             `;
                         }
-                    });
-                });
+                    }
+                }
 
                 if (modHasAttempts) {
                     mockAttemptsSummaryHtml += `<div class="subtopic-card" style="margin-top:10px;"><h4 style="color:#1e3a8a; border-bottom:1px solid #e2e8f0; padding-bottom:4px; margin-bottom:8px;">${modNum} - മോക്ക് ടെസ്റ്റ് സ്കോറുകൾ</h4>${modHtml}</div>`;
@@ -854,19 +859,19 @@
         window.openRevisionProgressView = async function() {
             document.getElementById('view-title').innerText = "📈 റിവിഷൻ പുരോഗതി";
             let container = document.getElementById('subtopics-container');
-            container.innerHTML = `<p style="color: #64748b; text-align: center; padding: 20px;">ഡാറ്റ ലോഡ് ചെയ്യുന്നു...</p>`;
+            container.innerHTML = `<p style="color: #64748b; text-align: center; padding: 20px;">ക്ലൗഡിൽ നിന്ന് ഡാറ്റ ലോഡ് ചെയ്യുന്നു...</p>`;
             
-            let counts = await window.loadRevisionCountsFromFirebase();
+            let cloudCounts = await window.loadUserProgressFromCloud("revision_counts_map") || {};
             let html = '';
             for (let modKey in moduleData) {
                 let modNum = modKey.replace("mod_", "MODULE ");
                 let modHasTopics = false;
                 let modHtml = '';
 
-                moduleData[modKey].forEach(cat => {
-                    cat.topics.forEach(t => {
+                for (let cat of moduleData[modKey]) {
+                    for (let t of cat.topics) {
                         modHasTopics = true;
-                        let c = counts[t.id] || 0;
+                        let c = cloudCounts[t.id] || parseInt(localStorage.getItem(`rev_cnt_${t.id}`) || '0');
                         modHtml += `
                             <div class="rev-row">
                                 <span style="font-weight: 600; font-size: 0.9rem; flex:1; text-align:left;">${t.title}</span>
@@ -877,8 +882,8 @@
                                 </div>
                             </div>
                         `;
-                    });
-                });
+                    }
+                }
 
                 if (modHasTopics) {
                     html += `<div class="subtopic-card" style="margin-top:10px;"><h4 style="color:#1e3a8a; border-bottom:1px solid #e2e8f0; padding-bottom:4px; margin-bottom:8px;">${modNum}</h4>${modHtml}</div>`;
@@ -892,11 +897,14 @@
             let confirmAction = confirm(actionText);
             if (!confirmAction) return;
 
-            let counts = await window.loadRevisionCountsFromFirebase();
-            let current = counts[id] || 0;
+            let cloudCounts = await window.loadUserProgressFromCloud("revision_counts_map") || {};
+            let current = cloudCounts[id] || 0;
             current = Math.max(0, current + val);
-            counts[id] = current;
-            await window.saveRevisionCountsToFirebase(counts);
+            cloudCounts[id] = current;
+            
+            await window.saveUserProgressToCloud("revision_counts_map", cloudCounts);
+            localStorage.setItem(`rev_cnt_${id}`, current);
+
             let display = document.getElementById(`rev_cnt_${id}`);
             if(display) display.innerText = current;
         };
@@ -905,22 +913,23 @@
             document.getElementById('view-title').innerText = "📊 മോക്ക് ടെസ്റ്റ് ട്രാക്കർ";
             let container = document.getElementById('subtopics-container');
             container.innerHTML = `<p style="color: #64748b; text-align: center; padding: 20px;">ഡാറ്റ ലോഡ് ചെയ്യുന്നു...</p>`;
-            let mockCounts = await window.loadMockCountsFromFirebase();
+            
+            let cloudMockCounts = await window.loadUserProgressFromCloud("mock_counts_map") || {};
             let html = '';
             for (let modKey in moduleData) {
                 let modNum = modKey.replace("mod_", "MODULE ");
                 let modHasTopics = false;
                 let modHtml = '';
 
-                moduleData[modKey].forEach(cat => {
-                    cat.topics.forEach(t => {
+                for (let cat of moduleData[modKey]) {
+                    for (let t of cat.topics) {
                         if(t.hasMock) {
                             modHasTopics = true;
-                            let cnt = mockCounts[t.id] || 0;
+                            let cnt = cloudMockCounts[t.id] || 0;
                             modHtml += `<div class="rev-row"><span style="font-weight:600; text-align:left; flex:1;">${t.title}</span><div style="background:#0284c7; color:white; padding:4px 10px; border-radius:6px; font-weight:bold;">${cnt}</div></div>`;
                         }
-                    });
-                });
+                    }
+                }
 
                 if (modHasTopics) {
                     html += `<div class="subtopic-card" style="margin-top:10px;"><h4 style="color:#1e3a8a; border-bottom:1px solid #e2e8f0; padding-bottom:4px; margin-bottom:8px;">${modNum}</h4>${modHtml}</div>`;
@@ -1215,7 +1224,7 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        window.markFlashCard = function(isKnown) {
+        window.markFlashCard = async function(isKnown) {
             if (!isKnown) {
                 unknownFlashCards.push(flashCardsList[flashIdx]);
             }
@@ -1224,7 +1233,9 @@
                 renderFlashcard();
             } else {
                 if(selectedSubtopicId) {
-                    localStorage.setItem(`rev_date_flash_${selectedSubtopicId}`, new Date().toISOString());
+                    let nowIso = new Date().toISOString();
+                    localStorage.setItem(`rev_date_flash_${selectedSubtopicId}`, nowIso);
+                    await window.saveUserProgressToCloud(`rev_date_flash_${selectedSubtopicId}`, nowIso);
                 }
                 
                 if (unknownFlashCards.length > 0) {
@@ -1373,7 +1384,6 @@
                     if (userAns === q.answer) correctCount++;
                     else {
                         wrongCount++;
-                        // തെറ്റിയ ചോദ്യങ്ങൾ ട്രാക്ക് ചെയ്ത് ഫ്രീക്വന്റ് മിസ്റ്റേക്ക് കൗണ്ട് കൂട്ടുന്നു
                         let mistakes = JSON.parse(localStorage.getItem('frequent_mistakes') || '{}');
                         mistakes[q.q] = (mistakes[q.q] || 0) + 1;
                         localStorage.setItem('frequent_mistakes', JSON.stringify(mistakes));
@@ -1383,20 +1393,20 @@
             let totalScore = Math.max(0, (correctCount * 1.0) - (wrongCount * 0.33)).toFixed(2);
 
             if (selectedSubtopicId) {
-                localStorage.setItem(`rev_date_mock_${selectedSubtopicId}`, new Date().toISOString());
+                let nowIso = new Date().toISOString();
+                localStorage.setItem(`rev_date_mock_${selectedSubtopicId}`, nowIso);
+                await window.saveUserProgressToCloud(`rev_date_mock_${selectedSubtopicId}`, nowIso);
                 
                 let attemptsKey = `mock_attempts_${selectedSubtopicId}`;
                 let attempts = JSON.parse(localStorage.getItem(attemptsKey) || '[]');
                 attempts.push({ date: new Date().toLocaleDateString(), score: totalScore });
                 localStorage.setItem(attemptsKey, JSON.stringify(attempts));
+                await window.saveUserProgressToCloud(attemptsKey, attempts);
                 
-                let mockCounts = await window.loadMockCountsFromFirebase();
-                if(Object.keys(mockCounts).length === 0) {
-                    mockCounts = JSON.parse(localStorage.getItem('psc_mock_counts') || '{}');
-                }
-                mockCounts[selectedSubtopicId] = (mockCounts[selectedSubtopicId] || 0) + 1;
-                localStorage.setItem('psc_mock_counts', JSON.stringify(mockCounts));
-                await window.saveMockCountsToFirebase(mockCounts);
+                let cloudMockCounts = await window.loadUserProgressFromCloud("mock_counts_map") || {};
+                cloudMockCounts[selectedSubtopicId] = (cloudMockCounts[selectedSubtopicId] || 0) + 1;
+                await window.saveUserProgressToCloud("mock_counts_map", cloudMockCounts);
+                localStorage.setItem('psc_mock_counts', JSON.stringify(cloudMockCounts));
             }
             renderResultView('all');
         }
@@ -1535,6 +1545,10 @@
             } else {
                 alert("ഫയർബേസ് കണക്ഷൻ ലഭ്യമായില്ല.");
             }
+        };
+
+        window.onload = function() {
+            goHome();
         };
     </script>
 
