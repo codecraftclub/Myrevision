@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html>
 <html lang="ml">
 <head>
@@ -271,6 +273,11 @@
             <h3>🔄 My Revision</h3>
             <button class="btn-link" style="background: #7c3aed;" onclick="openMyRevisionMenu()">തുറക്കുക →</button>
         </div>
+        
+               <div class="main-box" style="border-left-color: #7c3aed; background: #f5f3ff;">
+            <h3> Practice ചെയ്യാം </h3>
+            <button class="btn-link" style="background: #7c3aed;" onclick="Practice ചെയ്യാം Menu()">തുറക്കുക →</button>
+        </div>
 
         <!-- പ്രധാന മോഡ്യൂൾസ് മെനു ബോക്സ് -->
         <div class="main-box" style="border-left-color: #059669; background: #f0fdf4;" onclick="openModulesListMenu()">
@@ -357,6 +364,19 @@
                 if (docSnap.exists()) return docSnap.data().data || null;
                 return null;
             } catch (e) { return null; }
+        };
+
+        window.loadRevisionCountsFromFirebase = async function() {
+            return await window.loadUserProgressFromCloud("revision_counts") || {};
+        };
+        window.saveRevisionCountsToFirebase = async function(counts) {
+            await window.saveUserProgressToCloud("revision_counts", counts);
+        };
+        window.loadMockCountsFromFirebase = async function() {
+            return await window.loadUserProgressFromCloud("mock_counts") || {};
+        };
+        window.saveMockCountsToFirebase = async function(counts) {
+            await window.saveUserProgressToCloud("mock_counts", counts);
         };
     </script>
 
@@ -502,7 +522,7 @@
                 { q: "കേരള സർക്കാർ സംസ്ഥാന ബഡ്ജറ്റിൽ പ്രഖ്യാപിച്ച ഭൂപരിഷ്കരണം 2.0 നടപ്പിലാക്കുന്നതിനെക്കുറിച്ച് പഠിക്കാൻ നിയോഗിച്ച അഞ്ചംഗ സമിതിയുടെ അധ്യക്ഷൻ ആര്?", options: ["എ) ഡോ. ടി. എം. തോമസ് ഐസക്", "ബി) എ.ടി ജെയിംസ്", "സി) ജസ്റ്റിസ് കെ.മാധവൻ", "ഡി) എം.എ ബാബി"], answer: 1, explanation: "എ.ടി ജെയിംസ്." }
             ],
             "mod_5_sub_preamble": [
-                { q: "ഭാരതത്തെ എങ്ങനെയുള്ള ഒരു രാജ്യമായിട്ടാണ് ആമുഖത്തിൽ സംവിധാനം ചെയ്യുവാൻ തീരുമാനിച്ചിരിക്കുന്നത്?", options: ["എ) പരമാധികാര സ്ഥിതിസമത്വ മതേതര ജനാധിപത്യ റിപ്പബ്ലിക്", "ബി) പരമാധികാര സോഷ്യലിസ്റ്റ് മതേതര റിപ്പബ്ലിക്", "സി) പരമാധികാര ജനാധിപത്യ സോഷ്യലിസ്റ്റ് റിപ്പബ്ലിക്", "ഡി) പരമാധികാര മതേതര ജനാധിപത്യ സോഷ്യലിസ്റ്റ് റിപ്പബ്ലിക്"], answer: 0, explanation: "പരമാധികാര സ്ഥിതിസമത്വ മതേതര ജനാധിപത്യ റിപ്പബ്ലിക്" },
+                { q: "ഭാരതത്തെ എങ്ങനെയുള്ള ഒരു രാജ്യമായിട്ടാണ് ആമുഖത്തിൽ സംവിധാനം ചെയ്യുവാൻ തീരുമാനിച്ചിരിക്കുന്നത്?", options: ["എ) പരമാധികാര സ്ഥിതിസമത്വ മതേതര ജനാധിപത്യ റിപ്പബ്ലിക്", "ബി) പരമാധികാര സോഷ്യലിസ്റ്റ് മതേതര റിപ്പബ്ലിക്", "സി) പരമാധികാര ജനാധിപത്യ സോഷ്യലിസ്റ്റ് റിപ്പബ്ലിക്", "ഡി) പരമാധികാര മതേതര ജനാധിപത്യ റിപ്പബ്ലിക്"], answer: 0, explanation: "പരമാധികാര സ്ഥിതിസമത്വ മതേതര ജനാധിപത്യ റിപ്പബ്ലിക്" },
                 { q: "ഭാരതത്തിന്റെ ഭരണഘടന ആമുഖത്തിൽ പൗരന്മാർക്ക് എത്ര തരത്തിലുള്ള നീതിയാണ് ഉറപ്പുനൽകുന്നത്?", options: ["എ) രണ്ട്", "ബി) മൂന്ന്", "സി) നാല്", "ഡി) അഞ്ച്"], answer: 1, explanation: "മൂന്ന്" },
                 { q: "ഭാരത ഭരണഘടനയുടെ ആമുഖത്തിൽ താഴെ പറയുന്നവയിൽ ഏതൊക്കെ നീതികളാണ് പൗരന്മാർക്ക് വാഗ്ദാനം ചെയ്യുന്നത്?", options: ["എ) സാമൂഹ്യവും സാമ്പത്തികവും സാംസ്കാരികവുമായ നീതി", "ബി) സാമൂഹ്യവും സാമ്പത്തികവും രാഷ്ട്രീയവുമായ നീതി", "സി) രാഷ്ട്രീയവും നിയമപരവും സാമ്പത്തികവുമായ നീതി", "ഡി) മതപരവും സാമൂഹ്യവും രാഷ്ട്രീയവുമായ നീതി"], answer: 1, explanation: "സാമൂഹ്യവും സാമ്പത്തികവും രാഷ്ട്രീയവുമായ നീതി" },
                 { q: "ആമുഖത്തിൽ എത്ര തരത്തിലുള്ള സ്വാതന്ത്ര്യങ്ങളെക്കുറിച്ചാണ് പ്രതിപാദിച്ചിരിക്കുന്നത്?", options: ["എ) മൂന്ന്", "ബി) നാല്", "സി) അഞ്ച്", "ഡി) ആറ്"], answer: 2, explanation: "അഞ്ച്" },
@@ -1301,7 +1321,7 @@
                     </div>
                     <div class="question-text">${q.q}</div>
                     <div class="options-list">${optionsHtml}</div>
-                    <p style="font-size: 0.75rem; color: #64748b; text-align: center; margin-bottom: 10px;">👉 സ്ൈവപ്പ് (Swipe) ചെയ്യുക അല്ലെങ്കിൽ താഴെയുള്ള പാലറ്റ് ഉപയോഗിക്കുക</p>
+                    <p style="font-size: 0.75rem; color: #64748b; text-align: center; margin-bottom: 10px;">👉 സ്വൈപ്പ് (Swipe) ചെയ്യുക അല്ലെങ്കിൽ താഴെയുള്ള പാലറ്റ് ഉപയോഗിക്കുക</p>
                     
                     <button class="result-action-btn btn-retry" style="margin-top: 5px;" onclick="finishQuizSession()">ടെസ്റ്റ് ഫിനിഷ് ചെയ്യുക</button>
 
@@ -1357,29 +1377,37 @@
                     if (userAns === q.answer) correctCount++;
                     else {
                         wrongCount++;
-                        let mistakes = JSON.parse(localStorage.getItem('frequent_mistakes') || '{}');
-                        mistakes[q.q] = (mistakes[q.q] || 0) + 1;
-                        localStorage.setItem('frequent_mistakes', JSON.stringify(mistakes));
+                        try {
+                            let mistakes = JSON.parse(localStorage.getItem('frequent_mistakes') || '{}');
+                            mistakes[q.q] = (mistakes[q.q] || 0) + 1;
+                            localStorage.setItem('frequent_mistakes', JSON.stringify(mistakes));
+                        } catch(e) {}
                     }
                 }
             });
             let totalScore = Math.max(0, (correctCount * 1.0) - (wrongCount * 0.33)).toFixed(2);
 
             if (selectedSubtopicId) {
-                localStorage.setItem(`rev_date_mock_${selectedSubtopicId}`, new Date().toISOString());
-                
-                let attemptsKey = `mock_attempts_${selectedSubtopicId}`;
-                let attempts = JSON.parse(localStorage.getItem(attemptsKey) || '[]');
-                attempts.push({ date: new Date().toLocaleDateString(), score: totalScore });
-                localStorage.setItem(attemptsKey, JSON.stringify(attempts));
-                
-                let mockCounts = await window.loadMockCountsFromFirebase();
-                if(Object.keys(mockCounts).length === 0) {
-                    mockCounts = JSON.parse(localStorage.getItem('psc_mock_counts') || '{}');
+                try {
+                    localStorage.setItem(`rev_date_mock_${selectedSubtopicId}`, new Date().toISOString());
+                    
+                    let attemptsKey = `mock_attempts_${selectedSubtopicId}`;
+                    let attempts = JSON.parse(localStorage.getItem(attemptsKey) || '[]');
+                    attempts.push({ date: new Date().toLocaleDateString(), score: totalScore });
+                    localStorage.setItem(attemptsKey, JSON.stringify(attempts));
+                    
+                    let mockCounts = await window.loadMockCountsFromFirebase();
+                    if(!mockCounts || Object.keys(mockCounts).length === 0) {
+                        mockCounts = JSON.parse(localStorage.getItem('psc_mock_counts') || '{}');
+                    }
+                    mockCounts[selectedSubtopicId] = (mockCounts[selectedSubtopicId] || 0) + 1;
+                    localStorage.setItem('psc_mock_counts', JSON.stringify(mockCounts));
+                    if (window.saveMockCountsToFirebase) {
+                        await window.saveMockCountsToFirebase(mockCounts);
+                    }
+                } catch(err) {
+                    console.error("Storage Error: ", err);
                 }
-                mockCounts[selectedSubtopicId] = (mockCounts[selectedSubtopicId] || 0) + 1;
-                localStorage.setItem('psc_mock_counts', JSON.stringify(mockCounts));
-                await window.saveMockCountsToFirebase(mockCounts);
             }
             renderResultView('all');
         }
@@ -1518,6 +1546,10 @@
             } else {
                 alert("ഫയർബേസ് കണക്ഷൻ ലഭ്യമായില്ല.");
             }
+        };
+
+        window.onload = function() {
+            goHome();
         };
     </script>
 
