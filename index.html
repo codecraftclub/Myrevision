@@ -272,18 +272,15 @@
             <button class="btn-link" style="background: #7c3aed;" onclick="openMyRevisionMenu()">തുറക്കുക →</button>
         </div>
         
- <div style="display: flex; align-items: center; justify-content: space-between; background: rgba(255, 255, 255, 0.05); padding: 12px 16px; border-radius: 12px; border-left: 4px solid #3b82f6; margin-bottom: 12px;">
-    <div style="display: flex; align-items: center; gap: 10px; color: white; font-weight: bold; font-size: 0.95rem;">
-        <span>🎯</span> പ്രാക്ടീസ് ചെയ്യാം
-    </div>
-    <button onclick="window.location.href='practice.html'" style="background-color: #3b82f6; color: white; border: none; padding: 8px 16px; border-radius: 8px; font-size: 0.85rem; font-weight: bold; cursor: pointer;">തുറക്കുക →</button>
-</div>
-
-
+        <div style="display: flex; align-items: center; justify-content: space-between; background: rgba(255, 255, 255, 0.05); padding: 12px 16px; border-radius: 12px; border-left: 4px solid #3b82f6; margin-bottom: 12px;">
+            <div style="display: flex; align-items: center; gap: 10px; color: black ; font-weight: bold; font-size: 0.95rem;">
+                <span>🎯പ്രാക്ടീസ് ചെയ്യാം</span> 
+            </div>
+            <button onclick="window.location.href='practice.html'" style="background-color: #3b82f6; color: white; border: none; padding: 8px 16px; border-radius: 8px; font-size: 0.85rem; font-weight: bold; cursor: pointer;">തുറക്കുക →</button>
         </div>
 
         <!-- പ്രധാന മോഡ്യൂൾസ് മെനു ബോക്സ് -->
-        <div class="main-box" style="border-left-color: #059669; background: #f0fdf4;" onclick="openModulesListMenu()">
+        <div class="main-box" id="home-modules-box" style="border-left-color: #059669; background: #f0fdf4;" onclick="openModulesListMenu()">
             <h3>📚 Modules (1 മുതൽ 20 വരെ)</h3>
             <button class="btn-link" style="background: #059669;">ഉള്ളടക്കം കാണുക →</button>
         </div>
@@ -462,8 +459,6 @@
             "mod_16": [], "mod_17": [], "mod_18": [], "mod_19": [], "mod_20": []
         };
 
-        
-
         function getRevisionStatus(topicId) {
             let mockDateStr = localStorage.getItem(`rev_date_mock_${topicId}`);
             let flashDateStr = localStorage.getItem(`rev_date_flash_${topicId}`);
@@ -523,6 +518,10 @@
         window.openModulesListMenu = function() {
             currentViewLevel = "modules_list";
             document.getElementById('home-menu').style.display = 'none';
+            
+            let homeBox = document.getElementById('home-modules-box');
+            if(homeBox) homeBox.style.display = 'none';
+
             let viewDiv = document.getElementById('dynamic-view');
             viewDiv.style.display = 'block';
 
@@ -1003,6 +1002,10 @@
             currentViewLevel = "home";
             document.getElementById('dynamic-view').style.display = 'none';
             document.getElementById('home-menu').style.display = 'flex';
+            
+            let homeBox = document.getElementById('home-modules-box');
+            if(homeBox) homeBox.style.display = 'flex';
+
             window.scrollTo({ top: 0, behavior: 'smooth' });
         };
 
@@ -1151,14 +1154,25 @@
             let isMarked = bookmarked[qIndex] ? 'active' : '';
             let selectedOpt = userAnswers[qIndex];
 
+            if (!q.shuffledOptions) {
+                let optionsWithIndex = q.options.map((opt, i) => ({ text: opt, originalIndex: i }));
+                for (let i = optionsWithIndex.length - 1; i > 0; i--) {
+                    let j = Math.floor(Math.random() * (i + 1));
+                    [optionsWithIndex[i], optionsWithIndex[j]] = [optionsWithIndex[j], optionsWithIndex[i]];
+                }
+                q.shuffledOptions = optionsWithIndex;
+                q.shuffledAnswer = optionsWithIndex.findIndex(item => item.originalIndex === q.answer);
+            }
+
             let m = Math.floor(timeLeftSeconds / 60);
             let s = timeLeftSeconds % 60;
             let timeStr = `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
 
+            let letters = ['എ)', 'ബി)', 'സി)', 'ഡി)'];
             let optionsHtml = '';
-            q.options.forEach((opt, i) => {
+            q.shuffledOptions.forEach((item, i) => {
                 let selClass = selectedOpt === i ? 'selected' : '';
-                optionsHtml += `<div class="option-item ${selClass}" onclick="selectAns(${i})">${opt}</div>`;
+                optionsHtml += `<div class="option-item ${selClass}" onclick="selectAns(${i})">${letters[i]} ${item.text}</div>`;
             });
 
             let paletteHtml = '';
@@ -1194,7 +1208,16 @@
 
         window.selectAns = function(optIdx) {
             userAnswers[qIndex] = optIdx;
-            renderQuizInterface();
+            
+            // 🌟 ഉത്തരം ക്ലിക്ക് ചെയ്യുമ്പോൾ അടുത്ത ചോദ്യത്തിലേക്ക് ഓട്ടോമാറ്റിക് ആയി പോകുന്ന കോഡ്
+            setTimeout(() => {
+                if (qIndex < quizQuestions.length - 1) {
+                    qIndex++;
+                    renderQuizInterface();
+                } else {
+                    finishQuizSession();
+                }
+            }, 300); // 300 മിസ്ലിസെക്കൻഡ് ഡിലേയോടെ അടുത്ത ചോദ്യത്തിലേക്ക് മാറും
         }
 
         window.toggleBookmark = function() {
@@ -1233,7 +1256,7 @@
             quizQuestions.forEach((q, idx) => {
                 let userAns = userAnswers[idx];
                 if (userAns !== undefined) {
-                    if (userAns === q.answer) correctCount++;
+                    if (userAns === q.shuffledAnswer) correctCount++;
                     else {
                         wrongCount++;
                         try {
@@ -1283,7 +1306,7 @@
                 let userAns = userAnswers[idx];
                 if (userAns === undefined) {
                     unattendedCount++;
-                } else if (userAns === q.answer) {
+                } else if (userAns === q.shuffledAnswer) {
                     correctCount++;
                 } else {
                     wrongCount++;
@@ -1328,10 +1351,11 @@
             `;
 
             let questionsHtml = '';
+            let letters = ['എ)', 'ബി)', 'സി)', 'ഡി)'];
             if (filterType) {
                 quizQuestions.forEach((q, idx) => {
                     let userAns = userAnswers[idx];
-                    let isWrong = (userAns !== undefined && userAns !== q.answer);
+                    let isWrong = (userAns !== undefined && userAns !== q.shuffledAnswer);
                     let isUnattended = (userAns === undefined);
 
                     if (filterType === 'wrong' && !isWrong) return;
@@ -1339,11 +1363,11 @@
                     if (filterType === 'wrong_unattended' && !isWrong && !isUnattended) return;
 
                     let optionsResHtml = '';
-                    q.options.forEach((opt, oIdx) => {
+                    q.shuffledOptions.forEach((item, oIdx) => {
                         let color = "";
-                        if (oIdx === q.answer) color = "background: #dcfce7; border-color: #22c55e; color: #15803d; font-weight: bold;";
+                        if (oIdx === q.shuffledAnswer) color = "background: #dcfce7; border-color: #22c55e; color: #15803d; font-weight: bold;";
                         else if (oIdx === userAns) color = "background: #fee2e2; border-color: #dc2626; color: #b91c1c; font-weight: bold;";
-                        optionsResHtml += `<div class="option-item" style="${color}">${opt}</div>`;
+                        optionsResHtml += `<div class="option-item" style="${color}">${letters[oIdx]} ${item.text}</div>`;
                     });
 
                     questionsHtml += `
@@ -1374,7 +1398,7 @@
             let list = [];
             quizQuestions.forEach((q, idx) => {
                 let userAns = userAnswers[idx];
-                if (userAns === undefined || userAns !== q.answer) {
+                if (userAns === undefined || userAns !== q.shuffledAnswer) {
                     list.push(q);
                 }
             });
@@ -1406,231 +1430,6 @@
                 alert("ഫയർബേസ് കണക്ഷൻ ലഭ്യമായില്ല.");
             }
         };
-        window.createRevisionSetAndSave = async function() {
-            let list = getWrongAndUnattendedList();
-            if (list.length === 0) {
-                alert("റിവിഷൻ സെറ്റിലേക്ക് ചേർക്കാൻ ചോദ്യങ്ങൾ ഒന്നുമില്ല!");
-                return;
-            }
-
-            let setName = prompt("പുതിയ റിവിഷൻ സെറ്റിന്റെ പേര് നൽകുക:", `റിവിഷൻ സെറ്റ് - ${selectedSubtopicTitle || 'മോക്ക്'}`);
-            if (!setName) return;
-
-            if (window.saveToFirebase) {
-                await window.saveToFirebase(setName.trim(), list, "revision_sets");
-            } else {
-                alert("ഫയർബേസ് കണക്ഷൻ ലഭ്യമായില്ല.");
-            }
-        };
-
-                   window.Practice_test = function() {
-            currentViewLevel = "mock_practice";
-            document.getElementById('home-menu').style.display = 'none';
-            
-            let headerEl = document.querySelector('.header');
-            if (headerEl) headerEl.style.display = 'none';
-
-            let viewDiv = document.getElementById('dynamic-view');
-            viewDiv.style.display = 'block';
-
-            document.getElementById('view-title').innerText = "പഠന മോക്ക് ടെസ്റ്റ്";
-            let container = document.getElementById('subtopics-container');
-
-            let dynamicPool = [];
-            for (let subId in questionsDB) {
-                if (questionsDB[subId] && Array.isArray(questionsDB[subId])) {
-                    questionsDB[subId].forEach(q => {
-                        dynamicPool.push(JSON.parse(JSON.stringify(q)));
-                    });
-                }
-            }
-
-            if (dynamicPool.length === 0) {
-                container.innerHTML = `
-                    <button class="small-nav-btn" style="margin-bottom: 12px;" onclick="goHome()">🏠 ഹോം</button>
-                    <p style="text-align: center; padding: 20px; color: #64748b;">ചോദ്യങ്ങൾ ഒന്നും ലഭ്യമല്ല!</p>
-                `;
-                return;
-            }
-
-            for (let i = dynamicPool.length - 1; i > 0; i--) {
-                let j = Math.floor(Math.random() * (i + 1));
-                [dynamicPool[i], dynamicPool[j]] = [dynamicPool[j], dynamicPool[i]];
-            }
-
-            container.innerHTML = `
-                <button class="small-nav-btn" style="margin-bottom: 12px;" onclick="goHome()">🏠 ഹോം</button>
-                <div style="display: flex; flex-direction: column; gap: 15px; position: relative; padding-bottom: 40px;">
-                    <div style="display: flex; justify-content: space-between; align-items: center; background: #f1f5f9; padding: 10px 14px; border-radius: 8px;">
-                        <span style="font-size: 0.9rem; font-weight: bold; color: #334155;" id="pool-count">ബാക്കിയുള്ള ചോദ്യങ്ങൾ: ${dynamicPool.length}</span>
-                        <button class="finish-btn" onclick="finishTest()" style="background-color: #dc3545; color: white; border: none; padding: 6px 12px; border-radius: 6px; font-size: 0.8rem; cursor: pointer; font-weight: bold;">ടെസ്റ്റ് അവസാനിപ്പിക്കുക</button>
-                    </div>
-                    
-                    <div>
-                        <div class="question-box" id="question-text" style="font-size: 1rem; color: #1e293b; font-weight: 600; margin-bottom: 15px; line-height: 1.5; text-align: left;">
-                            ചോദ്യം ഇവിടെ വരുന്നു...
-                        </div>
-
-                        <div class="options-list" id="options-container" style="display: flex; flex-direction: column; gap: 10px;">
-                        </div>
-                    </div>
-
-                    <!-- Bottom Banner for Correct Answer & Explanation (Slide-up) -->
-                    <div class="banner" id="error-banner" style="background-color: #f8fafc; border-top: 3px solid #3b82f6; text-align: left; padding: 18px; max-height: 220px; overflow-y: auto;">
-                        <p style="font-size: 0.95rem; color: #1e3a8a; margin-bottom: 6px; font-weight: bold;" id="banner-correct-answer">ശരിയായ ഉത്തരം:</p>
-                        <p style="font-size: 0.85rem; color: #334155; margin-bottom: 12px; line-height: 1.4;" id="banner-explanation">വിശദീകരണം ഇവിടെ...</p>
-                        <button class="banner-btn" onclick="dismissBanner()" style="background-color: #3b82f6; border: none; padding: 8px 20px; border-radius: 6px; font-size: 0.85rem; font-weight: bold; color: white; cursor: pointer; display: block; width: 100%;">മുന്നോട്ട് പോകൂ</button>
-                    </div>
-                </div>
-            `;
-
-            window.practicePool = dynamicPool;
-            window.practiceIndex = 0;
-            window.practiceIsAnswered = false;
-            window.practiceStats = { totalAttempted: 0, correctCount: 0 };
-
-            loadPracticeQuestion();
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        };
-
-        function loadPracticeQuestion() {
-            let qTextEl = document.getElementById("question-text");
-            let optContainerEl = document.getElementById("options-container");
-            let poolCntEl = document.getElementById("pool-count");
-            let bannerEl = document.getElementById("error-banner");
-
-            if (!qTextEl) return;
-
-            if (window.practiceIndex >= window.practicePool.length) {
-                showPracticeCompletion(`അഭിനന്ദനങ്ങൾ! 🎉 എല്ലാ ചോദ്യങ്ങളും നിങ്ങൾ വിജയകരമായി പഠിച്ചു തീർത്തു!`);
-                return;
-            }
-
-            window.practiceIsAnswered = false;
-            if (bannerEl) {
-                bannerEl.classList.remove("show");
-            }
-
-            let currentQuestion = window.practicePool[window.practiceIndex];
-
-            let optionsWithIndex = currentQuestion.options.map((opt, idx) => ({ text: opt, originalIndex: idx }));
-            for (let i = optionsWithIndex.length - 1; i > 0; i--) {
-                let j = Math.floor(Math.random() * (i + 1));
-                [optionsWithIndex[i], optionsWithIndex[j]] = [optionsWithIndex[j], optionsWithIndex[i]];
-            }
-            let shuffledCorrectAnswerIndex = optionsWithIndex.findIndex(item => item.originalIndex === currentQuestion.answer);
-
-            if (poolCntEl) poolCntEl.innerText = `ബാക്കിയുള്ള ചോദ്യങ്ങൾ: ${window.practicePool.length - window.practiceIndex}`;
-            if (qTextEl) qTextEl.innerText = currentQuestion.q;
-            if (optContainerEl) optContainerEl.innerHTML = "";
-
-            optionsWithIndex.forEach((item, index) => {
-                const btn = document.createElement("button");
-                btn.className = "option-btn";
-                btn.innerText = item.text;
-                btn.style.cssText = "background-color: #f8f9fa; border: 2px solid #e9ecef; padding: 12px 14px; border-radius: 8px; font-size: 0.9rem; text-align: left; cursor: pointer; color: #333; width: 100%;";
-                
-                let isCorrect = (item.originalIndex === currentQuestion.answer);
-                btn.onclick = () => handlePracticeAnswer(isCorrect, btn, optionsWithIndex, currentQuestion);
-                optContainerEl.appendChild(btn);
-            });
-
-            window.currentShuffledCorrect = shuffledCorrectAnswerIndex;
-        }
-
-                        function handlePracticeAnswer(isCorrect, selectedBtn, optionsWithIndex, currentQuestion) {
-            if (window.practiceIsAnswered) return;
-            window.practiceIsAnswered = true;
-            window.practiceStats.totalAttempted++;
-
-            let optContainerEl = document.getElementById("options-container");
-            let allButtons = optContainerEl ? optContainerEl.getElementsByTagName("button") : [];
-
-            if (isCorrect) {
-                window.practiceStats.correctCount++;
-                selectedBtn.style.backgroundColor = "#d4edda";
-                selectedBtn.style.borderColor = "#28a745";
-                selectedBtn.style.color = "#155724";
-                
-                setTimeout(() => {
-                    window.practiceIndex++;
-                    loadPracticeQuestion();
-                }, 800);
-            } else {
-                selectedBtn.style.backgroundColor = "#f8d7da";
-                selectedBtn.style.borderColor = "#dc3545";
-                selectedBtn.style.color = "#721c24";
-                
-                allButtons.forEach((btn, idx) => {
-                    if (optionsWithIndex[idx].originalIndex === currentQuestion.answer) {
-                        btn.style.backgroundColor = "#d4edda";
-                        btn.style.borderColor = "#28a745";
-                        btn.style.color = "#155724";
-                    }
-                });
-                
-                try {
-                    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-                    const oscillator = audioCtx.createOscillator();
-                    const gainNode = audioCtx.createGain();
-                    oscillator.type = 'sine';
-                    oscillator.frequency.setValueAtTime(300, audioCtx.currentTime);
-                    gainNode.gain.setValueAtTime(0.1, audioCtx.currentTime);
-                    oscillator.connect(gainNode);
-                    gainNode.connect(audioCtx.destination);
-                    oscillator.start();
-                    oscillator.stop(audioCtx.currentTime + 0.2);
-                } catch (e) {}
-
-                let correctText = currentQuestion.options[currentQuestion.answer];
-                let explanationText = currentQuestion.explanation || "വിശദീകരണം ലഭ്യവുമല്ല.";
-
-                document.getElementById('banner-correct-answer').innerText = `✅ ശരിയായ ഉത്തരം: ${correctText}`;
-                document.getElementById('banner-explanation').innerHTML = `<strong>വിശദീകരണം:</strong> ${explanationText}`;
-
-                let bannerEl = document.getElementById("error-banner");
-                if (bannerEl) {
-                    bannerEl.style.display = "block";
-                    bannerEl.classList.add("show");
-                }
-
-                // 🎯 തെറ്റിയ ചോദ്യം 3 മുതൽ 5 ചോദ്യങ്ങളുടെ ഇടവേളയ്ക്ക് ശേഷം വീണ്ടും വരാൻ പൂളിൽ ചേർക്കുന്നു
-                let currentPos = window.practiceIndex;
-                let randomGap = Math.floor(Math.random() * 3) + 3; 
-                let reinsertPos = Math.min(window.practicePool.length, currentPos + randomGap);
-                
-                // ഒറിജിനൽ ചോദ്യം നഷ്ടപ്പെടാതെ കോപ്പി ചെയ്ത് വീണ്ടും പൂളിലേക്ക് ഇൻസേർട്ട് ചെയ്യുന്നു
-                window.practicePool.splice(reinsertPos, 0, JSON.parse(JSON.stringify(currentQuestion)));
-            }
-        }
-
-
-        window.dismissBanner = function() {
-            let bannerEl = document.getElementById("error-banner");
-            if (bannerEl) {
-                bannerEl.classList.remove("show"); // ബാനർ മടങ്ങിപ്പോകുന്നു
-            }
-            window.practiceIndex++;
-            loadPracticeQuestion();
-        };
-
-        window.finishTest = function() {
-            showPracticeCompletion("ടെസ്റ്റ് വിജയകരമായി അവസാനിപ്പിച്ചു!");
-        };
-
-        function showPracticeCompletion(message) {
-            let container = document.getElementById('subtopics-container');
-            if (container) {
-                container.innerHTML = `
-                    <div style="text-align: center; padding: 30px 10px;">
-                        <h2 style="color: #28a745; margin-bottom: 15px;">${message}</h2>
-                        <p style="font-size: 16px; color: #555; margin-bottom: 10px;">ആകെ ചെയ്ത പരിശ്രമങ്ങൾ: <b>${window.practiceStats.totalAttempted}</b></p>
-                        <p style="font-size: 16px; color: #555; margin-bottom: 15px;">ശരിയായ ഉത്തരങ്ങൾ: <b style="color: #28a745;">${window.practiceStats.correctCount}</b></p>
-                        <button class="banner-btn" style="background-color: #3b82f6; border: none; padding: 10px 20px; border-radius: 6px; font-weight: bold; color: white; cursor: pointer;" onclick="goHome()">ഹോമിലേക്ക് പോവുക</button>
-                    </div>
-                `;
-            }
-        }
 
         const originalGoHome = window.goHome;
         window.goHome = function() {
@@ -1642,6 +1441,8 @@
                 currentViewLevel = "home";
                 document.getElementById('dynamic-view').style.display = 'none';
                 document.getElementById('home-menu').style.display = 'flex';
+                let homeBox = document.getElementById('home-modules-box');
+                if(homeBox) homeBox.style.display = 'flex';
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             }
         };
