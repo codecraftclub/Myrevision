@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>കേരള പിഎസ്‌സി എൽഡിസി - സിംഗിൾ പേജ് പോർട്ടൽ</title>
+    <title>കേരള പിഎസ്‌സി എൽഡിസി - സിംഗിൾ പേജ് പോർട്ടൽ & പ്രാക്ടീസ്</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
         body { 
@@ -27,7 +27,7 @@
         .header h1 { font-size: 1.3rem; font-weight: 800; margin-bottom: 4px; }
         .header p { font-size: 0.85rem; opacity: 0.9; }
 
-        .container { display: flex; flex-direction: column; gap: 12px; max-width: 600px; margin: 0 auto; }
+        .container { display: flex; flex-direction: column; gap: 12px; max-width: 600px; margin: 0 auto; background: #ffffff; padding: 20px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); text-align: left; }
         
         .main-box { 
             background: #ffffff; 
@@ -70,19 +70,43 @@
         }
 
         .small-nav-btn {
-            background: #334155;
-            color: white;
+            background-color: #e2e8f0;
             border: none;
-            padding: 6px 12px;
+            padding: 8px 14px;
             border-radius: 6px;
-            font-size: 0.80rem;
             font-weight: bold;
             cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 4px;
+            color: #334155;
+            margin-bottom: 15px;
+            margin-right: 5px;
+            font-size: 0.80rem;
         }
-        .small-nav-btn:hover { background: #1e293b; }
+        .small-nav-btn:hover { background: #cbd5e1; }
+
+        .option-btn {
+            background-color: #f8f9fa;
+            border: 2px solid #e9ecef;
+            padding: 12px 14px;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            text-align: left;
+            cursor: pointer;
+            color: #333;
+            width: 100%;
+            margin-bottom: 10px;
+        }
+
+        .notification-card {
+            background-color: #fff1f2;
+            border: 3px solid #e11d48;
+            padding: 20px;
+            border-radius: 12px;
+            margin-top: 20px;
+            display: none;
+        }
+        .notification-card.active {
+            display: block;
+        }
 
         #dynamic-view {
             display: none;
@@ -257,32 +281,34 @@
 
     <div class="header">
         <h1>🎯 എൽഡിസി മിഷൻ പോർട്ടൽ</h1>
-        <p>ഒരൊറ്റ പേജിലുള്ള സ്മാർട്ട് ഡാഷ്‌ബോർഡ്</p>
+        <p>ഒരൊറ്റ പേജിലുള്ള സ്മാർട്ട് ഡാഷ്‌ബോർഡ് & പ്രാക്ടീസ്</p>
     </div>
 
     <!-- പ്രധാന ഹോം മെനു -->
-    <div class="container" id="home-menu">
-        <div class="main-box" style="border-left-color: #3b82f6; background: #eff6ff;">
-            <h3>📊 Analysis</h3>
-            <button class="btn-link" style="background: #3b82f6;" onclick="openAnalysisMenu()">തുറക്കുക →</button>
-        </div>
-
-        <div class="main-box" style="border-left-color: #7c3aed; background: #f5f3ff;">
-            <h3>🔄 My Revision</h3>
-            <button class="btn-link" style="background: #7c3aed;" onclick="openMyRevisionMenu()">തുറക്കുക →</button>
-        </div>
-        
-        <div style="display: flex; align-items: center; justify-content: space-between; background: rgba(255, 255, 255, 0.05); padding: 12px 16px; border-radius: 12px; border-left: 4px solid #3b82f6; margin-bottom: 12px;">
-            <div style="display: flex; align-items: center; gap: 10px; color: black ; font-weight: bold; font-size: 0.95rem;">
-                <span>🎯പ്രാക്ടീസ് ചെയ്യാം</span> 
+    <div class="container" id="home-menu" style="background: transparent; box-shadow: none; padding: 0;">
+        <div style="display: flex; flex-direction: column; gap: 12px; max-width: 600px; width: 100%; margin: 0 auto;">
+            <div class="main-box" style="border-left-color: #3b82f6; background: #eff6ff;">
+                <h3>📊 Analysis</h3>
+                <button class="btn-link" style="background: #3b82f6;" onclick="openAnalysisMenu()">തുറക്കുക →</button>
             </div>
-            <button onclick="window.location.href='practice.html'" style="background-color: #3b82f6; color: white; border: none; padding: 8px 16px; border-radius: 8px; font-size: 0.85rem; font-weight: bold; cursor: pointer;">തുറക്കുക →</button>
-        </div>
 
-        <!-- പ്രധാന മോഡ്യൂൾസ് മെനു ബോക്സ് -->
-        <div class="main-box" id="home-modules-box" style="border-left-color: #059669; background: #f0fdf4;" onclick="openModulesListMenu()">
-            <h3>📚 Modules (1 മുതൽ 20 വരെ)</h3>
-            <button class="btn-link" style="background: #059669;">ഉള്ളടക്കം കാണുക →</button>
+            <div class="main-box" style="border-left-color: #7c3aed; background: #f5f3ff;">
+                <h3>🔄 My Revision</h3>
+                <button class="btn-link" style="background: #7c3aed;" onclick="openMyRevisionMenu()">തുറക്കുക →</button>
+            </div>
+            
+            <div style="display: flex; align-items: center; justify-content: space-between; background: #ffffff; padding: 14px 16px; border-radius: 12px; border-left: 6px solid #3b82f6; box-shadow: 0 4px 12px rgba(0,0,0,0.04);">
+                <div style="display: flex; align-items: center; gap: 10px; color: #1e293b; font-weight: bold; font-size: 0.95rem;">
+                    <span>🎯 പ്രാക്ടീസ് ചെയ്യാം (Practice & Learn)</span> 
+                </div>
+                <button onclick="openPracticePortal()" style="background-color: #3b82f6; color: white; border: none; padding: 9px 14px; border-radius: 8px; font-size: 0.85rem; font-weight: 700; cursor: pointer;">തുറക്കുക →</button>
+            </div>
+
+            <!-- പ്രധാന മോഡ്യൂൾസ് മെനു ബോക്സ് -->
+            <div class="main-box" id="home-modules-box" style="border-left-color: #059669; background: #f0fdf4;" onclick="openModulesListMenu()">
+                <h3>📚 Modules (1 മുതൽ 20 വരെ)</h3>
+                <button class="btn-link" style="background: #059669;">ഉള്ളടക്കം കാണുക →</button>
+            </div>
         </div>
     </div>
 
@@ -294,6 +320,31 @@
         </div>
         <h2 id="view-title">ടൈറ്റിൽ</h2>
         <div id="subtopics-container"></div>
+    </div>
+
+    <!-- പ്രാക്ടീസ് ചെയ്യൂ പഠിക്കൂ ഡെഡിക്കേറ്റഡ് വ്യൂ കണ്ടെയ്നർ -->
+    <div class="container" id="practice-portal-container" style="display: none;">
+        <div>
+            <button class="small-nav-btn" onclick="goBackToHomeFromPractice()">← പുറകോട്ട്</button>
+            <button class="small-nav-btn" onclick="goBackToHomeFromPractice()">🏠 ഹോം</button>
+        </div>
+        <h2 style="color: #1e293b; margin-top: 0; margin-bottom: 15px; font-size: 1.2rem; border-bottom: 2px solid #e2e8f0; padding-bottom: 8px;">📖 പ്രാക്ടീസ് ചെയ്യൂ പഠിക്കൂ</h2>
+        
+        <div style="display: flex; justify-content: space-between; align-items: center; background: #f1f5f9; padding: 10px 14px; border-radius: 8px; margin-bottom: 15px;">
+            <span style="font-size: 0.9rem; font-weight: bold; color: #334155;" id="pool-count">ബാക്കിയുള്ള ചോദ്യങ്ങൾ: 0</span>
+            <button onclick="finishPracticeTest()" style="background-color: #dc3545; color: white; border: none; padding: 6px 12px; border-radius: 6px; font-size: 0.8rem; cursor: pointer; font-weight: bold;">അവസാനിപ്പിക്കുക</button>
+        </div>
+
+        <div id="practice-question-text" style="font-size: 1rem; color: #1e293b; font-weight: 600; margin-bottom: 15px; line-height: 1.5;">ലോഡ് ചെയ്യുന്നു...</div>
+        <div id="practice-options-container" style="display: flex; flex-direction: column; gap: 10px;"></div>
+
+        <!-- ഉത്തരം തെറ്റുമ്പോൾ കാണുന്ന നോട്ടിഫിക്കേഷൻ ബോക്സ് -->
+        <div class="notification-card" id="error-notification">
+            <h3 style="color: #e11d48; margin-top: 0; margin-bottom: 10px; font-size: 1.1rem;">❌ ഉത്തരം തെറ്റാണ്!</h3>
+            <p style="font-size: 1rem; color: #0f172a; margin-bottom: 8px; font-weight: bold;" id="notif-correct">ശരിയായ ഉത്തരം: </p>
+            <p style="font-size: 0.9rem; color: #334155; margin-bottom: 18px; line-height: 1.4;" id="notif-explanation">വിശദീകരണം...</p>
+            <button onclick="proceedAfterError()" style="background-color: #2563eb; border: none; padding: 12px 20px; border-radius: 8px; font-size: 1rem; font-weight: bold; color: white; cursor: pointer; width: 100%;">അടുത്ത ചോദ്യം →</button>
+        </div>
     </div>
 
     <!-- ഫയർബേസ് SDKs & ക്ലൗഡ് സിങ്ക് മാനേജർ -->
@@ -388,6 +439,174 @@
         let selectedSubtopicId = "";
         let selectedSubtopicTitle = "";
 
+        // --- പ്രാക്ടീസ് മോഡ് വേരിയബിളുകൾ ---
+        let practicePool = [];
+        let practiceIndex = 0;
+        let totalAttemptsCount = 0;
+        let masteredCount = 0;
+        let questionDisplayNumber = 1;
+
+        window.openPracticePortal = function() {
+            document.getElementById('home-menu').style.display = 'none';
+            document.getElementById('dynamic-view').style.display = 'none';
+            document.getElementById('practice-portal-container').style.display = 'block';
+            startPracticeTest();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        };
+
+        window.goBackToHomeFromPractice = function() {
+            document.getElementById('practice-portal-container').style.display = 'none';
+            goHome();
+        };
+
+        function startPracticeTest() {
+            if (typeof questionsDB === 'undefined') {
+                document.getElementById('practice-question-text').innerText = "ചോദ്യങ്ങളുടെ ഡാറ്റാബേസ് (questionsDB) കണ്ടെത്താനായില്ല!";
+                return;
+            }
+
+            practicePool = [];
+            for (let subId in questionsDB) {
+                if (questionsDB[subId] && Array.isArray(questionsDB[subId])) {
+                    questionsDB[subId].forEach(q => {
+                        let cloneQ = JSON.parse(JSON.stringify(q));
+                        cloneQ.uid = Math.random().toString(36).substring(2, 9);
+                        cloneQ.hasFailedBefore = false;
+                        practicePool.push(cloneQ);
+                    });
+                }
+            }
+
+            if (practicePool.length === 0) {
+                document.getElementById('practice-question-text').innerText = "ചോദ്യങ്ങൾ ഒന്നും ലഭ്യമല്ല!";
+                return;
+            }
+
+            // തുടക്കത്തിൽ ചോദ്യങ്ങൾ ഷഫിൾ ചെയ്യുന്നു
+            for (let i = practicePool.length - 1; i > 0; i--) {
+                let j = Math.floor(Math.random() * (i + 1));
+                [practicePool[i], practicePool[j]] = [practicePool[j], practicePool[i]];
+            }
+
+            practiceIndex = 0;
+            totalAttemptsCount = 0;
+            masteredCount = 0;
+            questionDisplayNumber = 1;
+
+            loadNextPracticeQuestion();
+        }
+
+        function loadNextPracticeQuestion() {
+            let notifBox = document.getElementById("error-notification");
+            if (notifBox) notifBox.classList.remove("active");
+
+            if (practiceIndex >= practicePool.length) {
+                showPracticeCompletion();
+                return;
+            }
+
+            let currentQuestion = practicePool[practiceIndex];
+            document.getElementById('pool-count').innerText = `ബാക്കിയുള്ള ചോദ്യങ്ങൾ: ${practicePool.length - practiceIndex}`;
+            document.getElementById('practice-question-text').innerText = `${questionDisplayNumber}. ${currentQuestion.q}`;
+
+            let optContainerEl = document.getElementById("practice-options-container");
+            optContainerEl.innerHTML = "";
+
+            let optionsWithIndex = currentQuestion.options.map((opt, idx) => ({ text: opt, originalIndex: idx }));
+            for (let i = optionsWithIndex.length - 1; i > 0; i--) {
+                let j = Math.floor(Math.random() * (i + 1));
+                [optionsWithIndex[i], optionsWithIndex[j]] = [optionsWithIndex[j], optionsWithIndex[i]];
+            }
+
+            optionsWithIndex.forEach((item) => {
+                const btn = document.createElement("button");
+                btn.className = "option-btn";
+                btn.innerText = item.text;
+                
+                let isCorrect = (item.originalIndex === currentQuestion.answer);
+                btn.onclick = () => checkPracticeUserAnswer(isCorrect, btn, optionsWithIndex, currentQuestion);
+                optContainerEl.appendChild(btn);
+            });
+        }
+
+        function checkPracticeUserAnswer(isCorrect, selectedBtn, optionsWithIndex, currentQuestion) {
+            totalAttemptsCount++;
+            let allButtons = document.getElementById("practice-options-container").getElementsByTagName("button");
+            for (let b of allButtons) b.style.pointerEvents = "none";
+
+            if (isCorrect) {
+                selectedBtn.style.backgroundColor = "#22c55e";
+                selectedBtn.style.color = "#fff";
+                selectedBtn.style.borderColor = "#22c55e";
+                
+                masteredCount++;
+                questionDisplayNumber++;
+
+                setTimeout(() => {
+                    practiceIndex++;
+                    loadNextPracticeQuestion();
+                }, 600);
+            } else {
+                currentQuestion.hasFailedBefore = true;
+                selectedBtn.style.backgroundColor = "#ef4444";
+                selectedBtn.style.color = "#fff";
+                selectedBtn.style.borderColor = "#ef4444";
+
+                for (let idx = 0; idx < optionsWithIndex.length; idx++) {
+                    if (optionsWithIndex[idx].originalIndex === currentQuestion.answer) {
+                        allButtons[idx].style.backgroundColor = "#22c55e";
+                        allButtons[idx].style.color = "#fff";
+                        allButtons[idx].style.borderColor = "#22c55e";
+                    }
+                }
+
+                let correctText = currentQuestion.options[currentQuestion.answer];
+                let explanationText = currentQuestion.explanation || "വിശദീകരണം ലഭ്യവുമല്ല.";
+
+                document.getElementById('notif-correct').innerText = `ശരിയായ ഉത്തരം: ${correctText}`;
+                document.getElementById('notif-explanation').innerHTML = `<strong>വിശദീകരണം:</strong> ${explanationText}`;
+
+                let notifBox = document.getElementById("error-notification");
+                if (notifBox) {
+                    notifBox.classList.add("active");
+                    notifBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                }
+
+                let randomGap = Math.floor(Math.random() * 4) + 2; 
+                let reinsertPos = Math.min(practicePool.length, practiceIndex + randomGap);
+                practicePool.splice(reinsertPos, 0, JSON.parse(JSON.stringify(currentQuestion)));
+            }
+        }
+
+        function proceedAfterError() {
+            let notifBox = document.getElementById("error-notification");
+            if (notifBox) notifBox.classList.remove("active");
+            
+            masteredCount++;
+            questionDisplayNumber++;
+
+            practiceIndex++;
+            loadNextPracticeQuestion();
+        }
+
+        function finishPracticeTest() {
+            showPracticeCompletion();
+        }
+
+        function showPracticeCompletion() {
+            let container = document.getElementById('practice-portal-container');
+            if (container) {
+                container.innerHTML = `
+                    <div style="text-align: center; padding: 20px;">
+                        <h2 style="color: #22c55e; margin-bottom: 15px;">അഭിനന്ദനങ്ങൾ! 🎉</h2>
+                        <p style="font-size: 16px; color: #555; margin-bottom: 10px;">ആകെ ചെയ്ത പരിശ്രമങ്ങൾ: <b>${totalAttemptsCount}</b></p>
+                        <p style="font-size: 16px; color: #555; margin-bottom: 20px;">പഠിച്ച ചോദ്യങ്ങൾ: <b style="color: #22c55e;">${masteredCount}</b></p>
+                        <button style="background-color: #2563eb; border: none; padding: 12px 24px; border-radius: 8px; font-weight: bold; color: white; cursor: pointer; font-size: 1rem;" onclick="goBackToHomeFromPractice()">ഹോമിലേക്ക് പോവുക</button>
+                    </div>
+                `;
+            }
+        }
+
         const moduleData = {
             "mod_1": [
                 { category: "1. ഭൂമിയുടെ ഘടന", topics: [] },
@@ -450,7 +669,9 @@
                 { 
                     category: "5. ഭരണഘടന - ആമുഖം", 
                     topics: [
-                        { id: "mod_5_sub_preamble", title: "ഭരണഘടന - ആമുഖം 1", hasMock: true, hasFlash: true }
+                        { id: "mod_5_sub_preamble", title: "ഭരണഘടന - ആമുഖം 1", hasMock: true, hasFlash: true },
+                        { id: "mod_5_sub_preamble_2", title: "ഭരണഘടന - ആമുഖം 2", hasMock: true, hasFlash: true },
+                        { id: "mod_5_sub_preamble_3", title: "ഭരണഘടന - ആമുഖം 3", hasMock: true, hasFlash: true }
                     ] 
                 }
             ], 
@@ -518,6 +739,7 @@
         window.openModulesListMenu = function() {
             currentViewLevel = "modules_list";
             document.getElementById('home-menu').style.display = 'none';
+            document.getElementById('practice-portal-container').style.display = 'none';
             
             let homeBox = document.getElementById('home-modules-box');
             if(homeBox) homeBox.style.display = 'none';
@@ -549,6 +771,7 @@
             selectedModuleName = name;
             currentViewLevel = "categories";
             document.getElementById('home-menu').style.display = 'none';
+            document.getElementById('practice-portal-container').style.display = 'none';
             let viewDiv = document.getElementById('dynamic-view');
             viewDiv.style.display = 'block';
 
@@ -635,6 +858,7 @@
         window.openAnalysisMenu = function() {
             currentViewLevel = "home";
             document.getElementById('home-menu').style.display = 'none';
+            document.getElementById('practice-portal-container').style.display = 'none';
             let viewDiv = document.getElementById('dynamic-view');
             viewDiv.style.display = 'block';
             document.getElementById('view-title').innerText = "📊 വിശകലനം (Analysis)";
@@ -691,6 +915,7 @@
         window.openMyRevisionMenu = function() {
             currentViewLevel = "home";
             document.getElementById('home-menu').style.display = 'none';
+            document.getElementById('practice-portal-container').style.display = 'none';
             let viewDiv = document.getElementById('dynamic-view');
             viewDiv.style.display = 'block';
             document.getElementById('view-title').innerText = "🔄 എന്റെ റിവിഷൻ (My Revision)";
@@ -1001,7 +1226,8 @@
             if (quizTimerInterval) clearInterval(quizTimerInterval);
             currentViewLevel = "home";
             document.getElementById('dynamic-view').style.display = 'none';
-            document.getElementById('home-menu').style.display = 'flex';
+            document.getElementById('practice-portal-container').style.display = 'none';
+            document.getElementById('home-menu').style.display = 'block';
             
             let homeBox = document.getElementById('home-modules-box');
             if(homeBox) homeBox.style.display = 'flex';
@@ -1051,6 +1277,7 @@
 
         function renderFlashcard() {
             document.getElementById('home-menu').style.display = 'none';
+            document.getElementById('practice-portal-container').style.display = 'none';
             let viewDiv = document.getElementById('dynamic-view');
             viewDiv.style.display = 'block';
             
@@ -1144,8 +1371,9 @@
             renderQuizInterface();
         }
 
-        function renderQuizInterface() {
+               function renderQuizInterface() {
             document.getElementById('home-menu').style.display = 'none';
+            document.getElementById('practice-portal-container').style.display = 'none';
             let viewDiv = document.getElementById('dynamic-view');
             viewDiv.style.display = 'block';
             document.getElementById('view-title').innerText = `📝 മോക്ക് ടെസ്റ്റ്: ${selectedSubtopicTitle || 'Custom'}`;
@@ -1209,24 +1437,14 @@
         window.selectAns = function(optIdx) {
             userAnswers[qIndex] = optIdx;
             
-            // ഓപ്ഷൻ ക്ലിക്ക് ചെയ്യുമ്പോൾ അടുത്ത ചോദ്യത്തിലേക്ക് പോകും.
-            // എന്നാൽ ഇത് അവസാന ചോദ്യമാണെങ്കിൽ ഓട്ടോമാറ്റിക്കായി സബ്മിറ്റ് ആകില്ല.
             setTimeout(() => {
                 if (qIndex < quizQuestions.length - 1) {
                     qIndex++;
                     renderQuizInterface();
-                } else {
-                    // എല്ലാ ചോദ്യങ്ങളും അറ്റൻഡ് ചെയ്തു കഴിഞ്ഞു അവസാന ചോദ്യത്തിൽ എത്തുമ്പോൾ മാത്രം ചോദിക്കും
-                    let allAnswered = quizQuestions.every((_, idx) => userAnswers[idx] !== undefined);
-                    if (allAnswered) {
-                        let confirmAuto = confirm("എല്ലാ ചോദ്യങ്ങളും പൂർത്തിയായിരിക്കുന്നു! ടെസ്റ്റ് സബ്മിറ്റ് ചെയ്യട്ടെയോ?");
-                        if (confirmAuto) {
-                            finishQuizSession();
-                        }
-                    }
                 }
             }, 300);
         }
+
 
         window.toggleBookmark = function() {
             bookmarked[qIndex] = !bookmarked[qIndex];
@@ -1425,25 +1643,9 @@
             if (!setName) return;
 
             if (window.saveToFirebase) {
-                await window.saveToFirebase(setName.trim(), list, "revision_sets");
+                window.saveToFirebase(setName.trim(), list, "revision_sets");
             } else {
                 alert("ഫയർബേസ് കണക്ഷൻ ലഭ്യമായില്ല.");
-            }
-        };
-
-        const originalGoHome = window.goHome;
-        window.goHome = function() {
-            let headerEl = document.querySelector('.header');
-            if (headerEl) headerEl.style.display = 'block';
-            if (typeof originalGoHome === 'function') {
-                originalGoHome();
-            } else {
-                currentViewLevel = "home";
-                document.getElementById('dynamic-view').style.display = 'none';
-                document.getElementById('home-menu').style.display = 'flex';
-                let homeBox = document.getElementById('home-modules-box');
-                if(homeBox) homeBox.style.display = 'flex';
-                window.scrollTo({ top: 0, behavior: 'smooth' });
             }
         };
 
@@ -1610,7 +1812,7 @@
         { q: "കൊല്ലം സ്വദേശിയായ സാജു ജെയിംസ് ജപ്പാനിൽ സ്ഥിരതാമസമാക്കിയതിനാൽ ഏത് പേരിലാണ് അറിയപ്പെടുന്നത്?", options: ["A) ജാപ്പനീസ് മലയാളി", "B) ടോക്യോ മലയാളി", "C) നിപ്പാൻ മലയാളി", "D) ഏഷ്യൻ മലയാളി"], answer: 0, explanation: "അദ്ദേഹം 'ജാപ്പനീസ് മലയാളി' എന്നറിയപ്പെടുന്നു." },
         { q: "ഇന്ത്യയും മംഗോളിയയും തമ്മിൽ നടത്തുന്ന സംയുക്ത സൈനികാഭ്യാസമായ 'നോമാഡിക് എലിഫന്റ്' 2026-ന്റെ വേദി എവിടെയാണ്?", options: ["A) ഉലാൻബാതാർ, മംഗോളിയ", "B) പൂനെ, മഹാരാഷ്ട്ര", "C) പിത്തോഡഗഡ്, ഉത്തരാഖണ്ഡ്", "D) ലേ, ലഡാക്ക്"], answer: 2, explanation: "പിത്തോഡഗഡ്, ഉത്തരാഖണ്ഡ് ആണ് വേദി." },
         { q: "18-ാമത് ഇന്റർനാഷണൽ ഡോക്യുമെന്ററി ആന്റ് ഷോർട്ട്ഫിലിം ഫെസ്റ്റിവൽ ഓഫ് കേരള (IDSFFK) ലൈഫ്ടൈം അച്ചീവ്മെന്റ് പുരസ്കാരത്തിന് അർഹയായ പ്രശസ്ത അനിമേഷൻ ചലച്ചിത്രകാരി ആര്?", options: ["A) ആർ. ചന്ദ്രകുമാരി", "B) ബീന പോൾ", "C) രേവതി", "D) നീന സബ്ധാനി"], answer: 3, explanation: "നീന സബ്ധാനി ആണ് അവാർഡിന് അർഹയായത്." },
-        { q: "അന്താരാഷ്ട്ര ട്വന്റി20-യിൽ 100 സിക്സറുകൾ തികയ്ക്കുന്ന ആദ്യ ഇന്ത്യൻ വനിതാ താരം ആര്?", options: ["A) ഹർമൻപ്രീത് കൗർ", "B) ജെമീമ റോഡ്രിഗസ്", "C) ഷഫാലി വർമ്മ", "D) സ്മൃതി മന്ദാന"], answer: 3, explanation: "സ്മൃതി മന്ദാന ആണ് ഈ നേട്ടം കൈവരിച്ചത്." }
+        { q: "അന്താരാഷ്ട്ര ട്വന്റി20-യിൽ 100 സിക്സറുകൾ തികയ്ക്കുന്ന ആദ്യ ഇന്ത്യൻ വനിതാ താരം ആര്?", options: ["A) ഹർമൻപ്രീത് കൗർ", "B) ജെമീമ റോഡ്രിഗസ്", "C) ഷഫാലി വർമ്മ", "D) സ്മൃതി മന്ദാന"], answer: 3, explanation: "സ്മൃതി മന്ദാനയാണ് ഈ നേട്ടം കൈവരിച്ചത്." }
     ],
     "mod_4_sub_7": [
         { q: "അന്താരാഷ്ട്ര വനിതാ ടിന്റി-20യിൽ ഏറ്റവും കൂടുതൽ റൺസ് നേടുന്ന താരമെന്ന റെക്കോർഡ് സ്വന്തമാക്കിയത് ആര്?", options: ["എ) സൂസി ബേറ്റ്സ്", "ബി) സ്മൃതി മന്ദാന", "സി) ഹർമൻപ്രീത് കൗർ", "ഡി) എല്ലിസ് പെറി"], answer: 1, explanation: "സ്മൃതി മന്ദാനയാണ് ഈ റെക്കോർഡ് സ്വന്തമാക്കിയത്." },
@@ -1620,7 +1822,7 @@
         { q: "അഭിഷേക് ശർമ്മ തകർത്ത, മുൻ ഇന്ത്യൻ ക്യാപ്റ്റൻ രോഹിത് ശർമ്മ എത്ര പന്തിൽ സെഞ്ച്വറി നേടിയ റെക്കോർഡാണ്?", options: ["എ) 30 പന്തിൽ", "ബി) 32 പന്തിൽ", "സി) 35 പന്തിൽ", "ഡി) 38 പന്തിൽ"], answer: 2, explanation: "35 പന്തിൽ." },
         { q: "ഇന്ത്യയും ശ്രീലങ്കയും തമ്മിലുള്ള ഉഭയകക്ഷി നാവികാഭ്യാസമായ 'SLINEX-26' ന്റെ വേദി എവിടെയാണ്?", options: ["എ) കൊച്ചി, കേരളം", "ബി) വിശാഖപട്ടണം, ആന്ധ്രാപ്രദേശ്", "സി) കൊളംബോ, ശ്രീലങ്ക", "ഡി) ചെന്നൈ, തമിഴ്നാട്"], answer: 1, explanation: "വിശാഖപട്ടണം, ആന്ധ്രാപ്രദേശ്." },
         { q: "ഇന്ത്യയും ശ്രീലങ്കയും തമ്മിലുള്ള SLINEX നാവികാഭ്യാസത്തിന്റെ എത്രാമത്തെ പതിപ്പാണ് നടക്കുന്നത്?", options: ["എ) 10-ാമത് പതിപ്പ്", "ബി) 11-ാമത് പതിപ്പ്", "സി) 12-ാമത് പതിപ്പ്", "ഡി) 13-ാമത് പതിപ്പ്"], answer: 3, explanation: "13-ാമത് പതിപ്പ്." },
-        { q: "ഇന്ത്യയിലെ നദീതീര സംസ്കാരത്തെയും പൈതൃകത്തെയും ജനങ്ങളിലേക്ക് എത്തിക്കുന്നതിനായി ഇന്ദിരാഗാന്ധി നാഷണൽ സെന്റർ ഫോർ ദി ആർട്സ് (IGNCA) സംഘടിപ്പിക്കുന്ന പ്രശസ്തമായ വാർഷിക ഉത്സവം ഏത്?", options: ["എ) നദി ഉത്സവ്", "ബി) ഗംഗാ ഉത്സവ്", "സി) സംസ്കൃതി ഉത്സവ്", "ഡി) പൈതൃക ഉത്സവ്"], answer: 0, explanation: "നദി ഉത്സവ്." },
+        { q: "ഇന്ത്യയിലെ നദീതീര സംസ്കാരത്തെയും പൈതൃകത്തെയും ജനങ്ങളിലേക്ക് എത്തിക്കുന്നതിനായി ഇന്ദിരാഗാന്ധി നാഷണൽ സെന്റർ ഫോർ ദി ആർട്സ് (IGNCA) സംഘടിപ്പിക്കുന്ന പ്രശസ്തമായ വാർഷിക ഉത്സവ് ഏത്?", options: ["എ) നദി ഉത്സവ്", "ബി) ഗംഗാ ഉത്സവ്", "സി) സംസ്കൃതി ഉത്സവ്", "ഡി) പൈതൃക ഉത്സവ്"], answer: 0, explanation: "നദി ഉത്സവ്." },
         { q: "2026 സെപ്റ്റംബറിൽ ജപ്പാനിൽ കനത്ത നാശം വിതച്ച ചുഴലിക്കാറ്റ് ഏത്?", options: ["എ) ടാങ്കോ ചുഴലിക്കാറ്റ്", "ബി) ദുജ്ജാൻ ചുഴലിക്കാറ്റ് (Typhoon Dujuan)", "സി) ഹിനോകി ചുഴലിക്കാറ്റ്", "ഡി) ലാൻ ചുഴലിക്കാറ്റ്"], answer: 1, explanation: "ദുജ്ജാൻ ചുഴലിക്കാറ്റ് (Typhoon Dujuan)." },
         { q: "കേരള സർക്കാർ സംസ്ഥാന ബഡ്ജറ്റിൽ പ്രഖ്യാപിച്ച ഭൂപരിഷ്കരണം 2.0 നടപ്പിലാക്കുന്നതിനെക്കുറിച്ച് പഠിക്കാൻ നിയോഗിച്ച അഞ്ചംഗ സമിതിയുടെ അധ്യക്ഷൻ ആര്?", options: ["എ) ഡോ. ടി. എം. തോമസ് ഐസക്", "ബി) എ.ടി ജെയിംസ്", "സി) ജസ്റ്റിസ് കെ.മാധവൻ", "ഡി) എം.എ ബാബി"], answer: 1, explanation: "എ.ടി ജെയിംസ്." }
     ],
@@ -1658,7 +1860,61 @@
         { q: "ഭാരതീയ ഭരണഘടനയുടെ ആമുഖത്തിന്റെ ആശയം ഏത് രാജ്യത്തിന്റെ ഭരണഘടനയിൽ നിന്നാണ് കടമെടുത്തിരിക്കുന്നത്?", options: ["എ) ബ്രിട്ടൻ", "ബി) അയർലൻഡ്", "സി) അമേരിക്ക", "ഡി) കാനഡ"], answer: 2, explanation: "അമേരിക്ക" },
         { q: "“നെഹ്റുവും ലക്ഷ്യപ്രമേയവും ചരിത്രപരമായ വീക്ഷണത്തിൽ” (Nehru & objective resolution: A historical perspective) എന്ന ഗ്രന്ഥത്തിന്റെ രചയിതാവ് ആര്?", options: ["എ) ജെ. കെ. മിത്തർ", "ബി) ജെ. കെ. സിങ്", "സി) ജെ. കെ. റാവു", "ഡി) ജെ. കെ. മേത്ത"], answer: 0, explanation: "ജെ. കെ. മിത്തർ" },
         { q: "ആമുഖത്തിലെ \"WE\" (നാം) എന്ന പദം ആരെയാണ് വ്യക്തമാക്കുന്നത്?", options: ["എ) ഭരണഘടനാ സഭയിലെ അംഗങ്ങളെ", "ബി) ഇന്ത്യയിലെ ജനങ്ങളെ", "സി) സർക്കാരിനെ", "ഡി) ജനപ്രതിനിധികളെ"], answer: 1, explanation: "ഇന്ത്യയിലെ ജനങ്ങളെ" }
-    ]
+    ],
+    "mod_5_sub_preamble_3": [
+    { q: "ഇന്ത്യൻ ഭരണഘടനയുടെ ആമുഖത്തിൽ എത്ര തരത്തിലുള്ള നീതിയെക്കുറിച്ചാണ് പ്രതിപാദിക്കുന്നത്?", options: ["എ) രണ്ട്", "ബി) മൂന്ന്", "സി) നാല്", "ഡി) അഞ്ച്"], answer: 1, explanation: "മൂന്ന്" },
+    { q: "താഴെ പറയുന്നവയിൽ ഇന്ത്യൻ ഭരണഘടനയുടെ ആമുഖത്തിൽ ഉൾപ്പെടാത്ത നീതി ഏത്?", options: ["എ) സാമൂഹിക നീതി", "ബി) സാമ്പത്തിക നീതി", "സി) സാംസ്കാരിക നീതി", "ഡി) രാഷ്ട്രീയ നീതി"], answer: 2, explanation: "സാംസ്കാരിക നീതി" },
+    { q: "ജാതി, മത, വർഗ്ഗ, വർണ്ണ, ലിംഗം വേർതിരിവില്ലാതെ തുല്യ പരിഗണന നൽകുന്നത് ഏതുതരം നീതിയുമായി ബന്ധപ്പെട്ടിരിക്കുന്നു?", options: ["എ) സാമ്പത്തിക നീതി", "ബി) രാഷ്ട്രീയ നീതി", "സി) സാമൂഹിക നീതി", "ഡി) ഡിസ്ട്രിബ്യൂട്ടീവ് ജസ്റ്റിസ്"], answer: 2, explanation: "സാമൂഹിക നീതി" },
+    { q: "എസ്‌.സി, എസ്‌.ടി, ഒ.ബി.സി, വനിതകൾ എന്നിവരുടെ പുരോഗതിക്കായി വ്യവസ്ഥ ഉണ്ടാക്കുന്നത് എന്തുമായി ബന്ധപ്പെട്ടിരിക്കുന്നു?", options: ["എ) സാമൂഹിക നീതി", "ബി) സാമ്പത്തിക നീതി", "സി) രാഷ്ട്രീയ നീതി", "ഡി) മതപരമായ നീതി"], answer: 0, explanation: "സാമൂഹിക നീതി" },
+    { q: "പണം, വരുമാനം, വസ്തുവകകൾ തുടങ്ങിയ സാമ്പത്തിക ഘടകങ്ങളുടെ അടിസ്ഥാനത്തിൽ വിവേചനം പാടില്ല എന്ന് വ്യക്തമാക്കുന്ന നീതി ഏത്?", options: ["എ) രാഷ്ട്രീയ നീതി", "ബി) സാമൂഹിക നീതി", "സി) സാമ്പത്തിക നീതി", "ഡി) നിയമപരമായ നീതി"], answer: 2, explanation: "സാമ്പത്തിക നീതി" },
+    { q: "സാമൂഹിക നീതിയും സാമ്പത്തിക നീതിയും ചേർന്നതാണ് താഴെ പറയുന്നവയിൽ ഏത്?", options: ["എ) പൊളിറ്റിക്കൽ ജസ്റ്റിസ്", "ബി) ഡിസ്ട്രിബ്യൂട്ടീവ് ജസ്റ്റിസ് (Distributive Justice)", "സി) സോഷ്യൽ ജസ്റ്റിസ്", "ഡി) നാഷണൽ ജസ്റ്റിസ്"], answer: 1, explanation: "ഡിസ്ട്രിബ്യൂട്ടീവ് ജസ്റ്റിസ് (Distributive Justice)" },
+    { q: "പൗരന്മാർക്ക് തുല്യ രാഷ്ട്രീയവകാശങ്ങളും എല്ലാ പൊളിറ്റിക്കൽ ഓഫീസുകളും പ്രാപ്യമാക്കുന്നതും ഏത് നീതിയുടെ കീഴിൽ വരുന്നു?", options: ["എ) സാമ്പത്തിക നീതി", "ബി) സാമൂഹിക നീതി", "സി) രാഷ്ട്രീയ നീതി", "ഡി) വ്യക്തിഗത നീതി"], answer: 2, explanation: "രാഷ്ട്രീയ നീതി" },
+    { q: "ഗവൺമെന്റിൽ അഭിപ്രായ സമത്വം ഉറപ്പുവരുത്തുന്നത് എന്തുമായി ബന്ധപ്പെട്ടിരിക്കുന്നു?", options: ["എ) സാമൂഹിക നീതി", "ബി) സാമ്പത്തിക നീതി", "സി) രാഷ്ട്രീയ നീതി", "ഡി) പൗരസമത്വം"], answer: 2, explanation: "രാഷ്ട്രീയ നീതി" },
+    { q: "ഇന്ത്യൻ ഭരണഘടനയുടെ ആമുഖത്തിൽ താഴെ പറയുന്നവരിൽ ഏതിനുള്ള സ്വാതന്ത്ര്യമാണ് ഉറപ്പുനൽകുന്നത്?", options: ["എ) ചിന്തയ്ക്കും പ്രകടനത്തിനും", "ബി) വിശ്വാസത്തിനും ആരാധനയ്ക്കും", "സി) അനുഷ്ഠാനങ്ങൾക്കും", "ഡി) മേൽപ്പറഞ്ഞയെല്ലാം"], answer: 3, explanation: "മേൽപ്പറഞ്ഞയെല്ലാം" },
+    { q: "സമൂഹത്തിലെ ഒരു വിഭാഗത്തിനും പ്രത്യേക അവകാശങ്ങൾ നൽകാതിരിക്കുകയും വിവേചനം കൂടാതെ എല്ലാവർക്കും അർഹമായ അവസരങ്ങൾ നൽകുകയും ചെയ്യുന്നത് എന്തിനെ സൂചിപ്പിക്കുന്നു?", options: ["എ) സ്വാതന്ത്ര്യം", "ബി) സമത്വം", "സി) സാഹോദര്യം", "ഡി) നീതി"], answer: 1, explanation: "സമത്വം" },
+    { q: "പൗരസമത്വത്തെക്കുറിച്ച് പ്രതിപാദിക്കുന്ന ആർട്ടിക്കിളുകൾ ഏതൊക്കെ?", options: ["എ) ആർട്ടിക്കിൾ 12-35", "ബി) ആർട്ടിക്കിൾ 14-18", "സി) ആർട്ടിക്കിൾ 19-22", "ഡി) ആർട്ടിക്കിൾ 25-28"], answer: 1, explanation: "ആർട്ടിക്കിൾ 14-18" },
+    { q: "വിവേചനരഹിതമായി വോട്ടർ പട്ടിക തയ്യാറാക്കുന്നതുമായി ബന്ധപ്പെട്ട ആർട്ടിക്കിൾ ഏത്?", options: ["എ) ആർട്ടിക്കിൾ 324", "ബി) ആർട്ടിക്കിൾ 325", "സി) ആർട്ടിക്കിൾ 326", "ഡി) ആർട്ടിക്കിൾ 327"], answer: 1, explanation: "ആർട്ടിക്കിൾ 325" },
+    { q: "സാർവത്രിക പ്രായപൂർത്തി വോട്ടവകാശത്തെക്കുറിച്ച് പ്രതിപാദിക്കുന്ന ആർട്ടിക്കിൾ ഏത്?", options: ["എ) ആർട്ടിക്കിൾ 325", "ബി) ആർട്ടിക്കിൾ 326", "സി) ആർട്ടിക്കിൾ 324", "ഡി) ആർട്ടിക്കിൾ 328"], answer: 1, explanation: "ആർട്ടിക്കിൾ 326" },
+    { q: "രാഷ്ട്രീയ സമത്വത്തിന്റെ കീഴിൽ വരുന്നവ താഴെ പറയുന്നവയിൽ ഏതൊക്കെ?", options: ["എ) ആർട്ടിക്കിൾ 14-18", "ബി) ആർട്ടിക്കിൾ 325 ഉം 326 ഉം", "സി) ആർട്ടിക്കിൾ 51A (e)", "ഡി) ആർട്ടിക്കിൾ 368"], answer: 1, explanation: "ആർട്ടിക്കിൾ 325 ഉം 326 ഉം" },
+    { q: "ഇന്ത്യൻ ഭരണഘടനയിൽ സാഹോദര്യം പ്രോത്സാഹിപ്പിക്കുന്നത് എന്തിലൂടെയാണ്?", options: ["എ) ഇരട്ട പൗരത്വം", "ബി) ഏക പൗരത്വം", "സി) മൗലികാവകാശങ്ങൾ", "ഡി) നിർദ്ദേശക തത്വങ്ങൾ"], answer: 1, explanation: "ഏക പൗരത്വം" },
+    { q: "ജനങ്ങൾക്കിടയിൽ സൗഹാർദ്ദവും പൊതുവായ സാഹോദര്യ മനോഭാവവും വളർത്തുന്നതിനെക്കുറിച്ച് പ്രതിപാദിക്കുന്ന മൗലിക കടമ ഏത്?", options: ["എ) ആർട്ടിക്കിൾ 51A (a)", "ബി) ആർട്ടിക്കിൾ 51A (c)", "സി) ആർട്ടിക്കിൾ 51A (e)", "ഡി) ആർട്ടിക്കിൾ 51A (h)"], answer: 2, explanation: "ആർട്ടിക്കിൾ 51A (e)" },
+    { q: "ആമുഖത്തിൽ സാഹോദര്യം താഴെ പറയുന്നവയിൽ ഏവയാണ് ഉറപ്പുനൽകുന്നത്?", options: ["എ) വ്യക്തികളുടെ അന്തസ്സും രാഷ്ട്രീയത്തിന്റെ ഐക്യവും അഖണ്ഡതയും", "ബി) സാമ്പത്തിക പുരോഗതിയും സമത്വവും", "സി) ചിന്താസ്വാതന്ത്ര്യവും ആരാധനാസ്വാതന്ത്ര്യവും", "ഡി) മൗലികാവകാശങ്ങളും കടമകളും"], answer: 0, explanation: "വ്യക്തികളുടെ അന്തസ്സും രാഷ്ട്രീയത്തിന്റെ ഐക്യവും അഖണ്ഡതയും" },
+    { q: "\"ആമുഖം ഇന്ത്യൻ ഭരണഘടനയുടെ ഭാഗമല്ല\" എന്ന് സുപ്രീം കോടതി ഏത് കേസിലാണ് വിധിച്ചത്?", options: ["എ) കേശവാനന്ദ ഭാരതി കേസ്", "ബി) ബെറുബാറി കേസ്", "സി) എൽ.ഐ.സി കേസ്", "ഡി) ഗോപാലൻ കേസ്"], answer: 1, explanation: "ബെറുബാറി കേസ്" },
+    { q: "ബെറുബാറി കേസ് വന്ന വർഷം ഏത്?", options: ["എ) 1950", "ബി) 1960", "സി) 1973", "ഡി) 1995"], answer: 1, explanation: "1960" },
+    { q: "ഇന്ത്യൻ ഭരണഘടന നിർമ്മാതാക്കളുടെ മനസ്സ് അറിയാനുള്ള താക്കോൽ ആമുഖമാണെന്ന് ബെറുബാറി കേസിൽ വിശേഷിപ്പിച്ചത് ആരാണ്?", options: ["എ) സുപ്രീം കോടതി", "ബി) പാർലമെന്റ്", "സി) രാഷ്ട്രപതി", "ഡി) പ്രൈവി കൗൺസിൽ"], answer: 0, explanation: "സുപ്രീം കോടതി" },
+    { q: "ആർട്ടിക്കിൾ 368 പ്രകാരം ആമുഖത്തിൽ ഭേദഗതി വരുത്താൻ കഴിയുമോ എന്ന ചോദ്യം ആദ്യമായി ഉയർന്നുവന്ന കേസ് ഏത്?", options: ["എ) ബെറുബാറി കേസ്", "ബി) കേശവാനന്ദ ഭാരതി കേസ്", "സി) യൂണിയൻ ഓഫ് ഇന്ത്യ vs എൽ.ഐ.സി കേസ്", "ഡി) മേനക ഗാന്ധി കേസ്"], answer: 1, explanation: "കേശവാനന്ദ ഭാരതി കേസ്" },
+    { q: "കേശവാനന്ദ ഭാരതി കേസ് വന്ന വർഷം ഏത്?", options: ["എ) 1960", "ബി) 1973", "സി) 1995", "ഡി) 1950"], answer: 1, explanation: "1973" },
+    { q: "ബെറുബാറി കേസിൽ നൽകിയ അഭിപ്രായം തെറ്റാണെന്ന് സുപ്രീം കോടതി ഏത് കേസിലാണ് തിരുത്തിയത്?", options: ["എ) കേശവാനന്ദ ഭാരതി കേസ്", "ബി) മിനർവ മിൽസ് കേസ്", "സി) ഗോലക്നാഥ് കേസ്", "ഡി) എൽ.ഐ.സി കേസ്"], answer: 0, explanation: "കേശവാനന്ദ ഭാരതി കേസ്" },
+    { q: "ആമുഖം ഭരണഘടനയുടെ ഭാഗമാണെന്ന് സുപ്രീം കോടതി വ്യക്തമാക്കിയ സിദ്ധാന്തം ഏതുമായി ബന്ധപ്പെട്ടിരിക്കുന്നു?", options: ["എ) അടിസ്ഥാന അവകാശങ്ങൾ", "ബി) അടിസ്ഥാന സിദ്ധാന്തം (Basic Structure)", "സി) ഫെഡറൽ സംവിധാനം", "ഡി) പാർലമെന്ററി സമ്പ്രദായം"], answer: 1, explanation: "അടിസ്ഥാന സിദ്ധാന്തം (Basic Structure)" },
+    { q: "ആമുഖത്തിൽ അടങ്ങിയിരിക്കുന്ന ഭരണഘടനയുടെ അടിസ്ഥാന ഘടകങ്ങളോ അടിസ്ഥാന സവിശേഷതകളോ ഏത് ആർട്ടിക്കിൾ പ്രകാരമുള്ള ഭേദഗതിയിലൂടെ മാറ്റാൻ കഴിയില്ല?", options: ["എ) ആർട്ടിക്കിൾ 352", "ബി) ആർട്ടിക്കിൾ 356", "സി) ആർട്ടിക്കിൾ 360", "ഡി) ആർട്ടിക്കിൾ 368"], answer: 3, explanation: "ആർട്ടിക്കിൾ 368" },
+    { q: "കേശവാനന്ദ ഭാരതി കേസിന്റെ വിധി വന്ന തീയതി ഏത്?", options: ["എ) 1950 ജനുവരി 26", "ബി) 1947 ആഗസ്റ്റ് 15", "സി) 1973 ഏപ്രിൽ 24", "ഡി) 1995 നവംബർ 26"], answer: 2, explanation: "1973 ഏപ്രിൽ 24" },
+    { q: "ആമുഖം ഇന്ത്യൻ ഭരണഘടനയുടെ ഭാഗമാണെന്ന് സുപ്രീം കോടതി വിധിച്ച മറ്റൊരു പ്രധാന കേസ് ആയ 'Union of India vs LIC of India' വന്ന വർഷം ഏത്?", options: ["എ) 1960", "ബി) 1973", "സി) 1995", "ഡി) 1976"], answer: 2, explanation: "1995" },
+    { q: "ഇന്ത്യൻ ഭരണഘടനയുടെ ഹൃദയം (Heart of Indian Constitution) എന്ന വിശേഷണത്തിന് അർഹമായത് എന്ത്?", options: ["എ) മൗലികാവകാശങ്ങൾ", "ബി) ആമുഖം", "സി) ആർട്ടിക്കിൾ 32", "ഡി) നിർദ്ദേശക തത്വങ്ങൾ"], answer: 1, explanation: "ആമുഖം" },
+    { q: "ഇന്ത്യൻ ഭരണഘടനയുടെ ആത്മാവ് (Soul of Indian Constitution) എന്ന് വിശേഷിപ്പിക്കപ്പെടുന്നത് എന്ത്?", options: ["എ) ആമുഖം", "ബി) പ്രിയാമ്പിൾ", "സി) മൗലിക കടമകൾ", "ഡി) മേൽപ്പറഞ്ഞ എല്ലാം (ആമുഖവും പ്രിയാമ്പിളും)"], answer: 3, explanation: "മേൽപ്പറഞ്ഞ എല്ലാം (ആമുഖവും പ്രിയാമ്പിളും)" },
+    { q: "ഇന്ത്യൻ ഭരണഘടനയുടെ 'മനഃസാക്ഷി' എന്നറിയപ്പെടുന്നത് ഏത് ഭാഗമാണ്?", options: ["എ) ആമുഖം", "ബി) അടിയന്തര വ്യവസ്ഥകൾ", "സി) ഭേദഗതികൾ", "ഡി) പട്ടികകൾ"], answer: 0, explanation: "ആമുഖം" },
+    { q: "ഇന്ത്യൻ ഭരണഘടനയുടെ 'രക്തം' എന്ന് വിശേഷിപ്പിക്കപ്പെടുന്ന ഭാഗം ഏത്?", options: ["എ) മൗലികാവകാശങ്ങൾ", "ബി) ആമുഖം", "സി) ഭരണം", "ഡി) നിയമങ്ങൾ"], answer: 1, explanation: "ആമുഖം" },
+    { q: "ഇന്ത്യൻ ഭരണഘടനയുടെ രത്നം, അലങ്കാരം, ആഭരണം എന്നെല്ലാം വിശേഷിപ്പിക്കപ്പെടുന്നത് എന്ത്?", options: ["എ) ആമുഖം", "ബി) മൗലികാവകാശങ്ങൾ", "സി) പാർലമെന്റ്", "ഡി) സുപ്രീം കോടതി"], answer: 0, explanation: "ആമുഖം" },
+    { q: "ഭരണഘടന നിർമ്മാതാക്കളുടെ മനസിലേക്കുള്ള താക്കോൽ എന്ന് ആമുഖത്തെ വിശേഷിപ്പിച്ചത് എന്ത്?", options: ["എ) കോടതി വിധികൾ", "ബി) ആമുഖം", "സി) പാർലമെന്ററി രേഖകൾ", "ഡി) നോട്ടുകൾ"], answer: 1, explanation: "ആമുഖം" },
+    { q: "ആമുഖത്തിൽ \"ദൈവത്തിന്റെ നാമത്തിൽ\" (In the name of God) എന്ന് ചേർക്കണമെന്ന് വാദിച്ചത് ആരാണ്?", options: ["എ) എച്ച്.വി. കമ്മത്ത്", "ബി) കെ.എം. മുൻഷി", "സി) ജവഹർലാൽ നെഹ്റു", "ഡി) അല്ലാടി കൃഷ്ണസ്വാമി അയ്യർ"], answer: 0, explanation: "എച്ച്.വി. കമ്മത്ത്" },
+    { q: "ഇന്ത്യൻ ഭരണഘടനയുടെ ആമുഖം സ്വഭാവത്താൽ എങ്ങനെയുള്ളതാണ്?", options: ["എ) ന്യായവാദത്തിനർഹമാണ് (Justiciable)", "ബി) ന്യായവാദത്തിനർഹമല്ല (Non-Justiciable)", "സി) കോടതിയിൽ ചോദ്യം ചെയ്യാവുന്നതാണ്", "ഡി) നിയമപരമായി നടപ്പിലാക്കാൻ കഴിയുന്നതാണ്"], answer: 1, explanation: "ന്യായവാദത്തിനർഹമല്ല (Non-Justiciable)" },
+    { q: "ഇന്ത്യയുടെ രാഷ്ട്രീയ ജാതകം (Political Horoscope of India) എന്ന് ആമുഖത്തെ വിശേഷിപ്പിച്ചത് ആരാണ്?", options: ["എ) എൻ.എ. പാൽഖിവാല", "ബി) കെ.എം. മുൻഷി", "സി) ഏർണസ്റ്റ് ബാർക്കർ", "ഡി) ജവഹർലാൽ നെഹ്റു"], answer: 1, explanation: "കെ.എം. മുൻഷി" },
+    { q: "ഭരണഘടനയുടെ തിരിച്ചറിയൽ കാർഡ് (Identity Card of the Constitution) എന്ന് ആമുഖത്തെ വിശേഷിപ്പിച്ചത് ആരാണ്?", options: ["എ) കെ.എം. മുൻഷി", "ബി) എൻ.എ. പാൽഖിവാല", "സി) എം. ഹിദായത്തുള്ള", "ഡി) താക്കൂർ ദാസ്"], answer: 1, explanation: "എൻ.എ. പാൽഖിവാല" },
+    { q: "ഭരണഘടനയുടെ 'കീ നോട്ട്' (Key Note of the Constitution) എന്ന് ആമുഖത്തെ വിശേഷിപ്പിച്ചത് ആരാണ്?", options: ["എ) ഏർണസ്റ്റ് ബാർക്കർ", "ബി) ജവഹർലാൽ നെഹ്റു", "സി) അല്ലാടി കൃഷ്ണസ്വാമി അയ്യർ", "ഡി) എച്ച്.വി. കമ്മത്ത്"], answer: 0, explanation: "ഏർണസ്റ്റ് ബാർക്കർ" },
+    { q: "ഭരണഘടനയുടെ ഹൃദയം എന്ന് ആമുഖത്തെ വിശേഷിപ്പിച്ചത് ആരാണ്?", options: ["എ) ജവഹർലാൽ നെഹ്റു", "ബി) എം. ഹിദായത്തുള്ള", "സി) താക്കൂർ ദാസ്", "ഡി) കെ.എം. മുൻഷി"], answer: 0, explanation: "ജവഹർലാൽ നെഹ്റു" },
+    { q: "ഭരണഘടനയുടെ ആത്മാവ് എന്ന് ആമുഖത്തെ വിശേഷിപ്പിച്ചത് ആരാണ്?", options: ["എ) ജവഹർലാൽ നെഹ്റു", "ബി) എം. ഹിദായത്തുള്ള", "സി) ഏർണസ്റ്റ് ബാർക്കർ", "ഡി) അല്ലാടി കൃഷ്ണസ്വാമി അയ്യർ"], answer: 1, explanation: "എം. ഹിദായത്തുള്ള" },
+    { q: "ആമുഖത്തെ 'ഹൃദയവും ആത്മാവും' എന്ന് വിശേഷിപ്പിച്ചത് ആരാണ്?", options: ["എ) താക്കൂർ ദാസ്", "ബി) ജവഹർലാൽ നെഹ്റു", "സി) കെ.എം. മുൻഷി", "ഡി) എൻ.എ. പാൽഖിവാല"], answer: 0, explanation: "താക്കൂർ ദാസ്" },
+    { q: "ആമുഖത്തെ 'ആത്മാവും താക്കോലും' എന്ന് വിശേഷിപ്പിച്ചത് ആരാണ്?", options: ["എ) ജവഹർലാൽ നെഹ്റു", "ബി) അല്ലാടി കൃഷ്ണസ്വാമി അയ്യർ", "സി) എം. ഹിദായത്തുള്ള", "ഡി) താക്കൂർ ദാസ്"], answer: 0, explanation: "ജവഹർലാൽ നെഹ്റു" },
+    { q: "\"ഞങ്ങൾ ഇത്രയും കാലം ചിന്തിച്ചിരുന്നതും സ്വപ്നം കണ്ടിരുന്നതും നമ്മുടെ ഭരണഘടനയുടെ ആമുഖം പ്രകടിപ്പിക്കുന്നു\" എന്ന് പറഞ്ഞത് ആരാണ്?", options: ["എ) അല്ലാടി കൃഷ്ണസ്വാമി അയ്യർ", "ബി) ജവഹർലാൽ നെഹ്റു", "സി) കെ.എം. മുൻഷി", "ഡി) ബി.ആർ. അംബേദ്കർ"], answer: 0, explanation: "അല്ലാടി കൃഷ്ണസ്വാമി അയ്യർ" },
+    { q: "ഇന്ത്യൻ ഭരണഘടനയുടെ ആമുഖം രൂപകൽപ്പന ചെയ്തത് (Designed by) ആരാണ്?", options: ["എ) പ്രേം ബിഹാരി നാരായണ റൈസ്വാദ", "ബി) രാം മനോഹർ സിൻഹ", "സി) എൻ.എ. പാൽഖിവാല", "ഡി) എച്ച്.വി. കമ്മത്ത്"], answer: 1, explanation: "രാം മനോഹർ സിൻഹ" },
+    { q: "ആമുഖവുമായി ബന്ധപ്പെട്ട താഴെ പറയുന്ന പ്രസ്താവനകളിൽ ശരിയായവ ഏവ?\ni. ഇന്ത്യൻ ഭരണഘടനയുടെ ആമുഖത്തിൽ മൂന്ന് തരത്തിലുള്ള നീതിയെക്കുറിച്ച് പ്രതിപാദിക്കുന്നു.\nii. സാമ്പത്തിക നീതി എന്നത് പണം, വരുമാനം, വസ്തുവകകൾ തുടങ്ങിയ ഘടകങ്ങളുടെ അടിസ്ഥാനത്തിലുള്ള വിവേചനമില്ലായ്മയാണ്.\niii. സാമൂഹിക നീതിയും സാമ്പത്തിക നീതിയും ചേർന്നതാണ് ഡിസ്ട്രിബ്യൂട്ടീവ് ജസ്റ്റിസ്.", options: ["എ) i, ii മാത്രം", "ബി) ii, iii മാത്രം", "സി) i, iii മാത്രം", "ഡി) i, ii, iii എന്നിവയെല്ലാം"], answer: 3, explanation: "i, ii, iii എന്നിവയെല്ലാം" },
+    { q: "താഴെ പറയുന്ന പ്രസ്താവനകൾ പരിശോധിക്കുക:\ni. ആർട്ടിക്കിൾ 325 വിവേചനരഹിതമായി വോട്ടർ പട്ടിക തയ്യാറാക്കുന്നതുമായി ബന്ധപ്പെട്ടിരിക്കുന്നു.\nii. ആർട്ടിക്കിൾ 326 സാർവത്രിക പ്രായപൂർത്തി വോട്ടവകാശം ഉറപ്പുനൽകുന്നു.\niii. സാഹോദര്യം പ്രോത്സാഹിപ്പിക്കുന്നത് ഇരട്ട പൗരത്വത്തിലൂടെയാണ്.\nഇതിൽ തെറ്റായ പ്രസ്താവന ഏത്/ഏവ?", options: ["എ) i മാത്രം", "ബി) iii മാത്രം", "സി) i, ii മാത്രം", "ഡി) i, ii, iii എന്നിവയെല്ലാം"], answer: 1, explanation: "iii മാത്രം (ഏക പൗരത്വത്തിലൂടെയാണ് സാഹോദര്യം പ്രോത്സാഹിപ്പിക്കുന്നത്)" },
+    { q: "കേസുകളുമായി ബന്ധപ്പെട്ട് താഴെ പറയുന്നവയിൽ ശരിയായ പ്രസ്താവന ഏത്?", options: ["എ) 'ആമുഖം ഇന്ത്യൻ ഭരണഘടനയുടെ ഭാഗമല്ല' എന്ന് ബെറുബാറി കേസിൽ (1960) സുപ്രീം കോടതി വിധിച്ചു.", "ബി) കേശവാനന്ദ ഭാരതി കേസിൽ (1973) ആമുഖം ഭരണഘടനയുടെ ഭാഗമാണെന്ന് സുപ്രീം കോടതി വ്യക്തമാക്കി.", "സി) ആർട്ടിക്കിൾ 368 പ്രകാരമുള്ള ഭേദഗതിയിലൂടെ ആമുഖത്തിലെ അടിസ്ഥാന ഘടകങ്ങൾ മാറ്റാൻ കഴിയില്ല എന്ന് കേശവാനന്ദ ഭാരതി കേസിൽ വിധിച്ചു.", "ഡി) മേൽപ്പറഞ്ഞയെല്ലാം ശരിയാണ്."], answer: 3, explanation: "മേൽപ്പറഞ്ഞയെല്ലാം ശരിയാണ്." },
+    { q: "ആമുഖത്തിന്റെ വിശേഷണങ്ങളും അവ നൽകിയവരും സംബന്ധിച്ച പ്രസ്താവനകളിൽ തെറ്റായ ജോടി ഏത്?", options: ["എ) രാഷ്ട്രീയ ജാതകം - കെ.എം. മുൻഷി", "ബി) തിരിച്ചറിയൽ കാർഡ് - എൻ.എ. പാൽഖിവാല", "സി) കീ നോട്ട് - ഏർണസ്റ്റ് ബാർക്കർ", "ഡി) ആത്മാവ് - ജവഹർലാൽ നെഹ്റു"], answer: 3, explanation: "ആത്മാവ് - ജവഹർലാൽ നെഹ്റു (ആത്മാവ് എന്ന് വിശേഷിപ്പിച്ചത് എം. ഹിദായത്തുള്ളയാണ്)." },
+    { q: "പട്ടിക I-ൽ നൽകിയിരിക്കുന്ന വിശേഷണങ്ങളെ പട്ടിക II-ൽ നൽകിയിരിക്കുന്ന വ്യക്തികളുമായി യോജിപ്പിച്ച് ശരിയായ ഓപ്ഷൻ തിരഞ്ഞെടുക്കുക:\n(എ. ഭരണഘടനയുടെ ഹൃദയം - 1. കെ.എം. മുൻഷി | ബി. രാഷ്ട്രീയ ജാതകം - 2. ജവഹർലാൽ നെഹ്റു | സി. തിരിച്ചറിയൽ കാർഡ് - 3. എൻ.എ. പാൽഖിവാല | ഡി. കീ നോട്ട് - 4. ഏർണസ്റ്റ് ബാർക്കർ)", options: ["എ) എ-2, ബി-1, സി-3, ഡി-4", "ബി) എ-1, ബി-2, സി-3, ഡി-4", "സി) എ-2, ബി-3, സി-1, ഡി-4", "ഡി) എ-4, ബി-1, സി-2, ഡി-3"], answer: 0, explanation: "എ-2, ബി-1, സി-3, ഡി-4" },
+    { q: "പട്ടിക I-ലെ നിയമപരമായ/ഭരണഘടനാപരമായ വകുപ്പുകളെ പട്ടിക II-ലെ വിവരങ്ങളുമായി യോജിപ്പിച്ച് ശരിയായ ഉത്തരം കണ്ടെത്തുക:\n(എ. ആർട്ടിക്കിൾ 14-18 - 1. സാർവത്രിക പ്രായപൂർത്തി വോട്ടവകാശം | ബി. ആർട്ടിക്കിൾ 325 - 2. പൗരസമത്വം | സി. ആർട്ടിക്കിൾ 326 - 3. സൗഹാർദ്ദവും സാഹോദര്യ മനോഭാവവും | ഡി. ആർട്ടിക്കിൾ 51A (e) - 4. വിവേചനരഹിതമായി വോട്ടർ പട്ടിക തയ്യാറാക്കൽ)", options: ["എ) എ-1, ബി-2, സി-3, ഡി-4", "ബി) എ-2, ബി-4, സി-1, ഡി-3", "സി) എ-2, ബി-1, സി-4, ഡി-3", "ഡി) എ-3, ബി-4, സി-2, ഡി-1"], answer: 1, explanation: "എ-2, ബി-4, സി-1, ഡി-3" },
+    { q: "പട്ടിക I-ലെ പ്രധാന കേസുകളെ പട്ടിക II-ലെ വർഷങ്ങളുമായി യോജിപ്പിക്കുക:\n(എ. ബെറുബാറി കേസ് - 1. 1995 | ബി. കേശവാനന്ദ ഭാരതി കേസ് - 2. 1960 | സി. യൂണിയൻ ഓഫ് ഇന്ത്യ vs എൽ.ഐ.സി കേസ് - 3. 1973)", options: ["എ) എ-2, ബി-3, സി-1", "ബി) എ-1, ബി-2, സി-3", "സി) എ-3, ബി-1, സി-2", "ഡി) എ-2, ബി-1, സി-3"], answer: 0, explanation: "എ-2, ബി-3, സി-1" }
+]
+
 };
 
 const flashcardDB = {
@@ -1739,7 +1995,61 @@ const flashcardDB = {
         { front: "ഭാരതീയ ഭരണഘടനയുടെ ആമുഖത്തിന്റെ ആശയം ഏത് രാജ്യത്തിന്റെ ഭരണഘടനയിൽ നിന്നാണ് കടമെടുത്തിരിക്കുന്നത്?", back: "അമേരിക്ക" },
         { front: "“നെഹ്റുവും ലക്ഷ്യപ്രമേയവും ചരിത്രപരമായ വീക്ഷണത്തിൽ” (Nehru & objective resolution: A historical perspective) എന്ന ഗ്രന്ഥത്തിന്റെ രചയിതാവ് ആര്?", back: "ജെ. കെ. മിത്തർ" },
         { front: "ആമുഖത്തിലെ \"WE\" (നാം) എന്ന പദം ആരെയാണ് വ്യക്തമാക്കുന്നത്?", back: "ഇന്ത്യയിലെ ജനങ്ങളെ" }
+    ],
+       "mod_5_sub_preamble_3": [
+        { front: "ഇന്ത്യൻ ഭരണഘടനയുടെ ആമുഖത്തിൽ എത്ര തരത്തിലുള്ള നീതിയെക്കുറിച്ചാണ് പ്രതിപാദിക്കുന്നത്?", back: "മൂന്ന്" },
+        { front: "താഴെ പറയുന്നവയിൽ ഇന്ത്യൻ ഭരണഘടനയുടെ ആമുഖത്തിൽ ഉൾപ്പെടാത്ത നീതി ഏത്?", back: "സാംസ്കാരിക നീതി" },
+        { front: "ജാതി, മത, വർഗ്ഗ, വർണ്ണ, ലിംഗം വേർതിരിവില്ലാതെ തുല്യ പരിഗണന നൽകുന്നത് ഏതുതരം നീതിയുമായി ബന്ധപ്പെട്ടിരിക്കുന്നു?", back: "സാമൂഹിക നീതി" },
+        { front: "എസ്‌.സി, എസ്‌.ടി, ഒ.ബി.സി, വനിതകൾ എന്നിവരുടെ പുരോഗതിക്കായി വ്യവസ്ഥ ഉണ്ടാക്കുന്നത് എന്തുമായി ബന്ധപ്പെട്ടിരിക്കുന്നു?", back: "സാമൂഹിക നീതി" },
+        { front: "പണം, വരുമാനം, വസ്തുവകകൾ തുടങ്ങിയ സാമ്പത്തിക ഘടകങ്ങളുടെ അടിസ്ഥാനത്തിൽ വിവേചനം പാടില്ല എന്ന് വ്യക്തമാക്കുന്ന നീതി ഏത്?", back: "സാമ്പത്തിക നീതി" },
+        { front: "സാമൂഹിക നീതിയും സാമ്പത്തിക നീതിയും ചേർന്നതാണ് താഴെ പറയുന്നവയിൽ ഏത്?", back: "ഡിസ്ട്രിബ്യൂട്ടീവ് ജസ്റ്റിസ് (Distributive Justice)" },
+        { front: "പൗരന്മാർക്ക് തുല്യ രാഷ്ട്രീയവകാശങ്ങളും എല്ലാ പൊളിറ്റിക്കൽ ഓഫീസുകളും പ്രാപ്യമാക്കുന്നതും ഏത് നീതിയുടെ കീഴിൽ വരുന്നു?", back: "രാഷ്ട്രീയ നീതി" },
+        { front: "ഗവൺമെന്റിൽ അഭിപ്രായ സമത്വം ഉറപ്പുവരുത്തുന്നത് എന്തുമായി ബന്ധപ്പെട്ടിരിക്കുന്നു?", back: "രാഷ്ട്രീയ നീതി" },
+        { front: "ഇന്ത്യൻ ഭരണഘടനയുടെ ആമുഖത്തിൽ താഴെ പറയുന്നവരിൽ ഏതിനുള്ള സ്വാതന്ത്ര്യമാണ് ഉറപ്പുനൽകുന്നത്?", back: "മേൽപ്പറഞ്ഞയെല്ലാം (ചിന്തയ്ക്കും പ്രകടനത്തിനും, വിശ്വാസത്തിനും ആരാധനയ്ക്കും, അനുഷ്ഠാനങ്ങൾക്കും)" },
+        { front: "സമൂഹത്തിലെ ഒരു വിഭാഗത്തിനും പ്രത്യേക അവകാശങ്ങൾ നൽകാതിരിക്കുകയും വിവേചനം കൂടാതെ എല്ലാവർക്കും അർഹമായ അവസരങ്ങൾ നൽകുകയും ചെയ്യുന്നത് എന്തിനെ സൂചിപ്പിക്കുന്നു?", back: "സമത്വം" },
+        { front: "പൗരസമത്വത്തെക്കുറിച്ച് പ്രതിപാദിക്കുന്ന ആർട്ടിക്കിളുകൾ ഏതൊക്കെ?", back: "ആർട്ടിക്കിൾ 14-18" },
+        { front: "വിവേചനരഹിതമായി വോട്ടർ പട്ടിക തയ്യാറാക്കുന്നതുമായി ബന്ധപ്പെട്ട ആർട്ടിക്കിൾ ഏത്?", back: "ആർട്ടിക്കിൾ 325" },
+        { front: "സാർവത്രിക പ്രായപൂർത്തി വോട്ടവകാശത്തെക്കുറിച്ച് പ്രതിപാദിക്കുന്ന ആർട്ടിക്കിൾ ഏത്?", back: "ആർട്ടിക്കിൾ 326" },
+        { front: "രാഷ്ട്രീയ സമത്വത്തിന്റെ കീഴിൽ വരുന്നവ താഴെ പറയുന്നവയിൽ ഏതൊക്കെ?", back: "ആർട്ടിക്കിൾ 325 ഉം 326 ഉം" },
+        { front: "ഇന്ത്യൻ ഭരണഘടനയിൽ സാഹോദര്യം പ്രോത്സാഹിപ്പിക്കുന്നത് എന്തിലൂടെയാണ്?", back: "ഏക പൗരത്വം" },
+        { front: "ജനങ്ങൾക്കിടയിൽ സൗഹാർദ്ദവും പൊതുവായ സാഹോദര്യ മനോഭാവവും വളർത്തുന്നതിനെക്കുറിച്ച് പ്രതിപാദിക്കുന്ന മൗലിക കടമ ഏത്?", back: "ആർട്ടിക്കിൾ 51A (e)" },
+        { front: "ആമുഖത്തിൽ സാഹോദര്യം താഴെ പറയുന്നവയിൽ ഏവയാണ് ഉറപ്പുനൽകുന്നത്?", back: "വ്യക്തികളുടെ അന്തസ്സും രാഷ്ട്രീയത്തിന്റെ ഐക്യവും അഖണ്ഡതയും" },
+        { front: "\"ആമുഖം ഇന്ത്യൻ ഭരണഘടനയുടെ ഭാഗമല്ല\" എന്ന് സുപ്രീം കോടതി ഏത് കേസിലാണ് വിധിച്ചത്?", back: "ബെറുബാറി കേസ്" },
+        { front: "ബെറുബാറി കേസ് വന്ന വർഷം ഏത്?", back: "1960" },
+        { front: "ഇന്ത്യൻ ഭരണഘടന നിർമ്മാതാക്കളുടെ മനസ്സ് അറിയാനുള്ള താക്കോൽ ആമുഖമാണെന്ന് ബെറുബാറി കേസിൽ വിശേഷിപ്പിച്ചത് ആരാണ്?", back: "സുപ്രീം കോടതി" },
+        { front: "ആർട്ടിക്കിൾ 368 പ്രകാരം ആമുഖത്തിൽ ഭേദഗതി വരുത്താൻ കഴിയുമോ എന്ന ചോദ്യം ആദ്യമായി ഉയർന്നുവന്ന കേസ് ഏത്?", back: "കേശവാനന്ദ ഭാരതി കേസ്" },
+        { front: "കേശവാനന്ദ ഭാരതി കേസ് വന്ന വർഷം ഏത്?", back: "1973" },
+        { front: "ബെറുബാറി കേസിൽ നൽകിയ അഭിപ്രായം തെറ്റാണെന്ന് സുപ്രീം കോടതി ഏത് കേസിലാണ് തിരുത്തിയത്?", back: "കേശവാനന്ദ ഭാരതി കേസ്" },
+        { front: "ആമുഖം ഭരണഘടനയുടെ ഭാഗമാണെന്ന് സുപ്രീം കോടതി വ്യക്തമാക്കിയ സിദ്ധാന്തം ഏതുമായി ബന്ധപ്പെട്ടിരിക്കുന്നു?", back: "അടിസ്ഥാന സിദ്ധാന്തം (Basic Structure)" },
+        { front: "ആമുഖത്തിൽ അടങ്ങിയിരിക്കുന്ന ഭരണഘടനയുടെ അടിസ്ഥാന ഘടകങ്ങളോ അടിസ്ഥാന സവിശേഷതകളോ ഏത് ആർട്ടിക്കിൾ പ്രകാരമുള്ള ഭേദഗതിയിലൂടെ മാറ്റാൻ കഴിയില്ല?", back: "ആർട്ടിക്കിൾ 368" },
+        { front: "കേശവാനന്ദ ഭാരതി കേസിന്റെ വിധി വന്ന തീയതി ഏത്?", back: "1973 ഏപ്രിൽ 24" },
+        { front: "ആമുഖം ഇന്ത്യൻ ഭരണഘടനയുടെ ഭാഗമാണെന്ന് സുപ്രീം കോടതി വിധിച്ച മറ്റൊരു പ്രധാന കേസ് ആയ 'Union of India vs LIC of India' വന്ന വർഷം ഏത്?", back: "1995" },
+        { front: "ഇന്ത്യൻ ഭരണഘടനയുടെ ഹൃദയം (Heart of Indian Constitution) എന്ന വിശേഷണത്തിന് അർഹമായത് എന്ത്?", back: "ആമുഖം" },
+        { front: "ഇന്ത്യൻ ഭരണഘടനയുടെ ആത്മാവ് (Soul of Indian Constitution) എന്ന് വിശേഷിപ്പിക്കപ്പെടുന്നത് എന്ത്?", back: "ആമുഖം / പ്രിയാമ്പിൾ" },
+        { front: "ഇന്ത്യൻ ഭരണഘടനയുടെ 'മനഃസാക്ഷി' എന്നറിയപ്പെടുന്നത് ഏത് ഭാഗമാണ്?", back: "ആമുഖം" },
+        { front: "ഇന്ത്യൻ ഭരണഘടനയുടെ 'രക്തം' എന്ന് വിശേഷിപ്പിക്കപ്പെടുന്ന ഭാഗം ഏത്?", back: "ആമുഖം" },
+        { front: "ഇന്ത്യൻ ഭരണഘടനയുടെ രത്നം, അലങ്കാരം, ആഭരണം എന്നെല്ലാം വിശേഷിപ്പിക്കപ്പെടുന്നത് എന്ത്?", back: "ആമുഖം" },
+        { front: "ഭരണഘടന നിർമ്മാതാക്കളുടെ മനസിലേക്കുള്ള താക്കോൽ എന്ന് ആമുഖത്തെ വിശേഷിപ്പിച്ചത് എന്ത്?", back: "ആമുഖം" },
+        { front: "ആമുഖത്തിൽ \"ദൈവത്തിന്റെ നാമത്തിൽ\" (In the name of God) എന്ന് ചേർക്കണമെന്ന് വാദിച്ചത് ആരാണ്?", back: "എച്ച്.വി. കമ്മത്ത്" },
+        { front: "ഇന്ത്യൻ ഭരണഘടനയുടെ ആമുഖം സ്വഭാവത്താൽ എങ്ങനെയുള്ളതാണ്?", back: "ന്യായവാദത്തിനർഹമല്ല (Non-Justiciable)" },
+        { front: "ഇന്ത്യയുടെ രാഷ്ട്രീയ ജാതകം (Political Horoscope of India) എന്ന് ആമുഖത്തെ വിശേഷിപ്പിച്ചത് ആരാണ്?", back: "കെ.എം. മുൻഷി" },
+        { front: "ഭരണഘടനയുടെ തിരിച്ചറിയൽ കാർഡ് (Identity Card of the Constitution) എന്ന് ആമുഖത്തെ വിശേഷിപ്പിച്ചത് ആരാണ്?", back: "എൻ.എ. പാൽഖിവാല" },
+        { front: "ഭരണഘടനയുടെ 'കീ നോട്ട്' (Key Note of the Constitution) എന്ന് ആമുഖത്തെ വിശേഷിപ്പിച്ചത് ആരാണ്?", back: "ഏർണസ്റ്റ് ബാർക്കർ" },
+        { front: "ഭരണഘടനയുടെ ഹൃദയം എന്ന് ആമുഖത്തെ വിശേഷിപ്പിച്ചത് ആരാണ്?", back: "ജവഹർലാൽ നെഹ്റു" },
+        { front: "ഭരണഘടനയുടെ ആത്മാവ് എന്ന് ആമുഖത്തെ വിശേഷിപ്പിച്ചത് ആരാണ്?", back: "എം. ഹിദായത്തുള്ള" },
+        { front: "ആമുഖത്തെ 'ഹൃദയവും ആത്മാവും' എന്ന് വിശേഷിപ്പിച്ചത് ആരാണ്?", back: "താക്കൂർ ദാസ്" },
+        { front: "ആമുഖത്തെ 'ആത്മാവും താക്കോലും' എന്ന് വിശേഷിപ്പിച്ചത് ആരാണ്?", back: "ജവഹർലാൽ നെഹ്റു" },
+        { front: "\"ഞങ്ങൾ ഇത്രയും കാലം ചിന്തിച്ചിരുന്നതും സ്വപ്നം കണ്ടിരുന്നതും നമ്മുടെ ഭരണഘടനയുടെ ആമുഖം പ്രകടിപ്പിക്കുന്നു\" എന്ന് പറഞ്ഞത് ആരാണ്?", back: "അല്ലാടി കൃഷ്ണസ്വാമി അയ്യർ" },
+        { front: "ഇന്ത്യൻ ഭരണഘടനയുടെ ആമുഖം രൂപകൽപ്പന ചെയ്തത് (Designed by) ആരാണ്?", back: "രാം മനോഹർ സിൻഹ" },
+        { front: "ആമുഖവുമായി ബന്ധപ്പെട്ട പ്രസ്താവനകളിൽ (നീതി, സാമ്പത്തിക നീതി, ഡിസ്ട്രിബ്യൂട്ടീവ് ജസ്റ്റിസ്) ശരിയായവ ഏവ?", back: "i, ii, iii എന്നിവയെല്ലാം ശരിയാണ്" },
+        { front: "ആർട്ടിക്കിൾ 325, 326, സാഹോദര്യം എന്നിവയുമായി ബന്ധപ്പെട്ട പ്രസ്താവനകളിൽ തെറ്റായ പ്രസ്താവന ഏത്?", back: "സാഹോദര്യം പ്രോത്സാഹിപ്പിക്കുന്നത് ഇരട്ട പൗരത്വത്തിലൂടെയാണ് എന്ന പ്രസ്താവന തെറ്റാണ് (ഏക പൗരത്വത്തിലൂടെയാണ്)" },
+        { front: "കേസുകളുമായി ബന്ധപ്പെട്ട് ആമുഖത്തിന്റെ അവസ്ഥയെക്കുറിച്ചുള്ള പ്രസ്താവനകളിൽ ശരിയായത് ഏത്?", back: "മേൽപ്പറഞ്ഞയെല്ലാം ശരിയാണ് (ബെറുബാറി കേസ്, കേശവാനന്ദ ഭാരതി കേസ് ഉത്തരവുകൾ)" },
+        { front: "ആമുഖത്തിന്റെ വിശേഷണങ്ങളും അവ നൽകിയവരും സംബന്ധിച്ച പ്രസ്താവനകളിൽ തെറ്റായ ജോടി ഏത്?", back: "ആത്മാവ് - ജവഹർലാൽ നെഹ്റു (തെറ്റായ ജോടി, ആത്മാവ് എന്ന് വിശേഷിപ്പിച്ചത് എം. ഹിദായത്തുള്ളയാണ്)" },
+        { front: "വിശേഷണങ്ങളും അവ വിശേഷിപ്പിച്ച വ്യക്തികളും തമ്മിലുള്ള ചേരുപടി (ഭരണഘടനയുടെ ഹൃദയം, രാഷ്ട്രീയ ജാതകം, തിരിച്ചറിയൽ കാർഡ്, കീ നോട്ട്)", back: "എ-2, ബി-1, സി-3, ഡി-4" },
+        { front: "നിയമപരമായ വകുപ്പുകളും അവയുടെ വിവരങ്ങളും തമ്മിലുള്ള ചേരുപടി (ആർട്ടിക്കിൾ 14-18, 325, 326, 51A (e))", back: "എ-2, ബി-4, സി-1, ഡി-3" },
+        { front: "പ്രധാന കേസുകളും അവയുടെ വർഷങ്ങളും തമ്മിലുള്ള ചേരുപടി (ബെറുബാറി കേസ്, കേശവാനന്ദ ഭാരതി കേസ്, എൽ.ഐ.സി കേസ്)", back: "എ-2, ബി-3, സി-1" }
     ]
+
 };
     </script>
 </body>
