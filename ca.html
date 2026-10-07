@@ -1,0 +1,895 @@
+<!DOCTYPE html>
+<html lang="ml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Current Affairs - കറന്റ് അഫയേഴ്സ് പോർട്ടൽ</title>
+    <!-- Firebase SDK Imports -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-analytics.js";
+        import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, query, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyDA1XwfYzlPCL_Soxia0d-JpNekGGCaJMM",
+            authDomain: "mypscrevison.firebaseapp.com",
+            projectId: "mypscrevison",
+            storageBucket: "mypscrevison.firebasestorage.app",
+            messagingSenderId: "89979950079",
+            appId: "1:89979950079:web:707815264541bba457cdca",
+            measurementId: "G-GC849S4G0N"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const analytics = getAnalytics(app);
+        const db = getFirestore(app);
+
+        // Global functions for Firebase sync
+        window.saveToFirebaseRevision = async function(questionsList) {
+            if (!questionsList || questionsList.length === 0) {
+                alert("സേവ് ചെയ്യാൻ ചോദ്യങ്ങൾ ലഭ്യമല്ല!");
+                return;
+            }
+            try {
+                await addDoc(collection(db, "revision_sets"), {
+                    name: `റിവിഷൻ സെറ്റ് (${new Date().toLocaleDateString()})`,
+                    questions: questionsList,
+                    createdAt: serverTimestamp()
+                });
+                alert("മൈ റിവിഷൻ സെറ്റിലേക്ക് ഫയർബേസിൽ വിജയകരമായി സേവ് ചെയ്തു!");
+            } catch (e) {
+                console.error("Error adding document: ", e);
+                alert("സേവ് ചെയ്യുന്നതിൽ പരാജയപ്പെട്ടു!");
+            }
+        };
+
+        window.loadFromFirebaseRevision = async function(containerId, callback) {
+            let container = document.getElementById(containerId);
+            if (!container) return;
+            container.innerHTML = `<p style="color: #666; font-size: 12px;">ലോഡ് ചെയ്യുന്നു...</p>`;
+            try {
+                const q = query(collection(db, "revision_sets"), orderBy("createdAt", "desc"));
+                const querySnapshot = await getDocs(q);
+                container.innerHTML = '';
+                if (querySnapshot.empty) {
+                    container.innerHTML = `<p style="color: #666; font-size: 12px;">സേവ് ചെയ്ത സെറ്റുകൾ ഒന്നുമില്ല.</p>`;
+                    return;
+                }
+                querySnapshot.forEach((document) => {
+                    let set = document.data();
+                    let docId = document.id;
+
+                    let rowDiv = document.createElement('div');
+                    rowDiv.style.display = 'flex';
+                    rowDiv.style.gap = '6px';
+                    rowDiv.style.marginBottom = '6px';
+
+                    let btn = document.createElement('button');
+                    btn.className = 'btn test-btn';
+                    btn.style.flex = '1';
+                    btn.style.fontSize = '12px';
+                    btn.innerText = `${set.name}`;
+                    btn.onclick = function() {
+                        callback(set.questions);
+                    };
+
+                    let delBtn = document.createElement('button');
+                    delBtn.className = 'btn';
+                    delBtn.style.backgroundColor = '#e53e3e';
+                    delBtn.style.padding = '6px 10px';
+                    delBtn.style.fontSize = '12px';
+                    delBtn.innerText = '🗑️ ഡിലീറ്റ്';
+                    delBtn.onclick = async function() {
+                        if (confirm("ഈ റിവിഷൻ സെറ്റ് ഡിലീറ്റ് ചെയ്യണോ?")) {
+                            try {
+                                await deleteDoc(doc(db, "revision_sets", docId));
+                                alert("വിജയകരമായി ഡിലീറ്റ് ചെയ്തു!");
+                                window.loadFromFirebaseRevision(containerId, callback);
+                            } catch (e) {
+                                console.error("Error deleting document: ", e);
+                                alert("ഡിലീറ്റ് ചെയ്യാൻ കഴിഞ്ഞില്ല!");
+                            }
+                        }
+                    };
+
+                    rowDiv.appendChild(btn);
+                    rowDiv.appendChild(delBtn);
+                    container.appendChild(rowDiv);
+                });
+            } catch (e) {
+                console.error("Error loading documents: ", e);
+                container.innerHTML = `<p style="color: #e53e3e; font-size: 12px;">ഡാറ്റ ലോഡ് ചെയ്യാൻ കഴിഞ്ഞില്ല.</p>`;
+            }
+        };
+    </script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f6fc;
+            margin: 0;
+            padding: 15px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .container {
+            width: 100%;
+            max-width: 420px;
+        }
+        .header-card {
+            background: linear-gradient(135deg, #0b1c48 0%, #15387a 100%);
+            color: white;
+            padding: 20px 15px;
+            border-radius: 16px;
+            text-align: center;
+            margin-bottom: 15px;
+            box-shadow: 0 6px 15px rgba(11, 28, 72, 0.15);
+        }
+        .header-card h1 {
+            font-size: 20px;
+            margin: 0 0 8px 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        .header-card p {
+            font-size: 13px;
+            margin: 0;
+            opacity: 0.9;
+        }
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: #e2e8f0;
+            color: #333;
+            text-decoration: none;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            transition: background 0.2s;
+            border: none;
+            cursor: pointer;
+        }
+        .back-btn:hover {
+            background: #cbd5e0;
+        }
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 14px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.04);
+            border-left: 5px solid transparent;
+        }
+        .card-content {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 15px;
+            font-weight: 600;
+            color: #333;
+        }
+        .card-content span {
+            font-size: 18px;
+        }
+        .btn {
+            background-color: #2b6cb0;
+            color: white;
+            border: none;
+            padding: 8px 14px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            white-space: nowrap;
+            transition: opacity 0.2s;
+        }
+        .btn:hover {
+            opacity: 0.9;
+        }
+
+        .card-analysis { border-left-color: #3182ce; }
+        .card-analysis .btn { background-color: #3182ce; }
+
+        .card-monthly { border-left-color: #dd6b20; }
+        .card-monthly .btn { background-color: #dd6b20; }
+
+        .card-revision { border-left-color: #805ad5; }
+        .card-revision .btn { background-color: #805ad5; }
+
+        .card-practice { border-left-color: #3182ce; }
+        .card-practice .btn { background-color: #3182ce; }
+
+        .card-daily { 
+            border-left-color: #38a169; 
+            background-color: #f0fff4;
+        }
+        .card-daily .btn { background-color: #2f855a; }
+
+        .grid-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            max-height: 350px;
+            overflow-y: auto;
+            padding-right: 5px;
+        }
+
+        .grid-btn {
+            background: white;
+            border: 1px solid #cbd5e0;
+            padding: 12px;
+            border-radius: 10px;
+            text-align: center;
+            font-weight: 600;
+            color: #2d3748;
+            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+            transition: all 0.2s;
+        }
+        .grid-btn:hover {
+            background: #ebf8ff;
+            border-color: #3182ce;
+            color: #2b6cb0;
+        }
+
+        .options-container {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .option-card {
+            background: white;
+            padding: 15px;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.04);
+            border: 1px solid #e2e8f0;
+        }
+
+        .option-card h3 {
+            margin: 0 0 10px 0;
+            color: #2d3748;
+            font-size: 15px;
+        }
+
+        .action-btns {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+        }
+
+        .test-btn { background-color: #3182ce; }
+        .flash-btn { background-color: #d69e2e; }
+
+        .rev-card {
+            background: white;
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.04);
+            border-left: 5px solid transparent;
+        }
+        .rev-card-custom { border-left-color: #805ad5; }
+        .rev-card-custom .btn { background-color: #805ad5; }
+
+        .dropdown-box {
+            background: white;
+            border: 1px solid #cbd5e0;
+            border-radius: 10px;
+            padding: 10px;
+            margin-top: 8px;
+            text-align: left;
+            max-height: 150px;
+            overflow-y: auto;
+        }
+        .dropdown-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 4px 0;
+            font-size: 13px;
+            color: #2d3748;
+            cursor: pointer;
+        }
+        .select-count {
+            width: 100%;
+            padding: 8px;
+            border-radius: 8px;
+            border: 1px solid #cbd5e0;
+            margin-top: 8px;
+            font-size: 13px;
+            background: #fff;
+        }
+
+        /* Practice & Learn Active UI */
+        #practice-box {
+            background: white;
+            padding: 15px;
+            border-radius: 12px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.04);
+            position: relative;
+        }
+        .practice-header-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            font-size: 13px;
+            font-weight: bold;
+            color: #4a5568;
+        }
+        .finish-practice-btn {
+            background: #fed7d7;
+            color: #c53030;
+            border: none;
+            padding: 4px 8px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 11px;
+            font-weight: 600;
+        }
+        .question-title {
+            font-size: 15px;
+            font-weight: bold;
+            color: #2d3748;
+            margin-bottom: 12px;
+        }
+        .practice-option-item {
+            background: #f7fafc;
+            border: 1px solid #e2e8f0;
+            padding: 10px 12px;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            cursor: pointer;
+            text-align: left;
+            font-size: 14px;
+            transition: background 0.2s;
+        }
+        .practice-option-item.correct {
+            background: #c6f6d5 !important;
+            border-color: #38a169 !important;
+            color: #22543d;
+        }
+        .practice-option-item.wrong {
+            background: #fed7d7 !important;
+            border-color: #e53e3e !important;
+            color: #742a2a;
+        }
+        .correct-ans-display {
+            margin-top: 10px;
+            padding: 8px;
+            background: #e6fffa;
+            border: 1px solid #b2f5ea;
+            border-radius: 6px;
+            color: #234e52;
+            font-size: 13px;
+            font-weight: bold;
+        }
+        .practice-nav-row {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 15px;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        
+        <!-- MAIN DASHBOARD -->
+        <div id="main-dashboard">
+            <a href="index.html" class="back-btn">
+                ← Back to Home
+            </a>
+
+            <div class="header-card">
+                <h1>🎯 കറന്റ് അഫയേഴ്സ് പോർട്ടൽ</h1>
+                <p>ഒറ്റ പേജിലുള്ള സ്മാർട്ട് ഡാഷ്‌ബോർഡ് & പ്രാക്ടീസ്</p>
+            </div>
+
+            <div class="card card-analysis">
+                <div class="card-content"><span>📊</span> Analysis</div>
+                <a href="#" class="btn">തുറക്കുക →</a>
+            </div>
+
+            <div class="card card-monthly">
+                <div class="card-content"><span>📅</span> Monthly Current Affairs</div>
+                <button class="btn" onclick="showMonthlyYears()">തുറക്കുക →</button>
+            </div>
+
+            <div class="card card-revision">
+                <div class="card-content"><span>🔄</span> My Revision</div>
+                <button class="btn" onclick="showMyRevision()">തുറക്കുക →</button>
+            </div>
+
+            <!-- Practice & Learn Button -->
+            <div class="card card-practice">
+                <div class="card-content"><span>🎯</span> പ്രാക്ടീസ് ചെയ്യാം<br><small style="font-size: 11px; font-weight: normal; color: #666;">(Practice & Learn)</small></div>
+                <button class="btn" onclick="startPracticeSession()">തുറക്കുക →</button>
+            </div>
+
+            <div class="card card-daily">
+                <div class="card-content"><span>📚</span> Daily Current Affairs</div>
+                <button class="btn" onclick="showDailyYears()">തുറക്കുക →</button>
+            </div>
+        </div>
+
+        <!-- PRACTICE & LEARN ACTIVE PAGE -->
+        <div id="practice-page" class="hidden">
+            <button class="back-btn" onclick="showDashboard()">← തിരികെ ഡാഷ്‌ബോർഡിലേക്ക്</button>
+            <div id="practice-box">
+                <div class="practice-header-row">
+                    <span id="practice-counter">ചോദ്യം 1</span>
+                    <div>
+                        <button class="finish-practice-btn" onclick="confirmFinishPractice()">🏁 Finish</button>
+                        <span id="practice-balance" style="background: #edf2f7; padding: 3px 8px; border-radius: 6px; margin-left: 5px;">ബാലൻസ്: 0</span>
+                    </div>
+                </div>
+                <div class="question-title" id="practice-question-text">ചോദ്യം ഇവിടെ വരുന്നു...</div>
+                <div id="practice-options-container"></div>
+                <div id="correct-ans-box" class="hidden correct-ans-display"></div>
+                <div class="practice-nav-row">
+                    <button id="next-practice-btn" class="btn hidden" onclick="loadNextPracticeQuestion()">അടുത്ത ചോദ്യത്തിലേക്ക് പോകുക →</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- PRACTICE RESULT PAGE -->
+        <div id="practice-result-page" class="hidden">
+            <div class="header-card" style="padding: 15px; margin-bottom: 12px;">
+                <h1 style="margin:0 0 5px 0; font-size: 18px;">📊 പ്രാക്ടീസ് റിസൾട്ട്</h1>
+                <p id="practice-res-summary" style="font-size: 15px; font-weight: bold; margin:0;">ആകെ ചെയ്തത്: 0</p>
+            </div>
+            
+            <div class="option-card" style="text-align: left; padding: 15px; margin-bottom: 15px;">
+                <p id="practice-res-learned" style="margin:0 0 8px 0; color: #38a169; font-weight: 600;">പഠിച്ചവ (ശരിയായവ): 0</p>
+                <p id="practice-res-attempted" style="margin:0; color: #2d3748; font-weight: 600;">ആകെ ചെയ്തു നോക്കിയ ചോദ്യങ്ങൾ: 0</p>
+            </div>
+
+            <div style="display: flex; flex-direction: column; gap: 8px;">
+                <button class="btn test-btn" style="justify-content: center; padding: 8px; font-size: 13px;" onclick="startPracticeSession()">വീണ്ടും പ്രാക്ടീസ് ചെയ്യുക</button>
+                <button class="btn" style="justify-content: center; background-color: #718096; padding: 8px; font-size: 13px;" onclick="showDashboard()">ഹോമിലേക്ക് മടങ്ങുക</button>
+            </div>
+        </div>
+
+        <!-- MY REVISION PAGE -->
+        <div id="my-revision-page" class="hidden">
+            <button class="back-btn" onclick="showDashboard()">← ബാക്ക്</button>
+            <div class="header-card" style="padding: 15px; margin-bottom: 12px;">
+                <h1 style="font-size: 18px; margin:0 0 5px 0;">🎯 കറന്റ് അഫയേഴ്സ് പോർട്ടൽ</h1>
+                <p style="font-size: 12px;">സ്മാർട്ട് ഡാഷ്‌ബോർഡ്</p>
+            </div>
+            <div style="font-size: 16px; font-weight: bold; color: #333; margin-bottom: 12px; display: flex; align-items: center; gap: 6px;">
+                🔄 എന്റെ റിവിഷൻ (My Revision)
+            </div>
+            <div class="rev-card rev-card-custom" style="padding: 12px; flex-direction: column; align-items: stretch;">
+                <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+                    <div class="card-content" style="font-size: 14px;"><span>🔄</span> കസ്റ്റം റിവിഷൻ ടെസ്റ്റ്</div>
+                    <button class="btn" style="padding: 6px 12px; font-size: 12px;" onclick="toggleCustomDropdown()">ഡ്രോപ്പ്ഡൗൺ ▼</button>
+                </div>
+                <div id="custom-revision-box" class="hidden" style="margin-top: 10px;">
+                    <p style="font-size: 12px; font-weight: 600; margin: 0 0 4px 0; color: #4a5568;">വിഭാഗം:</p>
+                    <div style="display: flex; gap: 12px; margin-bottom: 8px; font-size: 13px;">
+                        <label style="cursor: pointer;"><input type="radio" name="ca_type" value="monthly" checked onchange="populateDropdownItems()"> Monthly</label>
+                        <label style="cursor: pointer;"><input type="radio" name="ca_type" value="daily" onchange="populateDropdownItems()"> Daily</label>
+                    </div>
+                    <p style="font-size: 12px; font-weight: 600; margin: 0 0 4px 0; color: #4a5568;" id="dropdown-label-text">തിരഞ്ഞെടുക്കുക:</p>
+                    <div class="dropdown-box" id="months-checkbox-container" style="max-height: 120px;"></div>
+                    <button class="btn test-btn" style="width: 100%; justify-content: center; margin-top: 10px; padding: 8px;" onclick="startCustomExamFromSelection()">സെലക്ഷൻ എക്സാം എഴുതുക →</button>
+                </div>
+            </div>
+
+            <!-- ഫയർബേസിൽ നിന്ന് ലോഡ് ചെയ്യുന്ന റിവിഷൻ സെറ്റുകളും ഡിലീറ്റ് ബട്ടണും -->
+            <div class="option-card" style="padding: 12px; text-align: left;">
+                <h3 style="font-size: 14px; margin-bottom: 8px;">ഫയർബേസ് റിവിഷൻ സെറ്റുകൾ</h3>
+                <div id="revision-sets-container">
+                    <p style="color: #666; font-size: 12px;">സെറ്റുകൾ ലോഡ് ചെയ്യുന്നു...</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- MONTHLY YEARS SELECTION PAGE -->
+        <div id="monthly-years-page" class="hidden">
+            <button class="back-btn" onclick="showDashboard()">← തിരികെ</button>
+            <div class="header-card" style="padding: 15px;">
+                <h1 style="font-size: 18px; margin:0;">📅 Monthly Current Affairs</h1>
+            </div>
+            <div class="grid-container" style="grid-template-columns: 1fr;">
+                <div class="grid-btn" onclick="showMonthlyMonths(2026)">2026 - Monthly Current Affairs</div>
+                <div class="grid-btn" onclick="showMonthlyMonths(2027)">2027 - Monthly Current Affairs</div>
+                <div class="grid-btn" onclick="showMonthlyMonths(2028)">2028 - Monthly Current Affairs</div>
+            </div>
+        </div>
+
+        <!-- MONTHLY MONTHS SELECTION PAGE -->
+        <div id="monthly-months-page" class="hidden">
+            <button class="back-btn" onclick="showMonthlyYears()">← തിരികെ</button>
+            <div class="header-card" style="padding: 15px;">
+                <h1 id="selected-monthly-year-title" style="font-size: 16px; margin:0;">മാസങ്ങൾ</h1>
+            </div>
+            <div class="grid-container">
+                <div class="grid-btn" onclick="showMonthlyDetails('ജനുവരി', 1)">ജനുവരി</div>
+                <div class="grid-btn" onclick="showMonthlyDetails('ഫെബ്രുവരി', 2)">ഫെബ്രുവരി</div>
+                <div class="grid-btn" onclick="showMonthlyDetails('മാർച്ച്', 3)">മാർച്ച്</div>
+                <div class="grid-btn" onclick="showMonthlyDetails('ഏപ്രിൽ', 4)">ഏപ്രിൽ</div>
+                <div class="grid-btn" onclick="showMonthlyDetails('മെയ്', 5)">മെയ്</div>
+                <div class="grid-btn" onclick="showMonthlyDetails('ജൂൺ', 6)">ജൂൺ</div>
+                <div class="grid-btn" onclick="showMonthlyDetails('ജൂലൈ', 7)">ജൂലൈ</div>
+                <div class="grid-btn" onclick="showMonthlyDetails('ഓഗസ്റ്റ്', 8)">ഓഗസ്റ്റ്</div>
+                <div class="grid-btn" onclick="showMonthlyDetails('സെപ്റ്റംബർ', 9)">സെപ്റ്റംബർ</div>
+                <div class="grid-btn" onclick="showMonthlyDetails('ഒക്ടോബർ', 10)">ഒക്ടോബർ</div>
+                <div class="grid-btn" onclick="showMonthlyDetails('നവംബർ', 11)">നവംബർ</div>
+                <div class="grid-btn" onclick="showMonthlyDetails('ഡിസംബർ', 12)">ഡിസംബർ</div>
+            </div>
+        </div>
+
+        <!-- MONTHLY DETAILS PAGE -->
+        <div id="monthly-details-page" class="hidden">
+            <button class="back-btn" onclick="showMonthlyMonths(currentMonthlyYear)">← തിരികെ</button>
+            <div class="header-card" style="padding: 12px; margin-bottom: 12px;">
+                <h1 id="selected-monthly-title" style="font-size: 16px; margin:0;">മാസം</h1>
+            </div>
+            <div class="options-container">
+                <div class="option-card" style="padding: 12px;">
+                    <h3 id="monthly-option-subtitle" style="font-size: 14px;">ഈ മാസത്തെ വിവരങ്ങൾ</h3>
+                    <div class="action-btns">
+                        <a href="#" class="btn test-btn" style="padding: 6px 12px; font-size: 12px;">📥 PDF Notes</a>
+                        <a href="#" class="btn flash-btn" style="padding: 6px 12px; font-size: 12px;">📝 Mock Test</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- DAILY YEARS SELECTION PAGE -->
+        <div id="years-page" class="hidden">
+            <button class="back-btn" onclick="showDashboard()">← തിരികെ</button>
+            <div class="header-card" style="padding: 15px;">
+                <h1 style="font-size: 18px; margin:0;">📚 Daily Current Affairs</h1>
+            </div>
+            <div class="grid-container" style="grid-template-columns: 1fr;">
+                <div class="grid-btn" onclick="showMonths(2026)">2026 - Daily Current Affairs</div>
+                <div class="grid-btn" onclick="showMonths(2027)">2027 - Daily Current Affairs</div>
+                <div class="grid-btn" onclick="showMonths(2028)">2028 - Daily Current Affairs</div>
+            </div>
+        </div>
+
+        <!-- DAILY MONTHS SELECTION PAGE -->
+        <div id="months-page" class="hidden">
+            <button class="back-btn" onclick="showDailyYears()">← തിരികെ</button>
+            <div class="header-card" style="padding: 15px;">
+                <h1 id="selected-year-title" style="font-size: 16px; margin:0;">മാസങ്ങൾ</h1>
+            </div>
+            <div class="grid-container">
+                <div class="grid-btn" onclick="showDays('ജനുവരി', 31, 1)">ജനുവരി</div>
+                <div class="grid-btn" onclick="showDays('ഫെബ്രുവരി', 29, 2)">ഫെബ്രുവരി</div>
+                <div class="grid-btn" onclick="showDays('മാർച്ച്', 31, 3)">മാർച്ച്</div>
+                <div class="grid-btn" onclick="showDays('ഏപ്രിൽ', 30, 4)">ഏപ്രിൽ</div>
+                <div class="grid-btn" onclick="showDays('മെയ്', 31, 5)">മെയ്</div>
+                <div class="grid-btn" onclick="showDays('ജൂൺ', 30, 6)">ജൂൺ</div>
+                <div class="grid-btn" onclick="showDays('ജൂലൈ', 31, 7)">ജൂലൈ</div>
+                <div class="grid-btn" onclick="showDays('ഓഗസ്റ്റ്', 31, 8)">ഓഗസ്റ്റ്</div>
+                <div class="grid-btn" onclick="showDays('സെപ്റ്റംബർ', 30, 9)">സെപ്റ്റംബർ</div>
+                <div class="grid-btn" onclick="showDays('ഒക്ടോബർ', 31, 10)">ഒക്ടോബർ</div>
+                <div class="grid-btn" onclick="showDays('നവംബർ', 31, 11)">നവംബർ</div>
+                <div class="grid-btn" onclick="showDays('ഡിസംബർ', 31, 12)">ഡിസംബർ</div>
+            </div>
+        </div>
+
+        <!-- DAILY DAYS SELECTION PAGE -->
+        <div id="days-page" class="hidden">
+            <button class="back-btn" onclick="showMonths(currentYear)">← തിരികെ</button>
+            <div class="header-card" style="padding: 12px; margin-bottom: 12px;">
+                <h1 id="selected-month-title" style="font-size: 16px; margin:0;">ദിവസങ്ങൾ</h1>
+            </div>
+            <div id="days-grid-container" class="grid-container"></div>
+        </div>
+
+        <!-- DAILY MOCK TEST & FLASHCARD OPTIONS PAGE -->
+        <div id="options-page" class="hidden">
+            <button class="back-btn" onclick="showDays(currentMonthName, currentTotalDays, currentMonthNum)">← തിരികെ</button>
+            <div class="header-card" style="padding: 12px; margin-bottom: 12px;">
+                <h1 id="selected-day-title" style="font-size: 16px; margin:0;">ദിവസം</h1>
+            </div>
+            <div class="options-container">
+                <div class="option-card" style="padding: 12px;">
+                    <h3 id="option-subtitle" style="font-size: 14px;">പ്രാക്ടീസ് ചെയ്യാം</h3>
+                    <div class="action-btns">
+                        <button class="btn test-btn" style="padding: 6px 12px; font-size: 12px;">📝 Mock Test</button>
+                        <button class="btn flash-btn" style="padding: 6px 12px; font-size: 12px;">⚡ Flashcards</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        const mockDatabase = {
+            "2026_1_1": [
+                {
+                    question: "2026 ജനുവരി 1-ലെ ആദ്യത്തെ പ്രധാന സംഭവവികാസം എന്താണ്?",
+                    options: ["ദേശീയ സുരക്ഷാ പ്രഖ്യാപനം", "പുതിയ സാമ്പത്തിക നയം", "ബഹിരാകാശ ദൗത്യ വിജയം", "ഡിജിറ്റൽ കറൻസി തുടക്കം"],
+                    answerText: "പുതിയ സാമ്പത്തിക നയം"
+                }
+            ]
+        };
+
+        let currentMonthlyYear = 2026;
+        let currentYear = 2026;
+        let currentMonthName = '';
+        let currentTotalDays = 0;
+        let currentMonthNum = 0;
+        let practiceQueue = [];
+        let attemptedQuestionsSet = new Set();
+        let learnedCount = 0;
+        let isAnswered = false;
+
+        function hideAll() {
+            document.getElementById('main-dashboard').classList.add('hidden');
+            document.getElementById('practice-page').classList.add('hidden');
+            document.getElementById('practice-result-page').classList.add('hidden');
+            document.getElementById('my-revision-page').classList.add('hidden');
+            document.getElementById('monthly-years-page').classList.add('hidden');
+            document.getElementById('monthly-months-page').classList.add('hidden');
+            document.getElementById('monthly-details-page').classList.add('hidden');
+            document.getElementById('years-page').classList.add('hidden');
+            document.getElementById('months-page').classList.add('hidden');
+            document.getElementById('days-page').classList.add('hidden');
+            document.getElementById('options-page').classList.add('hidden');
+        }
+
+        function showDashboard() {
+            hideAll();
+            document.getElementById('main-dashboard').classList.remove('hidden');
+        }
+
+        function showMyRevision() {
+            hideAll();
+            populateDropdownItems();
+            if (window.loadFromFirebaseRevision) {
+                window.loadFromFirebaseRevision('revision-sets-container', (questions) => {
+                    startPracticeSession(questions);
+                });
+            }
+            document.getElementById('my-revision-page').classList.remove('hidden');
+        }
+
+        function toggleCustomDropdown() {
+            let box = document.getElementById('custom-revision-box');
+            box.classList.toggle('hidden');
+        }
+
+        function populateDropdownItems() {
+            let container = document.getElementById('months-checkbox-container');
+            let labelText = document.getElementById('dropdown-label-text');
+            if (!container) return;
+            container.innerHTML = '';
+            let caType = document.querySelector('input[name="ca_type"]:checked').value;
+            let items = caType === 'monthly' ? ["ജനുവരി", "ഫെബ്രുവരി", "മാർച്ച്", "ഏപ്രിൽ", "മെയ്", "ജൂൺ", "ജൂലൈ", "ഓഗസ്റ്റ്", "സെപ്റ്റംബർ", "ഒക്ടോബർ", "നവംബർ", "ഡിസംബർ"] : ["1 മുതൽ 31 വരെ ദിവസങ്ങൾ"];
+            
+            items.forEach((m, idx) => {
+                let div = document.createElement('label');
+                div.className = 'dropdown-item';
+                div.innerHTML = `<input type="checkbox" class="selection-checkbox" value="${idx + 1}"> ${m}`;
+                container.appendChild(div);
+            });
+        }
+
+        function startCustomExamFromSelection() {
+            let checkboxes = document.querySelectorAll('.selection-checkbox:checked');
+            if (checkboxes.length === 0) {
+                alert("ദയവായി കുറഞ്ഞത് ഒരു മാസമോ ദിവസമോ തിരഞ്ഞെടുക്കുക!");
+                return;
+            }
+            let combinedQuestions = [];
+            for (let key in mockDatabase) {
+                combinedQuestions = combinedQuestions.concat(mockDatabase[key]);
+            }
+            startPracticeSession(combinedQuestions);
+        }
+
+        function showMonthlyYears() {
+            hideAll();
+            document.getElementById('monthly-years-page').classList.remove('hidden');
+        }
+
+        function showMonthlyMonths(year) {
+            currentMonthlyYear = year;
+            hideAll();
+            document.getElementById('selected-monthly-year-title').innerText = year + ' - മാസങ്ങൾ';
+            document.getElementById('monthly-months-page').classList.remove('hidden');
+        }
+
+        function showMonthlyDetails(monthName, monthNum) {
+            currentMonthlyName = monthName;
+            hideAll();
+            document.getElementById('selected-monthly-title').innerText = monthName;
+            document.getElementById('monthly-option-subtitle').innerText = monthName + ' വിവരങ്ങൾ';
+            document.getElementById('monthly-details-page').classList.remove('hidden');
+        }
+
+        function showDailyYears() {
+            hideAll();
+            document.getElementById('years-page').classList.remove('hidden');
+        }
+
+        function showMonths(year) {
+            currentYear = year;
+            hideAll();
+            document.getElementById('selected-year-title').innerText = year + ' - മാസങ്ങൾ';
+            document.getElementById('months-page').classList.remove('hidden');
+        }
+
+        function showDays(monthName, totalDays, monthNum) {
+            currentMonthName = monthName;
+            currentTotalDays = totalDays;
+            currentMonthNum = monthNum;
+            hideAll();
+            document.getElementById('selected-month-title').innerText = monthName;
+            let daysContainer = document.getElementById('days-grid-container');
+            daysContainer.innerHTML = '';
+            for (let i = 1; i <= totalDays; i++) {
+                let dayBtn = document.createElement('div');
+                dayBtn.className = 'grid-btn';
+                dayBtn.innerText = i;
+                dayBtn.onclick = function() { showOptions(i); };
+                daysContainer.appendChild(dayBtn);
+            }
+            document.getElementById('days-page').classList.remove('hidden');
+        }
+
+        function showOptions(dayNum) {
+            hideAll();
+            document.getElementById('selected-day-title').innerText = 'തീയതി ' + dayNum;
+            document.getElementById('option-subtitle').innerText = 'പ്രാക്ടീസ്';
+            document.getElementById('options-page').classList.remove('hidden');
+        }
+
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                let j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        function startPracticeSession(customList = null) {
+            let allQuestions = [];
+            if (customList && customList.length > 0) {
+                allQuestions = customList;
+            } else {
+                for (let key in mockDatabase) {
+                    if (Array.isArray(mockDatabase[key])) {
+                        mockDatabase[key].forEach(q => {
+                            allQuestions.push({
+                                question: q.question,
+                                options: [...q.options],
+                                answerText: q.answerText || q.options[q.answer]
+                            });
+                        });
+                    }
+                }
+            }
+
+            if (allQuestions.length === 0) {
+                alert("പ്രാക്ടീസ് ചെയ്യാൻ ചോദ്യങ്ങൾ ലഭ്യമല്ല!");
+                return;
+            }
+
+            allQuestions.forEach(q => {
+                shuffleArray(q.options);
+            });
+            practiceQueue = shuffleArray(allQuestions);
+            attemptedQuestionsSet = new Set();
+            learnedCount = 0;
+
+            hideAll();
+            document.getElementById('practice-page').classList.remove('hidden');
+            loadPracticeQuestion();
+        }
+
+        function loadPracticeQuestion() {
+            if (practiceQueue.length === 0) {
+                finishPracticeSession();
+                return;
+            }
+
+            isAnswered = false;
+            let q = practiceQueue[0];
+
+            document.getElementById('practice-counter').innerText = `ചോദ്യം`;
+            document.getElementById('practice-balance').innerText = `ബാലൻസ്: ${practiceQueue.length}`;
+            document.getElementById('practice-question-text').innerText = q.question;
+
+            let optsContainer = document.getElementById('practice-options-container');
+            optsContainer.innerHTML = '';
+            document.getElementById('correct-ans-box').classList.add('hidden');
+            document.getElementById('next-practice-btn').classList.add('hidden');
+
+            q.options.forEach(optText => {
+                let optDiv = document.createElement('div');
+                optDiv.className = 'practice-option-item';
+                optDiv.innerText = optText;
+                optDiv.onclick = function() {
+                    checkPracticeAnswer(optText, q, optDiv);
+                };
+                optsContainer.appendChild(optDiv);
+            });
+        }
+
+        function checkPracticeAnswer(selectedOpt, currentQ, element) {
+            if (isAnswered) return;
+            isAnswered = true;
+
+            attemptedQuestionsSet.add(currentQ.question);
+
+            let allOpts = document.querySelectorAll('.practice-option-item');
+            allOpts.forEach(el => {
+                el.style.pointerEvents = 'none';
+                if (el.innerText === currentQ.answerText) {
+                    el.classList.add('correct');
+                }
+            });
+
+            if (selectedOpt === currentQ.answerText) {
+                learnedCount++;
+                practiceQueue.shift();
+            } else {
+                element.classList.add('wrong');
+                let wrongItem = practiceQueue.shift();
+                let insertPos = Math.min(3, practiceQueue.length);
+                practiceQueue.splice(insertPos, 0, wrongItem);
+
+                let ansBox = document.getElementById('correct-ans-box');
+                ansBox.innerText = `ശരിയുത്തരം: ${currentQ.answerText}`;
+                ansBox.classList.remove('hidden');
+            }
+
+            document.getElementById('next-practice-btn').classList.remove('hidden');
+        }
+
+        function loadNextPracticeQuestion() {
+            loadPracticeQuestion();
+        }
+
+        function confirmFinishPractice() {
+            let confirmAction = confirm("താങ്കൾക്ക് പ്രാക്ടീസ് സെഷൻ ഫിനിഷ് ചെയ്യണോ?");
+            if (confirmAction) {
+                finishPracticeSession();
+            }
+        }
+
+        function finishPracticeSession() {
+            hideAll();
+            let totalAttempted = attemptedQuestionsSet.size;
+            
+            document.getElementById('practice-res-summary').innerText = `ആകെ ചെയ്തു നോക്കിയ ചോദ്യങ്ങൾ: ${totalAttempted}`;
+            document.getElementById('practice-res-learned').innerText = `പഠിച്ചവ (ശരിയായവ): ${learnedCount}`;
+            document.getElementById('practice-res-attempted').innerText = `ആകെ ചെയ്തു നോക്കിയ ചോദ്യങ്ങൾ: ${totalAttempted}`;
+
+            document.getElementById('practice-result-page').classList.remove('hidden');
+        }
+    </script>
+</body>
+</html>
