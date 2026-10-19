@@ -6,7 +6,7 @@
     <title>Kerala PSC Smart Revision Portal</title>
     <!-- Tailwind CSS for Modern UI & Mobile Friendly -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Firebase SDKs (Compat version for seamless Firestore integration) -->
+    <!-- Firebase SDKs (Compat version) -->
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
     <style>
@@ -31,13 +31,14 @@
 
         <!-- Navigation Tabs -->
         <div class="flex overflow-x-auto space-x-2 pb-2 custom-scrollbar">
-            <button onclick="switchTab('dashboard')" class="tab-btn px-4 py-2 bg-indigo-600 text-white rounded-xl text-sm font-medium whitespace-nowrap shadow">ഹോം (Home)</button>
-            <button onclick="switchTab('revision')" class="tab-btn px-4 py-2 bg-slate-800 text-slate-300 border border-slate-700 rounded-xl text-sm font-medium whitespace-nowrap">Custom Revision</button>
-            <button onclick="switchTab('practice')" class="tab-btn px-4 py-2 bg-slate-800 text-slate-300 border border-slate-700 rounded-xl text-sm font-medium whitespace-nowrap">Practice Zone</button>
-            <button onclick="switchTab('tracker')" class="tab-btn px-4 py-2 bg-slate-800 text-slate-300 border border-slate-700 rounded-xl text-sm font-medium whitespace-nowrap">Progress Tracker</button>
+            <button onclick="switchTab('dashboard')" id="btn-dashboard" class="tab-btn px-4 py-2 bg-indigo-600 text-white rounded-xl text-sm font-medium whitespace-nowrap shadow">ഹോം (Home)</button>
+            <button onclick="switchTab('pdf_creator')" id="btn-pdf_creator" class="tab-btn px-4 py-2 bg-slate-800 text-slate-300 border border-slate-700 rounded-xl text-sm font-medium whitespace-nowrap">Mock Creator</button>
+            <button onclick="switchTab('revision')" id="btn-revision" class="tab-btn px-4 py-2 bg-slate-800 text-slate-300 border border-slate-700 rounded-xl text-sm font-medium whitespace-nowrap">Custom Revision</button>
+            <button onclick="switchTab('practice')" id="btn-practice" class="tab-btn px-4 py-2 bg-slate-800 text-slate-300 border border-slate-700 rounded-xl text-sm font-medium whitespace-nowrap">Practice Zone</button>
+            <button onclick="switchTab('tracker')" id="btn-tracker" class="tab-btn px-4 py-2 bg-slate-800 text-slate-300 border border-slate-700 rounded-xl text-sm font-medium whitespace-nowrap">Progress Tracker</button>
         </div>
 
-        <!-- TAB 1: DASHBOARD (Main Categories) -->
+        <!-- TAB 1: DASHBOARD -->
         <section id="section-dashboard" class="space-y-6">
             <div>
                 <h2 class="text-md font-bold text-slate-200 mb-3">Exam Packs & Categories</h2>
@@ -70,11 +71,32 @@
                             <p class="text-xs text-slate-400 mt-0.5">മാസം തോറുമുള്ളവ</p>
                         </div>
                     </div>
+                    <div onclick="openSubTopics('malayalam')" class="bg-slate-800 border border-slate-700 p-4 rounded-2xl cursor-pointer hover:border-indigo-500 transition shadow-sm space-y-2">
+                        <div class="w-10 h-10 bg-rose-900/50 rounded-xl flex items-center justify-center text-rose-400 text-xl font-bold">മല</div>
+                        <div>
+                            <h3 class="font-bold text-sm text-white">മലയാളം (Malayalam)</h3>
+                            <p class="text-xs text-slate-400 mt-0.5">മലയാളം ചോദ്യങ്ങൾ</p>
+                        </div>
+                    </div>
+                    <div onclick="openSubTopics('english')" class="bg-slate-800 border border-slate-700 p-4 rounded-2xl cursor-pointer hover:border-indigo-500 transition shadow-sm space-y-2">
+                        <div class="w-10 h-10 bg-cyan-900/50 rounded-xl flex items-center justify-center text-cyan-400 text-xl font-bold">En</div>
+                        <div>
+                            <h3 class="font-bold text-sm text-white">ഇംഗ്ലീഷ് (English)</h3>
+                            <p class="text-xs text-slate-400 mt-0.5">ഇംഗ്ലീഷ് ഗ്രേമർ & വൊക്കാബുലറി</p>
+                        </div>
+                    </div>
+                    <div onclick="switchTab('pdf_creator')" class="col-span-2 bg-gradient-to-r from-indigo-900/60 to-purple-900/60 border border-indigo-700/50 p-4 rounded-2xl cursor-pointer hover:border-indigo-400 transition shadow-sm flex items-center space-x-4">
+                        <div class="w-12 h-12 bg-indigo-600/50 rounded-xl flex items-center justify-center text-white text-2xl font-bold">✨</div>
+                        <div>
+                            <h3 class="font-bold text-sm text-white">Mock Test Creator</h3>
+                            <p class="text-xs text-slate-300 mt-0.5">ചോദ്യങ്ങൾ പേസ്റ്റ് ചെയ്ത് പുതിയ മോക്ക് ടെസ്റ്റുകൾ നിർമ്മിക്കുക</p>
+                        </div>
+                    </div>
                 </div>
             </div>
         </section>
 
-        <!-- SUB-TOPICS & MOCK TESTS LIST VIEW -->
+        <!-- SUB-TOPICS VIEW -->
         <section id="section-subtopics" class="hidden space-y-4">
             <div class="flex items-center space-x-3">
                 <button onclick="backToDashboard()" class="bg-slate-800 border border-slate-700 text-slate-300 px-3 py-1.5 rounded-xl text-xs font-medium">← തിരികെ</button>
@@ -83,36 +105,65 @@
             <div id="subtopics-container" class="space-y-4"></div>
         </section>
 
-        <!-- TAB 2: Custom Revision -->
-        <section id="section-revision" class="hidden space-y-6">
+        <!-- TAB: MOCK CREATOR -->
+        <section id="section-pdf_creator" class="hidden space-y-6">
             <div class="bg-slate-800 border border-slate-700 p-5 rounded-2xl space-y-4 shadow-md">
-                <h2 class="text-lg font-bold text-indigo-400">1. റിവിഷൻ ടെസ്റ്റ് (ഡ്രോപ്പ്ഡൗൺ സെലക്ഷൻ)</h2>
-                <p class="text-xs text-slate-400">ആവശ്യമുള്ള ഫുൾ ടോപ്പിക്കോ, പ്രത്യേക മോക്ക് ടെസ്റ്റോ അല്ലെങ്കിൽ മൈ റിവിഷൻ സെറ്റോ തിരഞ്ഞെടുക്കുക:</p>
-                
+                <h2 class="text-lg font-bold text-indigo-400">നിങ്ങളുടെ മോക്ക് ടെസ്റ്റ് ഇവിടെ തയ്യാറാക്കാം</h2>
+                <p class="text-xs text-slate-400">ജെമിനിയിൽ നിന്ന് സാധാരണ ചോദ്യങ്ങളും ഓപ്ഷനുകളും ഉത്തരങ്ങളും കോപ്പി ചെയ്ത് താഴെ പേസ്റ്റ് ചെയ്യുക.</p>
+
                 <div>
-                    <label class="block text-sm font-medium text-slate-300 mb-1">ടോപ്പിക് / മോക്ക് ടെസ്റ്റ് തിരഞ്ഞെടുക്കുക:</label>
-                    <select id="rev-single-dropdown" class="w-full p-2.5 bg-slate-900 border border-slate-700 text-white rounded-xl text-sm">
-                        <option value="all">എല്ലാ ടോപ്പുകളും (All Combined)</option>
+                    <label class="block text-sm font-medium text-slate-300 mb-1">മെയിൻ കാറ്റഗറി തിരഞ്ഞെടുക്കുക:</label>
+                    <select id="pdf-category" class="w-full p-2.5 bg-slate-900 border border-slate-700 text-white rounded-xl text-sm">
+                        <option value="topic_wise">Topic-wise Exams</option>
+                        <option value="scert">SCERT Based Exams</option>
+                        <option value="ca_daily">Daily Current Affairs</option>
+                        <option value="ca_monthly">Monthly Current Affairs</option>
+                        <option value="malayalam">മലയാളം (Malayalam)</option>
+                        <option value="english">ഇംഗ്ലീഷ് (English)</option>
                     </select>
                 </div>
 
                 <div>
-                    <label class="block text-sm font-medium text-slate-300 mb-1">ചോദ്യങ്ങളുടെ എണ്ണം:</label>
+                    <label class="block text-sm font-medium text-slate-300 mb-1">സബ് ടോപ്പിക്കിന്റെ പേര്:</label>
+                    <input type="text" id="pdf-subtopic" placeholder="ഉദാഹരണത്തിന്: ഭരണഘടന" class="w-full p-2.5 bg-slate-900 border border-slate-700 text-white rounded-xl text-sm">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-slate-300 mb-1">മോക്ക് ടെസ്റ്റിന്റെ പേര്:</label>
+                    <input type="text" id="pdf-testname" placeholder="ഉദാഹരണത്തിന്: ഭരണഘടന ആഴത്തിലറിയാം" class="w-full p-2.5 bg-slate-900 border border-slate-700 text-white rounded-xl text-sm">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-slate-300 mb-1">നിങ്ങളുടെ ചോദ്യങ്ങൾ ഇവിടെ പേസ്റ്റ് ചെയ്യുക:</label>
+                    <textarea id="gemini-json-input" rows="10" placeholder="ചോദ്യങ്ങൾ ഇവിടെ പേസ്റ്റ് ചെയ്യുക..." class="w-full p-2.5 bg-slate-900 border border-slate-700 text-white rounded-xl text-sm custom-scrollbar"></textarea>
+                </div>
+
+                <button onclick="savePastedGeminiMockTest()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-3 rounded-xl font-medium shadow transition">
+                    മോക്ക് ടെസ്റ്റ് സേവ് ചെയ്യുക
+                </button>
+            </div>
+        </section>
+
+        <!-- TAB 2: Custom Revision -->
+        <section id="section-revision" class="hidden space-y-6">
+            <div class="bg-slate-800 border border-slate-700 p-5 rounded-2xl space-y-4 shadow-md">
+                <h2 class="text-lg font-bold text-indigo-400">🎯 മൾട്ടി-സെലക്ട് റിവിഷൻ ടെസ്റ്റ് (Accordion View)</h2>
+                <div id="accordion-container" class="space-y-3 max-h-80 overflow-y-auto custom-scrollbar p-1">
+                    <p class="text-xs text-slate-500 text-center py-4">മോക്ക് ടെസ്റ്റുകൾ ഒന്നും ആഡ് ചെയ്തിട്ടില്ല.</p>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-slate-300 mb-1">ടെസ്റ്റിലെ ആകെ ചോദ്യങ്ങളുടെ എണ്ണം:</label>
                     <select id="rev-count" class="w-full p-2.5 bg-slate-900 border border-slate-700 text-white rounded-xl text-sm">
                         <option value="10">10 ചോദ്യങ്ങൾ</option>
                         <option value="25">25 ചോദ്യങ്ങൾ</option>
-                        <option value="50">50 ചോദ്യങ്ങൾ</option>
+                        <option value="50" selected>50 ചോദ്യങ്ങൾ</option>
                         <option value="75">75 ചോദ്യങ്ങൾ</option>
                         <option value="100">100 ചോദ്യങ്ങൾ</option>
                     </select>
                 </div>
 
-                <button onclick="startSingleDropdownCustomTest()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-2.5 rounded-xl font-medium shadow transition">റിവിഷൻ ടെസ്റ്റ് ആരംഭിക്കുക</button>
-            </div>
-
-            <div class="bg-slate-800 border border-slate-700 p-5 rounded-2xl space-y-4 shadow-md">
-                <h2 class="text-lg font-bold text-indigo-400">2. മൈ റിവിഷൻ സെറ്റുകൾ (ഡിലീറ്റ് ചെയ്യാവുന്നവ)</h2>
-                <div id="saved-mistake-sets-container" class="space-y-2"></div>
+                <button onclick="startAccordionCustomTest()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-2.5 rounded-xl font-medium shadow transition">റിവിഷൻ ടെസ്റ്റ് ആരംഭിക്കുക</button>
             </div>
         </section>
 
@@ -120,7 +171,7 @@
         <section id="section-practice" class="hidden space-y-4">
             <div class="bg-slate-800 border border-slate-700 p-5 rounded-2xl shadow-xl space-y-6">
                 <div class="flex justify-between items-center border-b border-slate-700 pb-3">
-                    <h2 class="text-lg font-bold text-indigo-400">പ്രാക്ടീസ് സോൺ (Smart Practice)</h2>
+                    <h2 class="text-lg font-bold text-indigo-400">പ്രാക്ടീസ് സോൺ</h2>
                     <div class="flex items-center space-x-3">
                         <span id="practice-progress-indicator" class="text-xs text-slate-400">പുരോഗതി</span>
                         <button onclick="finishPracticeZone()" class="bg-amber-600 hover:bg-amber-700 text-white text-xs px-3 py-1.5 rounded-lg font-medium">Finish</button>
@@ -134,7 +185,7 @@
             </div>
         </section>
 
-        <!-- PRACTICE ZONE RESULT VIEW -->
+        <!-- PRACTICE RESULT -->
         <div id="practice-result-interface" class="hidden bg-slate-800 border border-slate-700 p-6 rounded-2xl shadow-xl space-y-6">
             <h2 class="text-xl font-bold text-indigo-400 text-center">പ്രാക്ടീസ് റിസൾട്ട്</h2>
             <div class="grid grid-cols-2 gap-4 text-center">
@@ -143,7 +194,7 @@
                     <div id="p-res-attempted" class="text-2xl font-bold text-indigo-400">0</div>
                 </div>
                 <div class="bg-slate-900 p-4 rounded-xl border border-slate-700">
-                    <div class="text-xs text-slate-400">പഠിച്ച ചോദ്യങ്ങൾ (ശരിയാക്കിയവ)</div>
+                    <div class="text-xs text-slate-400">പഠിച്ച ചോദ്യങ്ങൾ</div>
                     <div id="p-res-learned" class="text-2xl font-bold text-emerald-400">0</div>
                 </div>
             </div>
@@ -153,25 +204,28 @@
         <!-- TAB 4: Progress Tracker -->
         <section id="section-tracker" class="hidden space-y-4">
             <div class="bg-slate-800 border border-slate-700 p-5 rounded-2xl shadow-md space-y-4">
-                <h2 class="text-lg font-bold text-indigo-400">പ്രോഗ്രസ് ട്രാക്കർ (Progress Tracker)</h2>
-                <p class="text-xs text-slate-400">ഓരോ തവണ ടെസ്റ്റ് ചെയ്യുമ്പോഴും ലഭിച്ച മാർക്കുകൾ വലതുവശത്തേക്ക് ആഡ് ആയി വരുന്നു:</p>
+                <h2 class="text-lg font-bold text-indigo-400">📊 പ്രോഗ്രസ് ട്രാക്കർ (Progress Tracker)</h2>
+                <p class="text-xs text-slate-400">താങ്കൾ ഇതുവരെ പൂർത്തിയാക്കിയ മോക്ക് ടെസ്റ്റുകളുടെ വിവരങ്ങളും ഉയർന്ന മാർക്കുകളും താഴെ കാണാം:</p>
                 <div class="border border-slate-700 rounded-xl overflow-hidden bg-slate-900">
                     <div class="max-h-96 overflow-y-auto custom-scrollbar">
                         <table class="w-full text-left border-collapse text-sm">
                             <thead class="bg-slate-950 sticky top-0 z-20 text-slate-400 shadow-md">
                                 <tr>
-                                    <th class="p-3 border-b border-slate-700 sticky left-0 bg-slate-950 z-30 w-1/3">മോക്ക് ടെസ്റ്റ് പേര്</th>
-                                    <th class="p-3 border-b border-slate-700">മാർക്കുകളും തവണകളും (സ്ക്രോൾ ചെയ്യുക)</th>
+                                    <th class="p-3 border-b border-slate-700 w-1/2">മോക്ക് ടെസ്റ്റ് പേര്</th>
+                                    <th class="p-3 border-b border-slate-700">ചെയ്ത തവണകൾ</th>
+                                    <th class="p-3 border-b border-slate-700">ഉയർന്ന മാർക്ക്</th>
                                 </tr>
                             </thead>
-                            <tbody id="tracker-table-body" class="text-slate-300"></tbody>
+                            <tbody id="tracker-table-body" class="text-slate-300">
+                                <tr><td colspan="3" class="p-4 text-center text-xs text-slate-500">ഇതുവരെ ടെസ്റ്റുകൾ ഒന്നും പൂർത്തിയാക്കിയിട്ടില്ല.</td></tr>
+                            </tbody>
                         </table>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- ACTIVE MOCK TEST INTERFACE -->
+        <!-- ACTIVE MOCK TEST -->
         <div id="mock-interface" class="hidden bg-slate-800 border border-slate-700 p-6 rounded-2xl shadow-xl space-y-6">
             <div class="flex justify-between items-center border-b border-slate-700 pb-3">
                 <div id="mock-title" class="font-bold text-indigo-400 text-sm"></div>
@@ -197,35 +251,21 @@
             <h2 class="text-xl font-bold text-indigo-400 text-center">ടെസ്റ്റ് റിസൾട്ട്</h2>
             <div class="grid grid-cols-2 gap-4 text-center">
                 <div class="bg-slate-900 p-4 rounded-xl border border-slate-700">
-                    <div class="text-xs text-slate-400">ലഭിച്ച മാർക്ക് (ശരി - തെറ്റ്)</div>
+                    <div class="text-xs text-slate-400">ലഭിച്ച മാർക്ക്</div>
                     <div id="res-score" class="text-2xl font-bold text-indigo-400">0</div>
                 </div>
                 <div class="bg-slate-900 p-4 rounded-xl border border-slate-700">
-                    <div class="text-xs text-slate-400">നെഗറ്റീവ് മാർക്ക് (-0.33)</div>
+                    <div class="text-xs text-slate-400">നെഗറ്റീവ് മാർക്ക്</div>
                     <div id="res-neg" class="text-2xl font-bold text-red-400">0</div>
                 </div>
             </div>
-            <div class="flex justify-around text-xs font-medium text-slate-300">
-                <span class="text-emerald-400">ശരി: <b id="res-correct">0</b></span>
-                <span class="text-red-400">തെറ്റ്: <b id="res-wrong">0</b></span>
-                <span class="text-slate-400">അറ്റൻഡ് ചെയ്യാത്തവ: <b id="res-unattempted">0</b></span>
+            <div class="hidden">
+                <span id="res-correct">0</span><span id="res-wrong">0</span><span id="res-unattempted">0</span>
             </div>
-
-            <button onclick="promptSaveMistakesToRevision()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-3 rounded-xl text-sm font-bold shadow transition">
-                📌 തെറ്റിയവയും അറ്റൻഡ് ചെയ്യാത്തവയും റിവിഷൻ സെറ്റായി സേവ് ചെയ്യുക
-            </button>
-
             <div class="border-t border-slate-700 pt-4 space-y-3">
                 <h3 class="text-sm font-bold text-slate-200">ഉത്തരങ്ങൾ പരിശോധിക്കുക:</h3>
-                <div class="flex space-x-2 overflow-x-auto pb-1">
-                    <button onclick="filterResultAnswers('all')" class="res-filter-btn px-3 py-1.5 bg-indigo-600 text-white rounded-lg text-xs font-medium whitespace-nowrap">എല്ലാം (All)</button>
-                    <button onclick="filterResultAnswers('correct')" class="res-filter-btn px-3 py-1.5 bg-slate-900 text-slate-300 border border-slate-700 rounded-lg text-xs font-medium whitespace-nowrap">ശരിയായവ (Correct)</button>
-                    <button onclick="filterResultAnswers('wrong')" class="res-filter-btn px-3 py-1.5 bg-slate-900 text-slate-300 border border-slate-700 rounded-lg text-xs font-medium whitespace-nowrap">തെറ്റിയവ (Wrong)</button>
-                    <button onclick="filterResultAnswers('unattempted')" class="res-filter-btn px-3 py-1.5 bg-slate-900 text-slate-300 border border-slate-700 rounded-lg text-xs font-medium whitespace-nowrap">അറ്റൻഡ് ചെയ്യാത്തവ</button>
-                </div>
                 <div id="result-answers-list" class="space-y-3 max-h-72 overflow-y-auto custom-scrollbar p-1"></div>
             </div>
-
             <button onclick="resetToHome()" class="w-full bg-slate-700 hover:bg-slate-600 text-white py-2.5 rounded-xl text-sm font-medium">ഹോമിലേക്ക് മടങ്ങുക</button>
         </div>
 
@@ -241,7 +281,6 @@
     </div>
 
     <script>
-        // --- Your Firebase Configuration ---
         const firebaseConfig = {
             apiKey: "AIzaSyDA1XwfYzlPCL_Soxia0d-JpNekGGCaJMM",
             authDomain: "mypscrevison.firebaseapp.com",
@@ -258,1012 +297,49 @@
             db = firebase.firestore();
             document.getElementById('sync-status').innerText = "Firebase: Connected";
             document.getElementById('sync-status').className = "text-xs bg-emerald-950 text-emerald-400 border border-emerald-800 px-2 py-1 rounded";
+            loadDataFromFirebase();
         } catch(e) {
-            console.log("Firebase connection error:", e);
             document.getElementById('sync-status').innerText = "Firebase: Error";
         }
 
-        const categoriesData = {
-            scert: {
-                title: "SCERT Based Exams",
-                subtopics: [
-                    { name: "ചരിത്രം (History)", tests: ["മോക്ക് ടെസ്റ്റ് 1", "മോക്ക് ടെസ്റ്റ് 2", "മോക്ക് ടെസ്റ്റ് 3"] },
-                    { name: "ഭൂമിശാസ്ത്രം (Geography)", tests: ["മോക്ക് ടെസ്റ്റ് 1", "മോക്ക് ടെസ്റ്റ് 2"] }
-                ]
-            },
-            topic_wise: {
-                title: "Topic-wise Exams",
-                subtopics: [
-                    { name: "കേരള ഗവർണൻസ്", tests: ["സിവിൽ സർവീസും ഭരണഘടനയും 02", "സിവിൽ സർവീസും ഭരണഘടനയും 03", "സിവിൽ സർവീസും ഭരണഘടനയും 04", "സിവിൽ സർവീസും ഭരണഘടനയും 05","സിവിൽ സർവീസും ഭരണഘടനയും 06", "സിവിൽ സർവീസും ഭരണഘടനയും 07","സിവിൽ സർവീസും ഭരണഘടനയും 08","സിവിൽ സർവീസും ഭരണഘടനയും 09"] },
-                    { name: "ഭരണഘടന (Constitution)", tests: ["മോക്ക് ടെസ്റ്റ് 1", "മോക്ക് ടെസ്റ്റ് 2"] }
-                ]
-            },
-            ca_daily: {
-                title: "Daily Current Affairs",
-                subtopics: [
-                    { name: "15/10/2026", tests: ["മോക്ക് ടെസ്റ്റ് 1", "മോക്ക് ടെസ്റ്റ് 2"] },
-                    { name: "14/10/2026", tests: ["മോക്ക് ടെസ്റ്റ് 1"] }
-                ]
-            },
-            ca_monthly: {
-                title: "Monthly Current Affairs",
-                subtopics: [
-                    { name: "October 2026", tests: ["മോക്ക് ടെസ്റ്റ് 1", "മോക്ക് ടെസ്റ്റ് 2", "മോക്ക് ടെസ്റ്റ് 3"] },
-                    { name: "September 2026", tests: ["മോക്ക് ടെസ്റ്റ് 1", "മോക്ക് ടെസ്റ്റ് 2"] }
-                ]
+        let categoriesData = JSON.parse(localStorage.getItem('psc_categories_data') || JSON.stringify({
+            scert: { title: "SCERT Based Exams", subtopics: [] },
+            topic_wise: { title: "Topic-wise Exams", subtopics: [] },
+            ca_daily: { title: "Daily Current Affairs", subtopics: [] },
+            ca_monthly: { title: "Monthly Current Affairs", subtopics: [] },
+            malayalam: { title: "മലയാളം (Malayalam)", subtopics: [] },
+            english: { title: "ഇംഗ്ലീഷ് (English)", subtopics: [] }
+        }));
+
+        let sampleQuestions = JSON.parse(localStorage.getItem('psc_sample_questions') || JSON.stringify([]));
+        let userProgressData = JSON.parse(localStorage.getItem('psc_user_progress') || JSON.stringify({}));
+
+        async function loadDataFromFirebase() {
+            if(!db) return;
+            try {
+                const docRef = db.collection("app_data").doc("psc_main_database");
+                const doc = await docRef.get();
+                if (doc.exists) {
+                    const serverData = doc.data();
+                    if(serverData.categoriesData) {
+                        categoriesData = serverData.categoriesData;
+                        if(!categoriesData.malayalam) categoriesData.malayalam = { title: "മലയാളം (Malayalam)", subtopics: [] };
+                        if(!categoriesData.english) categoriesData.english = { title: "ഇംഗ്ലീഷ് (English)", subtopics: [] };
+                        localStorage.setItem('psc_categories_data', JSON.stringify(categoriesData));
+                    }
+                    if(serverData.sampleQuestions) {
+                        sampleQuestions = serverData.sampleQuestions;
+                        localStorage.setItem('psc_sample_questions', JSON.stringify(sampleQuestions));
+                    }
+                    if(serverData.userProgressData) {
+                        userProgressData = serverData.userProgressData;
+                        localStorage.setItem('psc_user_progress', JSON.stringify(userProgressData));
+                    }
+                }
+            } catch(err) {
+                console.log("Firebase load error:", err);
             }
-        };
-
-        // Questions Database (ചോദ്യങ്ങൾ ഇവിടെ ചേർക്കുക)
-        let sampleQuestions = [
-            { 
-                id: 1, topic: "scert", subtopic: "ചരിത്രം (History)", testName: "മോക്ക് ടെസ്റ്റ് 1", 
-                type: "normal",
-                q: "നിങ്ങളുടെ ചോദ്യം ഇവിടെ നൽകുക?", 
-                options: ["ഓപ്ഷൻ 1", "ഓപ്ഷൻ 2", "ഓപ്ഷൻ 3", "ഓപ്ഷൻ 4"], answer: 0 
-            },
-                   
-
-  {
-    "id": 1,
-    "topic": "topic_wise",
-    "subtopic": "കേരള ഗവർണൻസ്",
-    "testName": "സിവിൽ സർവീസും ഭരണഘടനയും 02",
-    "type": "normal",
-    "q": "താഴെ കൊടുത്തിരിക്കുന്ന പ്രസ്താവന ആരുടേതാണ്?\n“നിങ്ങൾ എന്തെങ്കിലും നടപ്പാക്കുന്നതിനു മുൻപ് നിങ്ങൾ കണ്ട പാവപ്പെട്ടവനും നിസ്സഹായനുമായ ഒരു മുഖം ഓർക്കുക. നിങ്ങൾ ഇപ്പോൾ ചെയ്യാൻ പോകുന്നത് ആ പാവപ്പെട്ടവന് എങ്ങനെ സഹായകമാകും എന്ന് സ്വയം ചോദിക്കുക.”",
-    "options": ["ജവഹർലാൽ നെഹ്റു", "ഡോ. ബി.ആർ. അംബേദ്കർ", "മഹാത്മാ ഗാന്ധി", "സർദാർ വല്ലഭഭായ് പട്ടേൽ"],
-    "answer": 2
-  },
-  {
-    "id": 2,
-    "topic": "topic_wise",
-    "subtopic": "കേരള ഗവർണൻസ്",
-    "testName": "സിവിൽ സർവീസും ഭരണഘടനയും 02",
-    "type": "normal",
-    "q": "“പൊതു ഭരണം എന്നാൽ ഗവൺമെന്റ് ഭരണത്തെ സംബന്ധിക്കുന്നത്.” (Public administration is concerned with the administration of the government.) ഈ പ്രസ്താവന ആരുടേതാണ്?",
-    "options": ["വുഡ്രോ വില്സൺ", "ലൂഥർ ഗുലിക്", "N. Gladden", "ഡി. വൈറ്റ്"],
-    "answer": 2
-  },
-  {
-    "id": 3,
-    "topic": "topic_wise",
-    "subtopic": "കേരള ഗവർണൻസ്",
-    "testName": "സിവിൽ സർവീസും ഭരണഘടനയും 02",
-    "type": "normal",
-    "q": "“ഓരോ സംസ്ഥാനത്തിനും ഒരു ഗവർണർ ഉണ്ടായിരിക്കും” എന്ന് പറയുന്നത് Constitution of Indiaയിലെ ഏത് അനുച്ഛേദത്തിലാണ്?",
-    "options": ["അനുച്ഛേദം 152", "അനുച്ഛേദം 153", "അനുച്ഛേദം 154", "അനുച്ഛേദം 155"],
-    "answer": 1
-  },
-  {
-    "id": 4,
-    "topic": "topic_wise",
-    "subtopic": "കേരള ഗവർണൻസ്",
-    "testName": "സിവിൽ സർവീസും ഭരണഘടനയും 02",
-    "type": "normal",
-    "q": "സംസ്ഥാന ഗവർണറുടെ ശിക്ഷ ഇളവ്/മാപ്പ് നൽകാനുള്ള അധികാരം ഏത് അനുച്ഛേദത്തിലാണ്?",
-    "options": ["അനുച്ഛേദം 123", "അനുച്ഛേദം 161", "അനുച്ഛേദം 213", "അനുച്ഛേദം 356"],
-    "answer": 1
-  },
-  {
-    "id": 5,
-    "topic": "topic_wise",
-    "subtopic": "കേരള ഗവർണൻസ്",
-    "testName": "സിവിൽ സർവീസും ഭരണഘടനയും 02",
-    "type": "normal",
-    "q": "സംസ്ഥാന ഗവർണർ ഓർഡിനൻസ് പുറപ്പെടുവിക്കുന്ന അധികാരം ഏത് അനുച്ഛേദത്തിലാണ്?",
-    "options": ["അനുച്ഛേദം 123", "അനുച്ഛേദം 213", "അനുച്ഛേദം 153", "അനുച്ഛേദം 200"],
-    "answer": 1
-  },
-  {
-    "id": 6,
-    "topic": "topic_wise",
-    "subtopic": "കേരള ഗവർണൻസ്",
-    "testName": "സിവിൽ സർവീസും ഭരണഘടനയും 02",
-    "type": "normal",
-    "q": "ബ്യൂറോക്രസിയുടെ സംഘടനാരൂപം എന്ന നിലയിലുള്ള സ്വഭാവവിശേഷങ്ങളെ നിയമരൂപത്തിൽ ആവിഷ്കരിച്ച ജർമൻ സാമൂഹിക ശാസ്ത്രജ്ഞൻ ആരാണ്?",
-    "options": ["കാറൽ മാർക്സ്", "എമിൽ ദുർക്കൈം", "മാക്‌സ് വെബർ", "ഹെർബർട്ട് സ്പെൻസർ"],
-    "answer": 2
-  },
-  {
-    "id": 7,
-    "topic": "topic_wise",
-    "subtopic": "കേരള ഗവർണൻസ്",
-    "testName": "സിവിൽ സർവീസും ഭരണഘടനയും 02",
-    "type": "matching",
-    "q": "താഴെ കൊടുത്തിരിക്കുന്ന ജോഡികളിൽ ശരിയായത് ഏതാണ്?",
-    "pairs": [
-        {"left": "1. പൊതു ഭരണത്തിന്റെ പിതാവ്", "right": "Woodrow Wilson"},
-        {"left": "2. ഇന്ത്യൻ പൊതു ഭരണത്തിൻ്റെ പിതാവ്", "right": "Paul H. Appleby"}
-    ],
-    "options": ["1 മാത്രം ശരി", "2 മാത്രം ശരി", "1 ഉം 2 ഉം ശരി", "1 ഉം 2 ഉം തെറ്റ്"],
-    "answer": 2
-  },
-  {
-    "id": 8,
-    "topic": "topic_wise",
-    "subtopic": "കേരള ഗവർണൻസ്",
-    "testName": "സിവിൽ സർവീസും ഭരണഘടനയും 02",
-    "type": "matching",
-    "q": "കൊടുത്തിരിക്കുന്ന ജോഡികളിൽ ശരിയായത് ഏതാണ്?",
-    "pairs": [
-        {"left": "1. ഇന്ത്യൻ സിവിൽ സർവീസിൻ്റെ പിതാവ് (Father of Civil Service in India)", "right": "Lord Cornwallis"},
-        {"left": "2. ഇന്ത്യയിലെ ആധുനിക അഖിലേന്ത്യാ സർവീസിൻ്റെ പിതാവ്", "right": "Sardar Vallabhbhai Patel"}
-    ],
-    "options": ["1 മാത്രം ശരി", "2 മാത്രം ശരി", "1 ഉം 2 ഉം ശരി", "1 ഉം 2 ഉം തെറ്റ്"],
-    "answer": 2
-  },
-  {
-    "id": 9,
-    "topic": "topic_wise",
-    "subtopic": "കേരള ഗവർണൻസ്",
-    "testName": "സിവിൽ സർവീസും ഭരണഘടനയും 02",
-    "type": "normal",
-    "q": "സിവിൽ സർവീസ് പരീക്ഷയിൽ (Indian Civil Service) വിജയിച്ച ആദ്യ ഇന്ത്യാക്കാരൻ ആരാണ്?",
-    "options": ["സുബാഷ് ചന്ദ്ര ബോസ്", "ദാദാഭായ് നവറോജി", "സത്യേന്ദ്രനാഥ ടാഗോർ", "രവീന്ദ്രനാഥ് ടാഗോർ"],
-    "answer": 2
-  },
-  {
-    "id": 10,
-    "topic": "topic_wise",
-    "subtopic": "കേരള ഗവർണൻസ്",
-    "testName": "സിവിൽ സർവീസും ഭരണഘടനയും 02",
-    "type": "normal",
-    "q": "ദേശീയ സിവിൽ സർവീസ് ദിനം (National Civil Services Day) ആചരിക്കുന്നത് ഏത് ദിവസമാണ്?",
-    "options": ["ഏപ്രിൽ 14", "ഏപ്രിൽ 18", "ഏപ്രിൽ 21", "ഏപ്രിൽ 26"],
-    "answer": 2
-  },
-  {
-    "id": 11,
-    "topic": "topic_wise",
-    "subtopic": "കേരള ഗവർണൻസ്",
-    "testName": "സിവിൽ സർവീസും ഭരണഘടനയും 02",
-    "type": "normal",
-    "q": "ഇന്ത്യൻ ഭരണഘടനയിലെ Part XIV എന്തിനെക്കുറിച്ചാണ്?",
-    "options": ["അടിസ്ഥാന അവകാശങ്ങൾ", "കേന്ദ്ര-സംസ്ഥാന സിവിൽ സർവീസുകളും പബ്ലിക് സർവീസ് കമ്മീഷനും", "അടിയന്തര വ്യവസ്ഥകൾ", "തിരഞ്ഞെടുപ്പ് കമ്മീഷൻ"],
-    "answer": 1
-  },
-  {
-    "id": 12,
-    "topic": "topic_wise",
-    "subtopic": "കേരള ഗവർണൻസ്",
-    "testName": "സിവിൽ സർവീസും ഭരണഘടനയും 02",
-    "type": "normal",
-    "q": "Part XIV ഉൾപ്പെടുന്ന അനുച്ഛേദങ്ങൾ ഏവ?",
-    "options": ["280-300", "300-320", "308-323", "310-330"],
-    "answer": 2
-  },
-  {
-    "id": 13,
-    "topic": "topic_wise",
-    "subtopic": "കേരള ഗവർണൻസ്",
-    "testName": "സിവിൽ സർവീസും ഭരണഘടനയും 02",
-    "type": "normal",
-    "q": "കേന്ദ്ര-സംസ്ഥാന സിവിൽ സർവീസുകളെ പറ്റി പ്രതിപാദിക്കുന്ന ഭരണഘടനയിലെ അനുച്ഛേദങ്ങൾ ഏവ?",
-    "options": ["അനുച്ഛേദം 300 മുതൽ 307 വരെ", "അനുച്ഛേദം 308 മുതൽ 314 വരെ", "അനുച്ഛേദം 315 മുതൽ 323 വരെ", "അനുച്ഛേദം 324 മുതൽ 330 വരെ"],
-    "answer": 1
-  },
-  {
-    "id": 14,
-    "topic": "topic_wise",
-    "subtopic": "കേരള ഗവർണൻസ്",
-    "testName": "സിവിൽ സർവീസും ഭരണഘടനയും 02",
-    "type": "normal",
-    "q": "പബ്ലിക് സർവീസ് കമ്മീഷനുകളെ പറ്റി പ്രതിപാദിക്കുന്ന ഭരണഘടനയിലെ അനുച്ഛേദങ്ങൾ ഏവ?",
-    "options": ["അനുച്ഛേദം 308 മുതൽ 314 വരെ", "അനുച്ഛേദം 315 മുതൽ 323 വരെ", "അനുച്ഛേദം 324 മുതൽ 335 വരെ", "അനുച്ഛേദം 301 മുതൽ 310 വരെ"],
-    "answer": 1
-  },
-  {
-    "id": 15,
-    "topic": "topic_wise",
-    "subtopic": "കേരള ഗവർണൻസ്",
-    "testName": "സിവിൽ സർവീസും ഭരണഘടനയും 02",
-    "type": "normal",
-    "q": "Article 309 എന്തുമായി ബന്ധപ്പെട്ടതാണ്?",
-    "options": ["ഗവർണറുടെ അധികാരം", "നിയമസഭയുടെ അധികാരം", "സേവന നിയമങ്ങളും നിബന്ധനകളും", "തിരഞ്ഞെടുപ്പ്"],
-    "answer": 2
-  },
-  {
-    "id": 16,
-    "topic": "topic_wise",
-    "subtopic": "കേരള ഗവർണൻസ്",
-    "testName": "സിവിൽ സർവീസും ഭരണഘടനയും 02",
-    "type": "normal",
-    "q": "കേന്ദ്ര സിവിൽ സർവീസ് ചട്ടങ്ങൾ നിർമ്മിക്കാൻ അധികാരം ഉള്ളത് ആർക്കാണ്?",
-    "options": ["പാർലമെന്റിന്", "ഇന്ത്യൻ രാഷ്ട്രപതിക്ക്", "പ്രധാനമന്ത്രിക്ക്", "സുപ്രീം കോടതി ചീഫ് ജസ്റ്റിസിന്"],
-    "answer": 1
-  },
-  {
-    "id": 17,
-    "topic": "topic_wise",
-    "subtopic": "കേരള ഗവർണൻസ്",
-    "testName": "സിവിൽ സർവീസും ഭരണഘടനയും 02",
-    "type": "normal",
-    "q": "കേന്ദ്ര സിവിൽ സർവീസ് ചട്ടങ്ങളെ ക്രമപ്പെടുത്തുന്നതിനായി നിയമങ്ങൾ നിർമ്മിക്കാൻ അധികാരം ഉള്ളത് ആർക്കാണ്?",
-    "options": ["ഇന്ത്യൻ രാഷ്ട്രപതിക്ക്", "പാർലമെന്റിന്", "സുപ്രീം കോടതിക്ക്", "കേന്ദ്ര മന്ത്രിസഭയ്ക്ക്"],
-    "answer": 1
-  },
-  {
-    "id": 18,
-    "topic": "topic_wise",
-    "subtopic": "കേരള ഗവർണൻസ്",
-    "testName": "സിവിൽ സർവീസും ഭരണഘടനയും 02",
-    "type": "normal",
-    "q": "സംസ്ഥാന സിവിൽ സർവീസ് ചട്ടങ്ങൾ നിർമ്മിക്കാൻ Article 309 പ്രകാരം അധികാരം ഉള്ളത് ആർക്ക്?",
-    "options": ["പ്രധാനമന്ത്രി", "രാഷ്ട്രപതി", "ഗവർണർ", "ചീഫ് ജസ്റ്റിസ്"],
-    "answer": 2
-  },
-  {
-    "id": 19,
-    "topic": "topic_wise",
-    "subtopic": "കേരള ഗവർണൻസ്",
-    "testName": "സിവിൽ സർവീസും ഭരണഘടനയും 02",
-    "type": "normal",
-    "q": "സംസ്ഥാന സിവിൽ സർവീസ് ചട്ടങ്ങളെ ക്രമപ്പെടുത്തുന്നതിനായി നിയമങ്ങൾ (Acts) നിർമ്മിക്കാൻ അധികാരം ഉള്ളത് ആർക്കാണ്?",
-    "options": ["സംസ്ഥാന ഗവർണർക്ക്", "സംസ്ഥാന മന്ത്രിസഭയ്ക്ക്", "സംസ്ഥാന നിയമസഭയ്ക്ക്", "പബ്ലിക് സർവീസ് കമ്മീഷന്"],
-    "answer": 2
-  },
-  {
-    "id": 20,
-    "topic": "topic_wise",
-    "subtopic": "കേരള ഗവർണൻസ്",
-    "testName": "സിവിൽ സർവീസും ഭരണഘടനയും 02",
-    "type": "normal",
-    "q": "KS & SSR 1958 എന്തുമായി ബന്ധപ്പെട്ടതാണ്?",
-    "options": ["ശിക്ഷാനടപടി", "നിയമനവും പ്രമോഷനും", "പെരുമാറ്റം", "പെൻഷൻ"],
-    "answer": 1
-  },
-  {
-    "id": 21,
-    "topic": "topic_wise",
-    "subtopic": "കേരള ഗവർണൻസ്",
-    "testName": "സിവിൽ സർവീസും ഭരണഘടനയും 02",
-    "type": "normal",
-    "q": "KSR 1959 (Kerala Service Rules 1959) പ്രധാനമായും എന്തുമായി ബന്ധപ്പെട്ടതാണ്?",
-    "options": ["ജീവനക്കാരുടെ നിയമനം", "ശമ്പളം, യാത്രാബത്ത, ലീവുകൾ, പെൻഷൻ എന്നിവ", "പെരുമാറ്റ ചട്ടങ്ങൾ", "ശിക്ഷണ നടപടികൾ"],
-    "answer": 1
-  },
-  {
-    "id": 22,
-    "topic": "topic_wise",
-    "subtopic": "കേരള ഗവർണൻസ്",
-    "testName": "സിവിൽ സർവീസും ഭരണഘടനയും 02",
-    "type": "normal",
-    "q": "Kerala Civil Services (CCA) Rules 1960 എന്തുമായി ബന്ധപ്പെട്ടതാണ്?",
-    "options": ["നിയമനം", "ശമ്പളം", "വർഗീകരണം, നിയന്ത്രണം, അപ്പീൽ (ശിക്ഷണ നടപടികൾ)", "പെരുമാറ്റം"],
-    "answer": 2
-  },
-  {
-    "id": 23,
-    "topic": "topic_wise",
-    "subtopic": "കേരള ഗവർണൻസ്",
-    "testName": "സിവിൽ സർവീസും ഭരണഘടനയും 02",
-    "type": "normal",
-    "q": "Kerala Government Servants' Conduct Rules, 1960 എന്തുമായി ബന്ധപ്പെട്ടതാണ്?",
-    "options": ["പെരുമാറ്റ ചട്ടങ്ങൾ", "സ്ഥാനക്കയറ്റം", "പെൻഷൻ വ്യവസ്ഥകൾ", "യാത്രാബത്ത"],
-    "answer": 0
-  },
-  {
-    "id": 24,
-    "topic": "topic_wise",
-    "subtopic": "കേരള ഗവർണൻസ്",
-    "testName": "സിവിൽ സർവീസും ഭരണഘടനയും 02",
-    "type": "normal",
-    "q": "Kerala Public Services Act 1968 ന്റെ പ്രധാന ലക്ഷ്യം എന്ത്?",
-    "options": ["PSC യുടെ രൂപീകരണം", "സർവീസ് ചട്ടങ്ങൾ നിയമപരമാക്കൽ", "തിരഞ്ഞെടുപ്പ് നിയന്ത്രണം", "ഗവർണറുടെ അധികാരം"],
-    "answer": 1
-  },
-  {
-    "id": 25,
-    "topic": "topic_wise",
-    "subtopic": "കേരള ഗവർണൻസ്",
-    "testName": "സിവിൽ സർവീസും ഭരണഘടനയും 02",
-    "type": "normal",
-    "q": "1968 ലെ കേരള പബ്ലിക് സർവീസസ് ആക്ടിലെ ഏത് സെക്ഷൻ ആണ് സർക്കാരിന് ചട്ടങ്ങൾ നിർമ്മിക്കാൻ അധികാരം നൽകുന്നത്?",
-    "options": ["സെക്ഷൻ 1", "സെക്ഷൻ 2", "സെക്ഷൻ 3", "സെക്ഷൻ 4"],
-    "answer": 1
-  },
-  {
-    "id": 26,
-    "topic": "topic_wise",
-    "subtopic": "കേരള ഗവർണൻസ്",
-    "testName": "സിവിൽ സർവീസും ഭരണഘടനയും 02",
-    "type": "normal",
-    "q": "1968 ലെ കേരള പബ്ലിക് സർവീസസ് ആക്ടിലെ ഏത് സെക്ഷൻ ആണ് 1968 വരെ നിർമ്മിച്ച എല്ലാ ചട്ടങ്ങൾക്കും നിയമ പ്രാബല്യം നൽകിയത്?",
-    "options": ["സെക്ഷൻ 1", "സെക്ഷൻ 2", "സെക്ഷൻ 3", "സെക്ഷൻ 5"],
-    "answer": 2
-  },
-  {
-    "id": 27,
-    "topic": "topic_wise",
-    "subtopic": "കേരള ഗവർണൻസ്",
-    "testName": "സിവിൽ സർവീസും ഭരണഘടനയും 02",
-    "type": "statement",
-    "q": "സർക്കാർ ജീവനക്കാരുടെ റൂളുകളുമായി ബന്ധപ്പെട്ട താഴെ പറയുന്ന പ്രസ്താവനകൾ പരിഗണിക്കുക:",
-    "statements": [
-        "i. അനുച്ഛേദം 309 പ്രകാരം സംസ്ഥാന സിവിൽ സർവീസ് ചട്ടങ്ങൾ നിർമ്മിക്കാനുള്ള അധികാരം സംസ്ഥാന ഗവർണർക്കാണ്.",
-        "ii. കേരള സർവീസിലെ ശമ്പളം, യാത്രാബത്ത, ലീവ്, പെൻഷൻ എന്നിവ സംബന്ധിക്കുന്നത് KSR 1959 ആണ്.",
-        "iii. കേരള പബ്ലിക് സർവീസസ് ആക്ട് പാസാക്കിയത് 1968 ലാണ്."
-    ],
-    "options": ["i മാത്രം", "i ഉം ii ഉം മാത്രം", "ii ഉം iii ഉം മാത്രം", "i, ii, iii എന്നിവയെല്ലാം ശരി"],
-    "answer": 3
-  },
-  {
-    "id": 28,
-    "topic": "topic_wise",
-    "subtopic": "കേരള ഗവർണൻസ്",
-    "testName": "സിവിൽ സർവീസും ഭരണഘടനയും 02",
-    "type": "statement",
-    "q": "സർക്കാർ ജീവനക്കാരുടെ സേവന വ്യവസ്ഥകളുമായി ബന്ധപ്പെട്ട പ്രസ്താവനകൾ വിലയിരുത്തുക:",
-    "statements": [
-        "i. KS&SSR നിലവിൽ വന്നത് 1958 ലാണ്.",
-        "ii. കേരള സിവിൽ സർവീസിലെ പെരുമാറ്റ ചട്ടങ്ങൾ (Conduct Rules) നിലവിൽ വന്നത് 1960 ലാണ്.",
-        "iii. 1968 ലെ കേരള പബ്ലിക് സർവീസസ് ആക്ടിലെ സെക്ഷൻ 3 പ്രകാരം 1968 വരെ നിർമ്മിച്ച എല്ലാ ചട്ടങ്ങൾക്കും നിയമ പ്രാബല്യം നൽകി."
-    ],
-    "options": ["i മാത്രം", "ii മാത്രം", "മൂന്നും ശരിയാണ് (തെറ്റില്ല)", "മൂന്നും തെറ്റാണ്"],
-    "answer": 2
-  },
-  {
-    "id": 29,
-    "topic": "topic_wise",
-    "subtopic": "കേരള ഗവർണൻസ്",
-    "testName": "സിവിൽ സർവീസും ഭരണഘടനയും 02",
-    "type": "statement",
-    "q": "കേരളത്തിലെ സിവിൽ സർവീസ് ചട്ടങ്ങളും അവയുമായി ബന്ധപ്പെട്ട വകുപ്പുകളെയും കുറിച്ച് താഴെ നൽകിയിരിക്കുന്ന പ്രസ്താവനകൾ ശ്രദ്ധിക്കുക:",
-    "statements": [
-        "i. അനുച്ഛേദം 308 മുതൽ 314 വരെയുള്ള ഭാഗം കേന്ദ്ര-സംസ്ഥാന സിവിൽ സർവീസുകളെക്കുറിച്ചാണ് പ്രതിപാദിക്കുന്നത്.",
-        "ii. കേരള സിവിൽ സർവീസിലെ വർഗീകരണം, നിയന്ത്രണം, ശിക്ഷണ നടപടികൾ എന്നിവ കൈകാര്യം ചെയ്യുന്നത് 1960 ലെ CCA റൂൾസ് ആണ്.",
-        "iii. 1968 ലെ കേരള പബ്ലിക് സർവീസസ് ആക്ടിലെ സെക്ഷൻ 2 സർക്കാരിന് ചട്ടങ്ങൾ നിർമ്മിക്കാൻ അധികാരം നൽകുന്നു."
-    ],
-    "options": ["i ഉം ii ഉം മാത്രം", "ii ഉം iii ഉം മാത്രം", "i ഉം iii ഉം മാത്രം", "i, ii, iii എന്നിവയെല്ലാം ശരി"],
-    "answer": 3
-  },
-  {
-    "id": 30,
-    "topic": "topic_wise",
-    "subtopic": "കേരള ഗവർണൻസ്",
-    "testName": "സിവിൽ സർവീസും ഭരണഘടനയും 02",
-    "type": "matching",
-    "q": "താഴെ നൽകിയിരിക്കുന്ന കേരള സർവീസ് ചട്ടങ്ങളെയും അവയുടെ വർഷങ്ങളെയും ചേരുപടി ചേർക്കുക:",
-    "pairs": [
-        {"left": "എ. KS & SSR", "right": "1. 1958"},
-        {"left": "ബി. KSR", "right": "2. 1959"},
-        {"left": "സി. Kerala Civil Services (CCA) Rules", "right": "3. 1960"},
-        {"left": "ഡി. Kerala Government Servants' Conduct Rules", "right": "3. 1960"}
-    ],
-    "options": ["എ-1, ബി-2, സി-3, ഡി-3", "എ-2, ബി-1, സി-3, ഡി-3", "എ-1, ബി-3, സി-2, ഡി-2", "എ-3, ബി-2, സി-1, ഡി-1"],
-    "answer": 0
-  },
-  {
-    "id": 31,
-    "topic": "topic_wise",
-    "subtopic": "കേരള ഗവർണൻസ്",
-    "testName": "സിവിൽ സർവീസും ഭരണഘടനയും 02",
-    "type": "normal",
-    "q": "താഴെപ്പറയുന്നവയിൽ തെറ്റായ ജോടി ഏത്?",
-    "options": ["Article 309 -> Service rules", "KSR 1959 -> Salary & Pension", "KSSR 1958 -> Conduct Rules", "Kerala Civil Services (CCA) Rules 1960 -> Disciplinary matters"],
-    "answer": 2
-  },
-  
- 
-  {
-    "id": 1,
-    "topic": "topic_wise",
-    "subtopic": "കേരള ഗവർണൻസ്",
-    "testName": "സിവിൽ സർവീസും ഭരണഘടനയും 03",
-    "type": "normal",
-    "q": "ഇന്ത്യൻ ഭരണഘടനയുടെ ഏത് ഭാഗമാണ് കേന്ദ്ര-സംസ്ഥാന സിവിൽ സർവീസുകളെയും പബ്ലിക് സർവീസ് കമ്മീഷനുകളെയും കുറിച്ച് പ്രതിപാദിക്കുന്നത്?",
-    "options": ["ഭാഗം X", "ഭാഗം XI", "ഭാഗം XIV", "ഭാഗം XV"],
-    "answer": 2
-  },
-  {
-    "id": 2,
-    "topic": "topic_wise",
-    "subtopic": "കേരള ഗവർണൻസ്",
-    "testName": "സിവിൽ സർവീസും ഭരണഘടനയും 03",
-    "type": "normal",
-    "q": "ഇന്ത്യൻ ഭരണഘടനയിലെ ആർട്ടിക്കിൾ 300 മുതൽ 320 വരെയുള്ള ഭാഗങ്ങളെ സംബന്ധിച്ച് താഴെ പറയുന്ന പ്രസ്താവനകളിൽ ശരിയായവ ഏവ?\n1. കേന്ദ്ര-സംസ്ഥാന സിവിൽ സർവീസുകളെ സംബന്ധിച്ചുള്ളതാണ്.\n2. പബ്ലിക് സർവീസ് കമ്മീഷനുകളെ കുറിച്ചും വ്യവസ്ഥ ചെയ്യുന്നു.\n3. ഇത് ആർട്ടിക്കിൾ 308 മുതൽ 323 വരെയാണ് ഉൾക്കൊള്ളുന്നത്.",
-    "options": ["1 മാത്രം", "1, 2 മാത്രം", "2, 3 മാത്രം", "1, 2, 3"],
-    "answer": 1
-  },
-  {
-    "id": 3,
-    "topic": "topic_wise",
-    "subtopic": "കേരള ഗവർണൻസ്",
-    "testName": "സിവിൽ സർവീസും ഭരണഘടനയും 03",
-    "type": "normal",
-    "q": "താഴെ പറയുന്ന പ്രസ്താവനകൾ പരിശോധിക്കുക:\n1. ആർട്ടിക്കിൾ 308 മുതൽ 314 വരെ സിവിൽ സർവീസുകളെ കുറിച്ചാണ്.\n2. ആർട്ടിക്കിൾ 315 മുതൽ 323 വരെ പബ്ലിക് സർവീസ് കമ്മീഷനുകളെ കുറിച്ചാണ്.\n3. ആർട്ടിക്കിൾ 314 ഇപ്പോൾ നിലവിലില്ല (Repealed).",
-    "options": ["1, 2 മാത്രം", "2, 3 മാത്രം", "1, 3 മാത്രം", "1, 2, 3"],
-    "answer": 3
-  },
-  {
-    "id": 4,
-    "topic": "topic_wise",
-    "subtopic": "കേരള ഗവർണൻസ്",
-    "testName": "സിവിൽ സർവീസും ഭരണഘടനയും 03",
-    "type": "normal",
-    "q": "ആർട്ടിക്കിൾ 309-നെ പറ്റി താഴെ പറയുന്ന പ്രസ്താവനകൾ പരിശോധിക്കുക:\n1. സർക്കാർ സേവനങ്ങളിലെ നിയമനത്തിനും സേവന നിബന്ധനകൾക്കും നിയമം നിർമ്മിക്കാൻ അധികാരം നൽകുന്നു.\n2. കേന്ദ്ര സിവിൽ സർവീസിനെ പറ്റി ചട്ടങ്ങൾ നിർമ്മിക്കാൻ അധികാരം രാഷ്ട്രപതിക്കും, പ്രസ്തുത ചട്ടങ്ങളെ ക്രമപ്പെടുത്തുന്ന നിയമങ്ങൾ നിർമ്മിക്കാൻ പാർലമെന്റിനുമുണ്ട്.\n3. സംസ്ഥാന സിവിൽ സർവീസിനെ സംബന്ധിച്ച് ചട്ടങ്ങൾ നിർമ്മിക്കാൻ അധികാരം സംസ്ഥാന ഗവർണർക്കും, പ്രസ്തുത ചട്ടങ്ങളെ ക്രമപ്പെടുത്തുന്ന നിയമങ്ങൾ നിർമ്മിക്കാൻ അധികാരം സംസ്ഥാന നിയമസഭയ്ക്കുമുണ്ട്.",
-    "options": ["1, 2 മാത്രം", "2, 3 മാത്രം", "1, 3 മാത്രം", "1, 2, 3"],
-    "answer": 3
-  },
-  {
-    "id": 5,
-    "topic": "topic_wise",
-    "subtopic": "കേരള ഗവർണൻസ്",
-    "testName": "സിവിൽ സർവീസും ഭരണഘടനയും 03",
-    "type": "normal",
-    "q": "KS&SSR 1958-നെ പറ്റി താഴെ പറയുന്ന പ്രസ്താവനകൾ പരിഗണിക്കുക:\n1. KS&SSR 1958 കേരള സ്റ്റേറ്റ് സർവീസിനും സബോർഡിനേറ്റ് സർവീസിനും ബാധകമാണ്.\n2. നിയമനം, പ്രൊമോഷൻ തുടങ്ങിയ കാര്യങ്ങൾ ഇതിൽ ഉൾപ്പെടുന്നു.\n3. ഇത് കേരള നിയമസഭ പാസാക്കിയ ആക്ടാണ്.",
-    "options": ["1, 2 മാത്രം", "1 മാത്രം", "2, 3 മാത്രം", "1, 2, 3"],
-    "answer": 0
-  },
-  {
-    "id": 6,
-    "topic": "topic_wise",
-    "subtopic": "കേരള ഗവർണൻസ്",
-    "testName": "സിവിൽ സർവീസും ഭരണഘടനയും 03",
-    "type": "normal",
-    "q": "KSR 1959-നെ പറ്റി താഴെ പറയുന്ന പ്രസ്താവനകൾ പരിഗണിക്കുക:\n1. KSR 1959 കേരള സിവിൽ സർവീസിലെ ജീവനക്കാരുടെ വേതനം, ലീവ്, പെൻഷൻ എന്നിവയെക്കുറിച്ചാണ്.\n2. യാത്രാബത്ത (TA) സംബന്ധിച്ച വ്യവസ്ഥകളും ഇതിൽ ഉൾപ്പെടുന്നു.\n3. നിയമനം സംബന്ധിച്ച പ്രധാന ചട്ടങ്ങൾ ഇതിൽ ഉൾപ്പെടുന്നു.",
-    "options": ["1 മാത്രം", "1, 2 മാത്രം", "2, 3 മാത്രം", "1, 2, 3"],
-    "answer": 1
-  },
-  {
-    "id": 7,
-    "topic": "topic_wise",
-    "subtopic": "കേരള ഗവർണൻസ്",
-    "testName": "സിവിൽ സർവീസും ഭരണഘടനയും 03",
-    "type": "normal",
-    "q": "താഴെ പറയുന്ന പ്രസ്താവനകൾ പരിശോധിക്കുക:\n1. Kerala Civil Services (CCA) Rules, 1960, നിയന്ത്രണം, ശിക്ഷണ നടപടി എന്നിവയെക്കുറിച്ചാണ്.\n2. ഇത് സേവന നിബന്ധനകളിൽ ശാസന നടപടികൾ നിയന്ത്രിക്കുന്നു.\n3. ഇത് വേതനവും പെൻഷനും സംബന്ധിച്ച ചട്ടങ്ങളാണ്.",
-    "options": ["1 മാത്രം", "1, 2 മാത്രം", "2, 3 മാത്രം", "1, 2, 3"],
-    "answer": 1
-  },
-  {
-    "id": 8,
-    "topic": "topic_wise",
-    "subtopic": "കേരള ഗവർണൻസ്",
-    "testName": "സിവിൽ സർവീസും ഭരണഘടനയും 03",
-    "type": "normal",
-    "q": "കേരള ഗവൺമെന്റ് സർവന്റ്സ് കണ്ടക്ട് റൂൾസ്, 1960 (Kerala Government Servants' Conduct Rules, 1960)-നെ സംബന്ധിച്ച് താഴെ പറയുന്ന പ്രസ്താവനകൾ പരിഗണിക്കുക:\n1. ജീവനക്കാരുടെ പെരുമാറ്റത്തെ നിയന്ത്രിക്കുന്നു.\n2. ഇത് പ്രൊമോഷൻ സംബന്ധിച്ച ചട്ടങ്ങളാണ്.\n3. ഇത് ഔദ്യോഗിക നൈതികത ഉറപ്പാക്കുന്നു.",
-    "options": ["1 മാത്രം", "1, 2 മാത്രം", "1, 3 മാത്രം", "1, 2, 3"],
-    "answer": 2
-  },
-  {
-    "id": 9,
-    "topic": "topic_wise",
-    "subtopic": "കേരള ഗവർണൻസ്",
-    "testName": "സിവിൽ സർവീസും ഭരണഘടനയും 03",
-    "type": "normal",
-    "q": "കേരള പബ്ലിക് സർവീസസ് ആക്ട്, 1968 (Kerala Public Services Act, 1968) സംബന്ധിച്ച് താഴെ പറയുന്ന പ്രസ്താവനകൾ പരിഗണിക്കുക:\n1. ഇത് ആർട്ടിക്കിൾ 309 പ്രകാരമാണ് പാസാക്കിയത്.\n2. ഇത് കേരള പി.എസ്‌.സിയുടെ ഘടനയെക്കുറിച്ചാണ്.\n3. ഇത് സേവന ചട്ടങ്ങൾ രൂപീകരിക്കാൻ കേരള ഗവൺമെന്റിന് അധികാരം നൽകുന്നു.",
-    "options": ["1 മാത്രം", "1, 3 മാത്രം", "2, 3 മാത്രം", "1, 2, 3"],
-    "answer": 1
-  },
-  {
-    "id": 10,
-    "topic": "topic_wise",
-    "subtopic": "കേരള ഗവർണൻസ്",
-    "testName": "സിവിൽ സർവീസും ഭരണഘടനയും 03",
-    "type": "normal",
-    "q": "ആർട്ടിക്കിൾ 311 സിവിൽ സർവീസസ് ഉദ്യോഗസ്ഥർക്ക് നൽകുന്ന പ്രധാന സംരക്ഷണം എന്ത്?",
-    "options": ["ശമ്പള വർധന", "ജോലി സ്ഥിരത", "അന്യായമായ പിരിച്ചുവിടലിൽ നിന്ന് സംരക്ഷണം", "പെൻഷൻ അവകാശം"],
-    "answer": 2
-  },
-  {
-    "id": 11,
-    "topic": "topic_wise",
-    "subtopic": "കേരള ഗവർണൻസ്",
-    "testName": "സിവിൽ സർവീസും ഭരണഘടനയും 03",
-    "type": "normal",
-    "q": "താഴെ പറയുന്നവയിൽ ആർട്ടിക്കിൾ 311 സിവിൽ സർവീസുകാർക്ക് നൽകുന്ന സംരക്ഷണങ്ങളിൽ പെടാത്തത് ഏത്?",
-    "options": ["അറിയിപ്പില്ലാതെ അന്വേഷണം", "കേൾക്കാൻ ന്യായമായ അവസരം", "നിയമന അധികാരിക്കോ അതിന് മുകളിലുള്ള അധികാരിക്കോ മാത്രമേ പിരിച്ചുവിടാൻ കഴിയൂ", "ആരോപിക്കപ്പെടുന്ന കുറ്റങ്ങൾ ബന്ധപ്പെട്ട ഉദ്യോഗസ്ഥനെ അറിയിക്കണം"],
-    "answer": 0
-  },
-  {
-    "id": 12,
-    "topic": "topic_wise",
-    "subtopic": "കേരള ഗവർണൻസ്",
-    "testName": "സിവിൽ സർവീസും ഭരണഘടനയും 03",
-    "type": "normal",
-    "q": "പുതിയ അഖിലേന്ത്യാ സർവീസുകൾ (All India Service) സൃഷ്ടിക്കാൻ അധികാരം ആർക്കാണ്?",
-    "options": ["രാഷ്ട്രപതി", "സുപ്രീം കോടതി", "പാർലമെന്റിന്", "സംസ്ഥാന സർക്കാർ"],
-    "answer": 2
-  },
-  {
-    "id": 13,
-    "topic": "topic_wise",
-    "subtopic": "കേരള ഗവർണൻസ്",
-    "testName": "സിവിൽ സർവീസും ഭരണഘടനയും 03",
-    "type": "normal",
-    "q": "ഇന്ത്യൻ ഭരണഘടനയിലെ താഴെ പറയുന്ന ആർട്ടിക്കിളുകളിൽ ഏതിലാണ് 'ആനന്ദ സിദ്ധാന്തം' (Doctrine of Pleasure) പരാമർശിക്കുന്നത്?",
-    "options": ["ആർട്ടിക്കിൾ 310", "ആർട്ടിക്കിൾ 324", "ആർട്ടിക്കിൾ 243K", "ആർട്ടിക്കിൾ 213"],
-    "answer": 0
-  },
-  {
-    "id": 14,
-    "topic": "topic_wise",
-    "subtopic": "കേരള ഗവർണൻസ്",
-    "testName": "സിവിൽ സർവീസും ഭരണഘടനയും 03",
-    "type": "normal",
-    "q": "അഖിലേന്ത്യാ സർവീസ് നിയമം (All India Services Act) പാസാക്കിയ വർഷം ഏത്?",
-    "options": ["1949", "1950", "1951", "1972"],
-    "answer": 2
-  },
-  {
-    "id": 15,
-    "topic": "topic_wise",
-    "subtopic": "കേരള ഗവർണൻസ്",
-    "testName": "സിവിൽ സർവീസും ഭരണഘടനയും 03",
-    "type": "normal",
-    "q": "യൂണിയൻ പബ്ലിക് സർവീസ് കമ്മീഷൻ (UPSC), സ്റ്റേറ്റ് പബ്ലിക് സർവീസ് കമ്മീഷൻ (SPSC) എന്നിവ സ്ഥാപിക്കുന്നത് ഏത് അനുച്ഛേദ പ്രകാരമാണ്?",
-    "options": ["ആർട്ടിക്കിൾ 310", "ആർട്ടിക്കിൾ 312", "ആർട്ടിക്കിൾ 315", "ആർട്ടിക്കിൾ 320"],
-    "answer": 2
-  },
-  {
-    "id": 16,
-    "topic": "topic_wise",
-    "subtopic": "കേരള ഗവർണൻസ്",
-    "testName": "സിവിൽ സർവീസും ഭരണഘടനയും 03",
-    "type": "normal",
-    "q": "ജോയിന്റ് പബ്ലിക് സർവീസ് കമ്മീഷൻ (Joint Public Service Commission) സ്ഥാപിക്കുന്നത് എങ്ങനെയാണ്?",
-    "options": ["രാഷ്ട്രപതിയുടെ ഉത്തരവ് വഴി", "ഗവർൺമെന്റിന്റെ ശുപാർശ പ്രകാരം", "പാർലമെന്റ് നിർമ്മിക്കുന്ന നിയമം വഴി", "സുപ്രീം കോടതിയുടെ ഉത്തരവ് പ്രകാരം"],
-    "answer": 2
-  },
-  {
-    "id": 17,
-    "topic": "topic_wise",
-    "subtopic": "കേരള ഗവർണൻസ്",
-    "testName": "സിവിൽ സർവീസും ഭരണഘടനയും 03",
-    "type": "normal",
-    "q": "താഴെ പറയുന്നവയിൽ ഭരണഘടനാ സ്ഥാപനം അല്ലാത്തത് ഏത്?",
-    "options": ["യൂണിയൻ പബ്ലിക് സർവീസ് കമ്മീഷൻ (UPSC)", "ജോയിന്റ് പബ്ലിക് സർവീസ് കമ്മീഷൻ (JPSC)", "സ്റ്റേറ്റ് പബ്ലിക് സർവീസ് കമ്മീഷൻ (SPSC)", "മുകളിൽ പറഞ്ഞവയെല്ലാം ഭരണഘടനാ സ്ഥാപനങ്ങളാണ്"],
-    "answer": 1
-  },
-  {
-    "id": 18,
-    "topic": "topic_wise",
-    "subtopic": "കേരള ഗവർണൻസ്",
-    "testName": "സിവിൽ സർവീസും ഭരണഘടനയും 03",
-    "type": "normal",
-    "q": "പബ്ലിക് സർവീസ് കമ്മീഷനുകളുടെ ചുമതലകളെ കുറിച്ച് പ്രതിപാദിക്കുന്ന ഇന്ത്യൻ ഭരണഘടനയിലെ അനുച്ഛേദം ഏത്?",
-    "options": ["ആർട്ടിക്കിൾ 310", "ആർട്ടിക്കിൾ 311", "ആർട്ടിക്കിൾ 315", "ആർട്ടിക്കിൾ 320"],
-    "answer": 3
-  },
-  {
-    "id": 19,
-    "topic": "topic_wise",
-    "subtopic": "കേരള ഗവർണൻസ്",
-    "testName": "സിവിൽ സർവീസും ഭരണഘടനയും 03",
-    "type": "normal",
-    "q": "പ്രതിരോധ സർവീസുകളിലെ അംഗങ്ങൾക്കും യൂണിയനിലെ അല്ലെങ്കിൽ അഖിലേന്ത്യാ സർവീസുകളിലെ സിവിൽ സർവീസിലെ അംഗങ്ങൾക്കും രാഷ്ട്രപതിക്ക് ഇഷ്ടമുള്ള സമയം വരെ ഔദ്യോഗിക പദവി വഹിക്കാൻ അധികാരം നൽകുന്ന സിദ്ധാന്തം ഏത്?",
-    "options": ["ഡോക്ട്രിൻ ഓഫ് പ്ലെഷർ (Doctrine of Pleasure)", "ഡോക്ട്രിൻ ഓഫ് ലാപ്സ് (Doctrine of Lapse)", "ബേസിക് സ്ട്രക്ചർ ഡോക്ട്രിൻ (Basic Structure Doctrine)", "ഡോക്ട്രിൻ ഓഫ് സെപ്പറേഷൻ ഓഫ് പവേഴ്സ് (Doctrine of Separation of Powers)"],
-    "answer": 0
-  },
-  {
-    "id": 20,
-    "topic": "topic_wise",
-    "subtopic": "കേരള ഗവർണൻസ്",
-    "testName": "സിവിൽ സർവീസും ഭരണഘടനയും 03",
-    "type": "normal",
-    "q": "സംസ്ഥാന സർവീസുകളിലെ അംഗങ്ങൾക്ക് ഗവർണർക്ക് ഇഷ്ടമുള്ള സമയം വരെ ഔദ്യോഗിക പദവി വഹിക്കാൻ അനുവാദം നൽകുന്ന ഭരണഘടനാ അനുച്ഛേദം ഏത്?",
-    "options": ["ആർട്ടിക്കിൾ 309", "ആർട്ടിക്കിൾ 310", "ആർട്ടിക്കിൾ 311", "ആർട്ടിക്കിൾ 312"],
-    "answer": 1
-  },
-  {
-    "id": 21,
-    "topic": "topic_wise",
-    "subtopic": "കേരള ഗവർണൻസ്",
-    "testName": "സിവിൽ സർവീസും ഭരണഘടനയും 03",
-    "type": "normal",
-    "q": "സിവിൽ സർവീസുകാരെ അവരുടെ തസ്തികകളിൽ നിന്ന് ഏകപക്ഷീയമായി പിരിച്ചുവിടുന്നതിനെതിരെ ആർട്ടിക്കിൾ 311 നൽകുന്ന സംരക്ഷണങ്ങളിൽ ഉൾപ്പെടാത്തത് ഏത്?",
-    "options": ["ഒരു സിവിൽ സർവീസുകാരനെ അയാളെ നിയമിച്ച അധികാരത്തിന് കീഴിലുള്ള ഒരു അധികാരിക്ക് പിരിച്ചുവിടാനോ നീക്കം ചെയ്യാനോ കഴിയില്ല.", "കുറ്റങ്ങളെക്കുറിച്ച് അന്വേഷണത്തിൽ അറിയിക്കുകയും വാദം കേൾക്കാൻ ന്യായമായ അവസരം നൽകുകയും വേണം.", "പിരിച്ചുവിടുന്നതിന് മുമ്പ് ജീവനക്കാരന് ഉന്നത കോടതിയുടെ മുൻകൂർ അനുമതി വാങ്ങിയിരിക്കണം.", "റാങ്കിൽ കുറവ് വരുത്തുന്നതിന് മുമ്പ് ന്യായമായ അവസരം നൽകണം."],
-    "answer": 2
-  },
-  {
-    "id": 22,
-    "topic": "topic_wise",
-    "subtopic": "കേരള ഗവർണൻസ്",
-    "testName": "സിവിൽ സർവീസും ഭരണഘടനയും 03",
-    "type": "normal",
-    "q": "ദേശീയ താൽപ്പര്യം മുൻനിർത്തി ആവശ്യമോ ഉചിതമോ ആണെന്ന് പ്രഖ്യാപിക്കുന്ന ഒരു പ്രമേയം രാജ്യസഭ പാസാക്കിയാൽ പാർലമെന്റിന് പുതിയ അഖിലേന്ത്യാ സർവീസുകൾ സൃഷ്ടിക്കാൻ അധികാരം നൽകുന്ന ഭരണഘടനാ വ്യവസ്ഥ ഏത്?",
-    "options": ["ആർട്ടിക്കിൾ 310(1)", "ആർട്ടിക്കിൾ 312(1)", "ആർട്ടിക്കിൾ 315(2)", "ആർട്ടിക്കിൾ 320(1)"],
-    "answer": 1
-  },
-  {
-    "id": 23,
-    "topic": "topic_wise",
-    "subtopic": "കേരള ഗവർണൻസ്",
-    "testName": "സിവിൽ സർവീസും ഭരണഘടനയും 03",
-    "type": "normal",
-    "q": "ഭരണഘടനയുടെ തുടക്കത്തിൽ (1950 ജനുവരി 26) നിലവിലുണ്ടായിരുന്ന അഖിലേന്ത്യാ സർവീസുകൾ ഏതൊക്കെയാണ്?",
-    "options": ["IAS, IFS", "IPS, IFS", "IAS, IPS", "IAS, IPS, IFS"],
-    "answer": 2
-  },
-  {
-    "id": 24,
-    "topic": "topic_wise",
-    "subtopic": "കേരള ഗവർണൻസ്",
-    "testName": "സിവിൽ സർവീസും ഭരണഘടനയും 03",
-    "type": "normal",
-    "q": "ഇന്ത്യൻ ഭരണഘടന പ്രാബല്യത്തിൽ വരുമ്പോൾ നിലവിലുണ്ടായിരുന്ന അഖിലേന്ത്യാ സർവീസുകളിലേക്ക് നിയമിക്കപ്പെടുന്ന വ്യക്തികളുടെ നിയമനവും സേവന വ്യവസ്ഥകളും പാർലമെന്റിന് നിയന്ത്രിക്കാമെന്ന് വ്യവസ്ഥ ചെയ്യുന്ന ആർട്ടിക്കിൾ ഏത്?",
-    "options": ["ആർട്ടിക്കിൾ 312A", "ആർട്ടിക്കിൾ 313", "ആർട്ടിക്കിൾ 314", "ആർട്ടിക്കിൾ 315"],
-    "answer": 0
-  },
-  {
-    "id": 25,
-    "topic": "topic_wise",
-    "subtopic": "കേരള ഗവർണൻസ്",
-    "testName": "സിവിൽ സർവീസും ഭരണഘടനയും 03",
-    "type": "normal",
-    "q": "ആർട്ടിക്കിൾ 312A ഏത് ഭേദഗതി നിയമം വഴിയാണ് ഇന്ത്യൻ ഭരണഘടനയിൽ ഉൾപ്പെടുത്തിയത്?",
-    "options": ["21-ാം ഭേദഗതി നിയമം, 1967", "28-ാം ഭേദഗതി നിയമം, 1972", "42-ാം ഭേദഗതി നിയമം, 1976", "44-ാം ഭേദഗതി നിയമം, 1978"],
-    "answer": 1
-  },
-  {
-    "id": 26,
-    "topic": "topic_wise",
-    "subtopic": "കേരള ഗവർണൻസ്",
-    "testName": "സിവിൽ സർവീസും ഭരണഘടനയും 03",
-    "type": "normal",
-    "q": "പുതിയ സർവീസ് നിയമങ്ങളോ ചട്ടങ്ങളോ ആവിഷ്കരിക്കാത്ത അവസ്ഥയിൽ 1950-ന് മുമ്പ് പ്രാബല്യത്തിൽ വന്നതും ഏതൊരു പൊതു സേവനത്തിനും ബാധകവുമായ എല്ലാ നിയമങ്ങളും തുടരുമെന്ന് പ്രതിപാദിക്കുന്ന ആർട്ടിക്കിൾ ഏത്?",
-    "options": ["ആർട്ടിക്കിൾ 311", "ആർട്ടിക്കിൾ 312", "ആർട്ടിക്കിൾ 313", "ആർട്ടിക്കിൾ 315"],
-    "answer": 2
-  },
-  {
-    "id": 27,
-    "topic": "topic_wise",
-    "subtopic": "കേരള ഗവർണൻസ്",
-    "testName": "സിവിൽ സർവീസും ഭരണഘടനയും 03",
-    "type": "normal",
-    "q": "ചില സർവീസുകളിലെ നിലവിലുള്ള ഉദ്യോഗസ്ഥരുടെ സംരക്ഷണം ഉറപ്പാക്കിയിരുന്ന, 1972-ലെ 28-ാം ഭേദഗതി നിയമം വഴി റദ്ദാക്കപ്പെട്ട ആർട്ടിക്കിൾ ഏത്?",
-    "options": ["ആർട്ടിക്കിൾ 312", "ആർട്ടിക്കിൾ 313", "ആർട്ടിക്കിൾ 314", "ആർട്ടിക്കിൾ 316"],
-    "answer": 2
-  },
-  {
-    "id": 28,
-    "topic": "topic_wise",
-    "subtopic": "കേരള ഗവർണൻസ്",
-    "testName": "സിവിൽ സർവീസും ഭരണഘടനയും 03",
-    "type": "normal",
-    "q": "താഴെ പറയുന്നവയിൽ പബ്ലിക് സർവീസ് കമ്മീഷന്റെ (PSC) ചുമതലകളിൽ ഉൾപ്പെടാത്തത് ഏത്?",
-    "options": ["സർക്കാർ ജോലികൾക്ക് റിക്രൂട്ട്മെന്റ് നടത്തുക", "പരീക്ഷകളും ഇന്റർവ്യൂകളും നടത്തുക", "നിയമന രീതികൾ സംബന്ധിച്ച് സർക്കാരിന് ഉപദേശം നൽകുക", "സർക്കാരിന്റെ സാമ്പത്തിക നയങ്ങൾ രൂപീകരിക്കുക"],
-    "answer": 3
-  },
-  {
-    "id": 29,
-    "topic": "topic_wise",
-    "subtopic": "കേരള ഗവർണൻസ്",
-    "testName": "സിവിൽ സർവീസും ഭരണഘടനയും 03",
-    "type": "normal",
-    "q": "1951-ലെ അഖിലേന്ത്യാ സർവീസ് നിയമം ഭേദഗതി ചെയ്യപ്പെടുകയും, ഇന്ത്യൻ ഫോറസ്റ്റ് സർവീസ് (IFS) ഉൾപ്പെടെയുള്ള മറ്റ് മൂന്ന് സർവീസുകൾ കൂടി രൂപീകരിക്കാൻ നിർദ്ദേശിക്കപ്പെടുകയും ചെയ്ത വർഷം ഏത്?",
-    "options": ["1960", "1963", "1966", "1972"],
-    "answer": 1
-  },
-  {
-    "id": 30,
-    "topic": "topic_wise",
-    "subtopic": "കേരള ഗവർണൻസ്",
-    "testName": "സിവിൽ സർവീസും ഭരണഘടനയും 03",
-    "type": "normal",
-    "q": "ഇന്ത്യൻ ഫോറസ്റ്റ് സർവീസ് (IFS) ഔദ്യോഗികമായി നിലവിൽ വന്ന വർഷം ഏത്?",
-    "options": ["1950", "1951", "1963", "1966"],
-    "answer": 3
-  },
-
-
-  {
-    "id": 31,
-    "topic": "topic_wise",
-    "subtopic": "കേരള ഗവർണൻസ്",
-    "testName": "സിവിൽ സർവീസും ഭരണഘടനയും 03",
-    "type": "normal",
-    "q": "ഇന്ത്യൻ ഭരണഘടനയുടെ ഏത് ഭാഗത്താണ് (Part) ആർട്ടിക്കിൾ 308 മുതൽ 323 വരെയുള്ള വ്യവസ്ഥകൾ ഉൾപ്പെടുത്തിയിരിക്കുന്നത്?",
-    "options": ["Part XII", "Part XIII", "Part XIV", "Part XV"],
-    "answer": 2
-  },
-  {
-    "id": 32,
-    "topic": "topic_wise",
-    "subtopic": "കേരള ഗവർണൻസ്",
-    "testName": "സിവിൽ സർവീസും ഭരണഘടനയും 03",
-    "type": "normal",
-    "q": "സിവിൽ സർവീസുകളിലെ അംഗങ്ങൾക്കും യൂണിയനിലെയോ അഖിലേന്ത്യാ സർവീസുകളിലെ അംഗങ്ങൾക്കും രാഷ്ട്രപതിക്ക് ഇഷ്ടമുള്ള സമയം വരെ പദവി വഹിക്കാൻ അധികാരം നൽകുന്ന തത്വം ഏത്?",
-    "options": ["Doctrine of Pleasure (ആനന്ദ സിദ്ധാന്തം)", "Doctrine of Lapse", "Doctrine of Basic Structure", "Doctrine of Judicial Review"],
-    "answer": 0
-  },
-  {
-    "id": 33,
-    "topic": "topic_wise",
-    "subtopic": "കേരള ഗവർണൻസ്",
-    "testName": "സിവിൽ സർവീസും ഭരണഘടനയും 03",
-    "type": "normal",
-    "q": "സംസ്ഥാന സർവീസുകളിലെ അംഗങ്ങൾക്ക് ഏത് ഉദ്യോഗസ്ഥന്റെ പ്രീതി (Pleasure) ഉള്ളിടത്തോളം കാലം ഔദ്യോഗിക പദവി വഹിക്കാം?",
-    "options": ["രാഷ്ട്രപതി", "ഗവർണർ", "മുഖ്യമന്ത്രി", "പ്രധാനമന്ത്രി"],
-    "answer": 1
-  },
-  {
-    "id": 34,
-    "topic": "topic_wise",
-    "subtopic": "കേരള ഗവർണൻസ്",
-    "testName": "സിവിൽ സർവീസും ഭരണഘടനയും 03",
-    "type": "normal",
-    "q": "സിവിൽ സർവീസിലെ അംഗങ്ങൾക്ക് ഭരണഘടനാപരമായ സുരക്ഷ ഉറപ്പാക്കുന്ന അനുച്ഛേദം ഏത്?",
-    "options": ["Article 309", "Article 310", "Article 311", "Article 312"],
-    "answer": 2
-  },
-  {
-    "id": 35,
-    "topic": "topic_wise",
-    "subtopic": "കേരള ഗവർണൻസ്",
-    "testName": "സിവിൽ സർവീസും ഭരണഘടനയും 03",
-    "type": "normal",
-    "q": "സിവിൽ സർവീസുകാരെ അവരുടെ തസ്തികകളിൽ നിന്ന് ഏകപക്ഷീയമായി പിരിച്ചുവിടുന്നതിനെതിരെ ആർട്ടിക്കിൾ 311 എത്ര സംരക്ഷണങ്ങളാണ് നൽകുന്നത്?",
-    "options": ["ഒന്ന്", "രണ്ട്", "മൂന്ന്", "നാല്"],
-    "answer": 1
-  },
-  {
-    "id": 36,
-    "topic": "topic_wise",
-    "subtopic": "കേരള ഗവർണൻസ്",
-    "testName": "സിവിൽ സർവീസും ഭരണഘടനയും 03",
-    "type": "normal",
-    "q": "ഒരു സിവിൽ സർവീസുകാരനെ അയാളെ നിയമിച്ച അധികാരത്തിന് കീഴിലുള്ള ഏത് അധികാരിക്ക് പിരിച്ചുവിടാനോ നീക്കം ചെയ്യാനോ കഴിയില്ല എന്ന് വ്യവസ്ഥ ചെയ്യുന്ന ആർട്ടിക്കിൾ ഏത്?",
-    "options": ["Article 310", "Article 311", "Article 312", "Article 315"],
-    "answer": 1
-  },
-  {
-    "id": 37,
-    "topic": "topic_wise",
-    "subtopic": "കേരള ഗവർണൻസ്",
-    "testName": "സിവിൽ സർവീസും ഭരണഘടനയും 03",
-    "type": "normal",
-    "q": "ദേശീയ താൽപ്പര്യം മുൻനിർത്തി പുതിയ അഖിലേന്ത്യാ സർവീസുകൾ സൃഷ്ടിക്കാൻ പാർലമെന്റിന് അധികാരം നൽകുന്ന പ്രമേയം പാസാക്കേണ്ടത് ആറാണ്?",
-    "options": ["ലോക്സഭ", "രാജ്യസഭ", "സംസ്ഥാന നിയമസഭ", "മന്ത്രിസഭ"],
-    "answer": 1
-  },
-  {
-    "id": 38,
-    "topic": "topic_wise",
-    "subtopic": "കേരള ഗവർണൻസ്",
-    "testName": "സിവിൽ സർവീസും ഭരണഘടനയും 03",
-    "type": "normal",
-    "q": "ഭരണഘടനയുടെ തുടക്കത്തിൽ (1950 ജനുവരി 26) നിലവിലുണ്ടായിരുന്ന അഖിലേന്ത്യാ സർവീസുകളിൽ ഉൾപ്പെടാത്തത് ഏത്?",
-    "options": ["IAS", "IPS", "IFS (ഇന്ത്യൻ ഫോറസ്റ്റ് സർവീസ്)", "മുകളിൽ പറഞ്ഞവയെല്ലാം തുടക്കത്തിൽ ഉണ്ടായിരുന്നു"],
-    "answer": 2
-  },
-  {
-    "id": 39,
-    "topic": "topic_wise",
-    "subtopic": "കേരള ഗവർണൻസ്",
-    "testName": "സിവിൽ സർവീസും ഭരണഘടനയും 03",
-    "type": "normal",
-    "q": "അഖിലേന്ത്യാ സർവീസുകളിലേക്ക് നിയമിക്കപ്പെടുന്ന വ്യക്തികളുടെ നിയമനവും സേവന വ്യവസ്ഥകളും നിയന്ത്രിക്കുന്നത് ആര്?",
-    "options": ["രാഷ്ട്രപതി", "പാർലമെന്റ്", "സുപ്രീം കോടതി", "ഗവർണർ"],
-    "answer": 1
-  },
-  {
-    "id": 40,
-    "topic": "topic_wise",
-    "subtopic": "കേരള ഗവർണൻസ്",
-    "testName": "സിവിൽ സർവീസും ഭരണഘടനയും 03",
-    "type": "normal",
-    "q": "അഖിലേന്ത്യാ സർവീസ് നിയമം (All India Services Act) ഏത് വർഷമാണ് പാസാക്കിയത്?",
-    "options": ["1947", "1950", "1951", "1966"],
-    "answer": 2
-  },
-  {
-    "id": 41,
-    "topic": "topic_wise",
-    "subtopic": "കേരള ഗവർണൻസ്",
-    "testName": "സിവിൽ സർവീസും ഭരണഘടനയും 03",
-    "type": "normal",
-    "q": "പുതിയ സർവീസ് നിയമങ്ങളോ ചട്ടങ്ങളോ ആവിഷ്കരിക്കാത്ത അവസ്ഥയിൽ 1950-ന് മുമ്പ് പ്രാബല്യത്തിൽ വന്ന നിയമങ്ങൾ തുടരുമെന്ന് പ്രതിപാദിക്കുന്ന അനുച്ഛേദം ഏത്?",
-    "options": ["Article 311", "Article 312", "Article 313", "Article 314"],
-    "answer": 2
-  },
-  {
-    "id": 42,
-    "topic": "topic_wise",
-    "subtopic": "കേരള ഗവർണൻസ്",
-    "testName": "സിവിൽ സർവീസും ഭരണഘടനയും 03",
-    "type": "normal",
-    "q": "ചില സർവീസുകളിലെ നിലവിലുള്ള ഉദ്യോഗസ്ഥരുടെ സംരക്ഷണം ഉറപ്പാക്കിയിരുന്ന ആർട്ടിക്കിൾ 314 ഏത് ഭേദഗതി നിയമം വഴിയാണ് റദ്ദാക്കിയത്?",
-    "options": ["21-ാം ഭേദഗതി", "28-ാം ഭേദഗതി (1972)", "42-ാം ഭേദഗതി", "44-ാം ഭേദഗതി"],
-    "answer": 1
-  },
-  {
-    "id": 43,
-    "topic": "topic_wise",
-    "subtopic": "കേരള ഗവർണൻസ്",
-    "testName": "സിവിൽ സർവീസും ഭരണഘടനയും 03",
-    "type": "normal",
-    "q": "യൂണിയൻ പബ്ലിക് സർവീസ് കമ്മീഷൻ (UPSC), സ്റ്റേറ്റ് പബ്ലിക് സർവീസ് കമ്മീഷൻ (SPSC) എന്നിവ ഏത് വിഭാഗത്തിൽപ്പെടുന്ന സ്ഥാപനങ്ങളാണ്?",
-    "options": ["നിയമ സ്ഥാപനങ്ങൾ (Statutory bodies)", "ഭരണഘടനാ സ്ഥാപനങ്ങൾ (Constitutional bodies)", "രാഷ്ട്രീയ സ്ഥാപനങ്ങൾ", "സർക്കാരിതര സ്ഥാപനങ്ങൾ"],
-    "answer": 1
-  },
-  {
-    "id": 44,
-    "topic": "topic_wise",
-    "subtopic": "കേരള ഗവർണൻസ്",
-    "testName": "സിവിൽ സർവീസും ഭരണഘടനയും 03",
-    "type": "normal",
-    "q": "ജോയിന്റ് പബ്ലിക് സർവീസ് കമ്മീഷൻ (JPSC) എങ്ങനെയുള്ള ഒരു സ്ഥാപനമായാണ് കണക്കാക്കപ്പെടുന്നത്?",
-    "options": ["ഭരണഘടനാ സ്ഥാപനം", "നിയമ സ്ഥാപനം (Statutory body)", "കാര്യനിർവ്വഹണ സ്ഥാപനം", "പൂർണ്ണ സ്വയംഭരണ സ്ഥാപനം"],
-    "answer": 1
-  },
-  {
-    "id": 45,
-    "topic": "topic_wise",
-    "subtopic": "കേരള ഗവർണൻസ്",
-    "testName": "സിവിൽ സർവീസും ഭരണഘടനയും 03",
-    "type": "normal",
-    "q": "പബ്ലിക് സർവീസ് കമ്മീഷനുകളുടെ ചുമതലകളെക്കുറിച്ച് പ്രതിപാദിക്കുന്ന ഇന്ത്യൻ ഭരണഘടനയിലെ അനുച്ഛേദം ഏത്?",
-    "options": ["Article 315", "Article 318", "Article 320", "Article 323"],
-    "answer": 2
-  },
-  {
-    "id": 46,
-    "topic": "topic_wise",
-    "subtopic": "കേരള ഗവർണൻസ്",
-    "testName": "സിവിൽ സർവീസും ഭരണഘടനയും 03",
-    "type": "normal",
-    "q": "കേന്ദ്ര സിവിൽ സർവീസിനെ പറ്റി ചട്ടങ്ങൾ നിർമ്മിക്കാൻ അധികാരം ആർക്കാണ്?",
-    "options": ["രാഷ്ട്രപതി", "പാർലമെന്റ്", "സുപ്രീം കോടതി", "പ്രധാനമന്ത്രി"],
-    "answer": 0
-  },
-  {
-    "id": 47,
-    "topic": "topic_wise",
-    "subtopic": "കേരള ഗവർണൻസ്",
-    "testName": "സിവിൽ സർവീസും ഭരണഘടനയും 03",
-    "type": "normal",
-    "q": "സംസ്ഥാന സിവിൽ സർവീസിനെ സംബന്ധിച്ച് ചട്ടങ്ങൾ നിർമ്മിക്കാൻ അധികാരം ഉള്ളത് ആർക്കാണ്?",
-    "options": ["മുഖ്യമന്ത്രി", "സംസ്ഥാന ഗവർണർ", "സംസ്ഥാന നിയമസഭ", "ഹൈക്കോടതി"],
-    "answer": 1
-  },
-  {
-    "id": 48,
-    "topic": "topic_wise",
-    "subtopic": "കേരള ഗവർണൻസ്",
-    "testName": "സിവിൽ സർവീസും ഭരണഘടനയും 03",
-    "type": "normal",
-    "q": "കേരള സ്റ്റേറ്റ് സർവീസിനും സബോർഡിനേറ്റ് സർവീസിനും ബാധകമായ നിയമം ഏത്?",
-    "options": ["KSR 1959", "KS&SSR 1958", "CCA Rules 1960", "Conduct Rules 1960"],
-    "answer": 1
-  },
-  {
-    "id": 49,
-    "topic": "topic_wise",
-    "subtopic": "കേരള ഗവർണൻസ്",
-    "testName": "സിവിൽ സർവീസും ഭരണഘടനയും 03",
-    "type": "normal",
-    "q": "കേരള സിവിൽ സർവീസിലെ ജീവനക്കാരുടെ വേതനം, ലീവ്, പെൻഷൻ എന്നിവയെക്കുറിച്ച് പ്രതിപാദിക്കുന്ന ചട്ടം ഏത്?",
-    "options": ["KS&SSR 1958", "KSR 1959", "Kerala Public Services Act 1968", "Conduct Rules 1960"],
-    "answer": 1
-  },
-  {
-    "id": 50,
-    "topic": "topic_wise",
-    "subtopic": "കേരള ഗവർണൻസ്",
-    "testName": "സിവിൽ സർവീസും ഭരണഘടനയും 03",
-    "type": "normal",
-    "q": "ജീവനക്കാരുടെ പെരുമാറ്റത്തെ നിയന്ത്രിക്കുകയും ഔദ്യോഗിക നൈതികത ഉറപ്പാക്കുകയും ചെയ്യുന്ന ചട്ടം ഏത്?",
-    "options": ["Kerala Government Servants' Conduct Rules, 1960", "Kerala Civil Services (CCA) Rules, 1960", "KSR 1959", "KS&SSR 1958"],
-    "answer": 0
-  },
-  {
-    "id": 51,
-    "topic": "topic_wise",
-    "subtopic": "കേരള ഗവർണൻസ്",
-    "testName": "സിവിൽ സർവീസും ഭരണഘടനയും 03",
-    "type": "normal",
-    "q": "സേവന നിബന്ധനകളിൽ ശാസന നടപടികളും ശിക്ഷണ നടപടികളും നിയന്ത്രിക്കുന്ന ചട്ടം ഏത്?",
-    "options": ["KS&SSR 1958", "KSR 1959", "Kerala Civil Services (CCA) Rules, 1960", "Kerala Public Services Act, 1968"],
-    "answer": 2
-  },
-  {
-    "id": 52,
-    "topic": "topic_wise",
-    "subtopic": "കേരള ഗവർണൻസ്",
-    "testName": "സിവിൽ സർവീസും ഭരണഘടനയും 03",
-    "type": "normal",
-    "q": "സേവന ചട്ടങ്ങൾ രൂപീകരിക്കാൻ കേരള ഗവൺമെന്റിന് അധികാരം നൽകുന്ന ആക്ട് ഏത്?",
-    "options": ["Kerala Public Services Act, 1968", "KS&SSR 1958", "KSR 1959", "CCA Rules 1960"],
-    "answer": 0
-  },
-  {
-    "id": 53,
-    "topic": "topic_wise",
-    "subtopic": "കേരള ഗവർണൻസ്",
-    "testName": "സിവിൽ സർവീസും ഭരണഘടനയും 03",
-    "type": "normal",
-    "q": "ഇന്ത്യൻ ഫോറസ്റ്റ് സർവീസ് (IFS) ഔദ്യോഗികമായി നിലവിൽ വന്ന വർഷം ഏത്?",
-    "options": ["1951", "1963", "1966", "1972"],
-    "answer": 2
-  },
-  {
-    "id": 54,
-    "topic": "topic_wise",
-    "subtopic": "കേരള ഗവർണൻസ്",
-    "testName": "സിവിൽ സർവീസും ഭരണഘടനയും 03",
-    "type": "normal",
-    "q": "1951-ലെ അഖിലേന്ത്യാ സർവീസ് നിയമം ഭേദഗതി ചെയ്യപ്പെടുകയും ഇന്ത്യൻ ഫോറസ്റ്റ് സർവീസ് ഉൾപ്പെടെ മൂന്ന് പുതിയ സർവീസുകൾ രൂപീകരിക്കാൻ നിർദ്ദേശിക്കുകയും ചെയ്ത വർഷം ഏത്?",
-    "options": ["1960", "1963", "1966", "1972"],
-    "answer": 1
-  },
-
-
-
-
-            { 
-                id: 2, 
-                topic: "topic_wise", 
-                subtopic: "കേരള ഗവർണൻസ്", 
-                testName: "സിവിൽ സർവീസും ഭരണഘടനയും 03", 
-                type: "normal",
-                q: "സിവിൽ സർവീസും ഭരണഘടനയും 03 - ലെ ചോദ്യം ഇവിടെ നൽകുക?", 
-                options: ["ഓപ്ഷൻ 1", "ഓപ്ഷൻ 2", "ഓപ്ഷൻ 3", "ഓപ്ഷൻ 4"], 
-                answer: 0 
-            },
-            { 
-                id: 3, 
-                topic: "topic_wise", 
-                subtopic: "കേരള ഗവർണൻസ്", 
-                testName: "സിവിൽ സർവീസും ഭരണഘടനയും 04", 
-                type: "normal",
-                q: "സിവിൽ സർവീസും ഭരണഘടനയും 04 - ലെ ചോദ്യം ഇവിടെ നൽകുക?", 
-                options: ["ഓപ്ഷൻ 1", "ഓപ്ഷൻ 2", "ഓപ്ഷൻ 3", "ഓപ്ഷൻ 4"], 
-                answer: 0 
-            },
-            { 
-                id: 4, 
-                topic: "topic_wise", 
-                subtopic: "കേരള ഗവർണൻസ്", 
-                testName: "സിവിൽ സർവീസും ഭരണഘടനയും 05", 
-                type: "normal",
-                q: "സിവിൽ സർവീസും ഭരണഘടനയും 05 - ലെ ചോദ്യം ഇവിടെ നൽകുക?", 
-                options: ["ഓപ്ഷൻ 1", "ഓപ്ഷൻ 2", "ഓപ്ഷൻ 3", "ഓപ്ഷൻ 4"], 
-                answer: 0 
-            },
-            { 
-                id: 5, 
-                topic: "topic_wise", 
-                subtopic: "കേരള ഗവർണൻസ്", 
-                testName: "സിവിൽ സർവീസും ഭരണഘടനയും 06", 
-                type: "normal",
-                q: "സിവിൽ സർവീസും ഭരണഘടനയും 06 - ലെ ചോദ്യം ഇവിടെ നൽകുക?", 
-                options: ["ഓപ്ഷൻ 1", "ഓപ്ഷൻ 2", "ഓപ്ഷൻ 3", "ഓപ്ഷൻ 4"], 
-                answer: 0 
-            },
-            { 
-                id: 6, 
-                topic: "topic_wise", 
-                subtopic: "കേരള ഗവർണൻസ്", 
-                testName: "സിവിൽ സർവീസും ഭരണഘടനയും 07", 
-                type: "normal",
-                q: "സിവിൽ സർവീസും ഭരണഘടനയും 07 - ലെ ചോദ്യം ഇവിടെ നൽകുക?", 
-                options: ["ഓപ്ഷൻ 1", "ഓപ്ഷൻ 2", "ഓപ്ഷൻ 3", "ഓപ്ഷൻ 4"], 
-                answer: 0 
-            },
-            { 
-                id: 7, 
-                topic: "topic_wise", 
-                subtopic: "കേരള ഗവർണൻസ്", 
-                testName: "സിവിൽ സർവീസും ഭരണഘടനയും 08", 
-                type: "normal",
-                q: "സിവിൽ സർവീസും ഭരണഘടനയും 08 - ലെ ചോദ്യങ്ങൾ ഇവിടെ നൽകുക?", 
-                options: ["ഓപ്ഷൻ 1", "ഓപ്ഷൻ 2", "ഓപ്ഷൻ 3", "ഓപ്ഷൻ 4"], 
-                answer: 0 
-            },
-            { 
-                id: 8, 
-                topic: "topic_wise", 
-                subtopic: "കേരള ഗവർണൻസ്", 
-                testName: "സിവിൽ സർവീസും ഭരണഘടനയും 09", 
-                type: "normal",
-                q: "സിവിൽ സർവീസും ഭരണഘടനയും 09 - ലെ ചോദ്യങ്ങൾ ഇവിടെ നൽകുക?", 
-                options: ["ഓപ്ഷൻ 1", "ഓപ്ഷൻ 2", "ഓപ്ഷൻ 3", "ഓപ്ഷൻ 4"], 
-                answer: 0 
-            }
-        ];
-
-    
+        }
 
         let currentTestQuestions = [];
         let currentIndex = 0;
@@ -1271,6 +347,7 @@
         let bookmarked = new Set();
         let timerInterval;
         let currentTestTitle = "";
+        let activeTestKeyForTracking = "";
 
         let practiceQueue = [];
         let practiceAttemptedMaster = new Set();
@@ -1279,6 +356,7 @@
         function switchTab(tabId) {
             document.querySelectorAll('main > section').forEach(sec => sec.classList.add('hidden'));
             document.getElementById('section-subtopics').classList.add('hidden');
+            document.getElementById('section-pdf_creator').classList.add('hidden');
             document.getElementById('mock-interface').classList.add('hidden');
             document.getElementById('result-interface').classList.add('hidden');
             document.getElementById('practice-result-interface').classList.add('hidden');
@@ -1287,63 +365,238 @@
                 btn.className = "tab-btn px-4 py-2 bg-slate-800 text-slate-300 border border-slate-700 rounded-xl text-sm font-medium whitespace-nowrap";
             });
 
+            // Highlight active tab
+            const activeBtn = document.getElementById(`btn-${tabId}`);
+            if(activeBtn) {
+                activeBtn.className = "tab-btn px-4 py-2 bg-indigo-600 text-white rounded-xl text-sm font-medium whitespace-nowrap shadow";
+            }
+
             if(tabId === 'dashboard') {
                 document.getElementById('section-dashboard').classList.remove('hidden');
+            } else if(tabId === 'pdf_creator') {
+                document.getElementById('section-pdf_creator').classList.remove('hidden');
             } else if(tabId === 'revision') {
                 document.getElementById('section-revision').classList.remove('hidden');
-                populateAutoDropdown();
-                renderSavedMistakeSets();
+                populateAccordion();
             } else if(tabId === 'practice') {
                 document.getElementById('section-practice').classList.remove('hidden');
                 initPracticeZone();
             } else if(tabId === 'tracker') {
                 document.getElementById('section-tracker').classList.remove('hidden');
-                renderTracker();
+                renderTrackerTable();
             }
         }
 
-        function populateAutoDropdown() {
-            const dropdown = document.getElementById('rev-single-dropdown');
-            dropdown.innerHTML = '<option value="all">എല്ലാ ടോപ്പുകളും (All Combined)</option>';
+        // സാധാരണ ടെക്സ്റ്റ് ഓട്ടോമാറ്റിക് ആയി പാർസ് ചെയ്യുന്ന ഫങ്ഷൻ
+        function parsePlainQuestions(text) {
+            let questions = [];
+            let blocks = text.split(/(?=\d+[\.\)]\s)/);
+            
+            blocks.forEach(block => {
+                block = block.trim();
+                if(!block) return;
 
-            for(let catKey in categoriesData) {
-                let cat = categoriesData[catKey];
-                let group = document.createElement('optgroup');
-                group.label = cat.title;
+                let lines = block.split('\n').map(l => l.trim()).filter(l => l);
+                if(lines.length < 5) return;
 
-                let optAll = document.createElement('option');
-                optAll.value = catKey;
-                optAll.innerText = `${cat.title} - മുഴുവൻ`;
-                group.appendChild(optAll);
+                let qText = lines[0].replace(/^\d+[\.\)]\s*/, '');
+                let options = [];
+                let answerIdx = 0;
+                let explanation = "";
 
-                cat.subtopics.forEach(sub => {
-                    sub.tests.forEach(test => {
-                        let opt = document.createElement('option');
-                        opt.value = `${catKey}|${sub.name}|${test}`;
-                        opt.innerText = `${cat.title} > ${sub.name} > ${test}`;
-                        group.appendChild(opt);
+                for(let i = 1; i < lines.length; i++) {
+                    let line = lines[i];
+                    if(line.toLowerCase().includes('ഉത്തരം') || line.toLowerCase().includes('answer') || line.toLowerCase().includes('correct')) {
+                        let optLetter = line.match(/[A-Da-ഡ്‌എബിസിഡി]/i);
+                        if(optLetter) {
+                            let char = optLetter[0].toUpperCase();
+                            if(char === 'B' || char === 'ബി') answerIdx = 1;
+                            else if(char === 'C' || char === 'സി') answerIdx = 2;
+                            else if(char === 'D' || char === 'ഡി') answerIdx = 3;
+                        }
+                    } else if(line.toLowerCase().includes('വിശദീകരണം') || line.toLowerCase().includes('explanation')) {
+                        explanation = line.replace(/^(വിശദീകരണം|Explanation)[\s:\-]*/i, '');
+                    } else if(options.length < 4) {
+                        let cleanOpt = line.replace(/^[A-Da-ഡ്‌എബിസിഡി][\.\)]\s*/, '');
+                        options.push(cleanOpt);
+                    }
+                }
+
+                if(options.length === 4) {
+                    questions.push({
+                        question: qText,
+                        options: options,
+                        answer: answerIdx,
+                        explanation: explanation
+                    });
+                }
+            });
+
+            return questions;
+        }
+
+        async function savePastedGeminiMockTest() {
+            const categoryKey = document.getElementById('pdf-category').value;
+            const subtopicName = document.getElementById('pdf-subtopic').value.trim();
+            const testName = document.getElementById('pdf-testname').value.trim();
+            const rawText = document.getElementById('gemini-json-input').value.trim();
+
+            if(!subtopicName) { alert('ദയവായി സബ് ടോപ്പിക്കിന്റെ പേര് നൽകുക!'); return; }
+            if(!testName) { alert('ദയവായി മോക്ക് ടെസ്റ്റിന്റെ പേര് നൽകുക!'); return; }
+            if(!rawText) { alert('ദയവായി ചോദ്യങ്ങൾ പേസ്റ്റ് ചെയ്യുക!'); return; }
+
+            try {
+                let generatedQuestions = [];
+
+                try {
+                    let cleanJsonStr = rawText.replace(/```json/g, '').replace(/```/g, '').trim();
+                    generatedQuestions = JSON.parse(cleanJsonStr);
+                } catch(e) {
+                    generatedQuestions = parsePlainQuestions(rawText);
+                }
+
+                if(!Array.isArray(generatedQuestions) || generatedQuestions.length === 0) {
+                    throw new Error("ചോദ്യങ്ങൾ കൃത്യമായി റീഡ് ചെയ്യാൻ കഴിഞ്ഞില്ല. ചോദ്യങ്ങളുടെ മാതൃക പരിശോധിക്കുക.");
+                }
+
+                if(!categoriesData[categoryKey]) categoriesData[categoryKey] = { title: categoryKey, subtopics: [] };
+                let existingSub = categoriesData[categoryKey].subtopics.find(s => s.name.toLowerCase() === subtopicName.toLowerCase());
+                
+                if(existingSub) {
+                    let existingTestIndex = existingSub.tests.findIndex(t => t.toLowerCase() === testName.toLowerCase());
+                    if(existingTestIndex !== -1) {
+                        let replaceConfirmed = confirm(`⚠️ "${subtopicName}" എന്ന സബ് ടോപ്പിക്കിൽ "${testName}" എന്ന പേരിൽ ഇതിനകം ഒരു ടെസ്റ്റ് ഉണ്ട്. അത് റീപ്ലേസ് ചെയ്യണോ?`);
+                        if(replaceConfirmed) {
+                            sampleQuestions = sampleQuestions.filter(q => !(q.topic === categoryKey && q.subtopic.toLowerCase() === subtopicName.toLowerCase() && q.testName.toLowerCase() === testName.toLowerCase()));
+                        } else {
+                            return;
+                        }
+                    }
+                }
+
+                if(!existingSub) {
+                    categoriesData[categoryKey].subtopics.push({ name: subtopicName, tests: [testName] });
+                } else {
+                    if(!existingSub.tests.includes(testName)) {
+                        existingSub.tests.push(testName);
+                    }
+                }
+
+                generatedQuestions.forEach((gq, idx) => {
+                    sampleQuestions.push({
+                        id: Date.now() + idx,
+                        topic: categoryKey,
+                        subtopic: subtopicName,
+                        testName: testName,
+                        type: "normal",
+                        q: gq.question,
+                        options: gq.options,
+                        answer: gq.answer,
+                        explanation: gq.explanation || ""
                     });
                 });
 
-                dropdown.appendChild(group);
+                localStorage.setItem('psc_categories_data', JSON.stringify(categoriesData));
+                localStorage.setItem('psc_sample_questions', JSON.stringify(sampleQuestions));
+
+                if(db) {
+                    await db.collection("app_data").doc("psc_main_database").set({
+                        categoriesData: categoriesData,
+                        sampleQuestions: sampleQuestions,
+                        userProgressData: userProgressData,
+                        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+                }
+
+                alert(`🎉 വിജയകരമായി ${generatedQuestions.length} ചോദ്യങ്ങൾ സേവ് ചെയ്തു!`);
+                document.getElementById('gemini-json-input').value = '';
+                openSubTopics(categoryKey);
+
+            } catch (error) {
+                alert('എറർ: ' + error.message);
+            }
+        }
+
+        function populateAccordion() {
+            const container = document.getElementById('accordion-container');
+            container.innerHTML = '';
+            let hasTests = false;
+
+            for(let catKey in categoriesData) {
+                let cat = categoriesData[catKey];
+                if(cat.subtopics.length === 0) continue;
+                hasTests = true;
+                let accordionId = `acc-${catKey}`;
+                let testsListHtml = '';
+
+                cat.subtopics.forEach(sub => {
+                    sub.tests.forEach(test => {
+                        let val = `${catKey}|${sub.name}|${test}`;
+                        testsListHtml += `
+                            <label class="flex items-center space-x-2 py-1.5 px-3 hover:bg-slate-800 rounded cursor-pointer text-xs text-slate-300">
+                                <input type="checkbox" name="revision_test_checkbox" value="${val}" class="rounded bg-slate-800 border-slate-700 text-indigo-600 focus:ring-indigo-500">
+                                <span class="font-medium">${sub.name} > ${test}</span>
+                            </label>
+                        `;
+                    });
+                });
+
+                container.innerHTML += `
+                    <div class="border border-slate-700 rounded-xl overflow-hidden bg-slate-900">
+                        <button onclick="toggleAccordion('${accordionId}')" class="w-full flex justify-between items-center p-3 text-left font-bold text-sm text-indigo-400 bg-slate-950 hover:bg-slate-900 transition">
+                            <span>📂 ${cat.title}</span>
+                            <span id="icon-${accordionId}" class="text-xs">▼</span>
+                        </button>
+                        <div id="${accordionId}" class="hidden p-2 space-y-1 border-t border-slate-800">
+                            ${testsListHtml}
+                        </div>
+                    </div>
+                `;
             }
 
-            let savedGroup = document.createElement('optgroup');
-            savedGroup.label = "മൈ റിവിഷൻ (തെറ്റിയ ചോദ്യങ്ങൾ)";
-            let optSavedAll = document.createElement('option');
-            optSavedAll.value = "saved_mistakes_all";
-            optSavedAll.innerText = "എല്ലാ സേവ് ചെയ്ത റിവിഷൻ സെറ്റുകളും";
-            savedGroup.appendChild(optSavedAll);
+            if(!hasTests) {
+                container.innerHTML = `<p class="text-xs text-slate-500 text-center py-4">മോക്ക് ടെസ്റ്റുകൾ ഒന്നും ആഡ് ചെയ്തിട്ടില്ല.</p>`;
+            }
+        }
 
-            let savedSets = JSON.parse(localStorage.getItem('psc_mistake_sets') || '[]');
-            savedSets.forEach((set, idx) => {
-                let opt = document.createElement('option');
-                opt.value = `saved_${idx}`;
-                opt.innerText = `📌 ${set.title}`;
-                savedGroup.appendChild(opt);
+        function toggleAccordion(accId) {
+            const el = document.getElementById(accId);
+            const icon = document.getElementById(`icon-${accId}`);
+            if(el.classList.contains('hidden')) {
+                el.classList.remove('hidden');
+                icon.innerText = "▲";
+            } else {
+                el.classList.add('hidden');
+                icon.innerText = "▼";
+            }
+        }
+
+        function startAccordionCustomTest() {
+            const checkboxes = document.querySelectorAll('input[name="revision_test_checkbox"]:checked');
+            if(checkboxes.length === 0) {
+                alert("ദയവായി റിവിഷനായി കുറഞ്ഞത് ഒരു മോക്ക് ടെസ്റ്റെങ്കിലും ടിക്ക് ചെയ്ത് സെലക്ട് ചെയ്യുക!");
+                return;
+            }
+
+            let filtered = [];
+            checkboxes.forEach(cb => {
+                let parts = cb.value.split('|');
+                let catKey = parts[0];
+                let subName = parts[1];
+                let testName = parts[2];
+                let matched = sampleQuestions.filter(q => q.topic === catKey && q.subtopic === subName && q.testName === testName);
+                filtered = filtered.concat(matched);
             });
 
-            dropdown.appendChild(savedGroup);
+            if(filtered.length === 0) { alert("ചോദ്യങ്ങൾ ഒന്നും ലഭ്യമല്ല!"); return; }
+
+            const requestedCount = parseInt(document.getElementById('rev-count').value);
+            let finalQuestions = filtered.length < requestedCount ? shuffleArray(filtered) : shuffleArray(filtered).slice(0, requestedCount);
+
+            currentTestTitle = "മൾട്ടി-സെലക്ട് റിവിഷൻ ടെസ്റ്റ്";
+            activeTestKeyForTracking = "Custom Revision Test";
+            prepareFinalTestQuestions(finalQuestions);
+            launchMockTest();
         }
 
         function openSubTopics(catKey) {
@@ -1352,12 +605,21 @@
             const container = document.getElementById('subtopics-container');
             container.innerHTML = '';
 
+            if(cat.subtopics.length === 0) {
+                container.innerHTML = `<p class="text-xs text-slate-500 text-center py-6">സബ്-ടോപ്പിക്കുകൾ ഒന്നും ലഭ്യമല്ല. 'Mock Creator' ഉപയോഗിച്ച് പുതിയവ ചേർക്കുക.</p>`;
+                document.getElementById('section-dashboard').classList.add('hidden');
+                document.getElementById('section-subtopics').classList.remove('hidden');
+                return;
+            }
+
             cat.subtopics.forEach(sub => {
                 let testsHtml = sub.tests.map(tName => `
-                    <button onclick="startSpecificTest('${catKey}', '${sub.name}', '${tName}')" class="w-full text-left bg-slate-900 border border-slate-700 hover:border-indigo-500 text-slate-200 text-sm px-4 py-3 rounded-xl font-medium transition flex items-center justify-between shadow-sm">
-                        <span>${tName}</span>
-                        <span class="text-indigo-400 font-bold">➔</span>
-                    </button>
+                    <div class="flex items-center space-x-2 bg-slate-900 border border-slate-700 hover:border-indigo-500 rounded-xl px-4 py-3 shadow-sm">
+                        <button onclick="startSpecificTest('${catKey}', '${sub.name}', '${tName}')" class="flex-1 text-left text-slate-200 text-sm font-medium transition">
+                            <span>${tName}</span>
+                        </button>
+                        <button onclick="startSpecificTest('${catKey}', '${sub.name}', '${tName}')" class="text-indigo-400 font-bold">➔</button>
+                    </div>
                 `).join('');
 
                 container.innerHTML += `
@@ -1388,54 +650,16 @@
 
         function startSpecificTest(topicKey, subName, testName) {
             currentTestTitle = `${subName} - ${testName}`;
+            activeTestKeyForTracking = `${subName} : ${testName}`;
             let filtered = sampleQuestions.filter(q => q.topic === topicKey && q.subtopic === subName && q.testName === testName);
-            if(filtered.length === 0) filtered = sampleQuestions.filter(q => q.topic === topicKey);
+            if(filtered.length === 0) { alert("ഈ ടെസ്റ്റിൽ ചോദ്യങ്ങൾ ഒന്നും ലഭ്യമല്ല!"); return; }
             
-            prepareRandomizedQuestions(filtered);
+            prepareFinalTestQuestions(shuffleArray(filtered));
             launchMockTest();
         }
 
-        function startSingleDropdownCustomTest() {
-            const val = document.getElementById('rev-single-dropdown').value;
-            const count = parseInt(document.getElementById('rev-count').value);
-
-            let filtered = [];
-
-            if(val === 'all') {
-                filtered = sampleQuestions;
-            } else if(val === 'saved_mistakes_all') {
-                let savedSets = JSON.parse(localStorage.getItem('psc_mistake_sets') || '[]');
-                savedSets.forEach(set => filtered = filtered.concat(set.questions));
-            } else if(val.startsWith('saved_')) {
-                let idx = parseInt(val.split('_')[1]);
-                let savedSets = JSON.parse(localStorage.getItem('psc_mistake_sets') || '[]');
-                if(savedSets[idx]) filtered = savedSets[idx].questions;
-            } else if(val.includes('|')) {
-                let parts = val.split('|');
-                let catKey = parts[0];
-                let subName = parts[1];
-                let testName = parts[2];
-                filtered = sampleQuestions.filter(q => q.topic === catKey && q.subtopic === subName && q.testName === testName);
-            } else {
-                filtered = sampleQuestions.filter(q => q.topic === val);
-            }
-
-            if(filtered.length === 0) filtered = sampleQuestions;
-
-            currentTestTitle = "കസ്റ്റമൈസ്ഡ് റിവിഷൻ ടെസ്റ്റ്";
-            prepareRandomizedQuestions(filtered, count);
-            launchMockTest();
-        }
-
-        function prepareRandomizedQuestions(sourceArray, targetCount = null) {
-            let duplicated = [];
-            let count = targetCount || sourceArray.length;
-            
-            while(duplicated.length < count && sourceArray.length > 0) {
-                duplicated = duplicated.concat(sourceArray);
-            }
-            
-            currentTestQuestions = shuffleArray(duplicated.slice(0, count)).map(q => {
+        function prepareFinalTestQuestions(sourceArray) {
+            currentTestQuestions = sourceArray.map(q => {
                 let options = [...q.options];
                 let correctOptText = options[q.answer];
                 let shuffledOpts = shuffleArray(options);
@@ -1447,6 +671,7 @@
         function launchMockTest() {
             document.querySelectorAll('main > section').forEach(sec => sec.classList.add('hidden'));
             document.getElementById('section-subtopics').classList.add('hidden');
+            document.getElementById('section-pdf_creator').classList.add('hidden');
             document.getElementById('mock-interface').classList.remove('hidden');
             currentIndex = 0;
             userAnswers = {};
@@ -1456,7 +681,6 @@
         }
 
         let testTimeLeft = 0;
-
         function startTimer() {
             clearInterval(timerInterval);
             testTimeLeft = currentTestQuestions.length * 50;
@@ -1464,10 +688,7 @@
             timerInterval = setInterval(() => {
                 testTimeLeft--;
                 updateTimerDisplay();
-                if(testTimeLeft <= 0) {
-                    clearInterval(timerInterval);
-                    finishMockTest();
-                }
+                if(testTimeLeft <= 0) { clearInterval(timerInterval); finishMockTest(); }
             }, 1000);
         }
 
@@ -1479,43 +700,16 @@
 
         function renderQuestionContent(q, containerId) {
             const container = document.getElementById(containerId);
-            let html = `<div class="font-medium text-white text-base mb-2">${currentIndex + 1}. ${q.q}</div>`;
-
-            if(q.type === 'statement') {
-                html += `<div class="bg-slate-900 border border-slate-700 p-4 rounded-xl space-y-2.5 my-3">`;
-                if(q.statements) {
-                    q.statements.forEach(stmt => {
-                        html += `<div class="text-slate-200 text-sm leading-relaxed">${stmt}</div>`;
-                    });
-                }
-                html += `</div>`;
-            } else if(q.type === 'matching') {
-                html += `<div class="bg-slate-900 border border-slate-700 p-4 rounded-xl space-y-2.5 my-3">`;
-                if(q.pairs) {
-                    q.pairs.forEach(pair => {
-                        html += `
-                            <div class="grid grid-cols-2 gap-4 text-sm py-1.5 border-b border-slate-800/60 last:border-0">
-                                <div class="text-indigo-300 font-medium">${pair.left}</div>
-                                <div class="text-slate-200 font-medium">${pair.right}</div>
-                            </div>
-                        `;
-                    });
-                }
-                html += `</div>`;
-            }
-
-            container.innerHTML = html;
+            container.innerHTML = `<div class="font-medium text-white text-base mb-2">${currentIndex + 1}. ${q.q}</div>`;
         }
 
         function loadQuestion() {
             const q = currentTestQuestions[currentIndex];
             document.getElementById('mock-title').innerText = `${currentTestTitle} (${currentIndex + 1}/${currentTestQuestions.length})`;
-            
             renderQuestionContent(q, 'q-container');
 
             const optsBox = document.getElementById('options-box');
             optsBox.innerHTML = '';
-            
             q.options.forEach((opt, idx) => {
                 const isSelected = userAnswers[currentIndex] === idx;
                 optsBox.innerHTML += `
@@ -1525,27 +719,32 @@
                     </label>
                 `;
             });
-
-            const bBtn = document.getElementById('bookmark-btn');
-            bBtn.style.color = bookmarked.has(currentIndex) ? '#ffb020' : '#94a3b8';
         }
 
         function selectOption(idx) { userAnswers[currentIndex] = idx; }
-        function nextQuestion() {
-            if(currentIndex < currentTestQuestions.length - 1) { currentIndex++; loadQuestion(); }
-            else { finishMockTest(); }
+        
+        function nextQuestion() { 
+            if(currentIndex < currentTestQuestions.length - 1) { currentIndex++; loadQuestion(); } 
+            else { checkUnattemptedAndFinish(); } 
         }
+
         function prevQuestion() { if(currentIndex > 0) { currentIndex--; loadQuestion(); } }
         function toggleBookmark() {
-            if(bookmarked.has(currentIndex)) {
-                bookmarked.delete(currentIndex);
-                document.getElementById('bookmark-btn').style.color = '#94a3b8';
-            } else {
-                bookmarked.add(currentIndex);
-                document.getElementById('bookmark-btn').style.color = '#ffb020';
-            }
+            if(bookmarked.has(currentIndex)) bookmarked.delete(currentIndex);
+            else bookmarked.add(currentIndex);
         }
-        function finishMockTestEarly() { if(confirm("നിങ്ങൾക്ക് ഈ ടെസ്റ്റ് ഇപ്പോൾ ഫിനിഷ് ചെയ്യണമെന്നുറപ്പാണോ?")) finishMockTest(); }
+
+        function finishMockTestEarly() { checkUnattemptedAndFinish(); }
+
+        function checkUnattemptedAndFinish() {
+            let unattemptedCount = 0;
+            currentTestQuestions.forEach((_, idx) => { if(userAnswers[idx] === undefined) unattemptedCount++; });
+
+            let confirmMsg = "നിങ്ങൾ എക്സാം ഫിനിഷ് ചെയ്യുവാൻ പോകുകയാണ് ഉറപ്പാണോ?";
+            if(unattemptedCount > 0) confirmMsg = `⚠️ നിങ്ങൾ ${unattemptedCount} ചോദ്യങ്ങൾ അറ്റൻഡ് ചെയ്തിട്ടില്ല!\n\nഎക്സാം ഇപ്പോൾത്തന്നെ ഫിനിഷ് ചെയ്യണമെന്നുറപ്പാണോ?`;
+
+            if(confirm(confirmMsg)) finishMockTest();
+        }
 
         function finishMockTest() {
             clearInterval(timerInterval);
@@ -1559,204 +758,96 @@
                 else wrong++;
             });
 
-            let score = correct * 1;
-            let negScore = wrong * 0.33;
-            let finalScore = Math.max(0, score - negScore).toFixed(2);
+            let score = Math.max(0, (correct * 1) - (wrong * 0.33)).toFixed(2);
+            document.getElementById('res-score').innerText = score;
+            document.getElementById('res-neg').innerText = (wrong * 0.33).toFixed(2);
 
-            document.getElementById('res-score').innerHTML = `${finalScore} <span class="text-xs font-normal text-slate-400 block mt-1">(ശരി: ${correct} | തെറ്റ്: ${wrong})</span>`;
-            document.getElementById('res-neg').innerText = negScore.toFixed(2);
-            document.getElementById('res-correct').innerText = correct;
-            document.getElementById('res-wrong').innerText = wrong;
-            document.getElementById('res-unattempted').innerText = unattempted;
+            saveTestProgressToTracker(activeTestKeyForTracking, parseFloat(score));
 
-            saveProgressToTracker(currentTestTitle, finalScore);
-            filterResultAnswers('all');
+            renderResultAnswers();
         }
 
-        function filterResultAnswers(filterType) {
-            document.querySelectorAll('.res-filter-btn').forEach(btn => {
-                btn.className = "res-filter-btn px-3 py-1.5 bg-slate-900 text-slate-300 border border-slate-700 rounded-lg text-xs font-medium whitespace-nowrap";
-            });
-            event.target.className = "res-filter-btn px-3 py-1.5 bg-indigo-600 text-white rounded-lg text-xs font-medium whitespace-nowrap";
+        async function saveTestProgressToTracker(testName, score) {
+            if(!testName) testName = "General Mock Test";
+            if(!userProgressData[testName]) {
+                userProgressData[testName] = { attempts: 0, highestScore: 0 };
+            }
+            userProgressData[testName].attempts += 1;
+            if(score > userProgressData[testName].highestScore) {
+                userProgressData[testName].highestScore = score;
+            }
 
+            localStorage.setItem('psc_user_progress', JSON.stringify(userProgressData));
+            if(db) {
+                try {
+                    await db.collection("app_data").doc("psc_main_database").set({
+                        categoriesData: categoriesData,
+                        sampleQuestions: sampleQuestions,
+                        userProgressData: userProgressData,
+                        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+                } catch(e) { console.log("Progress sync error:", e); }
+            }
+        }
+
+        function renderTrackerTable() {
+            const tbody = document.getElementById('tracker-table-body');
+            tbody.innerHTML = '';
+
+            let keys = Object.keys(userProgressData);
+            if(keys.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="3" class="p-4 text-center text-xs text-slate-500">ഇതുവരെ ടെസ്റ്റുകൾ ഒന്നും പൂർത്തിയാക്കിയിട്ടില്ല.</td></tr>`;
+                return;
+            }
+
+            keys.forEach(testName => {
+                let prog = userProgressData[testName];
+                tbody.innerHTML += `
+                    <tr class="border-b border-slate-800 hover:bg-slate-950/50">
+                        <td class="p-3 font-medium text-slate-200">${testName}</td>
+                        <td class="p-3 text-indigo-400 font-bold">${prog.attempts} തവണ</td>
+                        <td class="p-3 text-emerald-400 font-bold">${prog.highestScore} മാർക്ക്</td>
+                    </tr>
+                `;
+            });
+        }
+
+        function renderResultAnswers() {
             const listContainer = document.getElementById('result-answers-list');
             listContainer.innerHTML = '';
 
             currentTestQuestions.forEach((q, idx) => {
                 const userAns = userAnswers[idx];
                 let status = 'unattempted';
-                if(userAns !== undefined) {
-                    status = (userAns === q.answer) ? 'correct' : 'wrong';
-                }
+                if(userAns !== undefined) status = (userAns === q.answer) ? 'correct' : 'wrong';
 
-                if(filterType !== 'all' && filterType !== status) return;
-
-                let statusBadge = '';
-                if(status === 'correct') statusBadge = '<span class="text-xs text-emerald-400 font-bold">✓ ശരി</span>';
-                else if(status === 'wrong') statusBadge = '<span class="text-xs text-red-400 font-bold">✕ തെറ്റ്</span>';
-                else statusBadge = '<span class="text-xs text-slate-400 font-bold">- അറ്റൻഡ് ചെയ്തില്ല</span>';
-
+                let statusBadge = status === 'correct' ? '<span class="text-xs text-emerald-400 font-bold">✓ ശരി</span>' : (status === 'wrong' ? '<span class="text-xs text-red-400 font-bold">✕ തെറ്റ്</span>' : '<span class="text-xs text-slate-400 font-bold">- ഇല്ല</span>');
                 let userAnsText = userAns !== undefined ? q.options[userAns] : 'ഒന്നുമില്ല';
                 let correctAnsText = q.options[q.answer];
 
-                let detailsHtml = `<div class="font-medium text-white">${q.q}</div>`;
-                if(q.type === 'statement' && q.statements) {
-                    detailsHtml += `<div class="bg-slate-950 p-3 rounded-lg space-y-1.5 my-2">`;
-                    q.statements.forEach(s => detailsHtml += `<div class="text-slate-300 text-xs">${s}</div>`);
-                    detailsHtml += `</div>`;
-                } else if(q.type === 'matching' && q.pairs) {
-                    detailsHtml += `<div class="bg-slate-950 p-3 rounded-lg space-y-1.5 my-2">`;
-                    q.pairs.forEach(p => detailsHtml += `<div class="grid grid-cols-2 text-xs py-1"><span class="text-indigo-300">${p.left}</span><span class="text-slate-300">${p.right}</span></div>`);
-                    detailsHtml += `</div>`;
-                }
-
                 listContainer.innerHTML += `
                     <div class="bg-slate-900 border border-slate-700 p-3.5 rounded-xl space-y-2 text-xs">
-                        <div class="flex justify-between items-center">
-                            <span class="font-bold text-slate-300">ചോദ്യം ${idx + 1}</span>
-                            ${statusBadge}
-                        </div>
-                        ${detailsHtml}
+                        <div class="flex justify-between items-center"><span class="font-bold text-slate-300">ചോദ്യം ${idx + 1}</span>${statusBadge}</div>
+                        <div class="font-medium text-white">${q.q}</div>
+                        ${q.explanation ? `<div class="text-indigo-300 bg-indigo-950/40 p-2 rounded">💡 വിശദീകരണം: ${q.explanation}</div>` : ''}
                         <div class="text-slate-400">നിങ്ങളുടെ ഉത്തരം: <span class="${status === 'correct' ? 'text-emerald-400' : 'text-red-400'} font-bold">${userAnsText}</span></div>
                         ${status !== 'correct' ? `<div class="text-emerald-400 font-bold">ശരിയായ ഉത്തരം: ${correctAnsText}</div>` : ''}
                     </div>
                 `;
             });
-
-            if(listContainer.innerHTML === '') {
-                listContainer.innerHTML = `<div class="text-center text-xs text-slate-500 py-4">ഈ വിഭാഗത്തിൽ ചോദ്യങ്ങൾ ഒന്നുമില്ല.</div>`;
-            }
         }
 
-        function promptSaveMistakesToRevision() {
-            let mistakeQuestions = [];
-            currentTestQuestions.forEach((q, idx) => {
-                const userAns = userAnswers[idx];
-                if(userAns === undefined || userAns !== q.answer) {
-                    mistakeQuestions.push(q);
-                }
-            });
-
-            if(mistakeQuestions.length === 0) {
-                alert("തെറ്റിയോ അറ്റൻഡ് ചെയ്യാതെയോ ആയ ചോദ്യങ്ങൾ ഒന്നും ഈ ടെസ്റ്റിൽ ഇല്ല!");
-                return;
-            }
-
-            let defaultTitle = `${currentTestTitle} - റിവിഷൻ സെറ്റ്`;
-            let customTitle = prompt("റിവിഷൻ സെറ്റിന്റെ പേര് നൽകുക:", defaultTitle);
-
-            if(customTitle !== null) {
-                customTitle = customTitle.trim() || defaultTitle;
-
-                let savedSets = JSON.parse(localStorage.getItem('psc_mistake_sets') || '[]');
-                savedSets.push({ title: customTitle, questions: mistakeQuestions });
-                localStorage.setItem('psc_mistake_sets', JSON.stringify(savedSets));
-
-                if(db) {
-                    db.collection("user_revision_sets").add({
-                        title: customTitle,
-                        questions: mistakeQuestions,
-                        timestamp: firebase.firestore.FieldValue.serverTimestamp()
-                    }).catch(err => console.log(err));
-                }
-
-                alert("റിവിഷൻ സെറ്റ് വിജയകരമായി സേവ് ചെയ്തു!");
-            }
-        }
-
-        function renderSavedMistakeSets() {
-            let savedSets = JSON.parse(localStorage.getItem('psc_mistake_sets') || '[]');
-            const container = document.getElementById('saved-mistake-sets-container');
-            container.innerHTML = '';
-
-            if(savedSets.length === 0) {
-                container.innerHTML = `<p class="text-xs text-slate-500">ഇതുവരെ റിവിഷൻ സെറ്റുകൾ ഒന്നും സേവ് ചെയ്തിട്ടില്ല.</p>`;
-                return;
-            }
-
-            savedSets.forEach((set, index) => {
-                container.innerHTML += `
-                    <div class="p-3 bg-slate-900 border border-slate-700 rounded-xl flex justify-between items-center">
-                        <div>
-                            <h4 class="font-medium text-xs text-white">📌 ${set.title}</h4>
-                            <p class="text-[10px] text-slate-400">ചോദ്യങ്ങൾ: ${set.questions.length} എണ്ണം</p>
-                        </div>
-                        <div class="flex space-x-2">
-                            <button onclick="startMistakeSetTest(${index})" class="bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-1.5 rounded-lg text-xs font-medium">ടെസ്റ്റ്</button>
-                            <button onclick="deleteMistakeSet(${index})" class="bg-red-600 hover:bg-red-700 text-white px-2.5 py-1.5 rounded-lg text-xs font-medium">🗑️</button>
-                        </div>
-                    </div>
-                `;
-            });
-        }
-
-        function deleteMistakeSet(index) {
-            if(confirm("ഈ റിവിഷൻ സെറ്റ് ഡിലീറ്റ് ചെയ്യണമെന്നുറപ്പാണോ?")) {
-                let savedSets = JSON.parse(localStorage.getItem('psc_mistake_sets') || '[]');
-                savedSets.splice(index, 1);
-                localStorage.setItem('psc_mistake_sets', JSON.stringify(savedSets));
-                renderSavedMistakeSets();
-                populateAutoDropdown();
-            }
-        }
-
-        function startMistakeSetTest(index) {
-            let savedSets = JSON.parse(localStorage.getItem('psc_mistake_sets') || '[]');
-            let targetSet = savedSets[index];
-            if(!targetSet) return;
-
-            currentTestTitle = targetSet.title;
-            prepareRandomizedQuestions(targetSet.questions);
-            launchMockTest();
-        }
-
-        function saveProgressToTracker(title, score) {
-            let tracker = JSON.parse(localStorage.getItem('psc_tracker_history') || '{}');
-            if(!tracker[title]) {
-                tracker[title] = [];
-            }
-            let now = new Date().toLocaleDateString('en-GB');
-            tracker[title].push({ score: score, date: now });
-            localStorage.setItem('psc_tracker_history', JSON.stringify(tracker));
-
-            if(db) {
-                db.collection("user_progress").add({
-                    title: title, score: score, timestamp: firebase.firestore.FieldValue.serverTimestamp()
-                }).catch(err => console.log(err));
-            }
-        }
-
-        function renderTracker() {
-            let tracker = JSON.parse(localStorage.getItem('psc_tracker_history') || '{}');
-            const tbody = document.getElementById('tracker-table-body');
-            tbody.innerHTML = '';
-            
-            let keys = Object.keys(tracker);
-            if(keys.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="2" class="p-4 text-center text-slate-500 text-xs">ഇതുവരെ മോക്ക് ടെസ്റ്റുകൾ ഒന്നും ചെയ്തിട്ടില്ല.</td></tr>`;
-                return;
-            }
-
-            keys.forEach(title => {
-                let attemptsList = tracker[title].map((item, idx) => 
-                    `<div class="inline-flex items-center bg-slate-950 border border-slate-700 px-3 py-1.5 rounded-xl text-xs m-1 whitespace-nowrap shadow-sm">
-                        <span class="text-slate-400 mr-1.5">തവണ ${idx + 1}:</span>
-                        <b class="text-emerald-400 mr-2">${item.score}</b>
-                        <span class="text-[10px] text-slate-500">(${item.date})</span>
-                    </div>`
-                ).join('');
-
-                tbody.innerHTML += `
-                    <tr class="border-b border-slate-800 hover:bg-slate-900/50">
-                        <td class="p-3 text-slate-200 font-bold sticky left-0 bg-slate-900 z-10 w-1/3 border-r border-slate-800 shadow-sm align-middle">${title}</td>
-                        <td class="p-3 w-2/3 overflow-x-auto custom-scrollbar whitespace-nowrap">${attemptsList}</td>
-                    </tr>
-                `;
-            });
-        }
+        function resetToHome() { switchTab('dashboard'); }
+        function openPaletteModal() { document.getElementById('palette-modal').classList.remove('hidden'); }
+        function closePaletteModal() { document.getElementById('palette-modal').classList.add('hidden'); }
 
         // Practice Zone
         function initPracticeZone() {
+            if(sampleQuestions.length === 0) {
+                alert("പ്രാക്ടീസ് ചെയ്യാൻ ചോദ്യങ്ങൾ ഒന്നുമില്ല. ആദ്യം പുതിയ മോക്ക് ടെസ്റ്റുകൾ ആഡ് ചെയ്യുക!");
+                switchTab('dashboard');
+                return;
+            }
             practiceQueue = shuffleArray([...sampleQuestions]);
             practiceAttemptedMaster.clear();
             practiceLearnedMaster.clear();
@@ -1764,13 +855,9 @@
         }
 
         function loadPracticeQuestion() {
-            if(practiceQueue.length === 0) {
-                finishPracticeZone();
-                return;
-            }
+            if(practiceQueue.length === 0) { finishPracticeZone(); return; }
             const q = practiceQueue.shift();
             document.getElementById('practice-progress-indicator').innerText = `ബാക്കി ചോദ്യങ്ങൾ: ${practiceQueue.length + 1}`;
-            
             renderQuestionContent(q, 'p-q-container');
             
             const banner = document.getElementById('practice-feedback-banner');
@@ -1792,10 +879,8 @@
         function checkPracticeAnswer(questionObj, selectedIdx, correctIdx, correctOptText, btnElement) {
             const banner = document.getElementById('practice-feedback-banner');
             banner.classList.remove('hidden');
-
             const parentBox = document.getElementById('p-options-box');
             Array.from(parentBox.children).forEach(child => child.disabled = true);
-
             practiceAttemptedMaster.add(questionObj.id);
 
             if(selectedIdx === correctIdx) {
@@ -1803,16 +888,12 @@
                 btnElement.className = "w-full text-left p-3.5 border border-emerald-500 bg-emerald-950/80 text-emerald-300 rounded-xl font-medium transition";
                 banner.className = "p-3 rounded-xl text-sm font-medium bg-emerald-900/80 border border-emerald-600 text-emerald-200";
                 banner.innerText = "ശരി ഉത്തരം! (Correct)";
-                
-                setTimeout(() => {
-                    loadPracticeQuestion();
-                }, 1200);
+                setTimeout(() => { loadPracticeQuestion(); }, 1200);
             } else {
                 btnElement.className = "w-full text-left p-3.5 border border-red-500 bg-red-950/80 text-red-300 rounded-xl font-medium transition";
                 banner.className = "p-4 rounded-xl text-sm font-medium bg-red-900/80 border border-red-600 text-red-200 shadow-lg space-y-3";
                 banner.innerHTML = `
-                    ❌ ഉത്തരം തെറ്റാണ്!<br>
-                    <span class="text-xs text-emerald-300 mt-1 block font-bold">ശരിയായ ഉത്തരം: ${correctOptText}</span>
+                    ❌ ഉത്തരം തെറ്റാണ്!<br><span class="text-xs text-emerald-300 mt-1 block font-bold">ശരിയായ ഉത്തരം: ${correctOptText}</span>
                     <button onclick='handleWrongQuestionRetry(${JSON.stringify(questionObj).replace(/"/g, "&quot;")})' class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-2 rounded-xl text-xs font-bold shadow transition">OK / അടുത്തത്</button>
                 `;
             }
@@ -1820,37 +901,17 @@
 
         function handleWrongQuestionRetry(questionObj) {
             let insertPos = Math.floor(Math.random() * 3) + 2;
-            if(insertPos > practiceQueue.length) {
-                practiceQueue.push(questionObj);
-            } else {
-                practiceQueue.splice(insertPos, 0, questionObj);
-            }
+            if(insertPos > practiceQueue.length) practiceQueue.push(questionObj);
+            else practiceQueue.splice(insertPos, 0, questionObj);
             loadPracticeQuestion();
         }
 
         function finishPracticeZone() {
             document.getElementById('section-practice').classList.add('hidden');
             document.getElementById('practice-result-interface').classList.remove('hidden');
-            
             document.getElementById('p-res-attempted').innerText = practiceAttemptedMaster.size;
             document.getElementById('p-res-learned').innerText = practiceLearnedMaster.size;
         }
-
-        function resetToHome() { switchTab('dashboard'); }
-
-        function openPaletteModal() {
-            const grid = document.getElementById('palette-grid');
-            grid.innerHTML = '';
-            currentTestQuestions.forEach((_, idx) => {
-                let bg = userAnswers[idx] !== undefined ? 'bg-emerald-600 text-white' : 'bg-slate-700 text-slate-300';
-                if(bookmarked.has(idx)) bg = 'bg-amber-500 text-white';
-                grid.innerHTML += `<button onclick="jumpToQ(${idx})" class="p-2.5 rounded-lg font-bold text-xs ${bg}">${idx + 1}</button>`;
-            });
-            document.getElementById('palette-modal').classList.remove('hidden');
-        }
-
-        function closePaletteModal() { document.getElementById('palette-modal').classList.add('hidden'); }
-        function jumpToQ(idx) { currentIndex = idx; closePaletteModal(); loadQuestion(); }
 
         switchTab('dashboard');
     </script>
