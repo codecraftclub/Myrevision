@@ -165,6 +165,14 @@
 
                 <button onclick="startAccordionCustomTest()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-2.5 rounded-xl font-medium shadow transition">റിവിഷൻ ടെസ്റ്റ് ആരംഭിക്കുക</button>
             </div>
+
+            <!-- മൈ റിവിഷൻ സെറ്റുകൾ (ഡിലീറ്റ് ചെയ്യാനും ചെയ്തു നോക്കാനുമുള്ള ഭാഗം) -->
+            <div class="bg-slate-800 border border-slate-700 p-5 rounded-2xl space-y-4 shadow-md">
+                <h2 class="text-lg font-bold text-indigo-400">📌 മൈ റിവിഷൻ സെറ്റുകൾ (തെറ്റിയവ)</h2>
+                <div id="saved-mistake-sets-container" class="space-y-2">
+                    <p class="text-xs text-slate-500 text-center py-3">റിവിഷൻ സെറ്റുകൾ ഒന്നും സേവ് ചെയ്തിട്ടില്ല.</p>
+                </div>
+            </div>
         </section>
 
         <!-- TAB 3: Practice Zone -->
@@ -249,9 +257,11 @@
         <!-- RESULT VIEW -->
         <div id="result-interface" class="hidden bg-slate-800 border border-slate-700 p-6 rounded-2xl shadow-xl space-y-6">
             <h2 class="text-xl font-bold text-indigo-400 text-center">ടെസ്റ്റ് റിസൾട്ട്</h2>
+            
+            <!-- ആകെ മാർക്ക് (നെഗറ്റീവ് കുറച്ചത്) -->
             <div class="grid grid-cols-2 gap-4 text-center">
                 <div class="bg-slate-900 p-4 rounded-xl border border-slate-700">
-                    <div class="text-xs text-slate-400">ലഭിച്ച മാർക്ക്</div>
+                    <div class="text-xs text-slate-400">ആകെ മാർക്ക്</div>
                     <div id="res-score" class="text-2xl font-bold text-indigo-400">0</div>
                 </div>
                 <div class="bg-slate-900 p-4 rounded-xl border border-slate-700">
@@ -259,13 +269,39 @@
                     <div id="res-neg" class="text-2xl font-bold text-red-400">0</div>
                 </div>
             </div>
-            <div class="hidden">
-                <span id="res-correct">0</span><span id="res-wrong">0</span><span id="res-unattempted">0</span>
+
+            <!-- ശരി, തെറ്റ്, വിട്ടുപോയവയുടെ കണക്കുകൾ -->
+            <div class="grid grid-cols-3 gap-2 text-center">
+                <div class="bg-slate-900 p-3 rounded-xl border border-slate-700">
+                    <div class="text-xs text-slate-400">ശരി (Correct)</div>
+                    <div id="res-correct" class="text-xl font-bold text-emerald-400">0</div>
+                </div>
+                <div class="bg-slate-900 p-3 rounded-xl border border-slate-700">
+                    <div class="text-xs text-slate-400">തെറ്റ് (Wrong)</div>
+                    <div id="res-wrong" class="text-xl font-bold text-red-400">0</div>
+                </div>
+                <div class="bg-slate-900 p-3 rounded-xl border border-slate-700">
+                    <div class="text-xs text-slate-400">വിട്ടുപോയവ</div>
+                    <div id="res-unattempted" class="text-xl font-bold text-amber-400">0</div>
+                </div>
             </div>
+
+            <!-- തെറ്റിയവ റിവിഷൻ സെറ്റായി സേവ് ചെയ്യാനുള്ള ഭാഗം -->
+            <div id="save-mistakes-container"></div>
+
+            <!-- ഫിൽട്ടർ ബട്ടണുകൾ -->
+            <div class="flex space-x-2 pt-2">
+                <button onclick="renderResultAnswers('all')" class="flex-1 bg-slate-700 hover:bg-slate-600 text-white py-1.5 rounded-lg text-xs font-medium">എല്ലാം</button>
+                <button onclick="renderResultAnswers('correct')" class="flex-1 bg-emerald-950/60 border border-emerald-800 text-emerald-300 py-1.5 rounded-lg text-xs font-medium">ശരി മാത്രം</button>
+                <button onclick="renderResultAnswers('wrong')" class="flex-1 bg-red-950/60 border border-red-800 text-red-300 py-1.5 rounded-lg text-xs font-medium">തെറ്റ് മാത്രം</button>
+                <button onclick="renderResultAnswers('unattempted')" class="flex-1 bg-amber-950/60 border border-amber-800 text-amber-300 py-1.5 rounded-lg text-xs font-medium">വിട്ടുപോയവ</button>
+            </div>
+
             <div class="border-t border-slate-700 pt-4 space-y-3">
                 <h3 class="text-sm font-bold text-slate-200">ഉത്തരങ്ങൾ പരിശോധിക്കുക:</h3>
                 <div id="result-answers-list" class="space-y-3 max-h-72 overflow-y-auto custom-scrollbar p-1"></div>
             </div>
+            
             <button onclick="resetToHome()" class="w-full bg-slate-700 hover:bg-slate-600 text-white py-2.5 rounded-xl text-sm font-medium">ഹോമിലേക്ക് മടങ്ങുക</button>
         </div>
 
@@ -313,6 +349,7 @@
 
         let sampleQuestions = JSON.parse(localStorage.getItem('psc_sample_questions') || JSON.stringify([]));
         let userProgressData = JSON.parse(localStorage.getItem('psc_user_progress') || JSON.stringify({}));
+        let savedMistakeSets = JSON.parse(localStorage.getItem('psc_saved_mistake_sets') || JSON.stringify([]));
 
         async function loadDataFromFirebase() {
             if(!db) return;
@@ -348,6 +385,9 @@
         let timerInterval;
         let currentTestTitle = "";
         let activeTestKeyForTracking = "";
+        let activeCategoryKey = "";
+        let activeSubtopicName = "";
+        let activeOriginalTestName = "";
 
         let practiceQueue = [];
         let practiceAttemptedMaster = new Set();
@@ -365,7 +405,6 @@
                 btn.className = "tab-btn px-4 py-2 bg-slate-800 text-slate-300 border border-slate-700 rounded-xl text-sm font-medium whitespace-nowrap";
             });
 
-            // Highlight active tab
             const activeBtn = document.getElementById(`btn-${tabId}`);
             if(activeBtn) {
                 activeBtn.className = "tab-btn px-4 py-2 bg-indigo-600 text-white rounded-xl text-sm font-medium whitespace-nowrap shadow";
@@ -378,6 +417,7 @@
             } else if(tabId === 'revision') {
                 document.getElementById('section-revision').classList.remove('hidden');
                 populateAccordion();
+                renderSavedMistakeSets();
             } else if(tabId === 'practice') {
                 document.getElementById('section-practice').classList.remove('hidden');
                 initPracticeZone();
@@ -387,7 +427,6 @@
             }
         }
 
-        // സാധാരണ ടെക്സ്റ്റ് ഓട്ടോമാറ്റിക് ആയി പാർസ് ചെയ്യുന്ന ഫങ്ഷൻ
         function parsePlainQuestions(text) {
             let questions = [];
             let blocks = text.split(/(?=\d+[\.\)]\s)/);
@@ -447,7 +486,6 @@
 
             try {
                 let generatedQuestions = [];
-
                 try {
                     let cleanJsonStr = rawText.replace(/```json/g, '').replace(/```/g, '').trim();
                     generatedQuestions = JSON.parse(cleanJsonStr);
@@ -456,7 +494,7 @@
                 }
 
                 if(!Array.isArray(generatedQuestions) || generatedQuestions.length === 0) {
-                    throw new Error("ചോദ്യങ്ങൾ കൃത്യമായി റീഡ് ചെയ്യാൻ കഴിഞ്ഞില്ല. ചോദ്യങ്ങളുടെ മാതൃക പരിശോധിക്കുക.");
+                    throw new Error("ചോദ്യങ്ങൾ കൃത്യമായി റീഡ് ചെയ്യാൻ കഴിഞ്ഞില്ല.");
                 }
 
                 if(!categoriesData[categoryKey]) categoriesData[categoryKey] = { title: categoryKey, subtopics: [] };
@@ -600,6 +638,7 @@
         }
 
         function openSubTopics(catKey) {
+            activeCategoryKey = catKey;
             const cat = categoriesData[catKey];
             document.getElementById('subtopic-category-title').innerText = cat.title;
             const container = document.getElementById('subtopics-container');
@@ -649,6 +688,9 @@
         }
 
         function startSpecificTest(topicKey, subName, testName) {
+            activeCategoryKey = topicKey;
+            activeSubtopicName = subName;
+            activeOriginalTestName = testName;
             currentTestTitle = `${subName} - ${testName}`;
             activeTestKeyForTracking = `${subName} : ${testName}`;
             let filtered = sampleQuestions.filter(q => q.topic === topicKey && q.subtopic === subName && q.testName === testName);
@@ -758,13 +800,154 @@
                 else wrong++;
             });
 
-            let score = Math.max(0, (correct * 1) - (wrong * 0.33)).toFixed(2);
+            let rawScore = (correct * 1) - (wrong * 0.33);
+            let score = Math.max(0, rawScore).toFixed(2);
+            let negScore = (wrong * 0.33).toFixed(2);
+
             document.getElementById('res-score').innerText = score;
-            document.getElementById('res-neg').innerText = (wrong * 0.33).toFixed(2);
+            document.getElementById('res-neg').innerText = negScore;
+            document.getElementById('res-correct').innerText = correct;
+            document.getElementById('res-wrong').innerText = wrong;
+            document.getElementById('res-unattempted').innerText = unattempted;
+
+            let saveBtnContainer = document.getElementById('save-mistakes-container');
+            if(wrong > 0 || unattempted > 0) {
+                let defaultSuggestedName = `${activeOriginalTestName || "Mock Test"} (തെറ്റിയവ)`;
+                saveBtnContainer.innerHTML = `
+                    <div class="bg-slate-900 border border-slate-700 p-4 rounded-xl space-y-3">
+                        <label class="block text-xs font-medium text-slate-300">റിവിഷൻ സെറ്റിന്റെ പേര് (മാറ്റി നൽകാം):</label>
+                        <input type="text" id="custom-mistake-test-name" value="${defaultSuggestedName}" class="w-full p-2.5 bg-slate-800 border border-slate-700 text-white rounded-xl text-sm">
+                        <button onclick="saveMistakesAsNewMockTest()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-2.5 rounded-xl text-xs font-bold shadow transition">
+                            📌 തെറ്റിയ ചോദ്യങ്ങൾ റിവിഷൻ സെറ്റായി സേവ് ചെയ്യുക
+                        </button>
+                    </div>
+                `;
+            } else {
+                saveBtnContainer.innerHTML = `<p class="text-xs text-emerald-400 text-center font-bold">അഭിനന്ദനങ്ങൾ! എല്ലാ ചോദ്യങ്ങളും ശരിയാണ്!</p>`;
+            }
 
             saveTestProgressToTracker(activeTestKeyForTracking, parseFloat(score));
+            renderResultAnswers('all');
+        }
 
-            renderResultAnswers();
+        // തെറ്റിയ ചോദ്യങ്ങൾ സേവ് ചെയ്യുമ്പോൾ റിസൾട്ട് പേജിൽ തന്നെ നിൽക്കുന്ന രീതി
+        function saveMistakesAsNewMockTest() {
+            let customNameInput = document.getElementById('custom-mistake-test-name');
+            let newTestName = customNameInput ? customNameInput.value.trim() : `${activeOriginalTestName} (തെറ്റിയവ)`;
+            if(!newTestName) newTestName = `${activeOriginalTestName} (തെറ്റിയവ)`;
+
+            let wrongQuestions = [];
+            currentTestQuestions.forEach((q, idx) => {
+                const userAns = userAnswers[idx];
+                if(userAns === undefined || userAns !== q.answer) {
+                    wrongQuestions.push(q);
+                }
+            });
+
+            if(wrongQuestions.length === 0) {
+                alert("സേവ് ചെയ്യാൻ തെറ്റിയ ചോദ്യങ്ങൾ ഒന്നും ലഭ്യമല്ല!");
+                return;
+            }
+
+            let subName = activeSubtopicName || "Revision Set";
+            let catKey = activeCategoryKey || "topic_wise";
+
+            if(!categoriesData[catKey]) categoriesData[catKey] = { title: catKey, subtopics: [] };
+            let sub = categoriesData[catKey].subtopics.find(s => s.name.toLowerCase() === subName.toLowerCase());
+            
+            if(!sub) {
+                categoriesData[catKey].subtopics.push({ name: subName, tests: [newTestName] });
+            } else {
+                if(!sub.tests.includes(newTestName)) {
+                    sub.tests.push(newTestName);
+                }
+            }
+
+            sampleQuestions = sampleQuestions.filter(q => !(q.topic === catKey && q.subtopic.toLowerCase() === subName.toLowerCase() && q.testName === newTestName));
+            
+            wrongQuestions.forEach((wq, idx) => {
+                sampleQuestions.push({
+                    ...wq,
+                    id: Date.now() + idx,
+                    topic: catKey,
+                    subtopic: subName,
+                    testName: newTestName
+                });
+            });
+
+            let setObj = { categoryKey: catKey, subtopicName: subName, testName: newTestName };
+            if(!savedMistakeSets.some(s => s.testName === newTestName)) {
+                savedMistakeSets.push(setObj);
+                localStorage.setItem('psc_saved_mistake_sets', JSON.stringify(savedMistakeSets));
+            }
+
+            localStorage.setItem('psc_categories_data', JSON.stringify(categoriesData));
+            localStorage.setItem('psc_sample_questions', JSON.stringify(sampleQuestions));
+
+            if(db) {
+                db.collection("app_data").doc("psc_main_database").set({
+                    categoriesData: categoriesData,
+                    sampleQuestions: sampleQuestions,
+                    userProgressData: userProgressData,
+                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                }).catch(e => console.log(e));
+            }
+
+            alert(`🎉 "${newTestName}" വിജയകരമായി റിവിഷൻ സെറ്റായി സേവ് ചെയ്തു!`);
+            // റിസൾട്ട് പേജിൽ നിന്ന് മാറ്റാതെ അവിടെത്തന്നെ നിർത്തുന്നു
+        }
+
+        // റിവിഷൻ ടാബിൽ സേവ് ചെയ്ത തെറ്റിയ സെറ്റുകൾ കാണിക്കാനും, ചെയ്തു നോക്കാനും, ഡിലീറ്റ് ചെയ്യാനും
+        function renderSavedMistakeSets() {
+            const container = document.getElementById('saved-mistake-sets-container');
+            if(!container) return;
+            container.innerHTML = '';
+
+            if(savedMistakeSets.length === 0) {
+                container.innerHTML = `<p class="text-xs text-slate-500 text-center py-3">റിവിഷൻ സെറ്റുകൾ ഒന്നും സേവ് ചെയ്തിട്ടില്ല.</p>`;
+                return;
+            }
+
+            savedMistakeSets.forEach((setInfo) => {
+                container.innerHTML += `
+                    <div class="flex items-center justify-between bg-slate-900 border border-slate-700 p-3 rounded-xl">
+                        <span class="text-xs font-medium text-slate-200">📌 ${setInfo.testName}</span>
+                        <div class="flex space-x-2">
+                            <button onclick="startSpecificTest('${setInfo.categoryKey}', '${setInfo.subtopicName}', '${setInfo.testName}')" class="bg-indigo-600 hover:bg-indigo-700 text-white text-xs px-2.5 py-1 rounded-lg font-medium transition">ചെയ്തു നോക്കൂ</button>
+                            <button onclick="deleteMistakeSet('${setInfo.testName}')" class="bg-red-950/80 border border-red-800 text-red-400 hover:bg-red-900 text-xs px-2.5 py-1 rounded-lg font-medium transition">ഡിലീറ്റ്</button>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function deleteMistakeSet(setName) {
+            if(!confirm(`⚠️ "${setName}" എന്ന റിവിഷൻ സെറ്റ് ഡിലീറ്റ് ചെയ്യണമെന്നുറപ്പാണോ?`)) return;
+
+            savedMistakeSets = savedMistakeSets.filter(s => s.testName !== setName);
+            localStorage.setItem('psc_saved_mistake_sets', JSON.stringify(savedMistakeSets));
+
+            sampleQuestions = sampleQuestions.filter(q => q.testName !== setName);
+            localStorage.setItem('psc_sample_questions', JSON.stringify(sampleQuestions));
+
+            for(let catKey in categoriesData) {
+                categoriesData[catKey].subtopics.forEach(sub => {
+                    sub.tests = sub.tests.filter(t => t !== setName);
+                });
+            }
+            localStorage.setItem('psc_categories_data', JSON.stringify(categoriesData));
+
+            if(db) {
+                db.collection("app_data").doc("psc_main_database").set({
+                    categoriesData: categoriesData,
+                    sampleQuestions: sampleQuestions,
+                    userProgressData: userProgressData,
+                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                }).catch(e => console.log(e));
+            }
+
+            renderSavedMistakeSets();
+            alert("റിവിഷൻ സെറ്റ് വിജയകരമായി ഡിലീറ്റ് ചെയ്തു!");
         }
 
         async function saveTestProgressToTracker(testName, score) {
@@ -786,7 +969,7 @@
                         userProgressData: userProgressData,
                         updatedAt: firebase.firestore.FieldValue.serverTimestamp()
                     });
-                } catch(e) { console.log("Progress sync error:", e); }
+                } catch(e) { console.log("Tracker sync error:", e); }
             }
         }
 
@@ -812,7 +995,7 @@
             });
         }
 
-        function renderResultAnswers() {
+        function renderResultAnswers(filterType) {
             const listContainer = document.getElementById('result-answers-list');
             listContainer.innerHTML = '';
 
@@ -821,7 +1004,9 @@
                 let status = 'unattempted';
                 if(userAns !== undefined) status = (userAns === q.answer) ? 'correct' : 'wrong';
 
-                let statusBadge = status === 'correct' ? '<span class="text-xs text-emerald-400 font-bold">✓ ശരി</span>' : (status === 'wrong' ? '<span class="text-xs text-red-400 font-bold">✕ തെറ്റ്</span>' : '<span class="text-xs text-slate-400 font-bold">- ഇല്ല</span>');
+                if(filterType !== 'all' && filterType !== status) return;
+
+                let statusBadge = status === 'correct' ? '<span class="text-xs text-emerald-400 font-bold">✓ ശരി</span>' : (status === 'wrong' ? '<span class="text-xs text-red-400 font-bold">✕ തെറ്റ്</span>' : '<span class="text-xs text-amber-400 font-bold">- വിട്ടുപോയവ</span>');
                 let userAnsText = userAns !== undefined ? q.options[userAns] : 'ഒന്നുമില്ല';
                 let correctAnsText = q.options[q.answer];
 
