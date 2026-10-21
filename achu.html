@@ -24,11 +24,12 @@
             <h1 class="text-lg font-bold text-white">Smart Revision</h1>
         </div>
         <div class="flex items-center space-x-3">
-            <!-- Go to Main Home Button Added Here -->
+            <!-- Go to Main Home Button -->
             <a href="index.html" class="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white text-xs px-3 py-1.5 rounded-lg font-medium shadow transition flex items-center space-x-1">
                 <span>🏠 Go to Main Home</span>
             </a>
-            <div id="sync-status" class="text-xs bg-slate-800 text-slate-300 px-2 py-1 rounded border border-slate-700">Firebase: Connecting...</div>
+            <!-- Logged In User Display -->
+            <div id="sync-status" class="text-xs bg-indigo-950 text-indigo-300 px-2.5 py-1 rounded border border-indigo-700 font-bold">👤 Login: അച്ചു</div>
         </div>
     </header>
 
@@ -375,11 +376,9 @@
         try {
             firebase.initializeApp(firebaseConfig);
             db = firebase.firestore();
-            document.getElementById('sync-status').innerText = "Firebase: Connected";
-            document.getElementById('sync-status').className = "text-xs bg-emerald-950 text-emerald-400 border border-emerald-800 px-2 py-1 rounded";
             loadDataFromFirebase();
         } catch(e) {
-            document.getElementById('sync-status').innerText = "Firebase: Error";
+            console.log("Firebase init error:", e);
         }
 
         let categoriesData = JSON.parse(localStorage.getItem('psc_categories_data_achu') || JSON.stringify({
