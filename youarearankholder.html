@@ -257,18 +257,23 @@
             <div class="bg-slate-800 border border-slate-700 p-5 rounded-2xl shadow-md space-y-4">
                 <h2 class="text-lg font-bold text-indigo-400">📊 പ്രോഗ്രസ് ട്രാക്കർ (Progress Tracker)</h2>
                 <p class="text-xs text-slate-400">താങ്കൾ ഇതുവരെ പൂർത്തിയാക്കിയ മോക്ക് ടെസ്റ്റുകളുടെ വിവരങ്ങളും ഉയർന്ന മാർക്കുകളും താഴെ കാണാം:</p>
-                <div class="border border-slate-700 rounded-xl overflow-hidden bg-slate-900">
-                    <div class="max-h-96 overflow-y-auto custom-scrollbar">
+                <div class="border border-slate-700 rounded-xl overflow-hidden bg-slate-900 flex flex-col" style="max-height: 400px;">
+                    <!-- Static Header Part -->
+                    <table class="w-full text-left border-collapse text-sm flex-shrink-0">
+                        <thead class="bg-slate-950 text-slate-400 shadow-md">
+                            <tr>
+                                <th class="p-3 border-b border-slate-700 w-2/5">മോക്ക് ടെസ്റ്റ് പേര്</th>
+                                <th class="p-3 border-b border-slate-700">ചെയ്ത തവണകൾ</th>
+                                <th class="p-3 border-b border-slate-700">ഉയർന്ന മാർക്ക്</th>
+                                <th class="p-3 border-b border-slate-700">ആകെ മാർക്ക്</th>
+                            </tr>
+                        </thead>
+                    </table>
+                    <!-- Scrollable Body Part -->
+                    <div class="overflow-y-auto custom-scrollbar flex-1">
                         <table class="w-full text-left border-collapse text-sm">
-                            <thead class="bg-slate-950 sticky top-0 z-20 text-slate-400 shadow-md">
-                                <tr>
-                                    <th class="p-3 border-b border-slate-700 w-1/2">മോക്ക് ടെസ്റ്റ് പേര്</th>
-                                    <th class="p-3 border-b border-slate-700">ചെയ്ത തവണകൾ</th>
-                                    <th class="p-3 border-b border-slate-700">ഉയർന്ന മാർക്ക്</th>
-                                </tr>
-                            </thead>
                             <tbody id="tracker-table-body" class="text-slate-300">
-                                <tr><td colspan="3" class="p-4 text-center text-xs text-slate-500">ഇതുവരെ ടെസ്റ്റുകൾ ഒന്നും പൂർത്തിയാക്കിയിട്ടില്ല.</td></tr>
+                                <tr><td colspan="4" class="p-4 text-center text-xs text-slate-500">ഇതുവരെ ടെസ്റ്റുകൾ ഒന്നും പൂർത്തിയാക്കിയിട്ടില്ല.</td></tr>
                             </tbody>
                         </table>
                     </div>
@@ -859,6 +864,7 @@
             let rawScore = (correct * 1) - (wrong * 0.33);
             let score = Math.max(0, rawScore).toFixed(2);
             let negScore = (wrong * 0.33).toFixed(2);
+            let totalQCount = currentTestQuestions.length;
 
             document.getElementById('res-score').innerText = score;
             document.getElementById('res-neg').innerText = negScore;
@@ -882,7 +888,7 @@
                 saveBtnContainer.innerHTML = `<p class="text-xs text-emerald-400 text-center font-bold">അഭിനന്ദനങ്ങൾ! എല്ലാ ചോദ്യങ്ങളും ശരിയാണ്!</p>`;
             }
 
-            saveTestProgressToTracker(activeTestKeyForTracking, parseFloat(score));
+            saveTestProgressToTracker(activeTestKeyForTracking, parseFloat(score), totalQCount);
             renderResultAnswers('all');
         }
 
@@ -1003,14 +1009,17 @@
             alert("റിവിഷൻ സെറ്റ് വിജയകരമായി ഡിലീറ്റ് ചെയ്തു!");
         }
 
-        async function saveTestProgressToTracker(testName, score) {
+        async function saveTestProgressToTracker(testName, score, totalQCount) {
             if(!testName) testName = "General Mock Test";
             if(!userProgressData[testName]) {
-                userProgressData[testName] = { attempts: 0, highestScore: 0 };
+                userProgressData[testName] = { attempts: 0, highestScore: 0, totalQuestions: totalQCount || 0 };
             }
             userProgressData[testName].attempts += 1;
             if(score > userProgressData[testName].highestScore) {
                 userProgressData[testName].highestScore = score;
+            }
+            if(totalQCount) {
+                userProgressData[testName].totalQuestions = totalQCount;
             }
 
             localStorage.setItem('psc_user_progress', JSON.stringify(userProgressData));
@@ -1032,17 +1041,19 @@
 
             let keys = Object.keys(userProgressData);
             if(keys.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="3" class="p-4 text-center text-xs text-slate-500">ഇതുവരെ ടെസ്റ്റുകൾ ഒന്നും പൂർത്തിയാക്കിയിട്ടില്ല.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="4" class="p-4 text-center text-xs text-slate-500">ഇതുവരെ ടെസ്റ്റുകൾ ഒന്നും പൂർത്തിയാക്കിയിട്ടില്ല.</td></tr>`;
                 return;
             }
 
             keys.forEach(testName => {
                 let prog = userProgressData[testName];
+                let maxQ = prog.totalQuestions ? prog.totalQuestions : '-';
                 tbody.innerHTML += `
                     <tr class="border-b border-slate-800 hover:bg-slate-950/50">
                         <td class="p-3 font-medium text-slate-200">${testName}</td>
                         <td class="p-3 text-indigo-400 font-bold">${prog.attempts} തവണ</td>
                         <td class="p-3 text-emerald-400 font-bold">${prog.highestScore} മാർക്ക്</td>
+                        <td class="p-3 text-amber-400 font-bold">${maxQ} മാർക്ക്</td>
                     </tr>
                 `;
             });
