@@ -382,7 +382,7 @@
             document.getElementById('sync-status').innerText = "Firebase: Error";
         }
 
-        let categoriesData = JSON.parse(localStorage.getItem('psc_categories_data') || JSON.stringify({
+        let categoriesData = JSON.parse(localStorage.getItem('psc_categories_data_anoop') || JSON.stringify({
             scert: { title: "SCERT Based Exams", subtopics: [] },
             topic_wise: { title: "Topic-wise Exams", subtopics: [] },
             ca_daily: { title: "Daily Current Affairs", subtopics: [] },
@@ -394,14 +394,14 @@
             pyq_english: { title: "English PYQ", subtopics: [] }
         }));
 
-        let sampleQuestions = JSON.parse(localStorage.getItem('psc_sample_questions') || JSON.stringify([]));
-        let userProgressData = JSON.parse(localStorage.getItem('psc_user_progress') || JSON.stringify({}));
-        let savedMistakeSets = JSON.parse(localStorage.getItem('psc_saved_mistake_sets') || JSON.stringify([]));
+        let sampleQuestions = JSON.parse(localStorage.getItem('psc_sample_questions_anoop') || JSON.stringify([]));
+        let userProgressData = JSON.parse(localStorage.getItem('psc_user_progress_anoop') || JSON.stringify({}));
+        let savedMistakeSets = JSON.parse(localStorage.getItem('psc_saved_mistake_sets_anoop') || JSON.stringify([]));
 
         async function loadDataFromFirebase() {
             if(!db) return;
             try {
-                const docRef = db.collection("app_data").doc("psc_main_database");
+                const docRef = db.collection("app_data").doc("psc_database_anoop");
                 const doc = await docRef.get();
                 if (doc.exists) {
                     const serverData = doc.data();
@@ -412,15 +412,15 @@
                         if(!categoriesData.pyq_main) categoriesData.pyq_main = { title: "PREVIOUS YEAR QUESTIONS", subtopics: [] };
                         if(!categoriesData.pyq_malayalam) categoriesData.pyq_malayalam = { title: "Malayalam PYQ", subtopics: [] };
                         if(!categoriesData.pyq_english) categoriesData.pyq_english = { title: "English PYQ", subtopics: [] };
-                        localStorage.setItem('psc_categories_data', JSON.stringify(categoriesData));
+                        localStorage.setItem('psc_categories_data_anoop', JSON.stringify(categoriesData));
                     }
                     if(serverData.sampleQuestions) {
                         sampleQuestions = serverData.sampleQuestions;
-                        localStorage.setItem('psc_sample_questions', JSON.stringify(sampleQuestions));
+                        localStorage.setItem('psc_sample_questions_anoop', JSON.stringify(sampleQuestions));
                     }
                     if(serverData.userProgressData) {
                         userProgressData = serverData.userProgressData;
-                        localStorage.setItem('psc_user_progress', JSON.stringify(userProgressData));
+                        localStorage.setItem('psc_user_progress_anoop', JSON.stringify(userProgressData));
                     }
                 }
             } catch(err) {
@@ -536,11 +536,11 @@
                     });
                 });
 
-                localStorage.setItem('psc_categories_data', JSON.stringify(categoriesData));
-                localStorage.setItem('psc_sample_questions', JSON.stringify(sampleQuestions));
+                localStorage.setItem('psc_categories_data_anoop', JSON.stringify(categoriesData));
+                localStorage.setItem('psc_sample_questions_anoop', JSON.stringify(sampleQuestions));
 
                 if(db) {
-                    await db.collection("app_data").doc("psc_main_database").set({
+                    await db.collection("app_data").doc("psc_database_anoop").set({
                         categoriesData: categoriesData,
                         sampleQuestions: sampleQuestions,
                         userProgressData: userProgressData,
@@ -710,7 +710,7 @@
             if(!confirm(`⚠️ "${testName}" എന്ന മോക്ക് ടെസ്റ്റും അതിലെ ചോദ്യങ്ങളും ഡിലീറ്റ് ചെയ്യണമെന്നുറപ്പാണോ?`)) return;
 
             sampleQuestions = sampleQuestions.filter(q => !(q.topic === topicKey && q.subtopic.toLowerCase() === subName.toLowerCase() && q.testName.toLowerCase() === testName.toLowerCase()));
-            localStorage.setItem('psc_sample_questions', JSON.stringify(sampleQuestions));
+            localStorage.setItem('psc_sample_questions_anoop', JSON.stringify(sampleQuestions));
 
             let sub = categoriesData[topicKey].subtopics.find(s => s.name.toLowerCase() === subName.toLowerCase());
             if(sub) {
@@ -719,10 +719,10 @@
                     categoriesData[topicKey].subtopics = categoriesData[topicKey].subtopics.filter(s => s.name.toLowerCase() !== subName.toLowerCase());
                 }
             }
-            localStorage.setItem('psc_categories_data', JSON.stringify(categoriesData));
+            localStorage.setItem('psc_categories_data_anoop', JSON.stringify(categoriesData));
 
             if(db) {
-                db.collection("app_data").doc("psc_main_database").set({
+                db.collection("app_data").doc("psc_database_anoop").set({
                     categoriesData: categoriesData,
                     sampleQuestions: sampleQuestions,
                     userProgressData: userProgressData,
@@ -939,14 +939,14 @@
             let setObj = { categoryKey: catKey, subtopicName: subName, testName: newTestName };
             if(!savedMistakeSets.some(s => s.testName === newTestName)) {
                 savedMistakeSets.push(setObj);
-                localStorage.setItem('psc_saved_mistake_sets', JSON.stringify(savedMistakeSets));
+                localStorage.setItem('psc_saved_mistake_sets_anoop', JSON.stringify(savedMistakeSets));
             }
 
-            localStorage.setItem('psc_categories_data', JSON.stringify(categoriesData));
-            localStorage.setItem('psc_sample_questions', JSON.stringify(sampleQuestions));
+            localStorage.setItem('psc_categories_data_anoop', JSON.stringify(categoriesData));
+            localStorage.setItem('psc_sample_questions_anoop', JSON.stringify(sampleQuestions));
 
             if(db) {
-                db.collection("app_data").doc("psc_main_database").set({
+                db.collection("app_data").doc("psc_database_anoop").set({
                     categoriesData: categoriesData,
                     sampleQuestions: sampleQuestions,
                     userProgressData: userProgressData,
@@ -984,20 +984,20 @@
             if(!confirm(`⚠️ "${setName}" എന്ന റിവിഷൻ സെറ്റ് ഡിലീറ്റ് ചെയ്യണമെന്നുറപ്പാണോ?`)) return;
 
             savedMistakeSets = savedMistakeSets.filter(s => s.testName !== setName);
-            localStorage.setItem('psc_saved_mistake_sets', JSON.stringify(savedMistakeSets));
+            localStorage.setItem('psc_saved_mistake_sets_anoop', JSON.stringify(savedMistakeSets));
 
             sampleQuestions = sampleQuestions.filter(q => q.testName !== setName);
-            localStorage.setItem('psc_sample_questions', JSON.stringify(sampleQuestions));
+            localStorage.setItem('psc_sample_questions_anoop', JSON.stringify(sampleQuestions));
 
             for(let catKey in categoriesData) {
                 categoriesData[catKey].subtopics.forEach(sub => {
                     sub.tests = sub.tests.filter(t => t !== setName);
                 });
             }
-            localStorage.setItem('psc_categories_data', JSON.stringify(categoriesData));
+            localStorage.setItem('psc_categories_data_anoop', JSON.stringify(categoriesData));
 
             if(db) {
-                db.collection("app_data").doc("psc_main_database").set({
+                db.collection("app_data").doc("psc_database_anoop").set({
                     categoriesData: categoriesData,
                     sampleQuestions: sampleQuestions,
                     userProgressData: userProgressData,
@@ -1022,10 +1022,10 @@
                 userProgressData[testName].totalQuestions = totalQCount;
             }
 
-            localStorage.setItem('psc_user_progress', JSON.stringify(userProgressData));
+            localStorage.setItem('psc_user_progress_anoop', JSON.stringify(userProgressData));
             if(db) {
                 try {
-                    await db.collection("app_data").doc("psc_main_database").set({
+                    await db.collection("app_data").doc("psc_database_anoop").set({
                         categoriesData: categoriesData,
                         sampleQuestions: sampleQuestions,
                         userProgressData: userProgressData,
