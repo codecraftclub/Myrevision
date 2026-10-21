@@ -85,6 +85,28 @@
                             <p class="text-xs text-slate-400 mt-0.5">ഇംഗ്ലീഷ് ഗ്രേമർ & വൊക്കാബുലറി</p>
                         </div>
                     </div>
+                    <div onclick="openSubTopics('pyq_main')" class="bg-slate-800 border border-slate-700 p-4 rounded-2xl cursor-pointer hover:border-indigo-500 transition shadow-sm space-y-2">
+                        <div class="w-10 h-10 bg-blue-900/50 rounded-xl flex items-center justify-center text-blue-400 text-xl font-bold">📜</div>
+                        <div>
+                            <h3 class="font-bold text-sm text-white">PREVIOUS YEAR QUESTIONS</h3>
+                            <p class="text-xs text-slate-400 mt-0.5">മുൻകാല ചോദ്യങ്ങൾ</p>
+                        </div>
+                    </div>
+                    <div onclick="openSubTopics('pyq_malayalam')" class="bg-slate-800 border border-slate-700 p-4 rounded-2xl cursor-pointer hover:border-indigo-500 transition shadow-sm space-y-2">
+                        <div class="w-10 h-10 bg-teal-900/50 rounded-xl flex items-center justify-center text-teal-400 text-xl font-bold">മല PYQ</div>
+                        <div>
+                            <h3 class="font-bold text-sm text-white">Malayalam PYQ</h3>
+                            <p class="text-xs text-slate-400 mt-0.5">മലയാളം മുൻകാല ചോദ്യങ്ങൾ</p>
+                        </div>
+                    </div>
+                    <div onclick="openSubTopics('pyq_english')" class="bg-slate-800 border border-slate-700 p-4 rounded-2xl cursor-pointer hover:border-indigo-500 transition shadow-sm space-y-2">
+                        <div class="w-10 h-10 bg-sky-900/50 rounded-xl flex items-center justify-center text-sky-400 text-xl font-bold">En PYQ</div>
+                        <div>
+                            <h3 class="font-bold text-sm text-white">English PYQ</h3>
+                            <p class="text-xs text-slate-400 mt-0.5">ഇംഗ്ലീഷ് മുൻകാല ചോദ്യങ്ങൾ</p>
+                        </div>
+                    </div>
+
                     <div onclick="switchTab('pdf_creator')" class="col-span-2 bg-gradient-to-r from-indigo-900/60 to-purple-900/60 border border-indigo-700/50 p-4 rounded-2xl cursor-pointer hover:border-indigo-400 transition shadow-sm flex items-center space-x-4">
                         <div class="w-12 h-12 bg-indigo-600/50 rounded-xl flex items-center justify-center text-white text-2xl font-bold">✨</div>
                         <div>
@@ -120,6 +142,9 @@
                         <option value="ca_monthly">Monthly Current Affairs</option>
                         <option value="malayalam">മലയാളം (Malayalam)</option>
                         <option value="english">ഇംഗ്ലീഷ് (English)</option>
+                        <option value="pyq_main">PREVIOUS YEAR QUESTIONS</option>
+                        <option value="pyq_malayalam">Malayalam PYQ</option>
+                        <option value="pyq_english">English PYQ</option>
                     </select>
                 </div>
 
@@ -344,7 +369,10 @@
             ca_daily: { title: "Daily Current Affairs", subtopics: [] },
             ca_monthly: { title: "Monthly Current Affairs", subtopics: [] },
             malayalam: { title: "മലയാളം (Malayalam)", subtopics: [] },
-            english: { title: "ഇംഗ്ലീഷ് (English)", subtopics: [] }
+            english: { title: "ഇംഗ്ലീഷ് (English)", subtopics: [] },
+            pyq_main: { title: "PREVIOUS YEAR QUESTIONS", subtopics: [] },
+            pyq_malayalam: { title: "Malayalam PYQ", subtopics: [] },
+            pyq_english: { title: "English PYQ", subtopics: [] }
         }));
 
         let sampleQuestions = JSON.parse(localStorage.getItem('psc_sample_questions') || JSON.stringify([]));
@@ -362,6 +390,9 @@
                         categoriesData = serverData.categoriesData;
                         if(!categoriesData.malayalam) categoriesData.malayalam = { title: "മലയാളം (Malayalam)", subtopics: [] };
                         if(!categoriesData.english) categoriesData.english = { title: "ഇംഗ്ലീഷ് (English)", subtopics: [] };
+                        if(!categoriesData.pyq_main) categoriesData.pyq_main = { title: "PREVIOUS YEAR QUESTIONS", subtopics: [] };
+                        if(!categoriesData.pyq_malayalam) categoriesData.pyq_malayalam = { title: "Malayalam PYQ", subtopics: [] };
+                        if(!categoriesData.pyq_english) categoriesData.pyq_english = { title: "English PYQ", subtopics: [] };
                         localStorage.setItem('psc_categories_data', JSON.stringify(categoriesData));
                     }
                     if(serverData.sampleQuestions) {
@@ -657,7 +688,8 @@
                         <button onclick="startSpecificTest('${catKey}', '${sub.name}', '${tName}')" class="flex-1 text-left text-slate-200 text-sm font-medium transition">
                             <span>${tName}</span>
                         </button>
-                        <button onclick="startSpecificTest('${catKey}', '${sub.name}', '${tName}')" class="text-indigo-400 font-bold">➔</button>
+                        <button onclick="startSpecificTest('${catKey}', '${sub.name}', '${tName}')" class="text-indigo-400 font-bold px-2">➔</button>
+                        <button onclick="deleteSpecificMockTest('${catKey}', '${sub.name}', '${tName}')" class="text-red-400 hover:text-red-300 text-xs bg-red-950/60 border border-red-800 px-2.5 py-1 rounded-lg ml-2">ഡിലീറ്റ്</button>
                     </div>
                 `).join('');
 
@@ -671,6 +703,37 @@
 
             document.getElementById('section-dashboard').classList.add('hidden');
             document.getElementById('section-subtopics').classList.remove('hidden');
+        }
+
+        function deleteSpecificMockTest(topicKey, subName, testName) {
+            if(!confirm(`⚠️ "${testName}" എന്ന മോക്ക് ടെസ്റ്റും അതിലെ ചോദ്യങ്ങളും ഡിലീറ്റ് ചെയ്യണമെന്നുറപ്പാണോ?`)) return;
+
+            // sampleQuestions-ൽ നിന്ന് ഈ ടെസ്റ്റിന്റെ ചോദ്യങ്ങൾ പൂർണ്ണമായി നീക്കം ചെയ്യുന്നു
+            sampleQuestions = sampleQuestions.filter(q => !(q.topic === topicKey && q.subtopic.toLowerCase() === subName.toLowerCase() && q.testName.toLowerCase() === testName.toLowerCase()));
+            localStorage.setItem('psc_sample_questions', JSON.stringify(sampleQuestions));
+
+            // categoriesData-ൽ നിന്ന് ടെസ്റ്റ് ഒഴിവാക്കുന്നു
+            let sub = categoriesData[topicKey].subtopics.find(s => s.name.toLowerCase() === subName.toLowerCase());
+            if(sub) {
+                sub.tests = sub.tests.filter(t => t.toLowerCase() !== testName.toLowerCase());
+                if(sub.tests.length === 0) {
+                    categoriesData[topicKey].subtopics = categoriesData[topicKey].subtopics.filter(s => s.name.toLowerCase() !== subName.toLowerCase());
+                }
+            }
+            localStorage.setItem('psc_categories_data', JSON.stringify(categoriesData));
+
+            // ഫയർബേസ് ഡാറ്റാബേസ് അപ്ഡേറ്റ് ചെയ്യുന്നു
+            if(db) {
+                db.collection("app_data").doc("psc_main_database").set({
+                    categoriesData: categoriesData,
+                    sampleQuestions: sampleQuestions,
+                    userProgressData: userProgressData,
+                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                }).catch(e => console.log(e));
+            }
+
+            alert("മോക്ക് ടെസ്റ്റും ചോദ്യങ്ങളും വിജയകരമായി ഡിലീറ്റ് ചെയ്തു!");
+            openSubTopics(topicKey);
         }
 
         function backToDashboard() {
@@ -894,7 +957,6 @@
             }
 
             alert(`🎉 "${newTestName}" വിജയകരമായി റിവിഷൻ സെറ്റായി സേവ് ചെയ്തു!`);
-            // റിസൾട്ട് പേജിൽ നിന്ന് മാറ്റാതെ അവിടെത്തന്നെ നിർത്തുന്നു
         }
 
         // റിവിഷൻ ടാബിൽ സേവ് ചെയ്ത തെറ്റിയ സെറ്റുകൾ കാണിക്കാനും, ചെയ്തു നോക്കാനും, ഡിലീറ്റ് ചെയ്യാനും
