@@ -1,0 +1,1181 @@
+<!DOCTYPE html>
+<html lang="ml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kerala PSC Smart Revision Portal</title>
+    <!-- Tailwind CSS for Modern UI & Mobile Friendly -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Firebase SDKs (Compat version) -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    <style>
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
+        body { background-color: #0f172a; color: #f8fafc; }
+    </style>
+</head>
+<body class="font-sans antialiased min-h-screen flex flex-col">
+
+    <!-- Header -->
+    <header class="bg-slate-900 border-b border-slate-800 p-4 sticky top-0 z-50 flex justify-between items-center shadow-md">
+        <div class="flex items-center space-x-2">
+            <div class="bg-indigo-600 text-white font-bold px-2.5 py-1 rounded-lg text-sm">PSC</div>
+            <h1 class="text-lg font-bold text-white">Smart Revision</h1>
+        </div>
+        <div class="flex items-center space-x-3">
+            <!-- Go to Main Home Button Added Here -->
+            <a href="index.html" class="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white text-xs px-3 py-1.5 rounded-lg font-medium shadow transition flex items-center space-x-1">
+                <span>🏠 Go to Main Home</span>
+            </a>
+            <div id="sync-status" class="text-xs bg-slate-800 text-slate-300 px-2 py-1 rounded border border-slate-700">Firebase: Connecting...</div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="flex-1 max-w-4xl w-full mx-auto p-4 space-y-6 pb-24">
+
+        <!-- Navigation Tabs -->
+        <div class="flex overflow-x-auto space-x-2 pb-2 custom-scrollbar">
+            <button onclick="switchTab('dashboard')" id="btn-dashboard" class="tab-btn px-4 py-2 bg-indigo-600 text-white rounded-xl text-sm font-medium whitespace-nowrap shadow">ഹോം (Home)</button>
+            <button onclick="switchTab('pdf_creator')" id="btn-pdf_creator" class="tab-btn px-4 py-2 bg-slate-800 text-slate-300 border border-slate-700 rounded-xl text-sm font-medium whitespace-nowrap">Mock Creator</button>
+            <button onclick="switchTab('revision')" id="btn-revision" class="tab-btn px-4 py-2 bg-slate-800 text-slate-300 border border-slate-700 rounded-xl text-sm font-medium whitespace-nowrap">Custom Revision</button>
+            <button onclick="switchTab('delete_mock')" id="btn-delete_mock" class="tab-btn px-4 py-2 bg-slate-800 text-slate-300 border border-slate-700 rounded-xl text-sm font-medium whitespace-nowrap">Delete Mock</button>
+            <button onclick="switchTab('practice')" id="btn-practice" class="tab-btn px-4 py-2 bg-slate-800 text-slate-300 border border-slate-700 rounded-xl text-sm font-medium whitespace-nowrap">Practice Zone</button>
+            <button onclick="switchTab('tracker')" id="btn-tracker" class="tab-btn px-4 py-2 bg-slate-800 text-slate-300 border border-slate-700 rounded-xl text-sm font-medium whitespace-nowrap">Progress Tracker</button>
+        </div>
+
+        <!-- TAB 1: DASHBOARD -->
+        <section id="section-dashboard" class="space-y-6">
+            <div>
+                <h2 class="text-md font-bold text-slate-200 mb-3">Exam Packs & Categories</h2>
+                <div class="grid grid-cols-2 gap-3">
+                    <div onclick="openSubTopics('scert')" class="bg-slate-800 border border-slate-700 p-4 rounded-2xl cursor-pointer hover:border-indigo-500 transition shadow-sm space-y-2">
+                        <div class="w-10 h-10 bg-indigo-900/50 rounded-xl flex items-center justify-center text-indigo-400 text-xl font-bold">📚</div>
+                        <div>
+                            <h3 class="font-bold text-sm text-white">SCERT Based Exams</h3>
+                            <p class="text-xs text-slate-400 mt-0.5">സ്കൂൾ പാഠപുസ്തകങ്ങൾ</p>
+                        </div>
+                    </div>
+                    <div onclick="openSubTopics('topic_wise')" class="bg-slate-800 border border-slate-700 p-4 rounded-2xl cursor-pointer hover:border-indigo-500 transition shadow-sm space-y-2">
+                        <div class="w-10 h-10 bg-emerald-900/50 rounded-xl flex items-center justify-center text-emerald-400 text-xl font-bold">📑</div>
+                        <div>
+                            <h3 class="font-bold text-sm text-white">Topic-wise Exams</h3>
+                            <p class="text-xs text-slate-400 mt-0.5">സബ് ടോപ്പിക് ടെസ്റ്റുകൾ</p>
+                        </div>
+                    </div>
+                    <div onclick="openSubTopics('ca_daily')" class="bg-slate-800 border border-slate-700 p-4 rounded-2xl cursor-pointer hover:border-indigo-500 transition shadow-sm space-y-2">
+                        <div class="w-10 h-10 bg-amber-900/50 rounded-xl flex items-center justify-center text-amber-400 text-xl font-bold">📅</div>
+                        <div>
+                            <h3 class="font-bold text-sm text-white">Daily Current Affairs</h3>
+                            <p class="text-xs text-slate-400 mt-0.5">ഡേറ്റ് വൈസ് ചോദ്യങ്ങൾ</p>
+                        </div>
+                    </div>
+                    <div onclick="openSubTopics('ca_monthly')" class="bg-slate-800 border border-slate-700 p-4 rounded-2xl cursor-pointer hover:border-indigo-500 transition shadow-sm space-y-2">
+                        <div class="w-10 h-10 bg-purple-900/50 rounded-xl flex items-center justify-center text-purple-400 text-xl font-bold">📊</div>
+                        <div>
+                            <h3 class="font-bold text-sm text-white">Monthly Current Affairs</h3>
+                            <p class="text-xs text-slate-400 mt-0.5">മാസം തോറുമുള്ളവ</p>
+                        </div>
+                    </div>
+                    <div onclick="openSubTopics('malayalam')" class="bg-slate-800 border border-slate-700 p-4 rounded-2xl cursor-pointer hover:border-indigo-500 transition shadow-sm space-y-2">
+                        <div class="w-10 h-10 bg-rose-900/50 rounded-xl flex items-center justify-center text-rose-400 text-xl font-bold">മല</div>
+                        <div>
+                            <h3 class="font-bold text-sm text-white">മലയാളം (Malayalam)</h3>
+                            <p class="text-xs text-slate-400 mt-0.5">മലയാളം ചോദ്യങ്ങൾ</p>
+                        </div>
+                    </div>
+                    <div onclick="openSubTopics('english')" class="bg-slate-800 border border-slate-700 p-4 rounded-2xl cursor-pointer hover:border-indigo-500 transition shadow-sm space-y-2">
+                        <div class="w-10 h-10 bg-cyan-900/50 rounded-xl flex items-center justify-center text-cyan-400 text-xl font-bold">En</div>
+                        <div>
+                            <h3 class="font-bold text-sm text-white">ഇംഗ്ലീഷ് (English)</h3>
+                            <p class="text-xs text-slate-400 mt-0.5">ഇംഗ്ലീഷ് ഗ്രേമർ & വൊക്കാബുലറി</p>
+                        </div>
+                    </div>
+                    <div onclick="openSubTopics('pyq_main')" class="bg-slate-800 border border-slate-700 p-4 rounded-2xl cursor-pointer hover:border-indigo-500 transition shadow-sm space-y-2">
+                        <div class="w-10 h-10 bg-blue-900/50 rounded-xl flex items-center justify-center text-blue-400 text-xl font-bold">📜</div>
+                        <div>
+                            <h3 class="font-bold text-sm text-white">PREVIOUS YEAR QUESTIONS</h3>
+                            <p class="text-xs text-slate-400 mt-0.5">മുൻകാല ചോദ്യങ്ങൾ</p>
+                        </div>
+                    </div>
+                    <div onclick="openSubTopics('pyq_malayalam')" class="bg-slate-800 border border-slate-700 p-4 rounded-2xl cursor-pointer hover:border-indigo-500 transition shadow-sm space-y-2">
+                        <div class="w-10 h-10 bg-teal-900/50 rounded-xl flex items-center justify-center text-teal-400 text-xl font-bold">മല PYQ</div>
+                        <div>
+                            <h3 class="font-bold text-sm text-white">Malayalam PYQ</h3>
+                            <p class="text-xs text-slate-400 mt-0.5">മലയാളം മുൻകാല ചോദ്യങ്ങൾ</p>
+                        </div>
+                    </div>
+                    <div onclick="openSubTopics('pyq_english')" class="bg-slate-800 border border-slate-700 p-4 rounded-2xl cursor-pointer hover:border-indigo-500 transition shadow-sm space-y-2">
+                        <div class="w-10 h-10 bg-sky-900/50 rounded-xl flex items-center justify-center text-sky-400 text-xl font-bold">En PYQ</div>
+                        <div>
+                            <h3 class="font-bold text-sm text-white">English PYQ</h3>
+                            <p class="text-xs text-slate-400 mt-0.5">ഇംഗ്ലീഷ് മുൻകാല ചോദ്യങ്ങൾ</p>
+                        </div>
+                    </div>
+
+                    <div onclick="switchTab('pdf_creator')" class="col-span-2 bg-gradient-to-r from-indigo-900/60 to-purple-900/60 border border-indigo-700/50 p-4 rounded-2xl cursor-pointer hover:border-indigo-400 transition shadow-sm flex items-center space-x-4">
+                        <div class="w-12 h-12 bg-indigo-600/50 rounded-xl flex items-center justify-center text-white text-2xl font-bold">✨</div>
+                        <div>
+                            <h3 class="font-bold text-sm text-white">Mock Test Creator</h3>
+                            <p class="text-xs text-slate-300 mt-0.5">ചോദ്യങ്ങൾ പേസ്റ്റ് ചെയ്ത് പുതിയ മോക്ക് ടെസ്റ്റുകൾ നിർമ്മിക്കുക</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SUB-TOPICS VIEW -->
+        <section id="section-subtopics" class="hidden space-y-4">
+            <div class="flex items-center space-x-3">
+                <button onclick="backToDashboard()" class="bg-slate-800 border border-slate-700 text-slate-300 px-3 py-1.5 rounded-xl text-xs font-medium">← തിരികെ</button>
+                <h2 id="subtopic-category-title" class="text-lg font-bold text-indigo-400">ടോപ്പിക്കുകൾ</h2>
+            </div>
+            <div id="subtopics-container" class="space-y-4"></div>
+        </section>
+
+        <!-- TAB: MOCK CREATOR -->
+        <section id="section-pdf_creator" class="hidden space-y-6">
+            <div class="bg-slate-800 border border-slate-700 p-5 rounded-2xl space-y-4 shadow-md">
+                <h2 class="text-lg font-bold text-indigo-400">നിങ്ങളുടെ മോക്ക് ടെസ്റ്റ് ഇവിടെ തയ്യാറാക്കാം</h2>
+                <p class="text-xs text-slate-400">ജെമിനിയിൽ നിന്ന് JSON ഫോർമാറ്റിലുള്ള ചോദ്യങ്ങൾ കോപ്പി ചെയ്ത് താഴെ പേസ്റ്റ് ചെയ്യുക.</p>
+
+                <div>
+                    <label class="block text-sm font-medium text-slate-300 mb-1">മെയിൻ കാറ്റഗറി തിരഞ്ഞെടുക്കുക:</label>
+                    <select id="pdf-category" class="w-full p-2.5 bg-slate-900 border border-slate-700 text-white rounded-xl text-sm">
+                        <option value="topic_wise">Topic-wise Exams</option>
+                        <option value="scert">SCERT Based Exams</option>
+                        <option value="ca_daily">Daily Current Affairs</option>
+                        <option value="ca_monthly">Monthly Current Affairs</option>
+                        <option value="malayalam">മലയാളം (Malayalam)</option>
+                        <option value="english">ഇംഗ്ലീഷ് (English)</option>
+                        <option value="pyq_main">PREVIOUS YEAR QUESTIONS</option>
+                        <option value="pyq_malayalam">Malayalam PYQ</option>
+                        <option value="pyq_english">English PYQ</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-slate-300 mb-1">സബ് ടോപ്പിക്കിന്റെ പേര്:</label>
+                    <input type="text" id="pdf-subtopic" placeholder="ഉദാഹരണത്തിന്: ഭരണഘടന" class="w-full p-2.5 bg-slate-900 border border-slate-700 text-white rounded-xl text-sm">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-slate-300 mb-1">മോക്ക് ടെസ്റ്റിന്റെ പേര്:</label>
+                    <input type="text" id="pdf-testname" placeholder="ഉദാഹരണത്തിന്: ഭരണഘടന ആഴത്തിലറിയാം" class="w-full p-2.5 bg-slate-900 border border-slate-700 text-white rounded-xl text-sm">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-slate-300 mb-1">നിങ്ങളുടെ JSON ചോദ്യങ്ങൾ ഇവിടെ പേസ്റ്റ് ചെയ്യുക:</label>
+                    <textarea id="gemini-json-input" rows="10" placeholder="[ { 'question': '...', 'options': [...], 'answer': 0, 'explanation': '...' } ]" class="w-full p-2.5 bg-slate-900 border border-slate-700 text-white rounded-xl text-sm custom-scrollbar"></textarea>
+                </div>
+
+                <button onclick="savePastedGeminiMockTest()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-3 rounded-xl font-medium shadow transition">
+                    മോക്ക് ടെസ്റ്റ് സേവ് ചെയ്യുക
+                </button>
+            </div>
+        </section>
+
+        <!-- TAB 2: Custom Revision -->
+        <section id="section-revision" class="hidden space-y-6">
+            <div class="bg-slate-800 border border-slate-700 p-5 rounded-2xl space-y-4 shadow-md">
+                <h2 class="text-lg font-bold text-indigo-400">🎯 മൾട്ടി-സെലക്ട് റിവിഷൻ ടെസ്റ്റ് (Accordion View)</h2>
+                <div id="accordion-container" class="space-y-3 max-h-80 overflow-y-auto custom-scrollbar p-1">
+                    <p class="text-xs text-slate-500 text-center py-4">മോക്ക് ടെസ്റ്റുകൾ ഒന്നും ആഡ് ചെയ്തിട്ടില്ല.</p>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-slate-300 mb-1">ടെസ്റ്റിലെ ആകെ ചോദ്യങ്ങളുടെ എണ്ണം:</label>
+                    <select id="rev-count" class="w-full p-2.5 bg-slate-900 border border-slate-700 text-white rounded-xl text-sm">
+                        <option value="10">10 ചോദ്യങ്ങൾ</option>
+                        <option value="25">25 ചോദ്യങ്ങൾ</option>
+                        <option value="50" selected>50 ചോദ്യങ്ങൾ</option>
+                        <option value="75">75 ചോദ്യങ്ങൾ</option>
+                        <option value="100">100 ചോദ്യങ്ങൾ</option>
+                    </select>
+                </div>
+
+                <button onclick="startAccordionCustomTest()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-2.5 rounded-xl font-medium shadow transition">റിവിഷൻ ടെസ്റ്റ് ആരംഭിക്കുക</button>
+            </div>
+
+            <!-- മൈ റിവിഷൻ സെറ്റുകൾ -->
+            <div class="bg-slate-800 border border-slate-700 p-5 rounded-2xl space-y-4 shadow-md">
+                <h2 class="text-lg font-bold text-indigo-400">📌 മൈ റിവിഷൻ സെറ്റുകൾ (തെറ്റിയവ)</h2>
+                <div id="saved-mistake-sets-container" class="space-y-2">
+                    <p class="text-xs text-slate-500 text-center py-3">റിവിഷൻ സെറ്റുകൾ ഒന്നും സേവ് ചെയ്തിട്ടില്ല.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB: DELETE MOCK -->
+        <section id="section-delete_mock" class="hidden space-y-6">
+            <div class="bg-slate-800 border border-slate-700 p-5 rounded-2xl space-y-4 shadow-md">
+                <h2 class="text-lg font-bold text-red-400">🗑️ മോക്ക് ടെസ്റ്റുകൾ ഡിലീറ്റ് ചെയ്യുക</h2>
+                <p class="text-xs text-slate-400">താഴെ കാണുന്ന ലിസ്റ്റിൽ നിന്ന് ആവശ്യമില്ലാത്ത മോക്ക് ടെസ്റ്റുകൾ തിരഞ്ഞെടുത്ത് ഡിലീറ്റ് ചെയ്യാവുന്നതാണ്.</p>
+                <div id="delete-mock-container" class="space-y-3 max-h-96 overflow-y-auto custom-scrollbar p-1">
+                    <p class="text-xs text-slate-500 text-center py-4">മോക്ക് ടെസ്റ്റുകൾ ഒന്നും ലഭ്യമല്ല.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 3: Practice Zone -->
+        <section id="section-practice" class="hidden space-y-4">
+            <div class="bg-slate-800 border border-slate-700 p-5 rounded-2xl shadow-xl space-y-6">
+                <div class="flex justify-between items-center border-b border-slate-700 pb-3">
+                    <h2 class="text-lg font-bold text-indigo-400">പ്രാക്ടീസ് സോൺ</h2>
+                    <div class="flex items-center space-x-3">
+                        <span id="practice-progress-indicator" class="text-xs text-slate-400">പുരോഗതി</span>
+                        <button onclick="finishPracticeZone()" class="bg-amber-600 hover:bg-amber-700 text-white text-xs px-3 py-1.5 rounded-lg font-medium">Finish</button>
+                    </div>
+                </div>
+                <div id="practice-box" class="space-y-4">
+                    <div id="p-q-container" class="space-y-3"></div>
+                    <div id="p-options-box" class="space-y-2.5"></div>
+                    <div id="practice-feedback-banner" class="hidden p-4 rounded-xl text-sm font-medium transition-all space-y-3"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- PRACTICE RESULT -->
+        <div id="practice-result-interface" class="hidden bg-slate-800 border border-slate-700 p-6 rounded-2xl shadow-xl space-y-6">
+            <h2 class="text-xl font-bold text-indigo-400 text-center">പ്രാക്ടീസ് റിസൾട്ട്</h2>
+            <div class="grid grid-cols-2 gap-4 text-center">
+                <div class="bg-slate-900 p-4 rounded-xl border border-slate-700">
+                    <div class="text-xs text-slate-400">പരിശ്രമിച്ച ചോദ്യങ്ങൾ</div>
+                    <div id="p-res-attempted" class="text-2xl font-bold text-indigo-400">0</div>
+                </div>
+                <div class="bg-slate-900 p-4 rounded-xl border border-slate-700">
+                    <div class="text-xs text-slate-400">പഠിച്ച ചോദ്യങ്ങൾ</div>
+                    <div id="p-res-learned" class="text-2xl font-bold text-emerald-400">0</div>
+                </div>
+            </div>
+            <button onclick="switchTab('dashboard')" class="w-full bg-slate-700 hover:bg-slate-600 text-white py-2.5 rounded-xl text-sm font-medium">ഹോമിലേക്ക് മടങ്ങുക</button>
+        </div>
+
+        <!-- TAB 4: Progress Tracker -->
+        <section id="section-tracker" class="hidden space-y-4">
+            <div class="bg-slate-800 border border-slate-700 p-5 rounded-2xl shadow-md space-y-4">
+                <h2 class="text-lg font-bold text-indigo-400">📊 പ്രോഗ്രസ് ട്രാക്കർ (Progress Tracker)</h2>
+                <p class="text-xs text-slate-400">താങ്കൾ ഇതുവരെ പൂർത്തിയാക്കിയ മോക്ക് ടെസ്റ്റുകളുടെ വിവരങ്ങളും ഉയർന്ന മാർക്കുകളും താഴെ കാണാം:</p>
+                <div class="border border-slate-700 rounded-xl overflow-hidden bg-slate-900">
+                    <div class="max-h-96 overflow-y-auto custom-scrollbar">
+                        <table class="w-full text-left border-collapse text-sm">
+                            <thead class="bg-slate-950 sticky top-0 z-20 text-slate-400 shadow-md">
+                                <tr>
+                                    <th class="p-3 border-b border-slate-700 w-1/2">മോക്ക് ടെസ്റ്റ് പേര്</th>
+                                    <th class="p-3 border-b border-slate-700">ചെയ്ത തവണകൾ</th>
+                                    <th class="p-3 border-b border-slate-700">ഉയർന്ന മാർക്ക്</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tracker-table-body" class="text-slate-300">
+                                <tr><td colspan="3" class="p-4 text-center text-xs text-slate-500">ഇതുവരെ ടെസ്റ്റുകൾ ഒന്നും പൂർത്തിയാക്കിയിട്ടില്ല.</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ACTIVE MOCK TEST -->
+        <div id="mock-interface" class="hidden bg-slate-800 border border-slate-700 p-6 rounded-2xl shadow-xl space-y-6">
+            <div class="flex justify-between items-center border-b border-slate-700 pb-3">
+                <div id="mock-title" class="font-bold text-indigo-400 text-sm"></div>
+                <div class="flex items-center space-x-3">
+                    <span id="timer-display" class="bg-red-950 text-red-400 border border-red-800 px-3 py-1 rounded-full text-xs font-bold">00:00</span>
+                    <button onclick="toggleBookmark()" id="bookmark-btn" class="text-slate-400 hover:text-amber-400 text-lg">🔖</button>
+                    <button onclick="finishMockTestEarly()" class="bg-amber-600 hover:bg-amber-700 text-white text-xs px-3 py-1.5 rounded-lg font-medium">Finish</button>
+                </div>
+            </div>
+            <div id="question-box" class="space-y-4">
+                <div id="q-container" class="space-y-3"></div>
+                <div id="options-box" class="space-y-2.5"></div>
+            </div>
+            <div class="flex justify-between items-center pt-4 border-t border-slate-700">
+                <button onclick="prevQuestion()" class="px-4 py-2 bg-slate-700 hover:bg-slate-600 text-white rounded-xl text-sm font-medium">Previous</button>
+                <button onclick="openPaletteModal()" class="px-3 py-2 bg-slate-900 text-slate-300 rounded-xl text-xs border border-slate-700">Question Palette</button>
+                <button onclick="nextQuestion()" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-sm font-medium">Next</button>
+            </div>
+        </div>
+
+        <!-- RESULT VIEW -->
+        <div id="result-interface" class="hidden bg-slate-800 border border-slate-700 p-6 rounded-2xl shadow-xl space-y-6">
+            <h2 class="text-xl font-bold text-indigo-400 text-center">ടെസ്റ്റ് റിസൾട്ട്</h2>
+            
+            <div class="grid grid-cols-2 gap-4 text-center">
+                <div class="bg-slate-900 p-4 rounded-xl border border-slate-700">
+                    <div class="text-xs text-slate-400">ആകെ മാർക്ക്</div>
+                    <div id="res-score" class="text-2xl font-bold text-indigo-400">0</div>
+                </div>
+                <div class="bg-slate-900 p-4 rounded-xl border border-slate-700">
+                    <div class="text-xs text-slate-400">നെഗറ്റീവ് മാർക്ക്</div>
+                    <div id="res-neg" class="text-2xl font-bold text-red-400">0</div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-3 gap-2 text-center">
+                <div class="bg-slate-900 p-3 rounded-xl border border-slate-700">
+                    <div class="text-xs text-slate-400">ശരി (Correct)</div>
+                    <div id="res-correct" class="text-xl font-bold text-emerald-400">0</div>
+                </div>
+                <div class="bg-slate-900 p-3 rounded-xl border border-slate-700">
+                    <div class="text-xs text-slate-400">തെറ്റ് (Wrong)</div>
+                    <div id="res-wrong" class="text-xl font-bold text-red-400">0</div>
+                </div>
+                <div class="bg-slate-900 p-3 rounded-xl border border-slate-700">
+                    <div class="text-xs text-slate-400">വിട്ടുപോയവ</div>
+                    <div id="res-unattempted" class="text-xl font-bold text-amber-400">0</div>
+                </div>
+            </div>
+
+            <div id="save-mistakes-container"></div>
+
+            <div class="flex space-x-2 pt-2">
+                <button onclick="renderResultAnswers('all')" class="flex-1 bg-slate-700 hover:bg-slate-600 text-white py-1.5 rounded-lg text-xs font-medium">എല്ലാം</button>
+                <button onclick="renderResultAnswers('correct')" class="flex-1 bg-emerald-950/60 border border-emerald-800 text-emerald-300 py-1.5 rounded-lg text-xs font-medium">ശരി മാത്രം</button>
+                <button onclick="renderResultAnswers('wrong')" class="flex-1 bg-red-950/60 border border-red-800 text-red-300 py-1.5 rounded-lg text-xs font-medium">തെറ്റ് മാത്രം</button>
+                <button onclick="renderResultAnswers('unattempted')" class="flex-1 bg-amber-950/60 border border-amber-800 text-amber-300 py-1.5 rounded-lg text-xs font-medium">വിട്ടുപോയവ</button>
+            </div>
+
+            <div class="border-t border-slate-700 pt-4 space-y-3">
+                <h3 class="text-sm font-bold text-slate-200">ഉത്തരങ്ങൾ പരിശോധിക്കുക:</h3>
+                <div id="result-answers-list" class="space-y-3 max-h-72 overflow-y-auto custom-scrollbar p-1"></div>
+            </div>
+            
+            <button onclick="resetToHome()" class="w-full bg-slate-700 hover:bg-slate-600 text-white py-2.5 rounded-xl text-sm font-medium">ഹോമിലേക്ക് മടങ്ങുക</button>
+        </div>
+
+    </main>
+
+    <!-- Question Palette Modal -->
+    <div id="palette-modal" class="hidden fixed inset-0 bg-black bg-opacity-70 flex justify-center items-center p-4 z-50">
+        <div class="bg-slate-800 border border-slate-700 p-6 rounded-2xl max-w-md w-full space-y-4 shadow-2xl">
+            <h3 class="font-bold text-white">ക്വസ്റ്റ്യൻ പാലറ്റ്</h3>
+            <div id="palette-grid" class="grid grid-cols-5 gap-2 max-h-60 overflow-y-auto p-2"></div>
+            <button onclick="closePaletteModal()" class="w-full bg-slate-700 hover:bg-slate-600 text-white py-2 rounded-xl text-sm">Close</button>
+        </div>
+    </div>
+
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyDA1XwfYzlPCL_Soxia0d-JpNekGGCaJMM",
+            authDomain: "mypscrevison.firebaseapp.com",
+            projectId: "mypscrevison",
+            storageBucket: "mypscrevison.firebasestorage.app",
+            messagingSenderId: "89979950079",
+            appId: "1:89979950079:web:707815264541bba457cdca",
+            measurementId: "G-GC849S4G0N"
+        };
+
+        let db;
+        try {
+            firebase.initializeApp(firebaseConfig);
+            db = firebase.firestore();
+            document.getElementById('sync-status').innerText = "Firebase: Connected";
+            document.getElementById('sync-status').className = "text-xs bg-emerald-950 text-emerald-400 border border-emerald-800 px-2 py-1 rounded";
+            loadDataFromFirebase();
+        } catch(e) {
+            document.getElementById('sync-status').innerText = "Firebase: Error";
+        }
+
+        let categoriesData = JSON.parse(localStorage.getItem('psc_categories_data') || JSON.stringify({
+            scert: { title: "SCERT Based Exams", subtopics: [] },
+            topic_wise: { title: "Topic-wise Exams", subtopics: [] },
+            ca_daily: { title: "Daily Current Affairs", subtopics: [] },
+            ca_monthly: { title: "Monthly Current Affairs", subtopics: [] },
+            malayalam: { title: "മലയാളം (Malayalam)", subtopics: [] },
+            english: { title: "ഇംഗ്ലീഷ് (English)", subtopics: [] },
+            pyq_main: { title: "PREVIOUS YEAR QUESTIONS", subtopics: [] },
+            pyq_malayalam: { title: "Malayalam PYQ", subtopics: [] },
+            pyq_english: { title: "English PYQ", subtopics: [] }
+        }));
+
+        let sampleQuestions = JSON.parse(localStorage.getItem('psc_sample_questions') || JSON.stringify([]));
+        let userProgressData = JSON.parse(localStorage.getItem('psc_user_progress') || JSON.stringify({}));
+        let savedMistakeSets = JSON.parse(localStorage.getItem('psc_saved_mistake_sets') || JSON.stringify([]));
+
+        async function loadDataFromFirebase() {
+            if(!db) return;
+            try {
+                const docRef = db.collection("app_data").doc("psc_main_database");
+                const doc = await docRef.get();
+                if (doc.exists) {
+                    const serverData = doc.data();
+                    if(serverData.categoriesData) {
+                        categoriesData = serverData.categoriesData;
+                        if(!categoriesData.malayalam) categoriesData.malayalam = { title: "മലയാളം (Malayalam)", subtopics: [] };
+                        if(!categoriesData.english) categoriesData.english = { title: "ഇംഗ്ലീഷ് (English)", subtopics: [] };
+                        if(!categoriesData.pyq_main) categoriesData.pyq_main = { title: "PREVIOUS YEAR QUESTIONS", subtopics: [] };
+                        if(!categoriesData.pyq_malayalam) categoriesData.pyq_malayalam = { title: "Malayalam PYQ", subtopics: [] };
+                        if(!categoriesData.pyq_english) categoriesData.pyq_english = { title: "English PYQ", subtopics: [] };
+                        localStorage.setItem('psc_categories_data', JSON.stringify(categoriesData));
+                    }
+                    if(serverData.sampleQuestions) {
+                        sampleQuestions = serverData.sampleQuestions;
+                        localStorage.setItem('psc_sample_questions', JSON.stringify(sampleQuestions));
+                    }
+                    if(serverData.userProgressData) {
+                        userProgressData = serverData.userProgressData;
+                        localStorage.setItem('psc_user_progress', JSON.stringify(userProgressData));
+                    }
+                }
+            } catch(err) {
+                console.log("Firebase load error:", err);
+            }
+        }
+
+        let currentTestQuestions = [];
+        let currentIndex = 0;
+        let userAnswers = {};
+        let bookmarked = new Set();
+        let timerInterval;
+        let currentTestTitle = "";
+        let activeTestKeyForTracking = "";
+        let activeCategoryKey = "";
+        let activeSubtopicName = "";
+        let activeOriginalTestName = "";
+
+        let practiceQueue = [];
+        let currentPracticeQuestion = null;
+        let practiceAttemptedMaster = new Set();
+        let practiceLearnedMaster = new Set();
+
+        function switchTab(tabId) {
+            document.querySelectorAll('main > section').forEach(sec => sec.classList.add('hidden'));
+            document.getElementById('section-subtopics').classList.add('hidden');
+            document.getElementById('section-pdf_creator').classList.add('hidden');
+            document.getElementById('mock-interface').classList.add('hidden');
+            document.getElementById('result-interface').classList.add('hidden');
+            document.getElementById('practice-result-interface').classList.add('hidden');
+
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.className = "tab-btn px-4 py-2 bg-slate-800 text-slate-300 border border-slate-700 rounded-xl text-sm font-medium whitespace-nowrap";
+            });
+
+            const activeBtn = document.getElementById(`btn-${tabId}`);
+            if(activeBtn) {
+                activeBtn.className = "tab-btn px-4 py-2 bg-indigo-600 text-white rounded-xl text-sm font-medium whitespace-nowrap shadow";
+            }
+
+            if(tabId === 'dashboard') {
+                document.getElementById('section-dashboard').classList.remove('hidden');
+            } else if(tabId === 'pdf_creator') {
+                document.getElementById('section-pdf_creator').classList.remove('hidden');
+            } else if(tabId === 'revision') {
+                document.getElementById('section-revision').classList.remove('hidden');
+                populateAccordion();
+                renderSavedMistakeSets();
+            } else if(tabId === 'delete_mock') {
+                document.getElementById('section-delete_mock').classList.remove('hidden');
+                renderDeleteMockList();
+            } else if(tabId === 'practice') {
+                document.getElementById('section-practice').classList.remove('hidden');
+                initPracticeZone();
+            } else if(tabId === 'tracker') {
+                document.getElementById('section-tracker').classList.remove('hidden');
+                renderTrackerTable();
+            }
+        }
+
+        async function savePastedGeminiMockTest() {
+            const categoryKey = document.getElementById('pdf-category').value;
+            const subtopicName = document.getElementById('pdf-subtopic').value.trim();
+            const testName = document.getElementById('pdf-testname').value.trim();
+            const rawText = document.getElementById('gemini-json-input').value.trim();
+
+            if(!subtopicName) { alert('ദയവായി സബ് ടോപ്പിക്കിന്റെ പേര് നൽകുക!'); return; }
+            if(!testName) { alert('ദയവായി മോക്ക് ടെസ്റ്റിന്റെ പേര് നൽകുക!'); return; }
+            if(!rawText) { alert('ദയവായി ചോദ്യങ്ങൾ JSON രൂപത്തിൽ പേസ്റ്റ് ചെയ്യുക!'); return; }
+
+            try {
+                let cleanJsonStr = rawText.replace(/```json/g, '').replace(/```/g, '').trim();
+                let generatedQuestions = JSON.parse(cleanJsonStr);
+
+                if(!Array.isArray(generatedQuestions) || generatedQuestions.length === 0) {
+                    throw new Error("JSON ഫോർമാറ്റിൽ ചോദ്യങ്ങൾ കണ്ടെത്താനായില്ല.");
+                }
+
+                if(!categoriesData[categoryKey]) categoriesData[categoryKey] = { title: categoryKey, subtopics: [] };
+                let existingSub = categoriesData[categoryKey].subtopics.find(s => s.name.toLowerCase() === subtopicName.toLowerCase());
+                
+                if(existingSub) {
+                    let existingTestIndex = existingSub.tests.findIndex(t => t.toLowerCase() === testName.toLowerCase());
+                    if(existingTestIndex !== -1) {
+                        let replaceConfirmed = confirm(`⚠️ "${subtopicName}" എന്ന സബ് ടോപ്പിക്കിൽ "${testName}" എന്ന പേരിൽ ഇതിനകം ഒരു ടെസ്റ്റ് ഉണ്ട്. അത് റീപ്ലേസ് ചെയ്യണോ?`);
+                        if(replaceConfirmed) {
+                            sampleQuestions = sampleQuestions.filter(q => !(q.topic === categoryKey && q.subtopic.toLowerCase() === subtopicName.toLowerCase() && q.testName.toLowerCase() === testName.toLowerCase()));
+                        } else {
+                            return;
+                        }
+                    }
+                }
+
+                if(!existingSub) {
+                    categoriesData[categoryKey].subtopics.push({ name: subtopicName, tests: [testName] });
+                } else {
+                    if(!existingSub.tests.includes(testName)) {
+                        existingSub.tests.push(testName);
+                    }
+                }
+
+                generatedQuestions.forEach((gq, idx) => {
+                    sampleQuestions.push({
+                        id: Date.now() + idx,
+                        topic: categoryKey,
+                        subtopic: subtopicName,
+                        testName: testName,
+                        type: "normal",
+                        q: gq.question,
+                        options: gq.options,
+                        answer: gq.answer !== undefined ? gq.answer : 0,
+                        explanation: gq.explanation || ""
+                    });
+                });
+
+                localStorage.setItem('psc_categories_data', JSON.stringify(categoriesData));
+                localStorage.setItem('psc_sample_questions', JSON.stringify(sampleQuestions));
+
+                if(db) {
+                    await db.collection("app_data").doc("psc_main_database").set({
+                        categoriesData: categoriesData,
+                        sampleQuestions: sampleQuestions,
+                        userProgressData: userProgressData,
+                        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+                }
+
+                alert(`🎉 വിജയകരമായി ${generatedQuestions.length} ചോദ്യങ്ങൾ സേവ് ചെയ്തു!`);
+                document.getElementById('gemini-json-input').value = '';
+                openSubTopics(categoryKey);
+
+            } catch (error) {
+                alert('JSON എറർ: കൃത്യമായ ഫോർമാറ്റിലാണോ എന്ന് പരിശോധിക്കുക. (' + error.message + ')');
+            }
+        }
+
+        function populateAccordion() {
+            const container = document.getElementById('accordion-container');
+            container.innerHTML = '';
+            let hasTests = false;
+
+            for(let catKey in categoriesData) {
+                let cat = categoriesData[catKey];
+                if(cat.subtopics.length === 0) continue;
+                hasTests = true;
+                let accordionId = `acc-${catKey}`;
+                let testsListHtml = '';
+
+                cat.subtopics.forEach(sub => {
+                    sub.tests.forEach(test => {
+                        let val = `${catKey}|${sub.name}|${test}`;
+                        testsListHtml += `
+                            <label class="flex items-center space-x-2 py-1.5 px-3 hover:bg-slate-800 rounded cursor-pointer text-xs text-slate-300">
+                                <input type="checkbox" name="revision_test_checkbox" value="${val}" class="rounded bg-slate-800 border-slate-700 text-indigo-600 focus:ring-indigo-500">
+                                <span class="font-medium">${sub.name} > ${test}</span>
+                            </label>
+                        `;
+                    });
+                });
+
+                container.innerHTML += `
+                    <div class="border border-slate-700 rounded-xl overflow-hidden bg-slate-900">
+                        <button onclick="toggleAccordion('${accordionId}')" class="w-full flex justify-between items-center p-3 text-left font-bold text-sm text-indigo-400 bg-slate-950 hover:bg-slate-900 transition">
+                            <span>📂 ${cat.title}</span>
+                            <span id="icon-${accordionId}" class="text-xs">▼</span>
+                        </button>
+                        <div id="${accordionId}" class="hidden p-2 space-y-1 border-t border-slate-800">
+                            ${testsListHtml}
+                        </div>
+                    </div>
+                `;
+            }
+
+            if(!hasTests) {
+                container.innerHTML = `<p class="text-xs text-slate-500 text-center py-4">മോക്ക് ടെസ്റ്റുകൾ ഒന്നും ആഡ് ചെയ്തിട്ടില്ല.</p>`;
+            }
+        }
+
+        function toggleAccordion(accId) {
+            const el = document.getElementById(accId);
+            const icon = document.getElementById(`icon-${accId}`);
+            if(el.classList.contains('hidden')) {
+                el.classList.remove('hidden');
+                icon.innerText = "▲";
+            } else {
+                el.classList.add('hidden');
+                icon.innerText = "▼";
+            }
+        }
+
+        function startAccordionCustomTest() {
+            const checkboxes = document.querySelectorAll('input[name="revision_test_checkbox"]:checked');
+            if(checkboxes.length === 0) {
+                alert("ദയവായി റിവിഷനായി കുറഞ്ഞത് ഒരു മോക്ക് ടെസ്റ്റെങ്കിലും ടിക്ക് ചെയ്ത് സെലക്ട് ചെയ്യുക!");
+                return;
+            }
+
+            let filtered = [];
+            checkboxes.forEach(cb => {
+                let parts = cb.value.split('|');
+                let catKey = parts[0];
+                let subName = parts[1];
+                let testName = parts[2];
+                let matched = sampleQuestions.filter(q => q.topic === catKey && q.subtopic === subName && q.testName === testName);
+                filtered = filtered.concat(matched);
+            });
+
+            if(filtered.length === 0) { alert("ചോദ്യങ്ങൾ ഒന്നും ലഭ്യമല്ല!"); return; }
+
+            const requestedCount = parseInt(document.getElementById('rev-count').value);
+            let finalQuestions = filtered.length < requestedCount ? shuffleArray(filtered) : shuffleArray(filtered).slice(0, requestedCount);
+
+            currentTestTitle = "മൾട്ടി-സെലക്ട് റിവിഷൻ ടെസ്റ്റ്";
+            activeTestKeyForTracking = "Custom Revision Test";
+            prepareFinalTestQuestions(finalQuestions);
+            launchMockTest();
+        }
+
+        function openSubTopics(catKey) {
+            activeCategoryKey = catKey;
+            const cat = categoriesData[catKey];
+            document.getElementById('subtopic-category-title').innerText = cat.title;
+            const container = document.getElementById('subtopics-container');
+            container.innerHTML = '';
+
+            if(cat.subtopics.length === 0) {
+                container.innerHTML = `<p class="text-xs text-slate-500 text-center py-6">സബ്-ടോപ്പിക്കുകൾ ഒന്നും ലഭ്യമല്ല. 'Mock Creator' ഉപയോഗിച്ച് പുതിയവ ചേർക്കുക.</p>`;
+                document.getElementById('section-dashboard').classList.add('hidden');
+                document.getElementById('section-subtopics').classList.remove('hidden');
+                return;
+            }
+
+            cat.subtopics.forEach(sub => {
+                let testsHtml = sub.tests.map(tName => `
+                    <div class="flex items-center space-x-2 bg-slate-900 border border-slate-700 hover:border-indigo-500 rounded-xl px-4 py-3 shadow-sm">
+                        <button onclick="startSpecificTest('${catKey}', '${sub.name}', '${tName}')" class="flex-1 text-left text-slate-200 text-sm font-medium transition">
+                            <span>${tName}</span>
+                        </button>
+                        <button onclick="startSpecificTest('${catKey}', '${sub.name}', '${tName}')" class="text-indigo-400 font-bold px-2">➔</button>
+                    </div>
+                `).join('');
+
+                container.innerHTML += `
+                    <div class="bg-slate-800 border border-slate-700 p-4 rounded-2xl space-y-3 shadow-md">
+                        <h3 class="font-bold text-white text-base">📌 ${sub.name}</h3>
+                        <div class="space-y-2">${testsHtml}</div>
+                    </div>
+                `;
+            });
+
+            document.getElementById('section-dashboard').classList.add('hidden');
+            document.getElementById('section-subtopics').classList.remove('hidden');
+        }
+
+        function renderDeleteMockList() {
+            const container = document.getElementById('delete-mock-container');
+            if(!container) return;
+            container.innerHTML = '';
+            let hasTests = false;
+
+            for(let catKey in categoriesData) {
+                let cat = categoriesData[catKey];
+                if(cat.subtopics.length === 0) continue;
+                
+                cat.subtopics.forEach(sub => {
+                    sub.tests.forEach(testName => {
+                        hasTests = true;
+                        container.innerHTML += `
+                            <div class="flex items-center justify-between bg-slate-900 border border-slate-700 p-3 rounded-xl">
+                                <div>
+                                    <div class="text-xs text-indigo-400 font-semibold">${cat.title} > ${sub.name}</div>
+                                    <div class="text-sm font-medium text-white">${testName}</div>
+                                </div>
+                                <button onclick="deleteSpecificMockTest('${catKey}', '${sub.name}', '${testName}')" class="bg-red-950/80 border border-red-800 text-red-400 hover:bg-red-900 text-xs px-3 py-1.5 rounded-lg font-medium transition">ഡിലീറ്റ്</button>
+                            </div>
+                        `;
+                    });
+                });
+            }
+
+            if(!hasTests) {
+                container.innerHTML = `<p class="text-xs text-slate-500 text-center py-4">ഡിലീറ്റ് ചെയ്യാൻ മോക്ക് ടെസ്റ്റുകൾ ഒന്നും ലഭ്യമല്ല.</p>`;
+            }
+        }
+
+        function deleteSpecificMockTest(topicKey, subName, testName) {
+            if(!confirm(`⚠️ "${testName}" എന്ന മോക്ക് ടെസ്റ്റും അതിലെ ചോദ്യങ്ങളും ഡിലീറ്റ് ചെയ്യണമെന്നുറപ്പാണോ?`)) return;
+
+            sampleQuestions = sampleQuestions.filter(q => !(q.topic === topicKey && q.subtopic.toLowerCase() === subName.toLowerCase() && q.testName.toLowerCase() === testName.toLowerCase()));
+            localStorage.setItem('psc_sample_questions', JSON.stringify(sampleQuestions));
+
+            let sub = categoriesData[topicKey].subtopics.find(s => s.name.toLowerCase() === subName.toLowerCase());
+            if(sub) {
+                sub.tests = sub.tests.filter(t => t.toLowerCase() !== testName.toLowerCase());
+                if(sub.tests.length === 0) {
+                    categoriesData[topicKey].subtopics = categoriesData[topicKey].subtopics.filter(s => s.name.toLowerCase() !== subName.toLowerCase());
+                }
+            }
+            localStorage.setItem('psc_categories_data', JSON.stringify(categoriesData));
+
+            if(db) {
+                db.collection("app_data").doc("psc_main_database").set({
+                    categoriesData: categoriesData,
+                    sampleQuestions: sampleQuestions,
+                    userProgressData: userProgressData,
+                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                }).catch(e => console.log(e));
+            }
+
+            alert("മോക്ക് ടെസ്റ്റും ചോദ്യങ്ങളും വിജയകരമായി ഡിലീറ്റ് ചെയ്തു!");
+            renderDeleteMockList();
+        }
+
+        function backToDashboard() {
+            document.getElementById('section-subtopics').classList.add('hidden');
+            document.getElementById('section-dashboard').classList.remove('hidden');
+        }
+
+        function shuffleArray(array) {
+            let arr = [...array];
+            for (let i = arr.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [arr[i], arr[j]] = [arr[j], arr[i]];
+            }
+            return arr;
+        }
+
+        function startSpecificTest(topicKey, subName, testName) {
+            activeCategoryKey = topicKey;
+            activeSubtopicName = subName;
+            activeOriginalTestName = testName;
+            currentTestTitle = `${subName} - ${testName}`;
+            activeTestKeyForTracking = `${subName} : ${testName}`;
+            let filtered = sampleQuestions.filter(q => q.topic === topicKey && q.subtopic === subName && q.testName === testName);
+            if(filtered.length === 0) { alert("ഈ ടെസ്റ്റിൽ ചോദ്യങ്ങൾ ഒന്നും ലഭ്യമല്ല!"); return; }
+            
+            prepareFinalTestQuestions(shuffleArray(filtered));
+            launchMockTest();
+        }
+
+        function prepareFinalTestQuestions(sourceArray) {
+            currentTestQuestions = sourceArray.map(q => {
+                let options = [...q.options];
+                let correctOptText = options[q.answer];
+                let shuffledOpts = shuffleArray(options);
+                let newAnswerIndex = shuffledOpts.indexOf(correctOptText);
+                return { ...q, options: shuffledOpts, answer: newAnswerIndex };
+            });
+        }
+
+        function launchMockTest() {
+            document.querySelectorAll('main > section').forEach(sec => sec.classList.add('hidden'));
+            document.getElementById('section-subtopics').classList.add('hidden');
+            document.getElementById('section-pdf_creator').classList.add('hidden');
+            document.getElementById('mock-interface').classList.remove('hidden');
+            currentIndex = 0;
+            userAnswers = {};
+            bookmarked.clear();
+            loadQuestion();
+            startTimer();
+        }
+
+        let testTimeLeft = 0;
+        function startTimer() {
+            clearInterval(timerInterval);
+            testTimeLeft = currentTestQuestions.length * 50;
+            updateTimerDisplay();
+            timerInterval = setInterval(() => {
+                testTimeLeft--;
+                updateTimerDisplay();
+                if(testTimeLeft <= 0) { clearInterval(timerInterval); finishMockTest(); }
+            }, 1000);
+        }
+
+        function updateTimerDisplay() {
+            let m = Math.floor(testTimeLeft / 60);
+            let s = testTimeLeft % 60;
+            document.getElementById('timer-display').innerText = `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+        }
+
+        function renderQuestionContent(q, containerId) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = `<div class="font-medium text-white text-base mb-2">${currentIndex + 1}. ${q.q}</div>`;
+        }
+
+        function loadQuestion() {
+            const q = currentTestQuestions[currentIndex];
+            document.getElementById('mock-title').innerText = `${currentTestTitle} (${currentIndex + 1}/${currentTestQuestions.length})`;
+            renderQuestionContent(q, 'q-container');
+
+            const optsBox = document.getElementById('options-box');
+            optsBox.innerHTML = '';
+            q.options.forEach((opt, idx) => {
+                const isSelected = userAnswers[currentIndex] === idx;
+                optsBox.innerHTML += `
+                    <label class="block p-3.5 border rounded-xl cursor-pointer transition ${isSelected ? 'border-indigo-500 bg-indigo-950/60 text-white font-medium' : 'border-slate-700 bg-slate-900/50 text-slate-300 hover:bg-slate-700'}">
+                        <input type="radio" name="q_option" value="${idx}" ${isSelected ? 'checked' : ''} onclick="selectOption(${idx})" class="mr-2.5">
+                        ${opt}
+                    </label>
+                `;
+            });
+        }
+
+        function selectOption(idx) { userAnswers[currentIndex] = idx; }
+        
+        function nextQuestion() { 
+            if(currentIndex < currentTestQuestions.length - 1) { currentIndex++; loadQuestion(); } 
+            else { checkUnattemptedAndFinish(); } 
+        }
+
+        function prevQuestion() { if(currentIndex > 0) { currentIndex--; loadQuestion(); } }
+        function toggleBookmark() {
+            if(bookmarked.has(currentIndex)) bookmarked.delete(currentIndex);
+            else bookmarked.add(currentIndex);
+        }
+
+        function finishMockTestEarly() { checkUnattemptedAndFinish(); }
+
+        function checkUnattemptedAndFinish() {
+            let unattemptedCount = 0;
+            currentTestQuestions.forEach((_, idx) => { if(userAnswers[idx] === undefined) unattemptedCount++; });
+
+            let confirmMsg = "നിങ്ങൾ എക്സാം ഫിനിഷ് ചെയ്യുവാൻ പോകുകയാണ് ഉറപ്പാണോ?";
+            if(unattemptedCount > 0) confirmMsg = `⚠️ നിങ്ങൾ ${unattemptedCount} ചോദ്യങ്ങൾ അറ്റൻഡ് ചെയ്തിട്ടില്ല!\n\nഎക്സാം ഇപ്പോൾത്തന്നെ ഫിനിഷ് ചെയ്യണമെന്നുറപ്പാണോ?`;
+
+            if(confirm(confirmMsg)) finishMockTest();
+        }
+
+        function finishMockTest() {
+            clearInterval(timerInterval);
+            document.getElementById('mock-interface').classList.add('hidden');
+            document.getElementById('result-interface').classList.remove('hidden');
+
+            let correct = 0, wrong = 0, unattempted = 0;
+            currentTestQuestions.forEach((q, idx) => {
+                if(userAnswers[idx] === undefined) unattempted++;
+                else if(userAnswers[idx] === q.answer) correct++;
+                else wrong++;
+            });
+
+            let rawScore = (correct * 1) - (wrong * 0.33);
+            let score = Math.max(0, rawScore).toFixed(2);
+            let negScore = (wrong * 0.33).toFixed(2);
+
+            document.getElementById('res-score').innerText = score;
+            document.getElementById('res-neg').innerText = negScore;
+            document.getElementById('res-correct').innerText = correct;
+            document.getElementById('res-wrong').innerText = wrong;
+            document.getElementById('res-unattempted').innerText = unattempted;
+
+            let saveBtnContainer = document.getElementById('save-mistakes-container');
+            if(wrong > 0 || unattempted > 0) {
+                let defaultSuggestedName = `${activeOriginalTestName || "Mock Test"} (തെറ്റിയവ)`;
+                saveBtnContainer.innerHTML = `
+                    <div class="bg-slate-900 border border-slate-700 p-4 rounded-xl space-y-3">
+                        <label class="block text-xs font-medium text-slate-300">റിവിഷൻ സെറ്റിന്റെ പേര് (മാറ്റി നൽകാം):</label>
+                        <input type="text" id="custom-mistake-test-name" value="${defaultSuggestedName}" class="w-full p-2.5 bg-slate-800 border border-slate-700 text-white rounded-xl text-sm">
+                        <button onclick="saveMistakesAsNewMockTest()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-2.5 rounded-xl text-xs font-bold shadow transition">
+                            📌 തെറ്റിയ ചോദ്യങ്ങൾ റിവിഷൻ സെറ്റായി സേവ് ചെയ്യുക
+                        </button>
+                    </div>
+                `;
+            } else {
+                saveBtnContainer.innerHTML = `<p class="text-xs text-emerald-400 text-center font-bold">അഭിനന്ദനങ്ങൾ! എല്ലാ ചോദ്യങ്ങളും ശരിയാണ്!</p>`;
+            }
+
+            saveTestProgressToTracker(activeTestKeyForTracking, parseFloat(score));
+            renderResultAnswers('all');
+        }
+
+        function saveMistakesAsNewMockTest() {
+            let customNameInput = document.getElementById('custom-mistake-test-name');
+            let newTestName = customNameInput ? customNameInput.value.trim() : `${activeOriginalTestName} (തെറ്റിയവ)`;
+            if(!newTestName) newTestName = `${activeOriginalTestName} (തെറ്റിയവ)`;
+
+            let wrongQuestions = [];
+            currentTestQuestions.forEach((q, idx) => {
+                const userAns = userAnswers[idx];
+                if(userAns === undefined || userAns !== q.answer) {
+                    wrongQuestions.push(q);
+                }
+            });
+
+            if(wrongQuestions.length === 0) {
+                alert("സേവ് ചെയ്യാൻ തെറ്റിയ ചോദ്യങ്ങൾ ഒന്നും ലഭ്യമല്ല!");
+                return;
+            }
+
+            let subName = activeSubtopicName || "Revision Set";
+            let catKey = activeCategoryKey || "topic_wise";
+
+            if(!categoriesData[catKey]) categoriesData[catKey] = { title: catKey, subtopics: [] };
+            let sub = categoriesData[catKey].subtopics.find(s => s.name.toLowerCase() === subName.toLowerCase());
+            
+            if(!sub) {
+                categoriesData[catKey].subtopics.push({ name: subName, tests: [newTestName] });
+            } else {
+                if(!sub.tests.includes(newTestName)) {
+                    sub.tests.push(newTestName);
+                }
+            }
+
+            sampleQuestions = sampleQuestions.filter(q => !(q.topic === catKey && q.subtopic.toLowerCase() === subName.toLowerCase() && q.testName === newTestName));
+            
+            wrongQuestions.forEach((wq, idx) => {
+                sampleQuestions.push({
+                    ...wq,
+                    id: Date.now() + idx,
+                    topic: catKey,
+                    subtopic: subName,
+                    testName: newTestName
+                });
+            });
+
+            let setObj = { categoryKey: catKey, subtopicName: subName, testName: newTestName };
+            if(!savedMistakeSets.some(s => s.testName === newTestName)) {
+                savedMistakeSets.push(setObj);
+                localStorage.setItem('psc_saved_mistake_sets', JSON.stringify(savedMistakeSets));
+            }
+
+            localStorage.setItem('psc_categories_data', JSON.stringify(categoriesData));
+            localStorage.setItem('psc_sample_questions', JSON.stringify(sampleQuestions));
+
+            if(db) {
+                db.collection("app_data").doc("psc_main_database").set({
+                    categoriesData: categoriesData,
+                    sampleQuestions: sampleQuestions,
+                    userProgressData: userProgressData,
+                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                }).catch(e => console.log(e));
+            }
+
+            alert(`🎉 "${newTestName}" വിജയകരമായി റിവിഷൻ സെറ്റായി സേവ് ചെയ്തു!`);
+        }
+
+        function renderSavedMistakeSets() {
+            const container = document.getElementById('saved-mistake-sets-container');
+            if(!container) return;
+            container.innerHTML = '';
+
+            if(savedMistakeSets.length === 0) {
+                container.innerHTML = `<p class="text-xs text-slate-500 text-center py-3">റിവിഷൻ സെറ്റുകൾ ഒന്നും സേവ് ചെയ്തിട്ടില്ല.</p>`;
+                return;
+            }
+
+            savedMistakeSets.forEach((setInfo) => {
+                container.innerHTML += `
+                    <div class="flex items-center justify-between bg-slate-900 border border-slate-700 p-3 rounded-xl">
+                        <span class="text-xs font-medium text-slate-200">📌 ${setInfo.testName}</span>
+                        <div class="flex space-x-2">
+                            <button onclick="startSpecificTest('${setInfo.categoryKey}', '${setInfo.subtopicName}', '${setInfo.testName}')" class="bg-indigo-600 hover:bg-indigo-700 text-white text-xs px-2.5 py-1 rounded-lg font-medium transition">ചെയ്തു നോക്കൂ</button>
+                            <button onclick="deleteMistakeSet('${setInfo.testName}')" class="bg-red-950/80 border border-red-800 text-red-400 hover:bg-red-900 text-xs px-2.5 py-1 rounded-lg font-medium transition">ഡിലീറ്റ്</button>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function deleteMistakeSet(setName) {
+            if(!confirm(`⚠️ "${setName}" എന്ന റിവിഷൻ സെറ്റ് ഡിലീറ്റ് ചെയ്യണമെന്നുറപ്പാണോ?`)) return;
+
+            savedMistakeSets = savedMistakeSets.filter(s => s.testName !== setName);
+            localStorage.setItem('psc_saved_mistake_sets', JSON.stringify(savedMistakeSets));
+
+            sampleQuestions = sampleQuestions.filter(q => q.testName !== setName);
+            localStorage.setItem('psc_sample_questions', JSON.stringify(sampleQuestions));
+
+            for(let catKey in categoriesData) {
+                categoriesData[catKey].subtopics.forEach(sub => {
+                    sub.tests = sub.tests.filter(t => t !== setName);
+                });
+            }
+            localStorage.setItem('psc_categories_data', JSON.stringify(categoriesData));
+
+            if(db) {
+                db.collection("app_data").doc("psc_main_database").set({
+                    categoriesData: categoriesData,
+                    sampleQuestions: sampleQuestions,
+                    userProgressData: userProgressData,
+                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                }).catch(e => console.log(e));
+            }
+
+            renderSavedMistakeSets();
+            alert("റിവിഷൻ സെറ്റ് വിജയകരമായി ഡിലീറ്റ് ചെയ്തു!");
+        }
+
+        async function saveTestProgressToTracker(testName, score) {
+            if(!testName) testName = "General Mock Test";
+            if(!userProgressData[testName]) {
+                userProgressData[testName] = { attempts: 0, highestScore: 0 };
+            }
+            userProgressData[testName].attempts += 1;
+            if(score > userProgressData[testName].highestScore) {
+                userProgressData[testName].highestScore = score;
+            }
+
+            localStorage.setItem('psc_user_progress', JSON.stringify(userProgressData));
+            if(db) {
+                try {
+                    await db.collection("app_data").doc("psc_main_database").set({
+                        categoriesData: categoriesData,
+                        sampleQuestions: sampleQuestions,
+                        userProgressData: userProgressData,
+                        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+                } catch(e) { console.log("Tracker sync error:", e); }
+            }
+        }
+
+        function renderTrackerTable() {
+            const tbody = document.getElementById('tracker-table-body');
+            tbody.innerHTML = '';
+
+            let keys = Object.keys(userProgressData);
+            if(keys.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="3" class="p-4 text-center text-xs text-slate-500">ഇതുവരെ ടെസ്റ്റുകൾ ഒന്നും പൂർത്തിയാക്കിയിട്ടില്ല.</td></tr>`;
+                return;
+            }
+
+            keys.forEach(testName => {
+                let prog = userProgressData[testName];
+                tbody.innerHTML += `
+                    <tr class="border-b border-slate-800 hover:bg-slate-950/50">
+                        <td class="p-3 font-medium text-slate-200">${testName}</td>
+                        <td class="p-3 text-indigo-400 font-bold">${prog.attempts} തവണ</td>
+                        <td class="p-3 text-emerald-400 font-bold">${prog.highestScore} മാർക്ക്</td>
+                    </tr>
+                `;
+            });
+        }
+
+        function renderResultAnswers(filterType) {
+            const listContainer = document.getElementById('result-answers-list');
+            listContainer.innerHTML = '';
+
+            currentTestQuestions.forEach((q, idx) => {
+                const userAns = userAnswers[idx];
+                let status = 'unattempted';
+                if(userAns !== undefined) status = (userAns === q.answer) ? 'correct' : 'wrong';
+
+                if(filterType !== 'all' && filterType !== status) return;
+
+                let statusBadge = status === 'correct' ? '<span class="text-xs text-emerald-400 font-bold">✓ ശരി</span>' : (status === 'wrong' ? '<span class="text-xs text-red-400 font-bold">✕ തെറ്റ്</span>' : '<span class="text-xs text-amber-400 font-bold">- വിട്ടുപോയവ</span>');
+                let userAnsText = userAns !== undefined ? q.options[userAns] : 'ഒന്നുമില്ല';
+                let correctAnsText = q.options[q.answer];
+
+                listContainer.innerHTML += `
+                    <div class="bg-slate-900 border border-slate-700 p-3.5 rounded-xl space-y-2 text-xs">
+                        <div class="flex justify-between items-center"><span class="font-bold text-slate-300">ചോദ്യം ${idx + 1}</span>${statusBadge}</div>
+                        <div class="font-medium text-white">${q.q}</div>
+                        ${q.explanation ? `<div class="text-indigo-300 bg-indigo-950/40 p-2 rounded">💡 വിശദീകരണം: ${q.explanation}</div>` : ''}
+                        <div class="text-slate-400">നിങ്ങളുടെ ഉത്തരം: <span class="${status === 'correct' ? 'text-emerald-400' : 'text-red-400'} font-bold">${userAnsText}</span></div>
+                        ${status !== 'correct' ? `<div class="text-emerald-400 font-bold">ശരിയായ ഉത്തരം: ${correctAnsText}</div>` : ''}
+                    </div>
+                `;
+            });
+        }
+
+        function resetToHome() { switchTab('dashboard'); }
+        function openPaletteModal() { document.getElementById('palette-modal').classList.remove('hidden'); }
+        function closePaletteModal() { document.getElementById('palette-modal').classList.add('hidden'); }
+
+        // Practice Zone (Fully Shuffle Enabled: Questions & Options)
+        function initPracticeZone() {
+            if(sampleQuestions.length === 0) {
+                alert("പ്രാക്ടീസ് ചെയ്യാൻ ചോദ്യങ്ങൾ ഒന്നുമില്ല. ആദ്യം പുതിയ മോക്ക് ടെസ്റ്റുകൾ ആഡ് ചെയ്യുക!");
+                switchTab('dashboard');
+                return;
+            }
+            practiceQueue = shuffleArray([...sampleQuestions]);
+            practiceAttemptedMaster.clear();
+            practiceLearnedMaster.clear();
+            loadPracticeQuestion();
+        }
+
+        let shuffledCurrentOptions = [];
+        let shuffledCurrentCorrectIndex = 0;
+
+        function loadPracticeQuestion() {
+            if(practiceQueue.length === 0) { finishPracticeZone(); return; }
+            currentPracticeQuestion = practiceQueue.shift();
+            document.getElementById('practice-progress-indicator').innerText = `ബാക്കി ചോദ്യങ്ങൾ: ${practiceQueue.length + 1}`;
+            renderQuestionContent(currentPracticeQuestion, 'p-q-container');
+            
+            const banner = document.getElementById('practice-feedback-banner');
+            banner.classList.add('hidden');
+            banner.innerHTML = '';
+
+            const optsBox = document.getElementById('p-options-box');
+            optsBox.innerHTML = '';
+
+            // Shuffle options for practice question
+            let originalOpts = currentPracticeQuestion.options.map((opt, idx) => ({
+                optText: opt,
+                isCorrect: idx === currentPracticeQuestion.answer
+            }));
+            shuffledCurrentOptions = shuffleArray(originalOpts);
+            shuffledCurrentCorrectIndex = shuffledCurrentOptions.findIndex(item => item.isCorrect);
+
+            shuffledCurrentOptions.forEach((item, idx) => {
+                optsBox.innerHTML += `
+                    <button onclick="checkPracticeAnswer(${idx})" class="w-full text-left p-3.5 border border-slate-700 bg-slate-900/50 text-slate-300 rounded-xl hover:bg-slate-700 transition">
+                        ${item.optText}
+                    </button>
+                `;
+            });
+        }
+
+        function checkPracticeAnswer(selectedIdx) {
+            if(!currentPracticeQuestion) return;
+            const banner = document.getElementById('practice-feedback-banner');
+            banner.classList.remove('hidden');
+            const parentBox = document.getElementById('p-options-box');
+            Array.from(parentBox.children).forEach(child => child.disabled = true);
+            practiceAttemptedMaster.add(currentPracticeQuestion.id);
+
+            const correctIdx = shuffledCurrentCorrectIndex;
+            const correctOptText = shuffledCurrentOptions[correctIdx].optText;
+            const buttons = parentBox.children;
+
+            if(selectedIdx === correctIdx) {
+                practiceLearnedMaster.add(currentPracticeQuestion.id);
+                if(buttons[selectedIdx]) {
+                    buttons[selectedIdx].className = "w-full text-left p-3.5 border border-emerald-500 bg-emerald-950/80 text-emerald-300 rounded-xl font-medium transition";
+                }
+                banner.className = "p-3 rounded-xl text-sm font-medium bg-emerald-900/80 border border-emerald-600 text-emerald-200";
+                banner.innerText = "ശരി ഉത്തരം! (Correct)";
+                setTimeout(() => { loadPracticeQuestion(); }, 1200);
+            } else {
+                if(buttons[selectedIdx]) {
+                    buttons[selectedIdx].className = "w-full text-left p-3.5 border border-red-500 bg-red-950/80 text-red-300 rounded-xl font-medium transition";
+                }
+                if(buttons[correctIdx]) {
+                    buttons[correctIdx].className = "w-full text-left p-3.5 border border-emerald-500 bg-emerald-950/80 text-emerald-300 rounded-xl font-medium transition";
+                }
+                banner.className = "p-4 rounded-xl text-sm font-medium bg-red-900/80 border border-red-600 text-red-200 shadow-lg space-y-3";
+                banner.innerHTML = `
+                    ❌ ഉത്തരം തെറ്റാണ്!<br><span class="text-xs text-emerald-300 mt-1 block font-bold">ശരിയായ ഉത്തരം: ${correctOptText}</span>
+                    <button onclick="handleWrongQuestionRetry()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-2 rounded-xl text-xs font-bold shadow transition">OK / അടുത്തത്</button>
+                `;
+            }
+        }
+
+        function handleWrongQuestionRetry() {
+            if(!currentPracticeQuestion) return;
+            let insertPos = Math.floor(Math.random() * 3) + 2;
+            if(insertPos > practiceQueue.length) practiceQueue.push(currentPracticeQuestion);
+            else practiceQueue.splice(insertPos, 0, currentPracticeQuestion);
+            loadPracticeQuestion();
+        }
+
+        function finishPracticeZone() {
+            document.getElementById('section-practice').classList.add('hidden');
+            document.getElementById('practice-result-interface').classList.remove('hidden');
+            document.getElementById('p-res-attempted').innerText = practiceAttemptedMaster.size;
+            document.getElementById('p-res-learned').innerText = practiceLearnedMaster.size;
+        }
+
+        switchTab('dashboard');
+    </script>
+</body>
+</html>

@@ -23,7 +23,13 @@
             <div class="bg-indigo-600 text-white font-bold px-2.5 py-1 rounded-lg text-sm">PSC</div>
             <h1 class="text-lg font-bold text-white">Smart Revision</h1>
         </div>
-        <div id="sync-status" class="text-xs bg-slate-800 text-slate-300 px-2 py-1 rounded border border-slate-700">Firebase: Connecting...</div>
+        <div class="flex items-center space-x-3">
+            <!-- Go to Main Home Button Added Here -->
+            <a href="index.html" class="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white text-xs px-3 py-1.5 rounded-lg font-medium shadow transition flex items-center space-x-1">
+                <span>🏠 Go to Main Home</span>
+            </a>
+            <div id="sync-status" class="text-xs bg-slate-800 text-slate-300 px-2 py-1 rounded border border-slate-700">Firebase: Connecting...</div>
+        </div>
     </header>
 
     <!-- Main Container -->
@@ -34,6 +40,7 @@
             <button onclick="switchTab('dashboard')" id="btn-dashboard" class="tab-btn px-4 py-2 bg-indigo-600 text-white rounded-xl text-sm font-medium whitespace-nowrap shadow">ഹോം (Home)</button>
             <button onclick="switchTab('pdf_creator')" id="btn-pdf_creator" class="tab-btn px-4 py-2 bg-slate-800 text-slate-300 border border-slate-700 rounded-xl text-sm font-medium whitespace-nowrap">Mock Creator</button>
             <button onclick="switchTab('revision')" id="btn-revision" class="tab-btn px-4 py-2 bg-slate-800 text-slate-300 border border-slate-700 rounded-xl text-sm font-medium whitespace-nowrap">Custom Revision</button>
+            <button onclick="switchTab('delete_mock')" id="btn-delete_mock" class="tab-btn px-4 py-2 bg-slate-800 text-slate-300 border border-slate-700 rounded-xl text-sm font-medium whitespace-nowrap">Delete Mock</button>
             <button onclick="switchTab('practice')" id="btn-practice" class="tab-btn px-4 py-2 bg-slate-800 text-slate-300 border border-slate-700 rounded-xl text-sm font-medium whitespace-nowrap">Practice Zone</button>
             <button onclick="switchTab('tracker')" id="btn-tracker" class="tab-btn px-4 py-2 bg-slate-800 text-slate-300 border border-slate-700 rounded-xl text-sm font-medium whitespace-nowrap">Progress Tracker</button>
         </div>
@@ -196,6 +203,17 @@
                 <h2 class="text-lg font-bold text-indigo-400">📌 മൈ റിവിഷൻ സെറ്റുകൾ (തെറ്റിയവ)</h2>
                 <div id="saved-mistake-sets-container" class="space-y-2">
                     <p class="text-xs text-slate-500 text-center py-3">റിവിഷൻ സെറ്റുകൾ ഒന്നും സേവ് ചെയ്തിട്ടില്ല.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB: DELETE MOCK -->
+        <section id="section-delete_mock" class="hidden space-y-6">
+            <div class="bg-slate-800 border border-slate-700 p-5 rounded-2xl space-y-4 shadow-md">
+                <h2 class="text-lg font-bold text-red-400">🗑️ മോക്ക് ടെസ്റ്റുകൾ ഡിലീറ്റ് ചെയ്യുക</h2>
+                <p class="text-xs text-slate-400">താഴെ കാണുന്ന ലിസ്റ്റിൽ നിന്ന് ആവശ്യമില്ലാത്ത മോക്ക് ടെസ്റ്റുകൾ തിരഞ്ഞെടുത്ത് ഡിലീറ്റ് ചെയ്യാവുന്നതാണ്.</p>
+                <div id="delete-mock-container" class="space-y-3 max-h-96 overflow-y-auto custom-scrollbar p-1">
+                    <p class="text-xs text-slate-500 text-center py-4">മോക്ക് ടെസ്റ്റുകൾ ഒന്നും ലഭ്യമല്ല.</p>
                 </div>
             </div>
         </section>
@@ -417,6 +435,7 @@
         let activeOriginalTestName = "";
 
         let practiceQueue = [];
+        let currentPracticeQuestion = null;
         let practiceAttemptedMaster = new Set();
         let practiceLearnedMaster = new Set();
 
@@ -445,6 +464,9 @@
                 document.getElementById('section-revision').classList.remove('hidden');
                 populateAccordion();
                 renderSavedMistakeSets();
+            } else if(tabId === 'delete_mock') {
+                document.getElementById('section-delete_mock').classList.remove('hidden');
+                renderDeleteMockList();
             } else if(tabId === 'practice') {
                 document.getElementById('section-practice').classList.remove('hidden');
                 initPracticeZone();
@@ -633,7 +655,6 @@
                             <span>${tName}</span>
                         </button>
                         <button onclick="startSpecificTest('${catKey}', '${sub.name}', '${tName}')" class="text-indigo-400 font-bold px-2">➔</button>
-                        <button onclick="deleteSpecificMockTest('${catKey}', '${sub.name}', '${tName}')" class="text-red-400 hover:text-red-300 text-xs bg-red-950/60 border border-red-800 px-2.5 py-1 rounded-lg ml-2">ഡിലീറ്റ്</button>
                     </div>
                 `).join('');
 
@@ -647,6 +668,37 @@
 
             document.getElementById('section-dashboard').classList.add('hidden');
             document.getElementById('section-subtopics').classList.remove('hidden');
+        }
+
+        function renderDeleteMockList() {
+            const container = document.getElementById('delete-mock-container');
+            if(!container) return;
+            container.innerHTML = '';
+            let hasTests = false;
+
+            for(let catKey in categoriesData) {
+                let cat = categoriesData[catKey];
+                if(cat.subtopics.length === 0) continue;
+                
+                cat.subtopics.forEach(sub => {
+                    sub.tests.forEach(testName => {
+                        hasTests = true;
+                        container.innerHTML += `
+                            <div class="flex items-center justify-between bg-slate-900 border border-slate-700 p-3 rounded-xl">
+                                <div>
+                                    <div class="text-xs text-indigo-400 font-semibold">${cat.title} > ${sub.name}</div>
+                                    <div class="text-sm font-medium text-white">${testName}</div>
+                                </div>
+                                <button onclick="deleteSpecificMockTest('${catKey}', '${sub.name}', '${testName}')" class="bg-red-950/80 border border-red-800 text-red-400 hover:bg-red-900 text-xs px-3 py-1.5 rounded-lg font-medium transition">ഡിലീറ്റ്</button>
+                            </div>
+                        `;
+                    });
+                });
+            }
+
+            if(!hasTests) {
+                container.innerHTML = `<p class="text-xs text-slate-500 text-center py-4">ഡിലീറ്റ് ചെയ്യാൻ മോക്ക് ടെസ്റ്റുകൾ ഒന്നും ലഭ്യമല്ല.</p>`;
+            }
         }
 
         function deleteSpecificMockTest(topicKey, subName, testName) {
@@ -674,7 +726,7 @@
             }
 
             alert("മോക്ക് ടെസ്റ്റും ചോദ്യങ്ങളും വിജയകരമായി ഡിലീറ്റ് ചെയ്തു!");
-            openSubTopics(topicKey);
+            renderDeleteMockList();
         }
 
         function backToDashboard() {
@@ -1027,7 +1079,7 @@
         function openPaletteModal() { document.getElementById('palette-modal').classList.remove('hidden'); }
         function closePaletteModal() { document.getElementById('palette-modal').classList.add('hidden'); }
 
-        // Practice Zone
+        // Practice Zone (Fully Shuffle Enabled: Questions & Options)
         function initPracticeZone() {
             if(sampleQuestions.length === 0) {
                 alert("പ്രാക്ടീസ് ചെയ്യാൻ ചോദ്യങ്ങൾ ഒന്നുമില്ല. ആദ്യം പുതിയ മോക്ക് ടെസ്റ്റുകൾ ആഡ് ചെയ്യുക!");
@@ -1040,11 +1092,14 @@
             loadPracticeQuestion();
         }
 
+        let shuffledCurrentOptions = [];
+        let shuffledCurrentCorrectIndex = 0;
+
         function loadPracticeQuestion() {
             if(practiceQueue.length === 0) { finishPracticeZone(); return; }
-            const q = practiceQueue.shift();
+            currentPracticeQuestion = practiceQueue.shift();
             document.getElementById('practice-progress-indicator').innerText = `ബാക്കി ചോദ്യങ്ങൾ: ${practiceQueue.length + 1}`;
-            renderQuestionContent(q, 'p-q-container');
+            renderQuestionContent(currentPracticeQuestion, 'p-q-container');
             
             const banner = document.getElementById('practice-feedback-banner');
             banner.classList.add('hidden');
@@ -1053,42 +1108,63 @@
             const optsBox = document.getElementById('p-options-box');
             optsBox.innerHTML = '';
 
-            q.options.forEach((opt, idx) => {
+            // Shuffle options for practice question
+            let originalOpts = currentPracticeQuestion.options.map((opt, idx) => ({
+                optText: opt,
+                isCorrect: idx === currentPracticeQuestion.answer
+            }));
+            shuffledCurrentOptions = shuffleArray(originalOpts);
+            shuffledCurrentCorrectIndex = shuffledCurrentOptions.findIndex(item => item.isCorrect);
+
+            shuffledCurrentOptions.forEach((item, idx) => {
                 optsBox.innerHTML += `
-                    <button onclick='checkPracticeAnswer(${JSON.stringify(q)}, ${idx}, ${q.answer}, \`${q.options[q.answer]}\`, this)' class="w-full text-left p-3.5 border border-slate-700 bg-slate-900/50 text-slate-300 rounded-xl hover:bg-slate-700 transition">
-                        ${opt}
+                    <button onclick="checkPracticeAnswer(${idx})" class="w-full text-left p-3.5 border border-slate-700 bg-slate-900/50 text-slate-300 rounded-xl hover:bg-slate-700 transition">
+                        ${item.optText}
                     </button>
                 `;
             });
         }
 
-        function checkPracticeAnswer(questionObj, selectedIdx, correctIdx, correctOptText, btnElement) {
+        function checkPracticeAnswer(selectedIdx) {
+            if(!currentPracticeQuestion) return;
             const banner = document.getElementById('practice-feedback-banner');
             banner.classList.remove('hidden');
             const parentBox = document.getElementById('p-options-box');
             Array.from(parentBox.children).forEach(child => child.disabled = true);
-            practiceAttemptedMaster.add(questionObj.id);
+            practiceAttemptedMaster.add(currentPracticeQuestion.id);
+
+            const correctIdx = shuffledCurrentCorrectIndex;
+            const correctOptText = shuffledCurrentOptions[correctIdx].optText;
+            const buttons = parentBox.children;
 
             if(selectedIdx === correctIdx) {
-                practiceLearnedMaster.add(questionObj.id);
-                btnElement.className = "w-full text-left p-3.5 border border-emerald-500 bg-emerald-950/80 text-emerald-300 rounded-xl font-medium transition";
+                practiceLearnedMaster.add(currentPracticeQuestion.id);
+                if(buttons[selectedIdx]) {
+                    buttons[selectedIdx].className = "w-full text-left p-3.5 border border-emerald-500 bg-emerald-950/80 text-emerald-300 rounded-xl font-medium transition";
+                }
                 banner.className = "p-3 rounded-xl text-sm font-medium bg-emerald-900/80 border border-emerald-600 text-emerald-200";
                 banner.innerText = "ശരി ഉത്തരം! (Correct)";
                 setTimeout(() => { loadPracticeQuestion(); }, 1200);
             } else {
-                btnElement.className = "w-full text-left p-3.5 border border-red-500 bg-red-950/80 text-red-300 rounded-xl font-medium transition";
+                if(buttons[selectedIdx]) {
+                    buttons[selectedIdx].className = "w-full text-left p-3.5 border border-red-500 bg-red-950/80 text-red-300 rounded-xl font-medium transition";
+                }
+                if(buttons[correctIdx]) {
+                    buttons[correctIdx].className = "w-full text-left p-3.5 border border-emerald-500 bg-emerald-950/80 text-emerald-300 rounded-xl font-medium transition";
+                }
                 banner.className = "p-4 rounded-xl text-sm font-medium bg-red-900/80 border border-red-600 text-red-200 shadow-lg space-y-3";
                 banner.innerHTML = `
                     ❌ ഉത്തരം തെറ്റാണ്!<br><span class="text-xs text-emerald-300 mt-1 block font-bold">ശരിയായ ഉത്തരം: ${correctOptText}</span>
-                    <button onclick='handleWrongQuestionRetry(${JSON.stringify(questionObj).replace(/"/g, "&quot;")})' class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-2 rounded-xl text-xs font-bold shadow transition">OK / അടുത്തത്</button>
+                    <button onclick="handleWrongQuestionRetry()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-2 rounded-xl text-xs font-bold shadow transition">OK / അടുത്തത്</button>
                 `;
             }
         }
 
-        function handleWrongQuestionRetry(questionObj) {
+        function handleWrongQuestionRetry() {
+            if(!currentPracticeQuestion) return;
             let insertPos = Math.floor(Math.random() * 3) + 2;
-            if(insertPos > practiceQueue.length) practiceQueue.push(questionObj);
-            else practiceQueue.splice(insertPos, 0, questionObj);
+            if(insertPos > practiceQueue.length) practiceQueue.push(currentPracticeQuestion);
+            else practiceQueue.splice(insertPos, 0, currentPracticeQuestion);
             loadPracticeQuestion();
         }
 
