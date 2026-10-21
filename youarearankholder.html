@@ -131,7 +131,7 @@
         <section id="section-pdf_creator" class="hidden space-y-6">
             <div class="bg-slate-800 border border-slate-700 p-5 rounded-2xl space-y-4 shadow-md">
                 <h2 class="text-lg font-bold text-indigo-400">നിങ്ങളുടെ മോക്ക് ടെസ്റ്റ് ഇവിടെ തയ്യാറാക്കാം</h2>
-                <p class="text-xs text-slate-400">ജെമിനിയിൽ നിന്ന് സാധാരണ ചോദ്യങ്ങളും ഓപ്ഷനുകളും ഉത്തരങ്ങളും കോപ്പി ചെയ്ത് താഴെ പേസ്റ്റ് ചെയ്യുക.</p>
+                <p class="text-xs text-slate-400">ജെമിനിയിൽ നിന്ന് JSON ഫോർമാറ്റിലുള്ള ചോദ്യങ്ങൾ കോപ്പി ചെയ്ത് താഴെ പേസ്റ്റ് ചെയ്യുക.</p>
 
                 <div>
                     <label class="block text-sm font-medium text-slate-300 mb-1">മെയിൻ കാറ്റഗറി തിരഞ്ഞെടുക്കുക:</label>
@@ -159,8 +159,8 @@
                 </div>
 
                 <div>
-                    <label class="block text-sm font-medium text-slate-300 mb-1">നിങ്ങളുടെ ചോദ്യങ്ങൾ ഇവിടെ പേസ്റ്റ് ചെയ്യുക:</label>
-                    <textarea id="gemini-json-input" rows="10" placeholder="ചോദ്യങ്ങൾ ഇവിടെ പേസ്റ്റ് ചെയ്യുക..." class="w-full p-2.5 bg-slate-900 border border-slate-700 text-white rounded-xl text-sm custom-scrollbar"></textarea>
+                    <label class="block text-sm font-medium text-slate-300 mb-1">നിങ്ങളുടെ JSON ചോദ്യങ്ങൾ ഇവിടെ പേസ്റ്റ് ചെയ്യുക:</label>
+                    <textarea id="gemini-json-input" rows="10" placeholder="[ { 'question': '...', 'options': [...], 'answer': 0, 'explanation': '...' } ]" class="w-full p-2.5 bg-slate-900 border border-slate-700 text-white rounded-xl text-sm custom-scrollbar"></textarea>
                 </div>
 
                 <button onclick="savePastedGeminiMockTest()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-3 rounded-xl font-medium shadow transition">
@@ -191,7 +191,7 @@
                 <button onclick="startAccordionCustomTest()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-2.5 rounded-xl font-medium shadow transition">റിവിഷൻ ടെസ്റ്റ് ആരംഭിക്കുക</button>
             </div>
 
-            <!-- മൈ റിവിഷൻ സെറ്റുകൾ (ഡിലീറ്റ് ചെയ്യാനും ചെയ്തു നോക്കാനുമുള്ള ഭാഗം) -->
+            <!-- മൈ റിവിഷൻ സെറ്റുകൾ -->
             <div class="bg-slate-800 border border-slate-700 p-5 rounded-2xl space-y-4 shadow-md">
                 <h2 class="text-lg font-bold text-indigo-400">📌 മൈ റിവിഷൻ സെറ്റുകൾ (തെറ്റിയവ)</h2>
                 <div id="saved-mistake-sets-container" class="space-y-2">
@@ -283,7 +283,6 @@
         <div id="result-interface" class="hidden bg-slate-800 border border-slate-700 p-6 rounded-2xl shadow-xl space-y-6">
             <h2 class="text-xl font-bold text-indigo-400 text-center">ടെസ്റ്റ് റിസൾട്ട്</h2>
             
-            <!-- ആകെ മാർക്ക് (നെഗറ്റീവ് കുറച്ചത്) -->
             <div class="grid grid-cols-2 gap-4 text-center">
                 <div class="bg-slate-900 p-4 rounded-xl border border-slate-700">
                     <div class="text-xs text-slate-400">ആകെ മാർക്ക്</div>
@@ -295,7 +294,6 @@
                 </div>
             </div>
 
-            <!-- ശരി, തെറ്റ്, വിട്ടുപോയവയുടെ കണക്കുകൾ -->
             <div class="grid grid-cols-3 gap-2 text-center">
                 <div class="bg-slate-900 p-3 rounded-xl border border-slate-700">
                     <div class="text-xs text-slate-400">ശരി (Correct)</div>
@@ -311,10 +309,8 @@
                 </div>
             </div>
 
-            <!-- തെറ്റിയവ റിവിഷൻ സെറ്റായി സേവ് ചെയ്യാനുള്ള ഭാഗം -->
             <div id="save-mistakes-container"></div>
 
-            <!-- ഫിൽട്ടർ ബട്ടണുകൾ -->
             <div class="flex space-x-2 pt-2">
                 <button onclick="renderResultAnswers('all')" class="flex-1 bg-slate-700 hover:bg-slate-600 text-white py-1.5 rounded-lg text-xs font-medium">എല്ലാം</button>
                 <button onclick="renderResultAnswers('correct')" class="flex-1 bg-emerald-950/60 border border-emerald-800 text-emerald-300 py-1.5 rounded-lg text-xs font-medium">ശരി മാത്രം</button>
@@ -458,53 +454,6 @@
             }
         }
 
-        function parsePlainQuestions(text) {
-            let questions = [];
-            let blocks = text.split(/(?=\d+[\.\)]\s)/);
-            
-            blocks.forEach(block => {
-                block = block.trim();
-                if(!block) return;
-
-                let lines = block.split('\n').map(l => l.trim()).filter(l => l);
-                if(lines.length < 5) return;
-
-                let qText = lines[0].replace(/^\d+[\.\)]\s*/, '');
-                let options = [];
-                let answerIdx = 0;
-                let explanation = "";
-
-                for(let i = 1; i < lines.length; i++) {
-                    let line = lines[i];
-                    if(line.toLowerCase().includes('ഉത്തരം') || line.toLowerCase().includes('answer') || line.toLowerCase().includes('correct')) {
-                        let optLetter = line.match(/[A-Da-ഡ്‌എബിസിഡി]/i);
-                        if(optLetter) {
-                            let char = optLetter[0].toUpperCase();
-                            if(char === 'B' || char === 'ബി') answerIdx = 1;
-                            else if(char === 'C' || char === 'സി') answerIdx = 2;
-                            else if(char === 'D' || char === 'ഡി') answerIdx = 3;
-                        }
-                    } else if(line.toLowerCase().includes('വിശദീകരണം') || line.toLowerCase().includes('explanation')) {
-                        explanation = line.replace(/^(വിശദീകരണം|Explanation)[\s:\-]*/i, '');
-                    } else if(options.length < 4) {
-                        let cleanOpt = line.replace(/^[A-Da-ഡ്‌എബിസിഡി][\.\)]\s*/, '');
-                        options.push(cleanOpt);
-                    }
-                }
-
-                if(options.length === 4) {
-                    questions.push({
-                        question: qText,
-                        options: options,
-                        answer: answerIdx,
-                        explanation: explanation
-                    });
-                }
-            });
-
-            return questions;
-        }
-
         async function savePastedGeminiMockTest() {
             const categoryKey = document.getElementById('pdf-category').value;
             const subtopicName = document.getElementById('pdf-subtopic').value.trim();
@@ -513,19 +462,14 @@
 
             if(!subtopicName) { alert('ദയവായി സബ് ടോപ്പിക്കിന്റെ പേര് നൽകുക!'); return; }
             if(!testName) { alert('ദയവായി മോക്ക് ടെസ്റ്റിന്റെ പേര് നൽകുക!'); return; }
-            if(!rawText) { alert('ദയവായി ചോദ്യങ്ങൾ പേസ്റ്റ് ചെയ്യുക!'); return; }
+            if(!rawText) { alert('ദയവായി ചോദ്യങ്ങൾ JSON രൂപത്തിൽ പേസ്റ്റ് ചെയ്യുക!'); return; }
 
             try {
-                let generatedQuestions = [];
-                try {
-                    let cleanJsonStr = rawText.replace(/```json/g, '').replace(/```/g, '').trim();
-                    generatedQuestions = JSON.parse(cleanJsonStr);
-                } catch(e) {
-                    generatedQuestions = parsePlainQuestions(rawText);
-                }
+                let cleanJsonStr = rawText.replace(/```json/g, '').replace(/```/g, '').trim();
+                let generatedQuestions = JSON.parse(cleanJsonStr);
 
                 if(!Array.isArray(generatedQuestions) || generatedQuestions.length === 0) {
-                    throw new Error("ചോദ്യങ്ങൾ കൃത്യമായി റീഡ് ചെയ്യാൻ കഴിഞ്ഞില്ല.");
+                    throw new Error("JSON ഫോർമാറ്റിൽ ചോദ്യങ്ങൾ കണ്ടെത്താനായില്ല.");
                 }
 
                 if(!categoriesData[categoryKey]) categoriesData[categoryKey] = { title: categoryKey, subtopics: [] };
@@ -560,7 +504,7 @@
                         type: "normal",
                         q: gq.question,
                         options: gq.options,
-                        answer: gq.answer,
+                        answer: gq.answer !== undefined ? gq.answer : 0,
                         explanation: gq.explanation || ""
                     });
                 });
@@ -582,7 +526,7 @@
                 openSubTopics(categoryKey);
 
             } catch (error) {
-                alert('എറർ: ' + error.message);
+                alert('JSON എറർ: കൃത്യമായ ഫോർമാറ്റിലാണോ എന്ന് പരിശോധിക്കുക. (' + error.message + ')');
             }
         }
 
@@ -708,11 +652,9 @@
         function deleteSpecificMockTest(topicKey, subName, testName) {
             if(!confirm(`⚠️ "${testName}" എന്ന മോക്ക് ടെസ്റ്റും അതിലെ ചോദ്യങ്ങളും ഡിലീറ്റ് ചെയ്യണമെന്നുറപ്പാണോ?`)) return;
 
-            // sampleQuestions-ൽ നിന്ന് ഈ ടെസ്റ്റിന്റെ ചോദ്യങ്ങൾ പൂർണ്ണമായി നീക്കം ചെയ്യുന്നു
             sampleQuestions = sampleQuestions.filter(q => !(q.topic === topicKey && q.subtopic.toLowerCase() === subName.toLowerCase() && q.testName.toLowerCase() === testName.toLowerCase()));
             localStorage.setItem('psc_sample_questions', JSON.stringify(sampleQuestions));
 
-            // categoriesData-ൽ നിന്ന് ടെസ്റ്റ് ഒഴിവാക്കുന്നു
             let sub = categoriesData[topicKey].subtopics.find(s => s.name.toLowerCase() === subName.toLowerCase());
             if(sub) {
                 sub.tests = sub.tests.filter(t => t.toLowerCase() !== testName.toLowerCase());
@@ -722,7 +664,6 @@
             }
             localStorage.setItem('psc_categories_data', JSON.stringify(categoriesData));
 
-            // ഫയർബേസ് ഡാറ്റാബേസ് അപ്ഡേറ്റ് ചെയ്യുന്നു
             if(db) {
                 db.collection("app_data").doc("psc_main_database").set({
                     categoriesData: categoriesData,
@@ -893,7 +834,6 @@
             renderResultAnswers('all');
         }
 
-        // തെറ്റിയ ചോദ്യങ്ങൾ സേവ് ചെയ്യുമ്പോൾ റിസൾട്ട് പേജിൽ തന്നെ നിൽക്കുന്ന രീതി
         function saveMistakesAsNewMockTest() {
             let customNameInput = document.getElementById('custom-mistake-test-name');
             let newTestName = customNameInput ? customNameInput.value.trim() : `${activeOriginalTestName} (തെറ്റിയവ)`;
@@ -959,7 +899,6 @@
             alert(`🎉 "${newTestName}" വിജയകരമായി റിവിഷൻ സെറ്റായി സേവ് ചെയ്തു!`);
         }
 
-        // റിവിഷൻ ടാബിൽ സേവ് ചെയ്ത തെറ്റിയ സെറ്റുകൾ കാണിക്കാനും, ചെയ്തു നോക്കാനും, ഡിലീറ്റ് ചെയ്യാനും
         function renderSavedMistakeSets() {
             const container = document.getElementById('saved-mistake-sets-container');
             if(!container) return;
