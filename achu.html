@@ -1142,11 +1142,15 @@
                 let userAnsText = userAns !== undefined ? q.options[userAns] : 'ഒന്നുമില്ല';
                 let correctAnsText = q.options[q.answer];
 
+                // അനാവശ്യമായി വരുന്ന [span...] ടാഗുകൾ ഒഴിവാക്കാൻ
+                let cleanExplanation = q.explanation || "";
+                cleanExplanation = cleanExplanation.replace(/\[span_\d+\]|\(start_span\)|\(end_span\)/g, '');
+
                 listContainer.innerHTML += `
                     <div class="bg-slate-900 border border-slate-700 p-3.5 rounded-xl space-y-2 text-xs">
                         <div class="flex justify-between items-center"><span class="font-bold text-slate-300">ചോദ്യം ${idx + 1}</span>${statusBadge}</div>
                         <div class="font-medium text-white">${q.q}</div>
-                        ${q.explanation ? `<div class="text-indigo-300 bg-indigo-950/40 p-2 rounded">💡 വിശദീകരണം: ${q.explanation}</div>` : ''}
+                        ${cleanExplanation ? `<div class="text-indigo-300 bg-indigo-950/40 p-2 rounded">💡 വിശദീകരണം: ${cleanExplanation}</div>` : ''}
                         <div class="text-slate-400">നിങ്ങളുടെ ഉത്തരം: <span class="${status === 'correct' ? 'text-emerald-400' : 'text-red-400'} font-bold">${userAnsText}</span></div>
                         ${status !== 'correct' ? `<div class="text-emerald-400 font-bold">ശരിയായ ഉത്തരം: ${correctAnsText}</div>` : ''}
                     </div>
@@ -1214,6 +1218,12 @@
 
             const correctIdx = shuffledCurrentCorrectIndex;
             const correctOptText = shuffledCurrentOptions[correctIdx].optText;
+            
+            // അനാവശ്യമായി വരുന്ന [span...] ടാഗുകൾ ഒഴിവാക്കാൻ
+            let cleanExplanation = currentPracticeQuestion.explanation || "";
+            cleanExplanation = cleanExplanation.replace(/\[span_\d+\]|\(start_span\)|\(end_span\)/g, '');
+
+            const explanationText = cleanExplanation ? `<br><span class="text-xs text-indigo-200 mt-1 block">💡 വിശദീകരണം: ${cleanExplanation}</span>` : '';
             const buttons = parentBox.children;
 
             if(selectedIdx === correctIdx) {
@@ -1222,8 +1232,8 @@
                     buttons[selectedIdx].className = "w-full text-left p-3.5 border border-emerald-500 bg-emerald-950/80 text-emerald-300 rounded-xl font-medium transition";
                 }
                 banner.className = "p-3 rounded-xl text-sm font-medium bg-emerald-900/80 border border-emerald-600 text-emerald-200";
-                banner.innerText = "ശരി ഉത്തരം! (Correct)";
-                setTimeout(() => { loadPracticeQuestion(); }, 1200);
+                banner.innerHTML = `ശരി ഉത്തരം! (Correct)${explanationText}`;
+                setTimeout(() => { loadPracticeQuestion(); }, 3000);
             } else {
                 if(buttons[selectedIdx]) {
                     buttons[selectedIdx].className = "w-full text-left p-3.5 border border-red-500 bg-red-950/80 text-red-300 rounded-xl font-medium transition";
@@ -1233,18 +1243,10 @@
                 }
                 banner.className = "p-4 rounded-xl text-sm font-medium bg-red-900/80 border border-red-600 text-red-200 shadow-lg space-y-3";
                 banner.innerHTML = `
-                    ❌ ഉത്തരം തെറ്റാണ്!<br><span class="text-xs text-emerald-300 mt-1 block font-bold">ശരിയായ ഉത്തരം: ${correctOptText}</span>
-                    <button onclick="handleWrongQuestionRetry()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-2 rounded-xl text-xs font-bold shadow transition">OK / അടുത്തത്</button>
+                    ❌ ഉത്തരം തെറ്റാണ്!<br><span class="text-xs text-emerald-300 mt-1 block font-bold">ശരിയായ ഉത്തരം: ${correctOptText}</span>${explanationText}
+                    <button onclick="loadPracticeQuestion()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-2 rounded-xl text-xs font-bold shadow transition mt-2">അടുത്തത് (Next)</button>
                 `;
             }
-        }
-
-        function handleWrongQuestionRetry() {
-            if(!currentPracticeQuestion) return;
-            let insertPos = Math.floor(Math.random() * 3) + 2;
-            if(insertPos > practiceQueue.length) practiceQueue.push(currentPracticeQuestion);
-            else practiceQueue.splice(insertPos, 0, currentPracticeQuestion);
-            loadPracticeQuestion();
         }
 
         function finishPracticeZone() {
