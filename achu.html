@@ -527,8 +527,10 @@
                         topic: categoryKey,
                         subtopic: subtopicName,
                         testName: testName,
-                        type: "normal",
+                        type: gq.type || "normal",
                         q: gq.question,
+                        statements: gq.statements || [],
+                        matchingPairs: gq.matchingPairs || [],
                         options: gq.options,
                         answer: gq.answer !== undefined ? gq.answer : 0,
                         explanation: gq.explanation || ""
@@ -655,10 +657,9 @@
             cat.subtopics.forEach(sub => {
                 let testsHtml = sub.tests.map(tName => `
                     <div class="flex items-center space-x-2 bg-slate-900 border border-slate-700 hover:border-indigo-500 rounded-xl px-4 py-3 shadow-sm">
-                        <button onclick="startSpecificTest('${catKey}', '${sub.name}', '${tName}')" class="flex-1 text-left text-slate-200 text-sm font-medium transition">
-                            <span>${tName}</span>
-                        </button>
-                        <button onclick="startSpecificTest('${catKey}', '${sub.name}', '${tName}')" class="text-indigo-400 font-bold px-2">➔</button>
+                        <span class="flex-1 text-slate-200 text-sm font-medium">${tName}</span>
+                        <button onclick="startSpecificPractice('${catKey}', '${sub.name}', '${tName}')" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs px-3 py-1.5 rounded-lg font-medium transition whitespace-nowrap">Practice</button>
+                        <button onclick="startSpecificTest('${catKey}', '${sub.name}', '${tName}')" class="bg-indigo-600 hover:bg-indigo-700 text-white text-xs px-3 py-1.5 rounded-lg font-medium transition whitespace-nowrap">Mock Test</button>
                     </div>
                 `).join('');
 
@@ -672,6 +673,28 @@
 
             document.getElementById('section-dashboard').classList.add('hidden');
             document.getElementById('section-subtopics').classList.remove('hidden');
+        }
+
+        function startSpecificPractice(topicKey, subName, testName) {
+            activeCategoryKey = topicKey;
+            activeSubtopicName = subName;
+            activeOriginalTestName = testName;
+            let filtered = sampleQuestions.filter(q => q.topic === topicKey && q.subtopic === subName && q.testName === testName);
+            if(filtered.length === 0) { alert("ഈ ടെസ്റ്റിൽ പ്രാക്ടീസ് ചെയ്യാൻ ചോദ്യങ്ങൾ ഒന്നും ലഭ്യമല്ല!"); return; }
+
+            practiceQueue = shuffleArray([...filtered]);
+            practiceAttemptedMaster.clear();
+            practiceLearnedMaster.clear();
+
+            document.querySelectorAll('main > section').forEach(sec => sec.classList.add('hidden'));
+            document.getElementById('section-subtopics').classList.add('hidden');
+            document.getElementById('section-pdf_creator').classList.add('hidden');
+            document.getElementById('mock-interface').classList.add('hidden');
+            document.getElementById('result-interface').classList.add('hidden');
+            document.getElementById('practice-result-interface').classList.add('hidden');
+            
+            document.getElementById('section-practice').classList.remove('hidden');
+            loadPracticeQuestion();
         }
 
         function renderDeleteMockList() {
@@ -800,9 +823,55 @@
             document.getElementById('timer-display').innerText = `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
         }
 
+        // Improved Question Content Renderer for Statements and Matching Questions
         function renderQuestionContent(q, containerId) {
             const container = document.getElementById(containerId);
-            container.innerHTML = `<div class="font-medium text-white text-base mb-2">${currentIndex + 1}. ${q.q}</div>`;
+            let html = `<div class="font-medium text-white text-base mb-3 leading-relaxed">${currentIndex + 1}. ${q.q || q.question || ""}</div>`;
+
+            // Statement Questions Formatting (Numbered with line spacing)
+            if (q.statements && Array.isArray(q.statements) && q.statements.length > 0) {
+                html += `<div class="bg-slate-900/80 border border-slate-700/80 p-4 rounded-xl space-y-3 my-3">`;
+                q.statements.forEach((stmt, sIdx) => {
+                    let romanNums = ['i.', 'ii.', 'iii.', 'iv.', 'v.', 'vi.'];
+                    let label = romanNums[sIdx] || `${sIdx + 1}.`;
+                    html += `<div class="flex items-start space-x-3 text-slate-200 text-sm leading-relaxed">
+                        <span class="font-bold text-indigo-400 select-none">${label}</span>
+                        <span class="flex-1">${stmt}</span>
+                    </div>`;
+                });
+                html += `</div>`;
+            }
+
+            // Matching (ചേരുംപടി) Questions Formatting (Two-column clear layout)
+            if (q.matchingPairs && Array.isArray(q.matchingPairs) && q.matchingPairs.length > 0) {
+                html += `<div class="grid grid-cols-1 md:grid-cols-2 gap-3 my-3 bg-slate-900/80 border border-slate-700/80 p-4 rounded-xl">`;
+                let colAList = [];
+                let colBList = [];
+                q.matchingPairs.forEach(pair => {
+                    if(pair.left) colAList.push(pair.left);
+                    if(pair.right) colBList.push(pair.right);
+                });
+
+                html += `<div class="space-y-2 border-b md:border-b-0 md:border-r border-slate-700 pb-3 md:pb-0 md:pr-3">
+                    <div class="text-xs font-bold text-indigo-400 uppercase tracking-wider mb-2">പട്ടിക A</div>`;
+                colAList.forEach((item, i) => {
+                    html += `<div class="text-slate-200 text-sm py-1 leading-relaxed"><span class="font-bold text-slate-400 mr-2">${i + 1}.</span>${item}</div>`;
+                });
+                html += `</div>`;
+
+                html += `<div class="space-y-2">
+                    <div class="text-xs font-bold text-indigo-400 uppercase tracking-wider mb-2">പട്ടിക B</div>`;
+                colBList.forEach((item, i) => {
+                    let letters = ['എ', 'ബി', 'സി', 'ഡി', 'ഇ', 'എഫ്'];
+                    let lKey = letters[i] || String.fromCharCode(65 + i);
+                    html += `<div class="text-slate-200 text-sm py-1 leading-relaxed"><span class="font-bold text-slate-400 mr-2">${lKey}.</span>${item}</div>`;
+                });
+                html += `</div>`;
+
+                html += `</div>`;
+            }
+
+            container.innerHTML = html;
         }
 
         function loadQuestion() {
