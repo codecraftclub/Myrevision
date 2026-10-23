@@ -40,6 +40,7 @@
         <div class="flex overflow-x-auto space-x-2 pb-2 custom-scrollbar">
             <button onclick="switchTab('dashboard')" id="btn-dashboard" class="tab-btn px-4 py-2 bg-indigo-600 text-white rounded-xl text-sm font-medium whitespace-nowrap shadow">ഹോം (Home)</button>
             <button onclick="switchTab('pdf_creator')" id="btn-pdf_creator" class="tab-btn px-4 py-2 bg-slate-800 text-slate-300 border border-slate-700 rounded-xl text-sm font-medium whitespace-nowrap">Mock Creator</button>
+            <button onclick="switchTab('add_more')" id="btn-add_more" class="tab-btn px-4 py-2 bg-slate-800 text-slate-300 border border-slate-700 rounded-xl text-sm font-medium whitespace-nowrap">Add More Qns</button>
             <button onclick="switchTab('revision')" id="btn-revision" class="tab-btn px-4 py-2 bg-slate-800 text-slate-300 border border-slate-700 rounded-xl text-sm font-medium whitespace-nowrap">Custom Revision</button>
             <button onclick="switchTab('delete_mock')" id="btn-delete_mock" class="tab-btn px-4 py-2 bg-slate-800 text-slate-300 border border-slate-700 rounded-xl text-sm font-medium whitespace-nowrap">Delete Mock</button>
             <button onclick="switchTab('practice')" id="btn-practice" class="tab-btn px-4 py-2 bg-slate-800 text-slate-300 border border-slate-700 rounded-xl text-sm font-medium whitespace-nowrap">Practice Zone</button>
@@ -173,6 +174,52 @@
 
                 <button onclick="savePastedGeminiMockTest()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-3 rounded-xl font-medium shadow transition">
                     മോക്ക് ടെസ്റ്റ് സേവ് ചെയ്യുക
+                </button>
+            </div>
+        </section>
+
+        <!-- TAB: ADD MORE QUESTIONS (Append to Existing Test) -->
+        <section id="section-add_more" class="hidden space-y-6">
+            <div class="bg-slate-800 border border-slate-700 p-5 rounded-2xl space-y-4 shadow-md">
+                <h2 class="text-lg font-bold text-emerald-400">➕ നിലവിലുള്ള മോക്ക് ടെസ്റ്റിലേക്ക് കൂടുതൽ ചോദ്യങ്ങൾ ചേർക്കുക</h2>
+                <p class="text-xs text-slate-400">ഇവിടെ നിലവിലുള്ള കാറ്റഗറിയും സബ് ടോപ്പിക്കും മോക്ക് ടെസ്റ്റും തിരഞ്ഞെടുത്ത് പുതിയ JSON ചോദ്യങ്ങൾ പേസ്റ്റ് ചെയ്താൽ, പഴയ ചോദ്യങ്ങളോടൊപ്പം പുതിയവയും വന്ന് ചേരും (Append ആകും).</p>
+
+                <div>
+                    <label class="block text-sm font-medium text-slate-300 mb-1">മെയിൻ കാറ്റഗറി തിരഞ്ഞെടുക്കുക:</label>
+                    <select id="add-more-category" onchange="populateAddMoreSubtopics()" class="w-full p-2.5 bg-slate-900 border border-slate-700 text-white rounded-xl text-sm">
+                        <option value="topic_wise">Topic-wise Exams</option>
+                        <option value="scert">SCERT Based Exams</option>
+                        <option value="ca_daily">Daily Current Affairs</option>
+                        <option value="ca_monthly">Monthly Current Affairs</option>
+                        <option value="malayalam">മലയാളം (Malayalam)</option>
+                        <option value="english">ഇംഗ്ലീഷ് (English)</option>
+                        <option value="pyq_main">PREVIOUS YEAR QUESTIONS</option>
+                        <option value="pyq_malayalam">Malayalam PYQ</option>
+                        <option value="pyq_english">English PYQ</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-slate-300 mb-1">സബ് ടോപ്പിക് തിരഞ്ഞെടുക്കുക:</label>
+                    <select id="add-more-subtopic" onchange="populateAddMoreTests()" class="w-full p-2.5 bg-slate-900 border border-slate-700 text-white rounded-xl text-sm">
+                        <option value="">ആദ്യം കാറ്റഗറി തിരഞ്ഞെടുക്കുക</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-slate-300 mb-1">മോക്ക് ടെസ്റ്റ് തിരഞ്ഞെടുക്കുക:</label>
+                    <select id="add-more-testname" class="w-full p-2.5 bg-slate-900 border border-slate-700 text-white rounded-xl text-sm">
+                        <option value="">ആദ്യം സബ് ടോപ്പിക് തിരഞ്ഞെടുക്കുക</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-slate-300 mb-1">പുതിയ JSON ചോദ്യങ്ങൾ ഇവിടെ പേസ്റ്റ് ചെയ്യുക:</label>
+                    <textarea id="add-more-json-input" rows="10" placeholder="[ { 'question': '...', 'options': [...], 'answer': 0, 'explanation': '...' } ]" class="w-full p-2.5 bg-slate-900 border border-slate-700 text-white rounded-xl text-sm custom-scrollbar"></textarea>
+                </div>
+
+                <button onclick="appendMoreQuestionsToTest()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-3 rounded-xl font-medium shadow transition">
+                    ചോദ്യങ്ങൾ കൂട്ടിച്ചേർക്കുക (Append Questions)
                 </button>
             </div>
         </section>
@@ -447,6 +494,7 @@
             document.querySelectorAll('main > section').forEach(sec => sec.classList.add('hidden'));
             document.getElementById('section-subtopics').classList.add('hidden');
             document.getElementById('section-pdf_creator').classList.add('hidden');
+            document.getElementById('section-add_more').classList.add('hidden');
             document.getElementById('mock-interface').classList.add('hidden');
             document.getElementById('result-interface').classList.add('hidden');
             document.getElementById('practice-result-interface').classList.add('hidden');
@@ -464,6 +512,9 @@
                 document.getElementById('section-dashboard').classList.remove('hidden');
             } else if(tabId === 'pdf_creator') {
                 document.getElementById('section-pdf_creator').classList.remove('hidden');
+            } else if(tabId === 'add_more') {
+                document.getElementById('section-add_more').classList.remove('hidden');
+                populateAddMoreSubtopics();
             } else if(tabId === 'revision') {
                 document.getElementById('section-revision').classList.remove('hidden');
                 populateAccordion();
@@ -552,6 +603,94 @@
                 alert(`🎉 വിജയകരമായി ${generatedQuestions.length} ചോദ്യങ്ങൾ സേവ് ചെയ്തു!`);
                 document.getElementById('gemini-json-input').value = '';
                 openSubTopics(categoryKey);
+
+            } catch (error) {
+                alert('JSON എറർ: കൃത്യമായ ഫോർമാറ്റിലാണോ എന്ന് പരിശോധിക്കുക. (' + error.message + ')');
+            }
+        }
+
+        // Add More Questions Dynamic Dropdown Helpers
+        function populateAddMoreSubtopics() {
+            const catKey = document.getElementById('add-more-category').value;
+            const subSelect = document.getElementById('add-more-subtopic');
+            subSelect.innerHTML = '<option value="">സബ് ടോപ്പിക് തിരഞ്ഞെടുക്കുക</option>';
+
+            if(!categoriesData[catKey] || categoriesData[catKey].subtopics.length === 0) {
+                document.getElementById('add-more-testname').innerHTML = '<option value="">ആദ്യം സബ് ടോപ്പിക് തിരഞ്ഞെടുക്കുക</option>';
+                return;
+            }
+
+            categoriesData[catKey].subtopics.forEach(sub => {
+                subSelect.innerHTML += `<option value="${sub.name}">${sub.name}</option>`;
+            });
+            populateAddMoreTests();
+        }
+
+        function populateAddMoreTests() {
+            const catKey = document.getElementById('add-more-category').value;
+            const subName = document.getElementById('add-more-subtopic').value;
+            const testSelect = document.getElementById('add-more-testname');
+            testSelect.innerHTML = '<option value="">മോക്ക് ടെസ്റ്റ് തിരഞ്ഞെടുക്കുക</option>';
+
+            if(!catKey || !subName || !categoriesData[catKey]) return;
+
+            let sub = categoriesData[catKey].subtopics.find(s => s.name === subName);
+            if(!sub || sub.tests.length === 0) return;
+
+            sub.tests.forEach(tName => {
+                testSelect.innerHTML += `<option value="${tName}">${tName}</option>`;
+            });
+        }
+
+        async function appendMoreQuestionsToTest() {
+            const catKey = document.getElementById('add-more-category').value;
+            const subName = document.getElementById('add-more-subtopic').value;
+            const testName = document.getElementById('add-more-testname').value;
+            const rawText = document.getElementById('add-more-json-input').value.trim();
+
+            if(!subName) { alert('ദയവായി സബ് ടോപ്പിക് തിരഞ്ഞെടുക്കുക!'); return; }
+            if(!testName) { alert('ദയവായി മോക്ക് ടെസ്റ്റ് തിരഞ്ഞെടുക്കുക!'); return; }
+            if(!rawText) { alert('ദയവായി പുതിയ JSON ചോദ്യങ്ങൾ പേസ്റ്റ് ചെയ്യുക!'); return; }
+
+            try {
+                let cleanJsonStr = rawText.replace(/```json/g, '').replace(/```/g, '').trim();
+                let newQuestions = JSON.parse(cleanJsonStr);
+
+                if(!Array.isArray(newQuestions) || newQuestions.length === 0) {
+                    throw new Error("JSON ഫോർമാറ്റിൽ ചോദ്യങ്ങൾ കണ്ടെത്താനായില്ല.");
+                }
+
+                newQuestions.forEach((gq, idx) => {
+                    sampleQuestions.push({
+                        id: Date.now() + idx,
+                        topic: catKey,
+                        subtopic: subName,
+                        testName: testName,
+                        type: gq.type || "normal",
+                        q: gq.question,
+                        statements: gq.statements || [],
+                        matchingPairs: gq.matchingPairs || [],
+                        options: gq.options,
+                        answer: gq.answer !== undefined ? gq.answer : 0,
+                        explanation: gq.explanation || ""
+                    });
+                });
+
+                localStorage.setItem('psc_categories_data_anoop', JSON.stringify(categoriesData));
+                localStorage.setItem('psc_sample_questions_anoop', JSON.stringify(sampleQuestions));
+
+                if(db) {
+                    await db.collection("app_data").doc("psc_database_anoop").set({
+                        categoriesData: categoriesData,
+                        sampleQuestions: sampleQuestions,
+                        userProgressData: userProgressData,
+                        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+                }
+
+                alert(`🎉 വിജയകരമായി ${newQuestions.length} പുതിയ ചോദ്യങ്ങൾ "${testName}" എന്ന മോക്ക് ടെസ്റ്റിലേക്ക് കൂട്ടിച്ചേർത്തു!`);
+                document.getElementById('add-more-json-input').value = '';
+                switchTab('dashboard');
 
             } catch (error) {
                 alert('JSON എറർ: കൃത്യമായ ഫോർമാറ്റിലാണോ എന്ന് പരിശോധിക്കുക. (' + error.message + ')');
@@ -689,6 +828,7 @@
             document.querySelectorAll('main > section').forEach(sec => sec.classList.add('hidden'));
             document.getElementById('section-subtopics').classList.add('hidden');
             document.getElementById('section-pdf_creator').classList.add('hidden');
+            document.getElementById('section-add_more').classList.add('hidden');
             document.getElementById('mock-interface').classList.add('hidden');
             document.getElementById('result-interface').classList.add('hidden');
             document.getElementById('practice-result-interface').classList.add('hidden');
@@ -797,6 +937,7 @@
             document.querySelectorAll('main > section').forEach(sec => sec.classList.add('hidden'));
             document.getElementById('section-subtopics').classList.add('hidden');
             document.getElementById('section-pdf_creator').classList.add('hidden');
+            document.getElementById('section-add_more').classList.add('hidden');
             document.getElementById('mock-interface').classList.remove('hidden');
             currentIndex = 0;
             userAnswers = {};
@@ -960,6 +1101,7 @@
             renderResultAnswers('all');
         }
 
+        // തെറ്റിയ ചോദ്യങ്ങൾ ഡാഷ്‌ബോർഡിൽ കാറ്റഗറിയായി സേവ് ചെയ്യാതെ, കസ്റ്റം റിവിഷൻ സെറ്റുകളിലേക്ക് മാത്രം സേവ് ചെയ്യുന്ന രീതി
         function saveMistakesAsNewMockTest() {
             let customNameInput = document.getElementById('custom-mistake-test-name');
             let newTestName = customNameInput ? customNameInput.value.trim() : `${activeOriginalTestName} (തെറ്റിയവ)`;
@@ -981,19 +1123,7 @@
             let subName = activeSubtopicName || "Revision Set";
             let catKey = activeCategoryKey || "topic_wise";
 
-            if(!categoriesData[catKey]) categoriesData[catKey] = { title: catKey, subtopics: [] };
-            let sub = categoriesData[catKey].subtopics.find(s => s.name.toLowerCase() === subName.toLowerCase());
-            
-            if(!sub) {
-                categoriesData[catKey].subtopics.push({ name: subName, tests: [newTestName] });
-            } else {
-                if(!sub.tests.includes(newTestName)) {
-                    sub.tests.push(newTestName);
-                }
-            }
-
-            sampleQuestions = sampleQuestions.filter(q => !(q.topic === catKey && q.subtopic.toLowerCase() === subName.toLowerCase() && q.testName === newTestName));
-            
+            // സാമ്പിൾ ചോദ്യങ്ങളിൽ മാത്രം തെറ്റിയവ ആഡ് ചെയ്യുക (കാറ്റഗറി ലിസ്റ്റിൽ പുതിയ ടെസ്റ്റായി കയറില്ല)
             wrongQuestions.forEach((wq, idx) => {
                 sampleQuestions.push({
                     ...wq,
@@ -1010,7 +1140,6 @@
                 localStorage.setItem('psc_saved_mistake_sets_anoop', JSON.stringify(savedMistakeSets));
             }
 
-            localStorage.setItem('psc_categories_data_anoop', JSON.stringify(categoriesData));
             localStorage.setItem('psc_sample_questions_anoop', JSON.stringify(sampleQuestions));
 
             if(db) {
@@ -1022,7 +1151,7 @@
                 }).catch(e => console.log(e));
             }
 
-            alert(`🎉 "${newTestName}" വിജയകരമായി റിവിഷൻ സെറ്റായി സേവ് ചെയ്തു!`);
+            alert(`🎉 "${newTestName}" വിജയകരമായി 'മൈ റിവിഷൻ സെറ്റുകൾ' (Custom Revision)-ൽ സേവ് ചെയ്തു!`);
         }
 
         function renderSavedMistakeSets() {
@@ -1056,13 +1185,6 @@
 
             sampleQuestions = sampleQuestions.filter(q => q.testName !== setName);
             localStorage.setItem('psc_sample_questions_anoop', JSON.stringify(sampleQuestions));
-
-            for(let catKey in categoriesData) {
-                categoriesData[catKey].subtopics.forEach(sub => {
-                    sub.tests = sub.tests.filter(t => t !== setName);
-                });
-            }
-            localStorage.setItem('psc_categories_data_anoop', JSON.stringify(categoriesData));
 
             if(db) {
                 db.collection("app_data").doc("psc_database_anoop").set({
