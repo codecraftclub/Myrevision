@@ -44,6 +44,7 @@
             <button onclick="switchTab('revision')" id="btn-revision" class="tab-btn px-4 py-2 bg-slate-800 text-slate-300 border border-slate-700 rounded-xl text-sm font-medium whitespace-nowrap">Custom Revision</button>
             <button onclick="switchTab('delete_mock')" id="btn-delete_mock" class="tab-btn px-4 py-2 bg-slate-800 text-slate-300 border border-slate-700 rounded-xl text-sm font-medium whitespace-nowrap">Delete Mock</button>
             <button onclick="switchTab('practice')" id="btn-practice" class="tab-btn px-4 py-2 bg-slate-800 text-slate-300 border border-slate-700 rounded-xl text-sm font-medium whitespace-nowrap">Practice Zone</button>
+            <button onclick="switchTab('admin_panel')" id="btn-admin_panel" class="tab-btn px-4 py-2 bg-slate-800 text-slate-300 border border-slate-700 rounded-xl text-sm font-medium whitespace-nowrap">Admin Panel</button>
             <button onclick="switchTab('tracker')" id="btn-tracker" class="tab-btn px-4 py-2 bg-slate-800 text-slate-300 border border-slate-700 rounded-xl text-sm font-medium whitespace-nowrap">Progress Tracker</button>
         </div>
 
@@ -224,6 +225,17 @@
             </div>
         </section>
 
+        <!-- TAB: ADMIN PANEL (Reported Questions Management) -->
+        <section id="section-admin_panel" class="hidden space-y-6">
+            <div class="bg-slate-800 border border-slate-700 p-5 rounded-2xl space-y-4 shadow-md">
+                <h2 class="text-lg font-bold text-amber-400">🛡️ അഡ്മിൻ പാനൽ (റിപ്പോർട്ട് ചെയ്ത ചോദ്യങ്ങൾ)</h2>
+                <p class="text-xs text-slate-400">പ്രാക്ടീസ് ചെയ്യുമ്പോഴോ ടെസ്റ്റ് ചെയ്യുമ്പോഴോ ഉപയോക്താക്കൾ റിപ്പോർട്ട് ചെയ്ത ചോദ്യങ്ങളും അവരുടെ കമന്റുകളും താഴെ കാണാം. ആവശ്യമെങ്കിൽ ഇവിടെ നിന്ന് ആ ചോദ്യങ്ങൾ ഡിലീറ്റ് ചെയ്യാം.</p>
+                <div id="admin-reports-container" class="space-y-3 max-h-96 overflow-y-auto custom-scrollbar p-1">
+                    <p class="text-xs text-slate-500 text-center py-4">റിപ്പോർട്ട് ചെയ്ത ചോദ്യങ്ങൾ ഒന്നും ലഭ്യമല്ല.</p>
+                </div>
+            </div>
+        </section>
+
         <!-- TAB 2: Custom Revision -->
         <section id="section-revision" class="hidden space-y-6">
             <div class="bg-slate-800 border border-slate-700 p-5 rounded-2xl space-y-4 shadow-md">
@@ -280,6 +292,9 @@
                     <div id="p-q-container" class="space-y-3"></div>
                     <div id="p-options-box" class="space-y-2.5"></div>
                     <div id="practice-feedback-banner" class="hidden p-4 rounded-xl text-sm font-medium transition-all space-y-3"></div>
+                </div>
+                <div class="pt-3 border-t border-slate-700 flex justify-end">
+                    <button onclick="openReportModalForCurrentPractice()" class="bg-rose-950/80 border border-rose-800 text-rose-300 hover:bg-rose-900 text-xs px-3 py-1.5 rounded-lg font-medium transition">🚩 Report Issue</button>
                 </div>
             </div>
         </section>
@@ -345,7 +360,10 @@
             </div>
             <div class="flex justify-between items-center pt-4 border-t border-slate-700">
                 <button onclick="prevQuestion()" class="px-4 py-2 bg-slate-700 hover:bg-slate-600 text-white rounded-xl text-sm font-medium">Previous</button>
-                <button onclick="openPaletteModal()" class="px-3 py-2 bg-slate-900 text-slate-300 rounded-xl text-xs border border-slate-700">Question Palette</button>
+                <div class="flex items-center space-x-2">
+                    <button onclick="openReportModalForCurrentMock()" class="bg-rose-950/80 border border-rose-800 text-rose-300 hover:bg-rose-900 text-xs px-3 py-2 rounded-xl font-medium transition">🚩 Report</button>
+                    <button onclick="openPaletteModal()" class="px-3 py-2 bg-slate-900 text-slate-300 rounded-xl text-xs border border-slate-700">Palette</button>
+                </div>
                 <button onclick="nextQuestion()" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-sm font-medium">Next</button>
             </div>
         </div>
@@ -408,6 +426,19 @@
         </div>
     </div>
 
+    <!-- Report Question Modal with Comment Box -->
+    <div id="report-modal" class="hidden fixed inset-0 bg-black bg-opacity-70 flex justify-center items-center p-4 z-50">
+        <div class="bg-slate-800 border border-slate-700 p-6 rounded-2xl max-w-md w-full space-y-4 shadow-2xl">
+            <h3 class="font-bold text-rose-400">🚩 ചോദ്യം റിപ്പോർട്ട് ചെയ്യുക</h3>
+            <p class="text-xs text-slate-300">ഈ ചോദ്യത്തിലെ പ്രശ്നം എന്താണെന്ന് താഴെ കമന്റായി എഴുതുക:</p>
+            <textarea id="report-comment-input" rows="4" placeholder="ഉദാഹരണത്തിന്: ഓപ്ഷൻ തെറ്റാണ് / ഉത്തരം മാറിക്കിടക്കുന്നു..." class="w-full p-2.5 bg-slate-900 border border-slate-700 text-white rounded-xl text-sm custom-scrollbar"></textarea>
+            <div class="flex space-x-2">
+                <button onclick="submitQuestionReport()" class="flex-1 bg-rose-600 hover:bg-rose-700 text-white py-2.5 rounded-xl text-sm font-medium">സബ്മിറ്റ് ചെയ്യുക</button>
+                <button onclick="closeReportModal()" class="flex-1 bg-slate-700 hover:bg-slate-600 text-white py-2.5 rounded-xl text-sm font-medium">ക്ലോസ്</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         const firebaseConfig = {
             apiKey: "AIzaSyDA1XwfYzlPCL_Soxia0d-JpNekGGCaJMM",
@@ -443,6 +474,7 @@
         let sampleQuestions = JSON.parse(localStorage.getItem('psc_sample_questions_anoop') || JSON.stringify([]));
         let userProgressData = JSON.parse(localStorage.getItem('psc_user_progress_anoop') || JSON.stringify({}));
         let savedMistakeSets = JSON.parse(localStorage.getItem('psc_saved_mistake_sets_anoop') || JSON.stringify([]));
+        let reportedQuestionsList = JSON.parse(localStorage.getItem('psc_reported_questions_anoop') || JSON.stringify([]));
 
         async function loadDataFromFirebase() {
             if(!db) return;
@@ -467,6 +499,10 @@
                     if(serverData.userProgressData) {
                         userProgressData = serverData.userProgressData;
                         localStorage.setItem('psc_user_progress_anoop', JSON.stringify(userProgressData));
+                    }
+                    if(serverData.reportedQuestionsList) {
+                        reportedQuestionsList = serverData.reportedQuestionsList;
+                        localStorage.setItem('psc_reported_questions_anoop', JSON.stringify(reportedQuestionsList));
                     }
                 }
             } catch(err) {
@@ -495,6 +531,7 @@
             document.getElementById('section-subtopics').classList.add('hidden');
             document.getElementById('section-pdf_creator').classList.add('hidden');
             document.getElementById('section-add_more').classList.add('hidden');
+            document.getElementById('section-admin_panel').classList.add('hidden');
             document.getElementById('mock-interface').classList.add('hidden');
             document.getElementById('result-interface').classList.add('hidden');
             document.getElementById('practice-result-interface').classList.add('hidden');
@@ -515,6 +552,9 @@
             } else if(tabId === 'add_more') {
                 document.getElementById('section-add_more').classList.remove('hidden');
                 populateAddMoreSubtopics();
+            } else if(tabId === 'admin_panel') {
+                document.getElementById('section-admin_panel').classList.remove('hidden');
+                renderAdminReports();
             } else if(tabId === 'revision') {
                 document.getElementById('section-revision').classList.remove('hidden');
                 populateAccordion();
@@ -596,6 +636,7 @@
                         categoriesData: categoriesData,
                         sampleQuestions: sampleQuestions,
                         userProgressData: userProgressData,
+                        reportedQuestionsList: reportedQuestionsList,
                         updatedAt: firebase.firestore.FieldValue.serverTimestamp()
                     });
                 }
@@ -684,6 +725,7 @@
                         categoriesData: categoriesData,
                         sampleQuestions: sampleQuestions,
                         userProgressData: userProgressData,
+                        reportedQuestionsList: reportedQuestionsList,
                         updatedAt: firebase.firestore.FieldValue.serverTimestamp()
                     });
                 }
@@ -695,6 +737,110 @@
             } catch (error) {
                 alert('JSON എറർ: കൃത്യമായ ഫോർമാറ്റിലാണോ എന്ന് പരിശോധിക്കുക. (' + error.message + ')');
             }
+        }
+
+        // Report & Admin Panel Functions
+        let reportTargetQuestion = null;
+
+        function openReportModalForCurrentMock() {
+            reportTargetQuestion = currentTestQuestions[currentIndex];
+            document.getElementById('report-comment-input').value = '';
+            document.getElementById('report-modal').classList.remove('hidden');
+        }
+
+        function openReportModalForCurrentPractice() {
+            reportTargetQuestion = currentPracticeQuestion;
+            document.getElementById('report-comment-input').value = '';
+            document.getElementById('report-modal').classList.remove('hidden');
+        }
+
+        function closeReportModal() {
+            document.getElementById('report-modal').classList.add('hidden');
+            reportTargetQuestion = null;
+        }
+
+        async function submitQuestionReport() {
+            if(!reportTargetQuestion) return;
+            const comment = document.getElementById('report-comment-input').value.trim();
+            if(!comment) { alert('ദയവായി പ്രശ്നം എന്താണെന്ന് ചെറിയൊരു കമന്റ് എഴുതുക!'); return; }
+
+            let reportObj = {
+                reportId: Date.now(),
+                questionId: reportTargetQuestion.id || 0,
+                questionText: reportTargetQuestion.q || reportTargetQuestion.question || "",
+                testName: reportTargetQuestion.testName || "General",
+                subtopic: reportTargetQuestion.subtopic || "",
+                comment: comment
+            };
+
+            reportedQuestionsList.push(reportObj);
+            localStorage.setItem('psc_reported_questions_anoop', JSON.stringify(reportedQuestionsList));
+
+            if(db) {
+                try {
+                    await db.collection("app_data").doc("psc_database_anoop").set({
+                        categoriesData: categoriesData,
+                        sampleQuestions: sampleQuestions,
+                        userProgressData: userProgressData,
+                        reportedQuestionsList: reportedQuestionsList,
+                        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+                } catch(e) { console.log("Report sync error:", e); }
+            }
+
+            alert("🚩 ചോദ്യം വിജയകരമായി അഡ്മിൻ പാനലിലേക്ക് റിപ്പോർട്ട് ചെയ്തു!");
+            closeReportModal();
+        }
+
+        function renderAdminReports() {
+            const container = document.getElementById('admin-reports-container');
+            if(!container) return;
+            container.innerHTML = '';
+
+            if(reportedQuestionsList.length === 0) {
+                container.innerHTML = `<p class="text-xs text-slate-500 text-center py-4">റിപ്പോർട്ട് ചെയ്ത ചോദ്യങ്ങൾ ഒന്നും ലഭ്യമല്ല.</p>`;
+                return;
+            }
+
+            reportedQuestionsList.forEach((rep) => {
+                container.innerHTML += `
+                    <div class="bg-slate-900 border border-slate-700 p-4 rounded-xl space-y-2 text-xs">
+                        <div class="flex justify-between items-center text-amber-400 font-bold">
+                            <span>ટેസ്റ്റ്: ${rep.testName} (${rep.subtopic})</span>
+                            <button onclick="deleteReportedQuestion(${rep.reportId}, ${rep.questionId})" class="bg-red-950/80 border border-red-800 text-red-400 hover:bg-red-900 px-2.5 py-1 rounded-lg font-medium transition">ഡിലീറ്റ് ചോദ്യം</button>
+                        </div>
+                        <div class="text-white font-medium">${rep.questionText}</div>
+                        <div class="text-indigo-300 bg-indigo-950/40 p-2 rounded">💬 ഉപയോക്താവിന്റെ കമന്റ്: ${rep.comment}</div>
+                    </div>
+                `;
+            });
+        }
+
+        async function deleteReportedQuestion(reportId, questionId) {
+            if(!confirm("⚠️ ഈ ചോദ്യം ആപ്പിലെ ഡാറ്റാബേസിൽ നിന്ന് പൂർണ്ണമായി ഡിലീറ്റ് ചെയ്യണമെന്നുറപ്പാണോ?")) return;
+
+            // Remove from sampleQuestions
+            sampleQuestions = sampleQuestions.filter(q => q.id !== questionId);
+            localStorage.setItem('psc_sample_questions_anoop', JSON.stringify(sampleQuestions));
+
+            // Remove from reported list
+            reportedQuestionsList = reportedQuestionsList.filter(r => r.reportId !== reportId);
+            localStorage.setItem('psc_reported_questions_anoop', JSON.stringify(reportedQuestionsList));
+
+            if(db) {
+                try {
+                    await db.collection("app_data").doc("psc_database_anoop").set({
+                        categoriesData: categoriesData,
+                        sampleQuestions: sampleQuestions,
+                        userProgressData: userProgressData,
+                        reportedQuestionsList: reportedQuestionsList,
+                        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+                } catch(e) { console.log("Admin delete sync error:", e); }
+            }
+
+            alert("ചോദ്യം വിജയകരമായി ഡിലീറ്റ് ചെയ്തു!");
+            renderAdminReports();
         }
 
         function populateAccordion() {
@@ -829,6 +975,7 @@
             document.getElementById('section-subtopics').classList.add('hidden');
             document.getElementById('section-pdf_creator').classList.add('hidden');
             document.getElementById('section-add_more').classList.add('hidden');
+            document.getElementById('section-admin_panel').classList.add('hidden');
             document.getElementById('mock-interface').classList.add('hidden');
             document.getElementById('result-interface').classList.add('hidden');
             document.getElementById('practice-result-interface').classList.add('hidden');
@@ -888,6 +1035,7 @@
                     categoriesData: categoriesData,
                     sampleQuestions: sampleQuestions,
                     userProgressData: userProgressData,
+                    reportedQuestionsList: reportedQuestionsList,
                     updatedAt: firebase.firestore.FieldValue.serverTimestamp()
                 }).catch(e => console.log(e));
             }
@@ -938,6 +1086,7 @@
             document.getElementById('section-subtopics').classList.add('hidden');
             document.getElementById('section-pdf_creator').classList.add('hidden');
             document.getElementById('section-add_more').classList.add('hidden');
+            document.getElementById('section-admin_panel').classList.add('hidden');
             document.getElementById('mock-interface').classList.remove('hidden');
             currentIndex = 0;
             userAnswers = {};
@@ -1147,6 +1296,7 @@
                     categoriesData: categoriesData,
                     sampleQuestions: sampleQuestions,
                     userProgressData: userProgressData,
+                    reportedQuestionsList: reportedQuestionsList,
                     updatedAt: firebase.firestore.FieldValue.serverTimestamp()
                 }).catch(e => console.log(e));
             }
@@ -1191,6 +1341,7 @@
                     categoriesData: categoriesData,
                     sampleQuestions: sampleQuestions,
                     userProgressData: userProgressData,
+                    reportedQuestionsList: reportedQuestionsList,
                     updatedAt: firebase.firestore.FieldValue.serverTimestamp()
                 }).catch(e => console.log(e));
             }
@@ -1219,6 +1370,7 @@
                         categoriesData: categoriesData,
                         sampleQuestions: sampleQuestions,
                         userProgressData: userProgressData,
+                        reportedQuestionsList: reportedQuestionsList,
                         updatedAt: firebase.firestore.FieldValue.serverTimestamp()
                     });
                 } catch(e) { console.log("Tracker sync error:", e); }
@@ -1345,7 +1497,6 @@
             let cleanExplanation = currentPracticeQuestion.explanation || "";
             cleanExplanation = cleanExplanation.replace(/\[span_\d+\]|\(start_span\)|\(end_span\)/g, '');
 
-            const explanationText = cleanExplanation ? `<br><span class="text-xs text-indigo-200 mt-1 block">💡 വിശദീകരണം: ${cleanExplanation}</span>` : '';
             const buttons = parentBox.children;
 
             if(selectedIdx === correctIdx) {
@@ -1353,9 +1504,9 @@
                 if(buttons[selectedIdx]) {
                     buttons[selectedIdx].className = "w-full text-left p-3.5 border border-emerald-500 bg-emerald-950/80 text-emerald-300 rounded-xl font-medium transition";
                 }
-                banner.className = "p-3 rounded-xl text-sm font-medium bg-emerald-900/80 border border-emerald-600 text-emerald-200";
-                banner.innerHTML = `ശരി ഉത്തരം! (Correct)${explanationText}`;
-                setTimeout(() => { loadPracticeQuestion(); }, 3000);
+                banner.className = "p-2 rounded-xl text-xs font-medium bg-emerald-900/80 border border-emerald-600 text-emerald-200";
+                banner.innerHTML = `ശരി ഉത്തരം! (Correct)`;
+                setTimeout(() => { loadPracticeQuestion(); }, 1000); // 1 സെക്കൻഡിൽ പെട്ടെന്ന് മാറും
             } else {
                 if(buttons[selectedIdx]) {
                     buttons[selectedIdx].className = "w-full text-left p-3.5 border border-red-500 bg-red-950/80 text-red-300 rounded-xl font-medium transition";
@@ -1363,6 +1514,7 @@
                 if(buttons[correctIdx]) {
                     buttons[correctIdx].className = "w-full text-left p-3.5 border border-emerald-500 bg-emerald-950/80 text-emerald-300 rounded-xl font-medium transition";
                 }
+                const explanationText = cleanExplanation ? `<br><span class="text-xs text-indigo-200 mt-1 block">💡 വിശദീകരണം: ${cleanExplanation}</span>` : '';
                 banner.className = "p-4 rounded-xl text-sm font-medium bg-red-900/80 border border-red-600 text-red-200 shadow-lg space-y-3";
                 banner.innerHTML = `
                     ❌ ഉത്തരം തെറ്റാണ്!<br><span class="text-xs text-emerald-300 mt-1 block font-bold">ശരിയായ ഉത്തരം: ${correctOptText}</span>${explanationText}
