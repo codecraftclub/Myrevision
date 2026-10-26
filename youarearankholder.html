@@ -39,10 +39,7 @@
         <!-- Navigation Tabs -->
         <div class="flex overflow-x-auto space-x-2 pb-2 custom-scrollbar">
             <button onclick="switchTab('dashboard')" id="btn-dashboard" class="tab-btn px-4 py-2 bg-indigo-600 text-white rounded-xl text-sm font-medium whitespace-nowrap shadow">ഹോം (Home)</button>
-            <button onclick="switchTab('pdf_creator')" id="btn-pdf_creator" class="tab-btn px-4 py-2 bg-slate-800 text-slate-300 border border-slate-700 rounded-xl text-sm font-medium whitespace-nowrap">Mock Creator</button>
-            <button onclick="switchTab('add_more')" id="btn-add_more" class="tab-btn px-4 py-2 bg-slate-800 text-slate-300 border border-slate-700 rounded-xl text-sm font-medium whitespace-nowrap">Add More Qns</button>
             <button onclick="switchTab('revision')" id="btn-revision" class="tab-btn px-4 py-2 bg-slate-800 text-slate-300 border border-slate-700 rounded-xl text-sm font-medium whitespace-nowrap">Custom Revision</button>
-            <button onclick="switchTab('delete_mock')" id="btn-delete_mock" class="tab-btn px-4 py-2 bg-slate-800 text-slate-300 border border-slate-700 rounded-xl text-sm font-medium whitespace-nowrap">Delete Mock</button>
             <button onclick="switchTab('practice')" id="btn-practice" class="tab-btn px-4 py-2 bg-slate-800 text-slate-300 border border-slate-700 rounded-xl text-sm font-medium whitespace-nowrap">Practice Zone</button>
             <button onclick="switchTab('admin_panel')" id="btn-admin_panel" class="tab-btn px-4 py-2 bg-slate-800 text-slate-300 border border-slate-700 rounded-xl text-sm font-medium whitespace-nowrap">Admin Panel</button>
             <button onclick="switchTab('tracker')" id="btn-tracker" class="tab-btn px-4 py-2 bg-slate-800 text-slate-300 border border-slate-700 rounded-xl text-sm font-medium whitespace-nowrap">Progress Tracker</button>
@@ -52,78 +49,8 @@
         <section id="section-dashboard" class="space-y-6">
             <div>
                 <h2 class="text-md font-bold text-slate-200 mb-3">Exam Packs & Categories</h2>
-                <div class="grid grid-cols-2 gap-3">
-                    <div onclick="openSubTopics('scert')" class="bg-slate-800 border border-slate-700 p-4 rounded-2xl cursor-pointer hover:border-indigo-500 transition shadow-sm space-y-2">
-                        <div class="w-10 h-10 bg-indigo-900/50 rounded-xl flex items-center justify-center text-indigo-400 text-xl font-bold">📚</div>
-                        <div>
-                            <h3 class="font-bold text-sm text-white">SCERT Based Exams</h3>
-                            <p class="text-xs text-slate-400 mt-0.5">സ്കൂൾ പാഠപുസ്തകങ്ങൾ</p>
-                        </div>
-                    </div>
-                    <div onclick="openSubTopics('topic_wise')" class="bg-slate-800 border border-slate-700 p-4 rounded-2xl cursor-pointer hover:border-indigo-500 transition shadow-sm space-y-2">
-                        <div class="w-10 h-10 bg-emerald-900/50 rounded-xl flex items-center justify-center text-emerald-400 text-xl font-bold">📑</div>
-                        <div>
-                            <h3 class="font-bold text-sm text-white">Topic-wise Exams</h3>
-                            <p class="text-xs text-slate-400 mt-0.5">സബ് ടോപ്പിക് ടെസ്റ്റുകൾ</p>
-                        </div>
-                    </div>
-                    <div onclick="openSubTopics('ca_daily')" class="bg-slate-800 border border-slate-700 p-4 rounded-2xl cursor-pointer hover:border-indigo-500 transition shadow-sm space-y-2">
-                        <div class="w-10 h-10 bg-amber-900/50 rounded-xl flex items-center justify-center text-amber-400 text-xl font-bold">📅</div>
-                        <div>
-                            <h3 class="font-bold text-sm text-white">Daily Current Affairs</h3>
-                            <p class="text-xs text-slate-400 mt-0.5">ഡേറ്റ് വൈസ് ചോദ്യങ്ങൾ</p>
-                        </div>
-                    </div>
-                    <div onclick="openSubTopics('ca_monthly')" class="bg-slate-800 border border-slate-700 p-4 rounded-2xl cursor-pointer hover:border-indigo-500 transition shadow-sm space-y-2">
-                        <div class="w-10 h-10 bg-purple-900/50 rounded-xl flex items-center justify-center text-purple-400 text-xl font-bold">📊</div>
-                        <div>
-                            <h3 class="font-bold text-sm text-white">Monthly Current Affairs</h3>
-                            <p class="text-xs text-slate-400 mt-0.5">മാസം തോറുമുള്ളവ</p>
-                        </div>
-                    </div>
-                    <div onclick="openSubTopics('malayalam')" class="bg-slate-800 border border-slate-700 p-4 rounded-2xl cursor-pointer hover:border-indigo-500 transition shadow-sm space-y-2">
-                        <div class="w-10 h-10 bg-rose-900/50 rounded-xl flex items-center justify-center text-rose-400 text-xl font-bold">മല</div>
-                        <div>
-                            <h3 class="font-bold text-sm text-white">മലയാളം (Malayalam)</h3>
-                            <p class="text-xs text-slate-400 mt-0.5">മലയാളം ചോദ്യങ്ങൾ</p>
-                        </div>
-                    </div>
-                    <div onclick="openSubTopics('english')" class="bg-slate-800 border border-slate-700 p-4 rounded-2xl cursor-pointer hover:border-indigo-500 transition shadow-sm space-y-2">
-                        <div class="w-10 h-10 bg-cyan-900/50 rounded-xl flex items-center justify-center text-cyan-400 text-xl font-bold">En</div>
-                        <div>
-                            <h3 class="font-bold text-sm text-white">ഇംഗ്ലീഷ് (English)</h3>
-                            <p class="text-xs text-slate-400 mt-0.5">ഇംഗ്ലീഷ് ഗ്രേമർ & വൊക്കാബുലറി</p>
-                        </div>
-                    </div>
-                    <div onclick="openSubTopics('pyq_main')" class="bg-slate-800 border border-slate-700 p-4 rounded-2xl cursor-pointer hover:border-indigo-500 transition shadow-sm space-y-2">
-                        <div class="w-10 h-10 bg-blue-900/50 rounded-xl flex items-center justify-center text-blue-400 text-xl font-bold">📜</div>
-                        <div>
-                            <h3 class="font-bold text-sm text-white">PREVIOUS YEAR QUESTIONS</h3>
-                            <p class="text-xs text-slate-400 mt-0.5">മുൻകാല ചോദ്യങ്ങൾ</p>
-                        </div>
-                    </div>
-                    <div onclick="openSubTopics('pyq_malayalam')" class="bg-slate-800 border border-slate-700 p-4 rounded-2xl cursor-pointer hover:border-indigo-500 transition shadow-sm space-y-2">
-                        <div class="w-10 h-10 bg-teal-900/50 rounded-xl flex items-center justify-center text-teal-400 text-xl font-bold">മല PYQ</div>
-                        <div>
-                            <h3 class="font-bold text-sm text-white">Malayalam PYQ</h3>
-                            <p class="text-xs text-slate-400 mt-0.5">മലയാളം മുൻകാല ചോദ്യങ്ങൾ</p>
-                        </div>
-                    </div>
-                    <div onclick="openSubTopics('pyq_english')" class="bg-slate-800 border border-slate-700 p-4 rounded-2xl cursor-pointer hover:border-indigo-500 transition shadow-sm space-y-2">
-                        <div class="w-10 h-10 bg-sky-900/50 rounded-xl flex items-center justify-center text-sky-400 text-xl font-bold">En PYQ</div>
-                        <div>
-                            <h3 class="font-bold text-sm text-white">English PYQ</h3>
-                            <p class="text-xs text-slate-400 mt-0.5">ഇംഗ്ലീഷ് മുൻകാല ചോദ്യങ്ങൾ</p>
-                        </div>
-                    </div>
-
-                    <div onclick="switchTab('pdf_creator')" class="col-span-2 bg-gradient-to-r from-indigo-900/60 to-purple-900/60 border border-indigo-700/50 p-4 rounded-2xl cursor-pointer hover:border-indigo-400 transition shadow-sm flex items-center space-x-4">
-                        <div class="w-12 h-12 bg-indigo-600/50 rounded-xl flex items-center justify-center text-white text-2xl font-bold">✨</div>
-                        <div>
-                            <h3 class="font-bold text-sm text-white">Mock Test Creator</h3>
-                            <p class="text-xs text-slate-300 mt-0.5">ചോദ്യങ്ങൾ പേസ്റ്റ് ചെയ്ത് പുതിയ മോക്ക് ടെസ്റ്റുകൾ നിർമ്മിക്കുക</p>
-                        </div>
-                    </div>
+                <div id="dashboard-categories-grid" class="grid grid-cols-2 gap-3">
+                    <!-- Dynamic Dashboard Categories Rendered Here -->
                 </div>
             </div>
         </section>
@@ -137,99 +64,101 @@
             <div id="subtopics-container" class="space-y-4"></div>
         </section>
 
-        <!-- TAB: MOCK CREATOR -->
-        <section id="section-pdf_creator" class="hidden space-y-6">
+        <!-- TAB: ADMIN PANEL (Unified Admin Hub with Buttons) -->
+        <section id="section-admin_panel" class="hidden space-y-6">
             <div class="bg-slate-800 border border-slate-700 p-5 rounded-2xl space-y-4 shadow-md">
-                <h2 class="text-lg font-bold text-indigo-400">നിങ്ങളുടെ മോക്ക് ടെസ്റ്റ് ഇവിടെ തയ്യാറാക്കാം</h2>
-                <p class="text-xs text-slate-400">ജെമിനിയിൽ നിന്ന് JSON ഫോർമാറ്റിലുള്ള ചോദ്യങ്ങൾ കോപ്പി ചെയ്ത് താഴെ പേസ്റ്റ് ചെയ്യുക.</p>
+                <h2 class="text-lg font-bold text-amber-400">🛡️ അഡ്മിൻ കൺട്രോൾ പാനൽ</h2>
+                <p class="text-xs text-slate-400">ആപ്പിലെ കാറ്റഗറികളും ചോദ്യങ്ങളും കൈകാര്യം ചെയ്യാൻ താഴെയുള്ള ഓപ്ഷനുകൾ ഉപയോഗിക്കുക:</p>
+                
+                <!-- Admin Action Buttons Bar -->
+                <div class="grid grid-cols-2 md:grid-cols-3 gap-2.5 pt-2">
+                    <button onclick="switchAdminSubSection('add_cat')" id="admin-btn-add_cat" class="admin-sub-btn p-3 bg-indigo-600 text-white rounded-xl text-xs font-bold transition shadow">Add a Main Category</button>
+                    <button onclick="switchAdminSubSection('pdf_creator')" id="admin-btn-pdf_creator" class="admin-sub-btn p-3 bg-slate-900 border border-slate-700 text-slate-300 rounded-xl text-xs font-medium transition">Mock Creator</button>
+                    <button onclick="switchAdminSubSection('add_more')" id="admin-btn-add_more" class="admin-sub-btn p-3 bg-slate-900 border border-slate-700 text-slate-300 rounded-xl text-xs font-medium transition">Add More Qns</button>
+                    <button onclick="switchAdminSubSection('delete_mock')" id="admin-btn-delete_mock" class="admin-sub-btn p-3 bg-slate-900 border border-slate-700 text-slate-300 rounded-xl text-xs font-medium transition">Delete Mock</button>
+                    <button onclick="switchAdminSubSection('reported_qns')" id="admin-btn-reported_qns" class="admin-sub-btn p-3 bg-slate-900 border border-slate-700 text-slate-300 rounded-xl text-xs font-medium transition">Reported Questions</button>
+                </div>
+            </div>
 
+            <!-- ADMIN SUB-SECTION 1: Add a Main Category -->
+            <div id="admin-sub-add_cat" class="admin-sub-section bg-slate-800 border border-slate-700 p-5 rounded-2xl space-y-4 shadow-md">
+                <h3 class="text-md font-bold text-emerald-400">➕ പുതിയ മെയിൻ കാറ്റഗറി ചേർക്കുക</h3>
+                <div>
+                    <label class="block text-xs font-medium text-slate-300 mb-1">കാറ്റഗറി ഐഡി (Key - ഇംഗ്ലീഷിൽ ചെറിയ അക്ഷരത്തിൽ, ഉദാ: science):</label>
+                    <input type="text" id="new-cat-key" placeholder="science" class="w-full p-2.5 bg-slate-900 border border-slate-700 text-white rounded-xl text-sm">
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-slate-300 mb-1">കാറ്റഗറി പേര് (മലയാളത്തിലോ ഇംഗ്ലീഷിലോ, ഉദാ: ജനറൽ സയൻസ്):</label>
+                    <input type="text" id="new-cat-title" placeholder="ജനറൽ സയൻസ്" class="w-full p-2.5 bg-slate-900 border border-slate-700 text-white rounded-xl text-sm">
+                </div>
+                <button onclick="addNewMainCategory()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-2.5 rounded-xl text-xs font-bold shadow transition">
+                    കാറ്റഗറി സേവ് ചെയ്യുക
+                </button>
+            </div>
+
+            <!-- ADMIN SUB-SECTION 2: Mock Creator -->
+            <div id="admin-sub-pdf_creator" class="admin-sub-section hidden bg-slate-800 border border-slate-700 p-5 rounded-2xl space-y-4 shadow-md">
+                <h3 class="text-md font-bold text-indigo-400">✨ മോക്ക് ടെസ്റ്റ് ക്രിയേറ്റർ</h3>
                 <div>
                     <label class="block text-sm font-medium text-slate-300 mb-1">മെയിൻ കാറ്റഗറി തിരഞ്ഞെടുക്കുക:</label>
-                    <select id="pdf-category" class="w-full p-2.5 bg-slate-900 border border-slate-700 text-white rounded-xl text-sm">
-                        <option value="topic_wise">Topic-wise Exams</option>
-                        <option value="scert">SCERT Based Exams</option>
-                        <option value="ca_daily">Daily Current Affairs</option>
-                        <option value="ca_monthly">Monthly Current Affairs</option>
-                        <option value="malayalam">മലയാളം (Malayalam)</option>
-                        <option value="english">ഇംഗ്ലീഷ് (English)</option>
-                        <option value="pyq_main">PREVIOUS YEAR QUESTIONS</option>
-                        <option value="pyq_malayalam">Malayalam PYQ</option>
-                        <option value="pyq_english">English PYQ</option>
-                    </select>
+                    <select id="pdf-category" class="w-full p-2.5 bg-slate-900 border border-slate-700 text-white rounded-xl text-sm"></select>
                 </div>
-
                 <div>
                     <label class="block text-sm font-medium text-slate-300 mb-1">സബ് ടോപ്പിക്കിന്റെ പേര്:</label>
                     <input type="text" id="pdf-subtopic" placeholder="ഉദാഹരണത്തിന്: ഭരണഘടന" class="w-full p-2.5 bg-slate-900 border border-slate-700 text-white rounded-xl text-sm">
                 </div>
-
                 <div>
                     <label class="block text-sm font-medium text-slate-300 mb-1">മോക്ക് ടെസ്റ്റിന്റെ പേര്:</label>
                     <input type="text" id="pdf-testname" placeholder="ഉദാഹരണത്തിന്: ഭരണഘടന ആഴത്തിലറിയാം" class="w-full p-2.5 bg-slate-900 border border-slate-700 text-white rounded-xl text-sm">
                 </div>
-
                 <div>
-                    <label class="block text-sm font-medium text-slate-300 mb-1">നിങ്ങളുടെ JSON ചോദ്യങ്ങൾ ഇവിടെ പേസ്റ്റ് ചെയ്യുക:</label>
-                    <textarea id="gemini-json-input" rows="10" placeholder="[ { 'question': '...', 'options': [...], 'answer': 0, 'explanation': '...' } ]" class="w-full p-2.5 bg-slate-900 border border-slate-700 text-white rounded-xl text-sm custom-scrollbar"></textarea>
+                    <label class="block text-sm font-medium text-slate-300 mb-1">JSON ചോദ്യങ്ങൾ ഇവിടെ പേസ്റ്റ് ചെയ്യുക:</label>
+                    <textarea id="gemini-json-input" rows="8" placeholder="[ { 'question': '...', 'options': [...], 'answer': 0, 'explanation': '...' } ]" class="w-full p-2.5 bg-slate-900 border border-slate-700 text-white rounded-xl text-sm custom-scrollbar"></textarea>
                 </div>
-
                 <button onclick="savePastedGeminiMockTest()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-3 rounded-xl font-medium shadow transition">
                     മോക്ക് ടെസ്റ്റ് സേവ് ചെയ്യുക
                 </button>
             </div>
-        </section>
 
-        <!-- TAB: ADD MORE QUESTIONS (Append to Existing Test) -->
-        <section id="section-add_more" class="hidden space-y-6">
-            <div class="bg-slate-800 border border-slate-700 p-5 rounded-2xl space-y-4 shadow-md">
-                <h2 class="text-lg font-bold text-emerald-400">➕ നിലവിലുള്ള മോക്ക് ടെസ്റ്റിലേക്ക് കൂടുതൽ ചോദ്യങ്ങൾ ചേർക്കുക</h2>
-                <p class="text-xs text-slate-400">ഇവിടെ നിലവിലുള്ള കാറ്റഗറിയും സബ് ടോപ്പിക്കും മോക്ക് ടെസ്റ്റും തിരഞ്ഞെടുത്ത് പുതിയ JSON ചോദ്യങ്ങൾ പേസ്റ്റ് ചെയ്താൽ, പഴയ ചോദ്യങ്ങളോടൊപ്പം പുതിയവയും വന്ന് ചേരും (Append ആകും).</p>
-
+            <!-- ADMIN SUB-SECTION 3: Add More Qns -->
+            <div id="admin-sub-add_more" class="admin-sub-section hidden bg-slate-800 border border-slate-700 p-5 rounded-2xl space-y-4 shadow-md">
+                <h3 class="text-md font-bold text-emerald-400">➕ കൂടുതൽ ചോദ്യങ്ങൾ കൂട്ടിച്ചേർക്കുക (Append)</h3>
                 <div>
                     <label class="block text-sm font-medium text-slate-300 mb-1">മെയിൻ കാറ്റഗറി തിരഞ്ഞെടുക്കുക:</label>
-                    <select id="add-more-category" onchange="populateAddMoreSubtopics()" class="w-full p-2.5 bg-slate-900 border border-slate-700 text-white rounded-xl text-sm">
-                        <option value="topic_wise">Topic-wise Exams</option>
-                        <option value="scert">SCERT Based Exams</option>
-                        <option value="ca_daily">Daily Current Affairs</option>
-                        <option value="ca_monthly">Monthly Current Affairs</option>
-                        <option value="malayalam">മലയാളം (Malayalam)</option>
-                        <option value="english">ഇംഗ്ലീഷ് (English)</option>
-                        <option value="pyq_main">PREVIOUS YEAR QUESTIONS</option>
-                        <option value="pyq_malayalam">Malayalam PYQ</option>
-                        <option value="pyq_english">English PYQ</option>
-                    </select>
+                    <select id="add-more-category" onchange="populateAddMoreSubtopics()" class="w-full p-2.5 bg-slate-900 border border-slate-700 text-white rounded-xl text-sm"></select>
                 </div>
-
                 <div>
                     <label class="block text-sm font-medium text-slate-300 mb-1">സബ് ടോപ്പിക് തിരഞ്ഞെടുക്കുക:</label>
                     <select id="add-more-subtopic" onchange="populateAddMoreTests()" class="w-full p-2.5 bg-slate-900 border border-slate-700 text-white rounded-xl text-sm">
                         <option value="">ആദ്യം കാറ്റഗറി തിരഞ്ഞെടുക്കുക</option>
                     </select>
                 </div>
-
                 <div>
                     <label class="block text-sm font-medium text-slate-300 mb-1">മോക്ക് ടെസ്റ്റ് തിരഞ്ഞെടുക്കുക:</label>
                     <select id="add-more-testname" class="w-full p-2.5 bg-slate-900 border border-slate-700 text-white rounded-xl text-sm">
                         <option value="">ആദ്യം സബ് ടോപ്പിക് തിരഞ്ഞെടുക്കുക</option>
                     </select>
                 </div>
-
                 <div>
                     <label class="block text-sm font-medium text-slate-300 mb-1">പുതിയ JSON ചോദ്യങ്ങൾ ഇവിടെ പേസ്റ്റ് ചെയ്യുക:</label>
-                    <textarea id="add-more-json-input" rows="10" placeholder="[ { 'question': '...', 'options': [...], 'answer': 0, 'explanation': '...' } ]" class="w-full p-2.5 bg-slate-900 border border-slate-700 text-white rounded-xl text-sm custom-scrollbar"></textarea>
+                    <textarea id="add-more-json-input" rows="8" placeholder="[ { 'question': '...', 'options': [...], 'answer': 0, 'explanation': '...' } ]" class="w-full p-2.5 bg-slate-900 border border-slate-700 text-white rounded-xl text-sm custom-scrollbar"></textarea>
                 </div>
-
                 <button onclick="appendMoreQuestionsToTest()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-3 rounded-xl font-medium shadow transition">
-                    ചോദ്യങ്ങൾ കൂട്ടിച്ചേർക്കുക (Append Questions)
+                    ചോദ്യങ്ങൾ കൂട്ടിച്ചേർക്കുക
                 </button>
             </div>
-        </section>
 
-        <!-- TAB: ADMIN PANEL (Reported Questions Management) -->
-        <section id="section-admin_panel" class="hidden space-y-6">
-            <div class="bg-slate-800 border border-slate-700 p-5 rounded-2xl space-y-4 shadow-md">
-                <h2 class="text-lg font-bold text-amber-400">🛡️ അഡ്മിൻ പാനൽ (റിപ്പോർട്ട് ചെയ്ത ചോദ്യങ്ങൾ)</h2>
-                <p class="text-xs text-slate-400">പ്രാക്ടീസ് ചെയ്യുമ്പോഴോ ടെസ്റ്റ് ചെയ്യുമ്പോഴോ ഉപയോക്താക്കൾ റിപ്പോർട്ട് ചെയ്ത ചോദ്യങ്ങളും അവരുടെ കമന്റുകളും താഴെ കാണാം. ആവശ്യമെങ്കിൽ ഇവിടെ നിന്ന് ആ ചോദ്യങ്ങൾ ഡിലീറ്റ് ചെയ്യാം.</p>
+            <!-- ADMIN SUB-SECTION 4: Delete Mock -->
+            <div id="admin-sub-delete_mock" class="admin-sub-section hidden bg-slate-800 border border-slate-700 p-5 rounded-2xl space-y-4 shadow-md">
+                <h3 class="text-md font-bold text-red-400">🗑️ മോക്ക് ടെസ്റ്റുകൾ ഡിലീറ്റ് ചെയ്യുക</h3>
+                <div id="delete-mock-container" class="space-y-3 max-h-96 overflow-y-auto custom-scrollbar p-1">
+                    <p class="text-xs text-slate-500 text-center py-4">മോക്ക് ടെസ്റ്റുകൾ ഒന്നും ലഭ്യമല്ല.</p>
+                </div>
+            </div>
+
+            <!-- ADMIN SUB-SECTION 5: Reported Questions -->
+            <div id="admin-sub-reported_qns" class="admin-sub-section hidden bg-slate-800 border border-slate-700 p-5 rounded-2xl space-y-4 shadow-md">
+                <h3 class="text-md font-bold text-amber-400">🚩 റിപ്പോർട്ട് ചെയ്ത ചോദ്യങ്ങൾ (Edit & Delete)</h3>
                 <div id="admin-reports-container" class="space-y-3 max-h-96 overflow-y-auto custom-scrollbar p-1">
                     <p class="text-xs text-slate-500 text-center py-4">റിപ്പോർട്ട് ചെയ്ത ചോദ്യങ്ങൾ ഒന്നും ലഭ്യമല്ല.</p>
                 </div>
@@ -263,17 +192,6 @@
                 <h2 class="text-lg font-bold text-indigo-400">📌 മൈ റിവിഷൻ സെറ്റുകൾ (തെറ്റിയവ)</h2>
                 <div id="saved-mistake-sets-container" class="space-y-2">
                     <p class="text-xs text-slate-500 text-center py-3">റിവിഷൻ സെറ്റുകൾ ഒന്നും സേവ് ചെയ്തിട്ടില്ല.</p>
-                </div>
-            </div>
-        </section>
-
-        <!-- TAB: DELETE MOCK -->
-        <section id="section-delete_mock" class="hidden space-y-6">
-            <div class="bg-slate-800 border border-slate-700 p-5 rounded-2xl space-y-4 shadow-md">
-                <h2 class="text-lg font-bold text-red-400">🗑️ മോക്ക് ടെസ്റ്റുകൾ ഡിലീറ്റ് ചെയ്യുക</h2>
-                <p class="text-xs text-slate-400">താഴെ കാണുന്ന ലിസ്റ്റിൽ നിന്ന് ആവശ്യമില്ലാത്ത മോക്ക് ടെസ്റ്റുകൾ തിരഞ്ഞെടുത്ത് ഡിലീറ്റ് ചെയ്യാവുന്നതാണ്.</p>
-                <div id="delete-mock-container" class="space-y-3 max-h-96 overflow-y-auto custom-scrollbar p-1">
-                    <p class="text-xs text-slate-500 text-center py-4">മോക്ക് ടെസ്റ്റുകൾ ഒന്നും ലഭ്യമല്ല.</p>
                 </div>
             </div>
         </section>
@@ -439,6 +357,46 @@
         </div>
     </div>
 
+    <!-- Admin Edit Question Modal -->
+    <div id="admin-edit-modal" class="hidden fixed inset-0 bg-black bg-opacity-70 flex justify-center items-center p-4 z-50">
+        <div class="bg-slate-800 border border-slate-700 p-6 rounded-2xl max-w-lg w-full space-y-4 shadow-2xl max-h-[90vh] overflow-y-auto custom-scrollbar">
+            <h3 class="font-bold text-amber-400 text-base">✏️ ചോദ്യം എഡിറ്റ് ചെയ്യുക (Admin Edit)</h3>
+            
+            <div>
+                <label class="block text-xs font-medium text-slate-300 mb-1">ചോദ്യം (Question):</label>
+                <textarea id="edit-q-text" rows="3" class="w-full p-2.5 bg-slate-900 border border-slate-700 text-white rounded-xl text-sm custom-scrollbar"></textarea>
+            </div>
+
+            <div class="space-y-2">
+                <label class="block text-xs font-medium text-slate-300">ഓപ്ഷനുകൾ (Options):</label>
+                <input type="text" id="edit-opt-0" placeholder="Option 1" class="w-full p-2 bg-slate-900 border border-slate-700 text-white rounded-lg text-xs">
+                <input type="text" id="edit-opt-1" placeholder="Option 2" class="w-full p-2 bg-slate-900 border border-slate-700 text-white rounded-lg text-xs">
+                <input type="text" id="edit-opt-2" placeholder="Option 3" class="w-full p-2 bg-slate-900 border border-slate-700 text-white rounded-lg text-xs">
+                <input type="text" id="edit-opt-3" placeholder="Option 4" class="w-full p-2 bg-slate-900 border border-slate-700 text-white rounded-lg text-xs">
+            </div>
+
+            <div class="grid grid-cols-2 gap-3">
+                <div>
+                    <label class="block text-xs font-medium text-slate-300 mb-1">ശരിയായ ഉത്തരം (Index 0-3):</label>
+                    <input type="number" id="edit-ans-index" min="0" max="3" class="w-full p-2 bg-slate-900 border border-slate-700 text-white rounded-lg text-xs">
+                </div>
+            </div>
+
+            <div>
+                <label class="block text-xs font-medium text-slate-300 mb-1">വിശദീകരണം (Explanation):</label>
+                <textarea id="edit-explanation" rows="2" class="w-full p-2.5 bg-slate-900 border border-slate-700 text-white rounded-xl text-xs custom-scrollbar"></textarea>
+            </div>
+
+            <input type="hidden" id="edit-target-question-id">
+            <input type="hidden" id="edit-target-report-id">
+
+            <div class="flex space-x-2 pt-2">
+                <button onclick="saveEditedQuestion()" class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white py-2.5 rounded-xl text-xs font-bold transition">അപ്ഡേറ്റ് സേവ് ചെയ്യുക</button>
+                <button onclick="closeAdminEditModal()" class="flex-1 bg-slate-700 hover:bg-slate-600 text-white py-2.5 rounded-xl text-xs font-medium transition">ക്ലോസ്</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         const firebaseConfig = {
             apiKey: "AIzaSyDA1XwfYzlPCL_Soxia0d-JpNekGGCaJMM",
@@ -508,6 +466,8 @@
             } catch(err) {
                 console.log("Firebase load error:", err);
             }
+            renderDashboardCategories();
+            populateCategoryDropdowns();
         }
 
         let currentTestQuestions = [];
@@ -529,8 +489,6 @@
         function switchTab(tabId) {
             document.querySelectorAll('main > section').forEach(sec => sec.classList.add('hidden'));
             document.getElementById('section-subtopics').classList.add('hidden');
-            document.getElementById('section-pdf_creator').classList.add('hidden');
-            document.getElementById('section-add_more').classList.add('hidden');
             document.getElementById('section-admin_panel').classList.add('hidden');
             document.getElementById('mock-interface').classList.add('hidden');
             document.getElementById('result-interface').classList.add('hidden');
@@ -547,21 +505,17 @@
 
             if(tabId === 'dashboard') {
                 document.getElementById('section-dashboard').classList.remove('hidden');
-            } else if(tabId === 'pdf_creator') {
-                document.getElementById('section-pdf_creator').classList.remove('hidden');
-            } else if(tabId === 'add_more') {
-                document.getElementById('section-add_more').classList.remove('hidden');
-                populateAddMoreSubtopics();
+                renderDashboardCategories();
             } else if(tabId === 'admin_panel') {
                 document.getElementById('section-admin_panel').classList.remove('hidden');
+                populateCategoryDropdowns();
+                renderDeleteMockList();
                 renderAdminReports();
+                switchAdminSubSection('add_cat');
             } else if(tabId === 'revision') {
                 document.getElementById('section-revision').classList.remove('hidden');
                 populateAccordion();
                 renderSavedMistakeSets();
-            } else if(tabId === 'delete_mock') {
-                document.getElementById('section-delete_mock').classList.remove('hidden');
-                renderDeleteMockList();
             } else if(tabId === 'practice') {
                 document.getElementById('section-practice').classList.remove('hidden');
                 initPracticeZone();
@@ -569,6 +523,108 @@
                 document.getElementById('section-tracker').classList.remove('hidden');
                 renderTrackerTable();
             }
+        }
+
+        function switchAdminSubSection(subId) {
+            document.querySelectorAll('.admin-sub-section').forEach(sec => sec.classList.add('hidden'));
+            document.querySelectorAll('.admin-sub-btn').forEach(btn => {
+                btn.className = "admin-sub-btn p-3 bg-slate-900 border border-slate-700 text-slate-300 rounded-xl text-xs font-medium transition";
+            });
+
+            const targetSec = document.getElementById(`admin-sub-${subId}`);
+            const targetBtn = document.getElementById(`admin-btn-${subId}`);
+
+            if(targetSec) targetSec.classList.remove('hidden');
+            if(targetBtn) {
+                targetBtn.className = "admin-sub-btn p-3 bg-indigo-600 text-white rounded-xl text-xs font-bold transition shadow";
+            }
+        }
+
+        function renderDashboardCategories() {
+            const grid = document.getElementById('dashboard-categories-grid');
+            if(!grid) return;
+
+            let icons = {
+                scert: '📚',
+                topic_wise: '📑',
+                ca_daily: '📅',
+                ca_monthly: '📊',
+                malayalam: 'മല',
+                english: 'En',
+                pyq_main: '📜',
+                pyq_malayalam: 'മല PYQ',
+                pyq_english: 'En PYQ'
+            };
+
+            let html = '';
+            for(let key in categoriesData) {
+                let cat = categoriesData[key];
+                let icon = icons[key] || '📁';
+                html += `
+                    <div onclick="openSubTopics('${key}')" class="bg-slate-800 border border-slate-700 p-4 rounded-2xl cursor-pointer hover:border-indigo-500 transition shadow-sm space-y-2">
+                        <div class="w-10 h-10 bg-indigo-900/50 rounded-xl flex items-center justify-center text-indigo-400 text-xl font-bold">${icon}</div>
+                        <div>
+                            <h3 class="font-bold text-sm text-white">${cat.title}</h3>
+                            <p class="text-xs text-slate-400 mt-0.5">കാറ്റഗറി ടെസ്റ്റുകൾ</p>
+                        </div>
+                    </div>
+                `;
+            }
+
+            grid.innerHTML = html;
+        }
+
+        function populateCategoryDropdowns() {
+            const selects = [document.getElementById('pdf-category'), document.getElementById('add-more-category')];
+            selects.forEach(sel => {
+                if(!sel) return;
+                let currentVal = sel.value;
+                sel.innerHTML = '';
+                for(let key in categoriesData) {
+                    sel.innerHTML += `<option value="${key}">${categoriesData[key].title}</option>`;
+                }
+                if(currentVal) sel.value = currentVal;
+            });
+            if(typeof populateAddMoreSubtopics === 'function') {
+                populateAddMoreSubtopics();
+            }
+        }
+
+        async function addNewMainCategory() {
+            let keyInput = document.getElementById('new-cat-key').value.trim().toLowerCase().replace(/\s+/g, '_');
+            let titleInput = document.getElementById('new-cat-title').value.trim();
+
+            if(!keyInput || !titleInput) {
+                alert('ദയവായി കാറ്റഗറി ഐഡിയും (Key) പേരും നൽകുക!');
+                return;
+            }
+
+            if(categoriesData[keyInput]) {
+                alert('ഈ കാറ്റഗറി കീ ഇതിനകം നിലവിലുണ്ട്!');
+                return;
+            }
+
+            categoriesData[keyInput] = { title: titleInput, subtopics: [] };
+            localStorage.setItem('psc_categories_data_anoop', JSON.stringify(categoriesData));
+
+            if(db) {
+                try {
+                    await db.collection("app_data").doc("psc_database_anoop").set({
+                        categoriesData: categoriesData,
+                        sampleQuestions: sampleQuestions,
+                        userProgressData: userProgressData,
+                        reportedQuestionsList: reportedQuestionsList,
+                        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+                } catch(e) { console.log("Category sync error:", e); }
+            }
+
+            alert(`🎉 "${titleInput}" പുതിയ കാറ്റഗറി വിജയകരമായി ക്രിയേറ്റ് ചെയ്തു!`);
+            document.getElementById('new-cat-key').value = '';
+            document.getElementById('new-cat-title').value = '';
+            renderDashboardCategories();
+            populateCategoryDropdowns();
+            switchTab('dashboard');
         }
 
         async function savePastedGeminiMockTest() {
@@ -650,14 +706,15 @@
             }
         }
 
-        // Add More Questions Dynamic Dropdown Helpers
         function populateAddMoreSubtopics() {
             const catKey = document.getElementById('add-more-category').value;
             const subSelect = document.getElementById('add-more-subtopic');
+            if(!subSelect) return;
             subSelect.innerHTML = '<option value="">സബ് ടോപ്പിക് തിരഞ്ഞെടുക്കുക</option>';
 
             if(!categoriesData[catKey] || categoriesData[catKey].subtopics.length === 0) {
-                document.getElementById('add-more-testname').innerHTML = '<option value="">ആദ്യം സബ് ടോപ്പിക് തിരഞ്ഞെടുക്കുക</option>';
+                const testSelect = document.getElementById('add-more-testname');
+                if(testSelect) testSelect.innerHTML = '<option value="">ആദ്യം സബ് ടോപ്പിക് തിരഞ്ഞെടുക്കുക</option>';
                 return;
             }
 
@@ -671,6 +728,7 @@
             const catKey = document.getElementById('add-more-category').value;
             const subName = document.getElementById('add-more-subtopic').value;
             const testSelect = document.getElementById('add-more-testname');
+            if(!testSelect) return;
             testSelect.innerHTML = '<option value="">മോക്ക് ടെസ്റ്റ് തിരഞ്ഞെടുക്കുക</option>';
 
             if(!catKey || !subName || !categoriesData[catKey]) return;
@@ -739,7 +797,66 @@
             }
         }
 
-        // Report & Admin Panel Functions
+        function renderDeleteMockList() {
+            const container = document.getElementById('delete-mock-container');
+            if(!container) return;
+            container.innerHTML = '';
+            let hasTests = false;
+
+            for(let catKey in categoriesData) {
+                let cat = categoriesData[catKey];
+                if(cat.subtopics.length === 0) continue;
+                
+                cat.subtopics.forEach(sub => {
+                    sub.tests.forEach(testName => {
+                        hasTests = true;
+                        container.innerHTML += `
+                            <div class="flex items-center justify-between bg-slate-900 border border-slate-700 p-3 rounded-xl">
+                                <div>
+                                    <div class="text-xs text-indigo-400 font-semibold">${cat.title} > ${sub.name}</div>
+                                    <div class="text-sm font-medium text-white">${testName}</div>
+                                </div>
+                                <button onclick="deleteSpecificMockTest('${catKey}', '${sub.name}', '${testName}')" class="bg-red-950/80 border border-red-800 text-red-400 hover:bg-red-900 text-xs px-3 py-1.5 rounded-lg font-medium transition">ഡിലീറ്റ്</button>
+                            </div>
+                        `;
+                    });
+                });
+            }
+
+            if(!hasTests) {
+                container.innerHTML = `<p class="text-xs text-slate-500 text-center py-4">ഡിലീറ്റ് ചെയ്യാൻ മോക്ക് ടെസ്റ്റുകൾ ഒന്നും ലഭ്യമല്ല.</p>`;
+            }
+        }
+
+        function deleteSpecificMockTest(topicKey, subName, testName) {
+            if(!confirm(`⚠️ "${testName}" എന്ന മോക്ക് ടെസ്റ്റും അതിലെ ചോദ്യങ്ങളും ഡിലീറ്റ് ചെയ്യണമെന്നുറപ്പാണോ?`)) return;
+
+            sampleQuestions = sampleQuestions.filter(q => !(q.topic === topicKey && q.subtopic.toLowerCase() === subName.toLowerCase() && q.testName.toLowerCase() === testName.toLowerCase()));
+            localStorage.setItem('psc_sample_questions_anoop', JSON.stringify(sampleQuestions));
+
+            let sub = categoriesData[topicKey].subtopics.find(s => s.name.toLowerCase() === subName.toLowerCase());
+            if(sub) {
+                sub.tests = sub.tests.filter(t => t.toLowerCase() !== testName.toLowerCase());
+                if(sub.tests.length === 0) {
+                    categoriesData[topicKey].subtopics = categoriesData[topicKey].subtopics.filter(s => s.name.toLowerCase() !== subName.toLowerCase());
+                }
+            }
+            localStorage.setItem('psc_categories_data_anoop', JSON.stringify(categoriesData));
+
+            if(db) {
+                db.collection("app_data").doc("psc_database_anoop").set({
+                    categoriesData: categoriesData,
+                    sampleQuestions: sampleQuestions,
+                    userProgressData: userProgressData,
+                    reportedQuestionsList: reportedQuestionsList,
+                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                }).catch(e => console.log(e));
+            }
+
+            alert("മോക്ക് ടെസ്റ്റും ചോദ്യങ്ങളും വിജയകരമായി ഡിലീറ്റ് ചെയ്തു!");
+            renderDeleteMockList();
+        }
+
         let reportTargetQuestion = null;
 
         function openReportModalForCurrentMock() {
@@ -806,8 +923,11 @@
                 container.innerHTML += `
                     <div class="bg-slate-900 border border-slate-700 p-4 rounded-xl space-y-2 text-xs">
                         <div class="flex justify-between items-center text-amber-400 font-bold">
-                            <span>ટેസ്റ്റ്: ${rep.testName} (${rep.subtopic})</span>
-                            <button onclick="deleteReportedQuestion(${rep.reportId}, ${rep.questionId})" class="bg-red-950/80 border border-red-800 text-red-400 hover:bg-red-900 px-2.5 py-1 rounded-lg font-medium transition">ഡിലീറ്റ് ചോദ്യം</button>
+                            <span>ടെസ്റ്റ്: ${rep.testName} (${rep.subtopic})</span>
+                            <div class="flex space-x-2">
+                                <button onclick="openAdminEditModal(${rep.reportId}, ${rep.questionId})" class="bg-indigo-600 hover:bg-indigo-700 text-white px-2.5 py-1 rounded-lg font-medium transition">എഡിറ്റ്</button>
+                                <button onclick="deleteReportedQuestion(${rep.reportId}, ${rep.questionId})" class="bg-red-950/80 border border-red-800 text-red-400 hover:bg-red-900 px-2.5 py-1 rounded-lg font-medium transition">ഡിലീറ്റ്</button>
+                            </div>
                         </div>
                         <div class="text-white font-medium">${rep.questionText}</div>
                         <div class="text-indigo-300 bg-indigo-950/40 p-2 rounded">💬 ഉപയോക്താവിന്റെ കമന്റ്: ${rep.comment}</div>
@@ -816,14 +936,79 @@
             });
         }
 
+        function openAdminEditModal(reportId, questionId) {
+            let qObj = sampleQuestions.find(q => q.id === questionId);
+            if(!qObj) {
+                alert("ഈ ചോദ്യം ഡാറ്റാബേസിൽ കണ്ടെത്താനായില്ല!");
+                return;
+            }
+
+            document.getElementById('edit-target-question-id').value = questionId;
+            document.getElementById('edit-target-report-id').value = reportId;
+            document.getElementById('edit-q-text').value = qObj.q || qObj.question || "";
+            document.getElementById('edit-opt-0').value = qObj.options && qObj.options[0] ? qObj.options[0] : "";
+            document.getElementById('edit-opt-1').value = qObj.options && qObj.options[1] ? qObj.options[1] : "";
+            document.getElementById('edit-opt-2').value = qObj.options && qObj.options[2] ? qObj.options[2] : "";
+            document.getElementById('edit-opt-3').value = qObj.options && qObj.options[3] ? qObj.options[3] : "";
+            document.getElementById('edit-ans-index').value = qObj.answer !== undefined ? qObj.answer : 0;
+            document.getElementById('edit-explanation').value = qObj.explanation || "";
+
+            document.getElementById('admin-edit-modal').classList.remove('hidden');
+        }
+
+        function closeAdminEditModal() {
+            document.getElementById('admin-edit-modal').classList.add('hidden');
+        }
+
+        async function saveEditedQuestion() {
+            let qId = parseInt(document.getElementById('edit-target-question-id').value);
+            let rId = parseInt(document.getElementById('edit-target-report-id').value);
+
+            let newQText = document.getElementById('edit-q-text').value.trim();
+            let opt0 = document.getElementById('edit-opt-0').value.trim();
+            let opt1 = document.getElementById('edit-opt-1').value.trim();
+            let opt2 = document.getElementById('edit-opt-2').value.trim();
+            let opt3 = document.getElementById('edit-opt-3').value.trim();
+            let newAns = parseInt(document.getElementById('edit-ans-index').value);
+            let newExp = document.getElementById('edit-explanation').value.trim();
+
+            if(!newQText) { alert('ചോദ്യം നൽകുക!'); return; }
+
+            let qIndex = sampleQuestions.findIndex(q => q.id === qId);
+            if(qIndex !== -1) {
+                sampleQuestions[qIndex].q = newQText;
+                sampleQuestions[qIndex].options = [opt0, opt1, opt2, opt3];
+                sampleQuestions[qIndex].answer = isNaN(newAns) ? 0 : newAns;
+                sampleQuestions[qIndex].explanation = newExp;
+                localStorage.setItem('psc_sample_questions_anoop', JSON.stringify(sampleQuestions));
+            }
+
+            reportedQuestionsList = reportedQuestionsList.filter(r => r.reportId !== rId);
+            localStorage.setItem('psc_reported_questions_anoop', JSON.stringify(reportedQuestionsList));
+
+            if(db) {
+                try {
+                    await db.collection("app_data").doc("psc_database_anoop").set({
+                        categoriesData: categoriesData,
+                        sampleQuestions: sampleQuestions,
+                        userProgressData: userProgressData,
+                        reportedQuestionsList: reportedQuestionsList,
+                        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+                } catch(e) { console.log("Edit sync error:", e); }
+            }
+
+            alert("🎉 ചോദ്യം വിജയകരമായി എഡിറ്റ് ചെയ്ത് അപ്ഡേറ്റ് ചെയ്തു!");
+            closeAdminEditModal();
+            renderAdminReports();
+        }
+
         async function deleteReportedQuestion(reportId, questionId) {
             if(!confirm("⚠️ ഈ ചോദ്യം ആപ്പിലെ ഡാറ്റാബേസിൽ നിന്ന് പൂർണ്ണമായി ഡിലീറ്റ് ചെയ്യണമെന്നുറപ്പാണോ?")) return;
 
-            // Remove from sampleQuestions
             sampleQuestions = sampleQuestions.filter(q => q.id !== questionId);
             localStorage.setItem('psc_sample_questions_anoop', JSON.stringify(sampleQuestions));
 
-            // Remove from reported list
             reportedQuestionsList = reportedQuestionsList.filter(r => r.reportId !== reportId);
             localStorage.setItem('psc_reported_questions_anoop', JSON.stringify(reportedQuestionsList));
 
@@ -845,6 +1030,7 @@
 
         function populateAccordion() {
             const container = document.getElementById('accordion-container');
+            if(!container) return;
             container.innerHTML = '';
             let hasTests = false;
 
@@ -860,7 +1046,7 @@
                         let val = `${catKey}|${sub.name}|${test}`;
                         testsListHtml += `
                             <label class="flex items-center space-x-2 py-1.5 px-3 hover:bg-slate-800 rounded cursor-pointer text-xs text-slate-300">
-                                <input type="checkbox" name="revision_test_checkbox" value="${val}" class="rounded bg-slate-800 border-slate-700 text-indigo-600 focus:ring-indigo-500">
+                                <input type="checkbox" name="revision_test_checkbox" value="${val}" data-cat="${catKey}" class="cat-checkbox-${catKey} rounded bg-slate-800 border-slate-700 text-indigo-600 focus:ring-indigo-500">
                                 <span class="font-medium">${sub.name} > ${test}</span>
                             </label>
                         `;
@@ -869,11 +1055,17 @@
 
                 container.innerHTML += `
                     <div class="border border-slate-700 rounded-xl overflow-hidden bg-slate-900">
-                        <button onclick="toggleAccordion('${accordionId}')" class="w-full flex justify-between items-center p-3 text-left font-bold text-sm text-indigo-400 bg-slate-950 hover:bg-slate-900 transition">
-                            <span>📂 ${cat.title}</span>
-                            <span id="icon-${accordionId}" class="text-xs">▼</span>
-                        </button>
-                        <div id="${accordionId}" class="hidden p-2 space-y-1 border-t border-slate-800">
+                        <div class="flex justify-between items-center bg-slate-950 px-3 py-2.5 border-b border-slate-800">
+                            <button onclick="toggleAccordion('${accordionId}')" class="flex-1 text-left font-bold text-sm text-indigo-400 hover:text-indigo-300 transition flex justify-between items-center">
+                                <span>📂 ${cat.title}</span>
+                                <span id="icon-${accordionId}" class="text-xs">▼</span>
+                            </button>
+                            <label class="ml-3 flex items-center space-x-1.5 cursor-pointer text-xs text-emerald-400 font-medium bg-emerald-950/60 border border-emerald-800/60 px-2 py-1 rounded">
+                                <input type="checkbox" onchange="toggleCategorySelectAll('${catKey}', this)" class="rounded bg-slate-900 border-slate-700 text-emerald-600 focus:ring-emerald-500">
+                                <span>Select All</span>
+                            </label>
+                        </div>
+                        <div id="${accordionId}" class="hidden p-2 space-y-1">
                             ${testsListHtml}
                         </div>
                     </div>
@@ -883,6 +1075,13 @@
             if(!hasTests) {
                 container.innerHTML = `<p class="text-xs text-slate-500 text-center py-4">മോക്ക് ടെസ്റ്റുകൾ ഒന്നും ആഡ് ചെയ്തിട്ടില്ല.</p>`;
             }
+        }
+
+        function toggleCategorySelectAll(catKey, masterCheckbox) {
+            const checkboxes = document.querySelectorAll(`.cat-checkbox-${catKey}`);
+            checkboxes.forEach(cb => {
+                cb.checked = masterCheckbox.checked;
+            });
         }
 
         function toggleAccordion(accId) {
@@ -897,6 +1096,7 @@
             }
         }
 
+        // Balanced Equal Distribution across selected topics
         function startAccordionCustomTest() {
             const checkboxes = document.querySelectorAll('input[name="revision_test_checkbox"]:checked');
             if(checkboxes.length === 0) {
@@ -904,30 +1104,57 @@
                 return;
             }
 
-            let filtered = [];
+            // Group questions by their source test/topic
+            let topicPools = {};
             checkboxes.forEach(cb => {
                 let parts = cb.value.split('|');
                 let catKey = parts[0];
                 let subName = parts[1];
                 let testName = parts[2];
+                let key = `${catKey}|${subName}|${testName}`;
+                
                 let matched = sampleQuestions.filter(q => q.topic === catKey && q.subtopic === subName && q.testName === testName);
-                filtered = filtered.concat(matched);
+                if(matched.length > 0) {
+                    topicPools[key] = shuffleArray(matched);
+                }
             });
 
-            if(filtered.length === 0) { alert("ചോദ്യങ്ങൾ ഒന്നും ലഭ്യമല്ല!"); return; }
+            let activeKeys = Object.keys(topicPools);
+            if(activeKeys.length === 0) { alert("ചോദ്യങ്ങൾ ഒന്നും ലഭ്യമല്ല!"); return; }
 
             const requestedCount = parseInt(document.getElementById('rev-count').value);
-            let finalQuestions = filtered.length < requestedCount ? shuffleArray(filtered) : shuffleArray(filtered).slice(0, requestedCount);
+            let perTopicCount = Math.ceil(requestedCount / activeKeys.length);
+
+            let finalQuestions = [];
+            activeKeys.forEach(key => {
+                let pool = topicPools[key];
+                let selectedFromTopic = pool.slice(0, perTopicCount);
+                finalQuestions = finalQuestions.concat(selectedFromTopic);
+            });
+
+            // Remove exact duplicate questions based on identical question text
+            let uniqueMap = new Map();
+            finalQuestions.forEach(qObj => {
+                let qText = (qObj.q || "").trim();
+                if(!uniqueMap.has(qText)) {
+                    uniqueMap.set(qText, qObj);
+                }
+            });
+            let uniqueFiltered = Array.from(uniqueMap.values());
+
+            // Final shuffle and slice to requested count
+            let finalSelected = shuffleArray(uniqueFiltered).slice(0, requestedCount);
 
             currentTestTitle = "മൾട്ടി-സെലക്ട് റിവിഷൻ ടെസ്റ്റ്";
             activeTestKeyForTracking = "Custom Revision Test";
-            prepareFinalTestQuestions(finalQuestions);
+            prepareFinalTestQuestions(finalSelected);
             launchMockTest();
         }
 
         function openSubTopics(catKey) {
             activeCategoryKey = catKey;
             const cat = categoriesData[catKey];
+            if(!cat) return;
             document.getElementById('subtopic-category-title').innerText = cat.title;
             const container = document.getElementById('subtopics-container');
             container.innerHTML = '';
@@ -973,8 +1200,6 @@
 
             document.querySelectorAll('main > section').forEach(sec => sec.classList.add('hidden'));
             document.getElementById('section-subtopics').classList.add('hidden');
-            document.getElementById('section-pdf_creator').classList.add('hidden');
-            document.getElementById('section-add_more').classList.add('hidden');
             document.getElementById('section-admin_panel').classList.add('hidden');
             document.getElementById('mock-interface').classList.add('hidden');
             document.getElementById('result-interface').classList.add('hidden');
@@ -984,69 +1209,10 @@
             loadPracticeQuestion();
         }
 
-        function renderDeleteMockList() {
-            const container = document.getElementById('delete-mock-container');
-            if(!container) return;
-            container.innerHTML = '';
-            let hasTests = false;
-
-            for(let catKey in categoriesData) {
-                let cat = categoriesData[catKey];
-                if(cat.subtopics.length === 0) continue;
-                
-                cat.subtopics.forEach(sub => {
-                    sub.tests.forEach(testName => {
-                        hasTests = true;
-                        container.innerHTML += `
-                            <div class="flex items-center justify-between bg-slate-900 border border-slate-700 p-3 rounded-xl">
-                                <div>
-                                    <div class="text-xs text-indigo-400 font-semibold">${cat.title} > ${sub.name}</div>
-                                    <div class="text-sm font-medium text-white">${testName}</div>
-                                </div>
-                                <button onclick="deleteSpecificMockTest('${catKey}', '${sub.name}', '${testName}')" class="bg-red-950/80 border border-red-800 text-red-400 hover:bg-red-900 text-xs px-3 py-1.5 rounded-lg font-medium transition">ഡിലീറ്റ്</button>
-                            </div>
-                        `;
-                    });
-                });
-            }
-
-            if(!hasTests) {
-                container.innerHTML = `<p class="text-xs text-slate-500 text-center py-4">ഡിലീറ്റ് ചെയ്യാൻ മോക്ക് ടെസ്റ്റുകൾ ഒന്നും ലഭ്യമല്ല.</p>`;
-            }
-        }
-
-        function deleteSpecificMockTest(topicKey, subName, testName) {
-            if(!confirm(`⚠️ "${testName}" എന്ന മോക്ക് ടെസ്റ്റും അതിലെ ചോദ്യങ്ങളും ഡിലീറ്റ് ചെയ്യണമെന്നുറപ്പാണോ?`)) return;
-
-            sampleQuestions = sampleQuestions.filter(q => !(q.topic === topicKey && q.subtopic.toLowerCase() === subName.toLowerCase() && q.testName.toLowerCase() === testName.toLowerCase()));
-            localStorage.setItem('psc_sample_questions_anoop', JSON.stringify(sampleQuestions));
-
-            let sub = categoriesData[topicKey].subtopics.find(s => s.name.toLowerCase() === subName.toLowerCase());
-            if(sub) {
-                sub.tests = sub.tests.filter(t => t.toLowerCase() !== testName.toLowerCase());
-                if(sub.tests.length === 0) {
-                    categoriesData[topicKey].subtopics = categoriesData[topicKey].subtopics.filter(s => s.name.toLowerCase() !== subName.toLowerCase());
-                }
-            }
-            localStorage.setItem('psc_categories_data_anoop', JSON.stringify(categoriesData));
-
-            if(db) {
-                db.collection("app_data").doc("psc_database_anoop").set({
-                    categoriesData: categoriesData,
-                    sampleQuestions: sampleQuestions,
-                    userProgressData: userProgressData,
-                    reportedQuestionsList: reportedQuestionsList,
-                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-                }).catch(e => console.log(e));
-            }
-
-            alert("മോക്ക് ടെസ്റ്റും ചോദ്യങ്ങളും വിജയകരമായി ഡിലീറ്റ് ചെയ്തു!");
-            renderDeleteMockList();
-        }
-
         function backToDashboard() {
             document.getElementById('section-subtopics').classList.add('hidden');
             document.getElementById('section-dashboard').classList.remove('hidden');
+            renderDashboardCategories();
         }
 
         function shuffleArray(array) {
@@ -1084,8 +1250,6 @@
         function launchMockTest() {
             document.querySelectorAll('main > section').forEach(sec => sec.classList.add('hidden'));
             document.getElementById('section-subtopics').classList.add('hidden');
-            document.getElementById('section-pdf_creator').classList.add('hidden');
-            document.getElementById('section-add_more').classList.add('hidden');
             document.getElementById('section-admin_panel').classList.add('hidden');
             document.getElementById('mock-interface').classList.remove('hidden');
             currentIndex = 0;
@@ -1113,12 +1277,10 @@
             document.getElementById('timer-display').innerText = `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
         }
 
-        // Improved Question Content Renderer for Statements and Matching Questions
         function renderQuestionContent(q, containerId) {
             const container = document.getElementById(containerId);
             let html = `<div class="font-medium text-white text-base mb-3 leading-relaxed">${currentIndex + 1}. ${q.q || q.question || ""}</div>`;
 
-            // Statement Questions Formatting (Numbered with line spacing)
             if (q.statements && Array.isArray(q.statements) && q.statements.length > 0) {
                 html += `<div class="bg-slate-900/80 border border-slate-700/80 p-4 rounded-xl space-y-3 my-3">`;
                 q.statements.forEach((stmt, sIdx) => {
@@ -1132,7 +1294,6 @@
                 html += `</div>`;
             }
 
-            // Matching (ചേരുംപടി) Questions Formatting (Two-column clear layout)
             if (q.matchingPairs && Array.isArray(q.matchingPairs) && q.matchingPairs.length > 0) {
                 html += `<div class="grid grid-cols-1 md:grid-cols-2 gap-3 my-3 bg-slate-900/80 border border-slate-700/80 p-4 rounded-xl">`;
                 let colAList = [];
@@ -1250,7 +1411,6 @@
             renderResultAnswers('all');
         }
 
-        // തെറ്റിയ ചോദ്യങ്ങൾ ഡാഷ്‌ബോർഡിൽ കാറ്റഗറിയായി സേവ് ചെയ്യാതെ, കസ്റ്റം റിവിഷൻ സെറ്റുകളിലേക്ക് മാത്രം സേവ് ചെയ്യുന്ന രീതി
         function saveMistakesAsNewMockTest() {
             let customNameInput = document.getElementById('custom-mistake-test-name');
             let newTestName = customNameInput ? customNameInput.value.trim() : `${activeOriginalTestName} (തെറ്റിയവ)`;
@@ -1272,7 +1432,6 @@
             let subName = activeSubtopicName || "Revision Set";
             let catKey = activeCategoryKey || "topic_wise";
 
-            // സാമ്പിൾ ചോദ്യങ്ങളിൽ മാത്രം തെറ്റിയവ ആഡ് ചെയ്യുക (കാറ്റഗറി ലിസ്റ്റിൽ പുതിയ ടെസ്റ്റായി കയറില്ല)
             wrongQuestions.forEach((wq, idx) => {
                 sampleQuestions.push({
                     ...wq,
@@ -1379,6 +1538,7 @@
 
         function renderTrackerTable() {
             const tbody = document.getElementById('tracker-table-body');
+            if(!tbody) return;
             tbody.innerHTML = '';
 
             let keys = Object.keys(userProgressData);
@@ -1403,6 +1563,7 @@
 
         function renderResultAnswers(filterType) {
             const listContainer = document.getElementById('result-answers-list');
+            if(!listContainer) return;
             listContainer.innerHTML = '';
 
             currentTestQuestions.forEach((q, idx) => {
@@ -1416,7 +1577,6 @@
                 let userAnsText = userAns !== undefined ? q.options[userAns] : 'ഒന്നുമില്ല';
                 let correctAnsText = q.options[q.answer];
 
-                // അനാവശ്യമായി വരുന്ന [span...] ടാഗുകൾ ഒഴിവാക്കാൻ
                 let cleanExplanation = q.explanation || "";
                 cleanExplanation = cleanExplanation.replace(/\[span_\d+\]|\(start_span\)|\(end_span\)/g, '');
 
@@ -1455,17 +1615,20 @@
         function loadPracticeQuestion() {
             if(practiceQueue.length === 0) { finishPracticeZone(); return; }
             currentPracticeQuestion = practiceQueue.shift();
-            document.getElementById('practice-progress-indicator').innerText = `ബാക്കി ചോദ്യങ്ങൾ: ${practiceQueue.length + 1}`;
+            const progInd = document.getElementById('practice-progress-indicator');
+            if(progInd) progInd.innerText = `ബാക്കി ചോദ്യങ്ങൾ: ${practiceQueue.length + 1}`;
             renderQuestionContent(currentPracticeQuestion, 'p-q-container');
             
             const banner = document.getElementById('practice-feedback-banner');
-            banner.classList.add('hidden');
-            banner.innerHTML = '';
+            if(banner) {
+                banner.classList.add('hidden');
+                banner.innerHTML = '';
+            }
 
             const optsBox = document.getElementById('p-options-box');
+            if(!optsBox) return;
             optsBox.innerHTML = '';
 
-            // Shuffle options for practice question
             let originalOpts = currentPracticeQuestion.options.map((opt, idx) => ({
                 optText: opt,
                 isCorrect: idx === currentPracticeQuestion.answer
@@ -1485,19 +1648,21 @@
         function checkPracticeAnswer(selectedIdx) {
             if(!currentPracticeQuestion) return;
             const banner = document.getElementById('practice-feedback-banner');
+            if(!banner) return;
             banner.classList.remove('hidden');
             const parentBox = document.getElementById('p-options-box');
-            Array.from(parentBox.children).forEach(child => child.disabled = true);
+            if(parentBox) {
+                Array.from(parentBox.children).forEach(child => child.disabled = true);
+            }
             practiceAttemptedMaster.add(currentPracticeQuestion.id);
 
             const correctIdx = shuffledCurrentCorrectIndex;
             const correctOptText = shuffledCurrentOptions[correctIdx].optText;
             
-            // അനാവശ്യമായി വരുന്ന [span...] ടാഗുകൾ ഒഴിവാക്കാൻ
             let cleanExplanation = currentPracticeQuestion.explanation || "";
             cleanExplanation = cleanExplanation.replace(/\[span_\d+\]|\(start_span\)|\(end_span\)/g, '');
 
-            const buttons = parentBox.children;
+            const buttons = parentBox ? parentBox.children : [];
 
             if(selectedIdx === correctIdx) {
                 practiceLearnedMaster.add(currentPracticeQuestion.id);
@@ -1506,7 +1671,7 @@
                 }
                 banner.className = "p-2 rounded-xl text-xs font-medium bg-emerald-900/80 border border-emerald-600 text-emerald-200";
                 banner.innerHTML = `ശരി ഉത്തരം! (Correct)`;
-                setTimeout(() => { loadPracticeQuestion(); }, 1000); // 1 സെക്കൻഡിൽ പെട്ടെന്ന് മാറും
+                setTimeout(() => { loadPracticeQuestion(); }, 1000);
             } else {
                 if(buttons[selectedIdx]) {
                     buttons[selectedIdx].className = "w-full text-left p-3.5 border border-red-500 bg-red-950/80 text-red-300 rounded-xl font-medium transition";
@@ -1523,7 +1688,6 @@
             }
         }
 
-        // തെറ്റിയ ചോദ്യം കുറച്ചു ചോദ്യങ്ങൾക്ക് ശേഷം ക്യൂവിലേക്ക് തിരികെ ചേർക്കാനുള്ള ഫങ്ഷൻ
         function handleWrongQuestionRetry() {
             if(!currentPracticeQuestion) return;
             let insertPos = Math.floor(Math.random() * 3) + 2;
