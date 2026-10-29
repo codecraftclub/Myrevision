@@ -2338,7 +2338,7 @@
         function openPaletteModal() { document.getElementById('palette-modal').classList.remove('hidden'); }
         function closePaletteModal() { document.getElementById('palette-modal').classList.add('hidden'); }
 
-        // Practice Zone (Fully Shuffle Enabled: Questions & Options)
+        // Practice Zone (Fully Fixed and Restored)
         function initPracticeZone() {
             if(sampleQuestions.length === 0) {
                 alert("പ്രാക്ടീസ് ചെയ്യാൻ ചോദ്യങ്ങൾ ഒന്നുമില്ല. ആദ്യം പുതിയ മോക്ക് ടെസ്റ്റുകൾ ആഡ് ചെയ്യുക!");
@@ -2351,8 +2351,8 @@
             loadPracticeQuestion();
         }
 
-        let shuffledCurrentOptions = [];
-        let shuffledCurrentCorrectIndex = 0;
+        let practiceShuffledOpts = [];
+        let practiceShuffledCorrectIdx = 0;
 
         function loadPracticeQuestion() {
             if(practiceQueue.length === 0) { finishPracticeZone(); return; }
@@ -2375,10 +2375,10 @@
                 optText: opt,
                 isCorrect: idx === currentPracticeQuestion.answer
             }));
-            shuffledCurrentOptions = shuffleArray(originalOpts);
-            shuffledCurrentCorrectIndex = shuffledCurrentOptions.findIndex(item => item.isCorrect);
+            practiceShuffledOpts = shuffleArray(originalOpts);
+            practiceShuffledCorrectIdx = practiceShuffledOpts.findIndex(item => item.isCorrect);
 
-            shuffledCurrentOptions.forEach((item, idx) => {
+            practiceShuffledOpts.forEach((item, idx) => {
                 optsBox.innerHTML += `
                     <button onclick="checkPracticeAnswer(${idx})" class="w-full text-left p-3.5 border border-slate-700 bg-slate-900/50 text-slate-300 rounded-xl hover:bg-slate-700 transition">
                         ${item.optText}
@@ -2398,8 +2398,8 @@
             }
             practiceAttemptedMaster.add(currentPracticeQuestion.id);
 
-            const correctIdx = shuffledCurrentCorrectIndex;
-            const correctOptText = studyShuffledOpts[correctIdx].optText;
+            const correctIdx = practiceShuffledCorrectIdx;
+            const correctOptText = practiceShuffledOpts[correctIdx].optText;
             
             let cleanExplanation = currentPracticeQuestion.explanation || "";
             cleanExplanation = cleanExplanation.replace(/\[span_\d+\]|\(start_span\)|\(end_span\)/g, '');
