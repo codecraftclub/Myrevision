@@ -13,6 +13,43 @@
         .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
         .custom-scrollbar::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
         body { background-color: #0f172a; color: #f8fafc; }
+        /* Fluorescent Green Highlight Custom Style */
+        mark.user-highlight {
+            background-color: #4ade80;
+            color: #052e16;
+            padding: 2px 4px;
+            border-radius: 4px;
+            font-weight: 600;
+        }
+        /* Table styling for notes */
+        .notes-table-container {
+            width: 100%;
+            overflow-x: auto;
+            margin: 1rem 0;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        .notes-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+        }
+        .notes-table th, .notes-table td {
+            border: 1px solid #cbd5e1;
+            padding: 10px 14px;
+            text-align: left;
+            font-size: 0.95rem;
+            color: #1e293b;
+            white-space: nowrap;
+        }
+        .notes-table th {
+            background-color: #fee2e2;
+            color: #991b1b;
+            font-weight: bold;
+        }
+        .notes-table tr:nth-child(even) {
+            background-color: #f8fafc;
+        }
     </style>
 </head>
 <body class="font-sans antialiased min-h-screen flex flex-col">
@@ -41,6 +78,7 @@
             <button onclick="switchTab('dashboard')" id="btn-dashboard" class="tab-btn px-4 py-2 bg-indigo-600 text-white rounded-xl text-sm font-medium whitespace-nowrap shadow">ഹോം (Home)</button>
             <button onclick="switchTab('revision')" id="btn-revision" class="tab-btn px-4 py-2 bg-slate-800 text-slate-300 border border-slate-700 rounded-xl text-sm font-medium whitespace-nowrap">Custom Revision</button>
             <button onclick="switchTab('practice')" id="btn-practice" class="tab-btn px-4 py-2 bg-slate-800 text-slate-300 border border-slate-700 rounded-xl text-sm font-medium whitespace-nowrap">Practice Zone</button>
+            <button onclick="switchTab('study_zone')" id="btn-study_zone" class="tab-btn px-4 py-2 bg-slate-800 text-slate-300 border border-slate-700 rounded-xl text-sm font-medium whitespace-nowrap">📚 Study Zone</button>
             <button onclick="switchTab('admin_panel')" id="btn-admin_panel" class="tab-btn px-4 py-2 bg-slate-800 text-slate-300 border border-slate-700 rounded-xl text-sm font-medium whitespace-nowrap">Admin Panel</button>
             <button onclick="switchTab('tracker')" id="btn-tracker" class="tab-btn px-4 py-2 bg-slate-800 text-slate-300 border border-slate-700 rounded-xl text-sm font-medium whitespace-nowrap">Progress Tracker</button>
         </div>
@@ -64,6 +102,46 @@
             <div id="subtopics-container" class="space-y-4"></div>
         </section>
 
+        <!-- TAB: STUDY ZONE -->
+        <section id="section-study_zone" class="hidden space-y-6">
+            <div class="bg-slate-800 border border-slate-700 p-5 rounded-2xl space-y-4 shadow-md">
+                <h2 class="text-lg font-bold text-indigo-400">📚 സ്റ്റഡി സോൺ (Study Zone)</h2>
+                <p class="text-xs text-slate-400">താഴെ കാണുന്ന മോക്ക് ടെസ്റ്റുകളിൽ നിന്ന് നിങ്ങൾക്ക് 'Practice & Study' തിരഞ്ഞെടുക്കാം:</p>
+                <div id="study-zone-tests-container" class="space-y-3 max-h-[70vh] overflow-y-auto custom-scrollbar p-1">
+                    <p class="text-xs text-slate-500 text-center py-4">മോക്ക് ടെസ്റ്റുകൾ ഒന്നും ലഭ്യമല്ല.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- STUDY ZONE SUB-VIEW: Practice & Study Mode -->
+        <section id="section-study-practice" class="hidden space-y-4">
+            <div class="bg-slate-800 border border-slate-700 p-5 rounded-2xl shadow-xl space-y-6">
+                <div class="flex justify-between items-center border-b border-slate-700 pb-3">
+                    <div id="study-practice-title" class="font-bold text-indigo-400 text-sm">Practice & Study</div>
+                    <button onclick="switchTab('study_zone')" class="bg-slate-700 hover:bg-slate-600 text-white text-xs px-3 py-1.5 rounded-lg font-medium">← ബാക്ക്</button>
+                </div>
+                <div id="study-practice-box" class="space-y-4">
+                    <div id="sp-q-container" class="space-y-3"></div>
+                    <div id="sp-options-box" class="space-y-2.5"></div>
+                    <div id="sp-feedback-banner" class="hidden p-4 rounded-xl text-sm font-medium transition-all space-y-3"></div>
+                </div>
+                <div class="pt-3 border-t border-slate-700 flex justify-between items-center">
+                    <button onclick="loadStudyPracticeQuestion()" class="px-3 py-1.5 bg-slate-700 hover:bg-slate-600 text-white rounded-lg text-xs font-medium">അടുത്തത് (Skip)</button>
+                    <button onclick="toggleStudyPracticeDetails()" class="bg-indigo-950/80 border border-indigo-700 text-indigo-300 hover:bg-indigo-900 text-xs px-3 py-1.5 rounded-lg font-medium transition">🔍 View Details</button>
+                </div>
+                <div id="sp-details-box" class="hidden p-3 bg-indigo-950/40 border border-indigo-800/60 rounded-xl text-xs text-indigo-200 space-y-1"></div>
+            </div>
+        </section>
+
+        <!-- NOTES CATEGORY SUB-TOPICS VIEW -->
+        <section id="section-notes-subtopics" class="hidden space-y-4">
+            <div class="flex items-center space-x-3">
+                <button onclick="switchTab('dashboard')" class="bg-slate-800 border border-slate-700 text-slate-300 px-3 py-1.5 rounded-lg font-medium">← തിരികെ ഹോമിലേക്ക്</button>
+                <h2 class="text-lg font-bold text-emerald-400">📝 സ്റ്റഡി നോട്ട്സ് (Study Notes - Topic-wise)</h2>
+            </div>
+            <div id="notes-subtopics-container" class="space-y-4"></div>
+        </section>
+
         <!-- TAB: ADMIN PANEL (Unified Admin Hub with Buttons) -->
         <section id="section-admin_panel" class="hidden space-y-6">
             <div class="bg-slate-800 border border-slate-700 p-5 rounded-2xl space-y-4 shadow-md">
@@ -71,9 +149,10 @@
                 <p class="text-xs text-slate-400">ആപ്പിലെ കാറ്റഗറികളും ചോദ്യങ്ങളും കൈകാര്യം ചെയ്യാൻ താഴെയുള്ള ഓപ്ഷനുകൾ ഉപയോഗിക്കുക:</p>
                 
                 <!-- Admin Action Buttons Bar -->
-                <div class="grid grid-cols-2 md:grid-cols-3 gap-2.5 pt-2">
-                    <button onclick="switchAdminSubSection('add_cat')" id="admin-btn-add_cat" class="admin-sub-btn p-3 bg-indigo-600 text-white rounded-xl text-xs font-bold transition shadow">Add a Main Category</button>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-2.5 pt-2">
+                    <button onclick="switchAdminSubSection('add_cat')" id="admin-btn-add_cat" class="admin-sub-btn p-3 bg-indigo-600 text-white rounded-xl text-xs font-bold transition shadow">Add Main Category</button>
                     <button onclick="switchAdminSubSection('pdf_creator')" id="admin-btn-pdf_creator" class="admin-sub-btn p-3 bg-slate-900 border border-slate-700 text-slate-300 rounded-xl text-xs font-medium transition">Mock Creator</button>
+                    <button onclick="switchAdminSubSection('add_notes')" id="admin-btn-add_notes" class="admin-sub-btn p-3 bg-slate-900 border border-slate-700 text-slate-300 rounded-xl text-xs font-medium transition">➕ Add Notes</button>
                     <button onclick="switchAdminSubSection('add_more')" id="admin-btn-add_more" class="admin-sub-btn p-3 bg-slate-900 border border-slate-700 text-slate-300 rounded-xl text-xs font-medium transition">Add More Qns</button>
                     <button onclick="switchAdminSubSection('delete_mock')" id="admin-btn-delete_mock" class="admin-sub-btn p-3 bg-slate-900 border border-slate-700 text-slate-300 rounded-xl text-xs font-medium transition">Delete Mock</button>
                     <button onclick="switchAdminSubSection('reported_qns')" id="admin-btn-reported_qns" class="admin-sub-btn p-3 bg-slate-900 border border-slate-700 text-slate-300 rounded-xl text-xs font-medium transition">Reported Questions</button>
@@ -120,6 +199,34 @@
                 </button>
             </div>
 
+            <!-- ADMIN SUB-SECTION: Add Notes (Text & Table Notes Storage) -->
+            <div id="admin-sub-add_notes" class="admin-sub-section hidden bg-slate-800 border border-slate-700 p-5 rounded-2xl space-y-4 shadow-md">
+                <h3 class="text-md font-bold text-emerald-400">📝 സ്റ്റഡി നോട്ട്സ് ആഡ് ചെയ്യുക (Add Notes)</h3>
+                <div>
+                    <label class="block text-sm font-medium text-slate-300 mb-1">കാറ്റഗറി തിരഞ്ഞെടുക്കുക:</label>
+                    <select id="notes-admin-category" onchange="populateNotesSubtopics()" class="w-full p-2.5 bg-slate-900 border border-slate-700 text-white rounded-xl text-sm"></select>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-slate-300 mb-1">സബ് ടോപ്പിക് തിരഞ്ഞെടുക്കുക:</label>
+                    <select id="notes-admin-subtopic" onchange="populateNotesTests()" class="w-full p-2.5 bg-slate-900 border border-slate-700 text-white rounded-xl text-sm">
+                        <option value="">ആദ്യം കാറ്റഗറി തിരഞ്ഞെടുക്കുക</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-slate-300 mb-1">ടെസ്റ്റ് നെയിം തിരഞ്ഞെടുക്കുക:</label>
+                    <select id="notes-admin-testname" class="w-full p-2.5 bg-slate-900 border border-slate-700 text-white rounded-xl text-sm">
+                        <option value="">ആദ്യം സബ് ടോപ്പിക് തിരഞ്ഞെടുക്കുക</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-slate-300 mb-1">നോട്ട്സ് ഇവിടെ പേസ്റ്റ് ചെയ്യുക (ടേബിളുകൾ ഉൾപ്പെടെ നേരിട്ട് നൽകാം):</label>
+                    <textarea id="notes-admin-text-input" rows="8" placeholder="ടേബിളുകളും നോട്ടുകളും ഇവിടെ പേസ്റ്റ് ചെയ്യുക..." class="w-full p-2.5 bg-slate-900 border border-slate-700 text-white rounded-xl text-sm custom-scrollbar"></textarea>
+                </div>
+                <button onclick="saveAdminTargetedNotes()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-3 rounded-xl font-medium shadow transition">
+                    നോട്ട്സ് അപ്ഡേറ്റ് ചെയ്യുക
+                </button>
+            </div>
+
             <!-- ADMIN SUB-SECTION 3: Add More Qns -->
             <div id="admin-sub-add_more" class="admin-sub-section hidden bg-slate-800 border border-slate-700 p-5 rounded-2xl space-y-4 shadow-md">
                 <h3 class="text-md font-bold text-emerald-400">➕ കൂടുതൽ ചോദ്യങ്ങൾ കൂട്ടിച്ചേർക്കുക (Append)</h3>
@@ -140,7 +247,7 @@
                     </select>
                 </div>
                 <div>
-                    <label class="block text-sm font-medium text-slate-300 mb-1">പുതിയ JSON ചോദ്യങ്ങൾ ഇവിടെ പേസ്റ്റ് ചെയ്യുക:</label>
+                    <label class="block text-sm font-medium text-slate-300 mb-1">പുതിയ ചോദ്യങ്ങൾ ഇവിടെ പേസ്റ്റ് ചെയ്യുക:</label>
                     <textarea id="add-more-json-input" rows="8" placeholder="[ { 'question': '...', 'options': [...], 'answer': 0, 'explanation': '...' } ]" class="w-full p-2.5 bg-slate-900 border border-slate-700 text-white rounded-xl text-sm custom-scrollbar"></textarea>
                 </div>
                 <button onclick="appendMoreQuestionsToTest()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-3 rounded-xl font-medium shadow transition">
@@ -158,7 +265,7 @@
 
             <!-- ADMIN SUB-SECTION 5: Reported Questions -->
             <div id="admin-sub-reported_qns" class="admin-sub-section hidden bg-slate-800 border border-slate-700 p-5 rounded-2xl space-y-4 shadow-md">
-                <h3 class="text-md font-bold text-amber-400">🚩 റിപ്പോർട്ട് ചെയ്ത ചോദ്യങ്ങൾ (Edit & Delete)</h3>
+                <h3 class="text-md font-bold text-amber-400">🚩 റിപ്പോർട്ട് ചെയ്ത ചോദ്യങ്ങൾ (Edit, Delete & No Action)</h3>
                 <div id="admin-reports-container" class="space-y-3 max-h-96 overflow-y-auto custom-scrollbar p-1">
                     <p class="text-xs text-slate-500 text-center py-4">റിപ്പോർട്ട് ചെയ്ത ചോദ്യങ്ങൾ ഒന്നും ലഭ്യമല്ല.</p>
                 </div>
@@ -335,6 +442,46 @@
 
     </main>
 
+    <!-- FULL SCREEN STUDY NOTES OVERLAY VIEW -->
+    <div id="section-study-notes" class="hidden fixed inset-0 z-50 flex flex-col bg-slate-50 text-slate-900 overflow-y-auto p-4 md:p-12">
+        <div class="max-w-4xl w-full mx-auto space-y-6 flex-1 flex flex-col">
+            <!-- Header bar with Topic Title Only -->
+            <div class="flex justify-between items-center border-b pb-4 border-slate-200 sticky top-0 bg-slate-50 z-10 py-3 shadow-sm px-4 rounded-xl">
+                <div id="study-notes-title" class="font-bold text-lg md:text-2xl text-red-600">Study Notes</div>
+                <div class="flex items-center space-x-2">
+                    <button onclick="closeStudyNotesView()" class="bg-slate-700 hover:bg-slate-600 text-white text-xs px-4 py-2 rounded-lg font-medium shadow">← ബാക്ക്</button>
+                </div>
+            </div>
+            <!-- Scrollable content -->
+            <div id="study-notes-scroll-container" class="space-y-4 flex-1 overflow-y-auto custom-scrollbar p-2 leading-relaxed text-slate-800 text-base md:text-lg select-text">
+                <!-- Rich text notes & tables injected here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Floating Selection Toolbar (Fluorescent Green Highlight & Undo Buttons) -->
+    <div id="selection-toolbar" class="hidden fixed z-50 bg-slate-900 border border-slate-700 shadow-2xl rounded-xl p-2 flex items-center space-x-2 transform -translate-x-1/2 -translate-y-full">
+        <button onclick="applyHighlightSelection()" class="bg-[#4ade80] hover:bg-[#22c55e] text-slate-950 font-bold text-xs px-3 py-1.5 rounded-lg shadow transition flex items-center space-x-1">
+            <span>🖍️ Highlight</span>
+        </button>
+        <button onclick="removeHighlightSelection()" class="bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs px-3 py-1.5 rounded-lg shadow transition flex items-center space-x-1">
+            <span>↺ Undo</span>
+        </button>
+    </div>
+
+    <!-- Admin PIN Verification Modal -->
+    <div id="admin-pin-modal" class="hidden fixed inset-0 bg-black bg-opacity-80 flex justify-center items-center p-4 z-50">
+        <div class="bg-slate-800 border border-slate-700 p-6 rounded-2xl max-w-sm w-full space-y-4 shadow-2xl text-center">
+            <h3 class="font-bold text-amber-400 text-lg">🔒 അഡ്മിൻ സുരക്ഷാ പരിശോധന</h3>
+            <p class="text-xs text-slate-300">അഡ്മിൻ പാനലിലേക്ക് പ്രവേശിക്കാൻ 4-ഡിജിറ്റ് പിൻ നമ്പർ നൽകുക:</p>
+            <input type="password" id="admin-pin-input" maxlength="4" placeholder="••••" class="w-full text-center tracking-widest text-xl p-3 bg-slate-900 border border-slate-700 text-white rounded-xl">
+            <div class="flex space-x-2 pt-2">
+                <button onclick="verifyAdminPin()" class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white py-2.5 rounded-xl text-xs font-bold transition">തുറക്കുക</button>
+                <button onclick="closeAdminPinModal()" class="flex-1 bg-slate-700 hover:bg-slate-600 text-white py-2.5 rounded-xl text-xs font-medium transition">ക്ലോസ്</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Question Palette Modal -->
     <div id="palette-modal" class="hidden fixed inset-0 bg-black bg-opacity-70 flex justify-center items-center p-4 z-50">
         <div class="bg-slate-800 border border-slate-700 p-6 rounded-2xl max-w-md w-full space-y-4 shadow-2xl">
@@ -417,9 +564,10 @@
             console.log("Firebase init error:", e);
         }
 
-        let categoriesData = JSON.parse(localStorage.getItem('psc_categories_data_anoop') || JSON.stringify({
-            scert: { title: "SCERT Based Exams", subtopics: [] },
+        let defaultCategoriesOrder = {
             topic_wise: { title: "Topic-wise Exams", subtopics: [] },
+            notes: { title: "📝 Study Notes", subtopics: [] },
+            scert: { title: "SCERT Based Exams", subtopics: [] },
             ca_daily: { title: "Daily Current Affairs", subtopics: [] },
             ca_monthly: { title: "Monthly Current Affairs", subtopics: [] },
             malayalam: { title: "മലയാളം (Malayalam)", subtopics: [] },
@@ -427,9 +575,25 @@
             pyq_main: { title: "PREVIOUS YEAR QUESTIONS", subtopics: [] },
             pyq_malayalam: { title: "Malayalam PYQ", subtopics: [] },
             pyq_english: { title: "English PYQ", subtopics: [] }
-        }));
+        };
+
+        let storedCatData = JSON.parse(localStorage.getItem('psc_categories_data_anoop') || 'null');
+        let categoriesData = {};
+        if (storedCatData) {
+            for (let k in defaultCategoriesOrder) {
+                categoriesData[k] = storedCatData[k] || defaultCategoriesOrder[k];
+            }
+            for (let k in storedCatData) {
+                if (!categoriesData[k]) categoriesData[k] = storedCatData[k];
+            }
+        } else {
+            categoriesData = defaultCategoriesOrder;
+        }
 
         let sampleQuestions = JSON.parse(localStorage.getItem('psc_sample_questions_anoop') || JSON.stringify([]));
+        let studyNotesMap = JSON.parse(localStorage.getItem('psc_study_notes_map_anoop') || JSON.stringify({}));
+        let studyHighlightsMap = JSON.parse(localStorage.getItem('psc_study_highlights_map_anoop') || JSON.stringify({}));
+
         let userProgressData = JSON.parse(localStorage.getItem('psc_user_progress_anoop') || JSON.stringify({}));
         let savedMistakeSets = JSON.parse(localStorage.getItem('psc_saved_mistake_sets_anoop') || JSON.stringify([]));
         let reportedQuestionsList = JSON.parse(localStorage.getItem('psc_reported_questions_anoop') || JSON.stringify([]));
@@ -442,17 +606,28 @@
                 if (doc.exists) {
                     const serverData = doc.data();
                     if(serverData.categoriesData) {
-                        categoriesData = serverData.categoriesData;
-                        if(!categoriesData.malayalam) categoriesData.malayalam = { title: "മലയാളം (Malayalam)", subtopics: [] };
-                        if(!categoriesData.english) categoriesData.english = { title: "ഇംഗ്ലീഷ് (English)", subtopics: [] };
-                        if(!categoriesData.pyq_main) categoriesData.pyq_main = { title: "PREVIOUS YEAR QUESTIONS", subtopics: [] };
-                        if(!categoriesData.pyq_malayalam) categoriesData.pyq_malayalam = { title: "Malayalam PYQ", subtopics: [] };
-                        if(!categoriesData.pyq_english) categoriesData.pyq_english = { title: "English PYQ", subtopics: [] };
+                        let sData = serverData.categoriesData;
+                        let ordered = {};
+                        for (let k in defaultCategoriesOrder) {
+                            ordered[k] = sData[k] || defaultCategoriesOrder[k];
+                        }
+                        for (let k in sData) {
+                            if (!ordered[k]) ordered[k] = sData[k];
+                        }
+                        categoriesData = ordered;
                         localStorage.setItem('psc_categories_data_anoop', JSON.stringify(categoriesData));
                     }
                     if(serverData.sampleQuestions) {
                         sampleQuestions = serverData.sampleQuestions;
                         localStorage.setItem('psc_sample_questions_anoop', JSON.stringify(sampleQuestions));
+                    }
+                    if(serverData.studyNotesMap) {
+                        studyNotesMap = serverData.studyNotesMap;
+                        localStorage.setItem('psc_study_notes_map_anoop', JSON.stringify(studyNotesMap));
+                    }
+                    if(serverData.studyHighlightsMap) {
+                        studyHighlightsMap = serverData.studyHighlightsMap;
+                        localStorage.setItem('psc_study_highlights_map_anoop', JSON.stringify(studyHighlightsMap));
                     }
                     if(serverData.userProgressData) {
                         userProgressData = serverData.userProgressData;
@@ -480,6 +655,7 @@
         let activeCategoryKey = "";
         let activeSubtopicName = "";
         let activeOriginalTestName = "";
+        let activeCurrentNoteKey = "";
 
         let practiceQueue = [];
         let currentPracticeQuestion = null;
@@ -487,8 +663,18 @@
         let practiceLearnedMaster = new Set();
 
         function switchTab(tabId) {
+            if(tabId === 'admin_panel') {
+                document.getElementById('admin-pin-input').value = '';
+                document.getElementById('admin-pin-modal').classList.remove('hidden');
+                return;
+            }
+
             document.querySelectorAll('main > section').forEach(sec => sec.classList.add('hidden'));
             document.getElementById('section-subtopics').classList.add('hidden');
+            document.getElementById('section-study_zone').classList.add('hidden');
+            document.getElementById('section-study-practice').classList.add('hidden');
+            document.getElementById('section-notes-subtopics').classList.add('hidden');
+            document.getElementById('section-study-notes').classList.add('hidden');
             document.getElementById('section-admin_panel').classList.add('hidden');
             document.getElementById('mock-interface').classList.add('hidden');
             document.getElementById('result-interface').classList.add('hidden');
@@ -506,12 +692,9 @@
             if(tabId === 'dashboard') {
                 document.getElementById('section-dashboard').classList.remove('hidden');
                 renderDashboardCategories();
-            } else if(tabId === 'admin_panel') {
-                document.getElementById('section-admin_panel').classList.remove('hidden');
-                populateCategoryDropdowns();
-                renderDeleteMockList();
-                renderAdminReports();
-                switchAdminSubSection('add_cat');
+            } else if(tabId === 'study_zone') {
+                document.getElementById('section-study_zone').classList.remove('hidden');
+                renderStudyZoneTests();
             } else if(tabId === 'revision') {
                 document.getElementById('section-revision').classList.remove('hidden');
                 populateAccordion();
@@ -523,6 +706,43 @@
                 document.getElementById('section-tracker').classList.remove('hidden');
                 renderTrackerTable();
             }
+        }
+
+        const ADMIN_SECRET_PIN = "1234";
+
+        function verifyAdminPin() {
+            let enteredPin = document.getElementById('admin-pin-input').value.trim();
+            if(enteredPin === ADMIN_SECRET_PIN) {
+                document.getElementById('admin-pin-modal').classList.add('hidden');
+                
+                document.querySelectorAll('main > section').forEach(sec => sec.classList.add('hidden'));
+                document.getElementById('section-subtopics').classList.add('hidden');
+                document.getElementById('section-study_zone').classList.add('hidden');
+                document.getElementById('section-study-practice').classList.add('hidden');
+                document.getElementById('section-notes-subtopics').classList.add('hidden');
+                document.getElementById('section-study-notes').classList.add('hidden');
+                document.getElementById('mock-interface').classList.add('hidden');
+                document.getElementById('result-interface').classList.add('hidden');
+                document.getElementById('practice-result-interface').classList.add('hidden');
+
+                document.querySelectorAll('.tab-btn').forEach(btn => {
+                    btn.className = "tab-btn px-4 py-2 bg-slate-800 text-slate-300 border border-slate-700 rounded-xl text-sm font-medium whitespace-nowrap";
+                });
+                document.getElementById('btn-admin_panel').className = "tab-btn px-4 py-2 bg-indigo-600 text-white rounded-xl text-sm font-medium whitespace-nowrap shadow";
+
+                document.getElementById('section-admin_panel').classList.remove('hidden');
+                populateCategoryDropdowns();
+                renderDeleteMockList();
+                renderAdminReports();
+                switchAdminSubSection('add_cat');
+            } else {
+                alert("❌ തെറ്റായ പിൻ നമ്പർ! വീണ്ടും ശ്രമിക്കുക.");
+                document.getElementById('admin-pin-input').value = '';
+            }
+        }
+
+        function closeAdminPinModal() {
+            document.getElementById('admin-pin-modal').classList.add('hidden');
         }
 
         function switchAdminSubSection(subId) {
@@ -538,6 +758,486 @@
             if(targetBtn) {
                 targetBtn.className = "admin-sub-btn p-3 bg-indigo-600 text-white rounded-xl text-xs font-bold transition shadow";
             }
+            if(subId === 'add_notes') {
+                populateNotesCategories();
+            }
+        }
+
+        // Render Study Zone Tests List (Topic-wise only)
+        function renderStudyZoneTests() {
+            const container = document.getElementById('study-zone-tests-container');
+            if(!container) return;
+            container.innerHTML = '';
+            let hasTests = false;
+
+            let catKey = 'topic_wise';
+            let cat = categoriesData[catKey];
+            if(cat && cat.subtopics.length > 0) {
+                cat.subtopics.forEach(sub => {
+                    sub.tests.forEach(testName => {
+                        hasTests = true;
+                        container.innerHTML += `
+                            <div class="flex flex-col md:flex-row items-start md:items-center justify-between bg-slate-900 border border-slate-700 p-3.5 rounded-xl gap-2">
+                                <div>
+                                    <div class="text-xs text-indigo-400 font-semibold">${cat.title} > ${sub.name}</div>
+                                    <div class="text-sm font-medium text-white">${testName}</div>
+                                </div>
+                                <div class="flex space-x-2 w-full md:w-auto justify-end">
+                                    <button onclick="startStudyPractice('${catKey}', '${sub.name}', '${testName}')" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs px-3 py-1.5 rounded-lg font-medium transition">Practice & Study</button>
+                                </div>
+                            </div>
+                        `;
+                    });
+                });
+            }
+
+            if(!hasTests) {
+                container.innerHTML = `<p class="text-xs text-slate-500 text-center py-4">ടോപ്പിക്-വൈസ് മോക്ക് ടെസ്റ്റുകൾ ഒന്നും ലഭ്യമല്ല.</p>`;
+            }
+        }
+
+        // Study Practice Mode Logic
+        let studyPracticeQueue = [];
+        let currentStudyPracticeQuestion = null;
+        let studyShuffledOpts = [];
+        let studyShuffledCorrectIdx = 0;
+
+        function startStudyPractice(topicKey, subName, testName) {
+            let filtered = sampleQuestions.filter(q => q.topic === topicKey && q.subtopic === subName && q.testName === testName);
+            if(filtered.length === 0) { alert("ചോദ്യങ്ങൾ ഒന്നും ലഭ്യമല്ല!"); return; }
+
+            studyPracticeQueue = shuffleArray([...filtered]);
+            document.querySelectorAll('main > section').forEach(sec => sec.classList.add('hidden'));
+            document.getElementById('section-study-practice').classList.remove('hidden');
+            loadStudyPracticeQuestion();
+        }
+
+        function loadStudyPracticeQuestion() {
+            if(studyPracticeQueue.length === 0) {
+                alert("പ്രാക്ടീസ് പൂർത്തിയായി!");
+                switchTab('study_zone');
+                return;
+            }
+            currentStudyPracticeQuestion = studyPracticeQueue.shift();
+            renderQuestionContent(currentStudyPracticeQuestion, 'sp-q-container');
+            
+            const banner = document.getElementById('sp-feedback-banner');
+            if(banner) {
+                banner.classList.add('hidden');
+                banner.innerHTML = '';
+            }
+            const detailsBox = document.getElementById('sp-details-box');
+            if(detailsBox) {
+                detailsBox.classList.add('hidden');
+                detailsBox.innerHTML = '';
+            }
+
+            const optsBox = document.getElementById('sp-options-box');
+            if(!optsBox) return;
+            optsBox.innerHTML = '';
+
+            let originalOpts = currentStudyPracticeQuestion.options.map((opt, idx) => ({
+                optText: opt,
+                isCorrect: idx === currentStudyPracticeQuestion.answer
+            }));
+            studyShuffledOpts = shuffleArray(originalOpts);
+            studyShuffledCorrectIdx = studyShuffledOpts.findIndex(item => item.isCorrect);
+
+            studyShuffledOpts.forEach((item, idx) => {
+                optsBox.innerHTML += `
+                    <button onclick="checkStudyPracticeAnswer(${idx})" class="w-full text-left p-3.5 border border-slate-700 bg-slate-900/50 text-slate-300 rounded-xl hover:bg-slate-700 transition">
+                        ${item.optText}
+                    </button>
+                `;
+            });
+        }
+
+        function checkStudyPracticeAnswer(selectedIdx) {
+            if(!currentStudyPracticeQuestion) return;
+            const banner = document.getElementById('sp-feedback-banner');
+            if(!banner) return;
+            banner.classList.remove('hidden');
+            const parentBox = document.getElementById('sp-options-box');
+            if(parentBox) {
+                Array.from(parentBox.children).forEach(child => child.disabled = true);
+            }
+
+            const correctIdx = studyShuffledCorrectIdx;
+            const correctOptText = studyShuffledOpts[correctIdx].optText;
+            
+            let cleanExplanation = currentStudyPracticeQuestion.explanation || "";
+            cleanExplanation = cleanExplanation.replace(/\[span_\d+\]|\(start_span\)|\(end_span\)/g, '');
+
+            const buttons = parentBox ? parentBox.children : [];
+
+            if(selectedIdx === correctIdx) {
+                practiceLearnedMaster.add(currentStudyPracticeQuestion.id);
+                if(buttons[selectedIdx]) {
+                    buttons[selectedIdx].className = "w-full text-left p-3.5 border border-emerald-500 bg-emerald-950/80 text-emerald-300 rounded-xl font-medium transition";
+                }
+                banner.className = "p-2 rounded-xl text-xs font-medium bg-emerald-900/80 border border-emerald-600 text-emerald-200";
+                banner.innerHTML = `ശരി ഉത്തരം! (Correct)`;
+                setTimeout(() => { loadStudyPracticeQuestion(); }, 1000);
+            } else {
+                if(buttons[selectedIdx]) {
+                    buttons[selectedIdx].className = "w-full text-left p-3.5 border border-red-500 bg-red-950/80 text-red-300 rounded-xl font-medium transition";
+                }
+                if(buttons[correctIdx]) {
+                    buttons[correctIdx].className = "w-full text-left p-3.5 border border-emerald-500 bg-emerald-950/80 text-emerald-300 rounded-xl font-medium transition";
+                }
+                const explanationText = cleanExplanation ? `<br><span class="text-xs text-indigo-200 mt-1 block">💡 വിശദീകരണം: ${cleanExplanation}</span>` : '';
+                banner.className = "p-4 rounded-xl text-sm font-medium bg-red-900/80 border border-red-600 text-red-200 shadow-lg space-y-3";
+                banner.innerHTML = `
+                    ❌ ഉത്തരം തെറ്റാണ്!<br><span class="text-xs text-emerald-300 mt-1 block font-bold">ശരിയായ ഉത്തരം: ${correctOptText}</span>${explanationText}
+                    <button onclick="loadStudyPracticeQuestion()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-2 rounded-xl text-xs font-bold shadow transition mt-2">അടുത്തത് (Next)</button>
+                `;
+            }
+        }
+
+        function toggleStudyPracticeDetails() {
+            if(!currentStudyPracticeQuestion) return;
+            const detailsBox = document.getElementById('sp-details-box');
+            if(!detailsBox) return;
+
+            if(detailsBox.classList.contains('hidden')) {
+                let cleanExp = (currentStudyPracticeQuestion.explanation || "").replace(/\[span_\d+\]|\(start_span\)|\(end_span\)/g, '');
+                detailsBox.innerHTML = `
+                    <div class="font-bold text-emerald-400">ശരിയായ ഉത്തരം: ${currentStudyPracticeQuestion.options[currentStudyPracticeQuestion.answer]}</div>
+                    ${cleanExp ? `<div class="mt-1 text-slate-200">💡 വിശദീകരണം: ${cleanExp}</div>` : ''}
+                `;
+                detailsBox.classList.remove('hidden');
+            } else {
+                detailsBox.classList.add('hidden');
+            }
+        }
+
+        // View Study Notes with Full Table & Markdown Support
+        function startStudyNotesView(topicKey, subName, testName) {
+            activeCurrentNoteKey = `${topicKey}|${subName}|${testName}`;
+            let notesData = studyNotesMap[activeCurrentNoteKey];
+
+            document.getElementById('study-notes-title').innerText = testName;
+            const container = document.getElementById('study-notes-scroll-container');
+            container.innerHTML = '';
+
+            if(!notesData || (typeof notesData === 'string' && notesData.trim() === '')) {
+                container.innerHTML = `<div class="text-center py-16 text-slate-400 text-base font-medium bg-white p-6 rounded-2xl shadow-sm border border-slate-200">ഈ നോട്ടിനായി വിവരങ്ങൾ ഒന്നും ചേർത്തിട്ടില്ല. <br><span class="text-xs text-slate-400 mt-1 block">അഡ്മിൻ പാനൽ വഴി 'Add Notes' ഉപയോഗിച്ച് നോട്ടുകൾ ചേർക്കുക.</span></div>`;
+            } else {
+                let lines = notesData.split('\n');
+                let formattedHtml = '';
+                let inTable = false;
+                let tableHtml = '';
+                
+                lines.forEach((line, lIdx) => {
+                    let trimmed = line.trim();
+                    if(!trimmed) {
+                        if(inTable) {
+                            tableHtml += `</table></div>`;
+                            formattedHtml += tableHtml;
+                            tableHtml = '';
+                            inTable = false;
+                        }
+                        return;
+                    }
+                    
+                    if(trimmed.startsWith('|') && trimmed.endsWith('|')) {
+                        if(!inTable) {
+                            inTable = true;
+                            tableHtml = `<div class="notes-table-container my-4"><table class="notes-table">`;
+                        }
+                        let cols = trimmed.split('|').filter(c => c.trim() !== '');
+                        if(cols.every(c => c.replace(/[:\-]/g, '').trim() === '')) {
+                            return;
+                        }
+                        
+                        let isHeader = !tableHtml.includes('<tr>');
+                        let rowTag = isHeader ? 'th' : 'td';
+                        tableHtml += `<tr>`;
+                        cols.forEach(col => {
+                            tableHtml += `<${rowTag}>${formatInlineStyles(col.trim())}</${rowTag}>`;
+                        });
+                        tableHtml += `</tr>`;
+                        return;
+                    } else if(inTable) {
+                        tableHtml += `</table></div>`;
+                        formattedHtml += tableHtml;
+                        tableHtml = '';
+                        inTable = false;
+                    }
+                    
+                    let renderedText = formatInlineStyles(trimmed);
+                    
+                    if(trimmed.startsWith('* ') || trimmed.startsWith('- ')) {
+                        let text = formatInlineStyles(trimmed.substring(2));
+                        formattedHtml += `
+                            <div class="note-card bg-white border-l-4 border-red-600 p-4 rounded-xl shadow-sm hover:shadow-md transition space-y-1 mb-4" data-line="${lIdx}">
+                                <div class="flex items-start space-x-3">
+                                    <span class="text-red-600 font-bold text-lg leading-none">•</span>
+                                    <div class="note-text flex-1 text-slate-800 text-base md:text-lg leading-relaxed">${text}</div>
+                                </div>
+                            </div>
+                        `;
+                    } else if(/^\d+\.\s/.test(trimmed)) {
+                        let parts = trimmed.split(/^\d+\.\s/);
+                        let text = formatInlineStyles(parts[1] || trimmed);
+                        let numMatch = trimmed.match(/^\d+\./)[0];
+                        formattedHtml += `
+                            <div class="note-card bg-red-50/50 border border-red-100 p-4 rounded-xl shadow-sm hover:shadow-md transition space-y-1 mb-4" data-line="${lIdx}">
+                                <div class="flex items-start space-x-3">
+                                    <span class="bg-red-600 text-white font-bold text-xs px-2 py-1 rounded-md shadow-sm">${numMatch}</span>
+                                    <div class="note-text flex-1 text-slate-900 font-medium text-base md:text-lg leading-relaxed">${text}</div>
+                                </div>
+                            </div>
+                        `;
+                    } else if(trimmed.startsWith('# ') || trimmed.startsWith('### ')) {
+                        let headingText = trimmed.replace(/^#+\s/, '');
+                        formattedHtml += `<h3 class="font-extrabold text-xl md:text-2xl text-red-600 mt-8 mb-4 border-b-2 border-red-200 pb-2 flex items-center space-x-2"><span>📌</span><span>${headingText}</span></h3>`;
+                    } else {
+                        formattedHtml += `
+                            <div class="note-card bg-amber-50/40 border border-amber-200/50 p-4 rounded-xl shadow-sm mb-4" data-line="${lIdx}">
+                                <p class="note-text text-slate-800 text-base md:text-lg leading-relaxed">${renderedText}</p>
+                            </div>
+                        `;
+                    }
+                });
+
+                if(inTable) {
+                    tableHtml += `</table></div>`;
+                    formattedHtml += tableHtml;
+                }
+
+                container.innerHTML = `<div class="space-y-3 pb-6">${formattedHtml}</div>`;
+                applySavedHighlightsToDOM();
+            }
+
+            document.querySelectorAll('main > section').forEach(sec => sec.classList.add('hidden'));
+            document.getElementById('section-study-notes').classList.remove('hidden');
+        }
+
+        // Selection Event Listener for Floating Toolbar (Updated for full element support)
+        document.addEventListener('mouseup', handleTextSelectionToolbar);
+        document.addEventListener('touchend', handleTextSelectionToolbar);
+
+        let selectedTextGlobal = "";
+
+        function handleTextSelectionToolbar() {
+            const selection = window.getSelection();
+            const toolbar = document.getElementById('selection-toolbar');
+            const notesSection = document.getElementById('section-study-notes');
+            
+            if(!selection || selection.isCollapsed || notesSection.classList.contains('hidden')) {
+                if(toolbar && (!selection || !selection.toString().trim())) {
+                    toolbar.classList.add('hidden');
+                }
+                return;
+            }
+
+            selectedTextGlobal = selection.toString().trim();
+            if(selectedTextGlobal.length > 1) {
+                try {
+                    let range = selection.getRangeAt(0);
+                    let rect = range.getBoundingClientRect();
+                    toolbar.style.top = `${rect.top + window.scrollY - 45}px`;
+                    toolbar.style.left = `${rect.left + (rect.width / 2) + window.scrollX}px`;
+                    toolbar.classList.remove('hidden');
+                } catch(e) {
+                    toolbar.classList.add('hidden');
+                }
+            } else {
+                toolbar.classList.add('hidden');
+            }
+        }
+
+        function applyHighlightSelection() {
+            if(!selectedTextGlobal || !activeCurrentNoteKey) return;
+            if(!studyHighlightsMap[activeCurrentNoteKey]) {
+                studyHighlightsMap[activeCurrentNoteKey] = [];
+            }
+            if(!studyHighlightsMap[activeCurrentNoteKey].includes(selectedTextGlobal)) {
+                studyHighlightsMap[activeCurrentNoteKey].push(selectedTextGlobal);
+                syncHighlightsToFirebaseAndStorage();
+                applySavedHighlightsToDOM();
+            }
+            document.getElementById('selection-toolbar').classList.add('hidden');
+            window.getSelection().removeAllRanges();
+        }
+
+        function removeHighlightSelection() {
+            if(!selectedTextGlobal || !activeCurrentNoteKey) return;
+            if(studyHighlightsMap[activeCurrentNoteKey]) {
+                studyHighlightsMap[activeCurrentNoteKey] = studyHighlightsMap[activeCurrentNoteKey].filter(h => h !== selectedTextGlobal);
+                syncHighlightsToFirebaseAndStorage();
+                startStudyNotesView(activeCurrentNoteKey.split('|')[0], activeCurrentNoteKey.split('|')[1], activeCurrentNoteKey.split('|')[2]);
+            }
+            document.getElementById('selection-toolbar').classList.add('hidden');
+            window.getSelection().removeAllRanges();
+        }
+
+        function applySavedHighlightsToDOM() {
+            if(!activeCurrentNoteKey || !studyHighlightsMap[activeCurrentNoteKey]) return;
+            let highlights = studyHighlightsMap[activeCurrentNoteKey];
+
+            document.querySelectorAll('.note-text, .notes-table td, .notes-table th').forEach(el => {
+                let html = el.innerHTML;
+                highlights.forEach(phrase => {
+                    if(!phrase) return;
+                    let escaped = phrase.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+                    let regex = new RegExp(`(${escaped})`, 'g');
+                    if(!html.includes('user-highlight')) {
+                        html = html.replace(regex, `<mark class="user-highlight">$1</mark>`);
+                    }
+                });
+                el.innerHTML = html;
+            });
+        }
+
+        async function syncHighlightsToFirebaseAndStorage() {
+            localStorage.setItem('psc_study_highlights_map_anoop', JSON.stringify(studyHighlightsMap));
+            if(db && activeCurrentNoteKey) {
+                try {
+                    await db.collection("app_data").doc("psc_database_anoop").set({
+                        categoriesData: categoriesData,
+                        sampleQuestions: sampleQuestions,
+                        studyNotesMap: studyNotesMap,
+                        studyHighlightsMap: studyHighlightsMap,
+                        userProgressData: userProgressData,
+                        reportedQuestionsList: reportedQuestionsList,
+                        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                    }, { merge: true });
+                } catch(e) {
+                    console.log("Highlight sync error:", e);
+                }
+            }
+        }
+
+        function formatInlineStyles(str) {
+            str = str.replace(/\*\*(.*?)\*\*/g, '<strong class="font-bold text-red-600 bg-red-50 px-1 rounded">$1</strong>');
+            if(str.includes(':') && !str.includes('<strong')) {
+                let parts = str.split(':');
+                if(parts[0].length < 40) {
+                    str = `<strong class="font-bold text-red-600">${parts[0]}:</strong><span class="text-slate-700">${parts.slice(1).join(':')}</span>`;
+                }
+            }
+            return str;
+        }
+
+        function closeStudyNotesView() {
+            document.getElementById('section-study-notes').classList.add('hidden');
+            document.getElementById('selection-toolbar').classList.add('hidden');
+            document.getElementById('section-notes-subtopics').classList.remove('hidden');
+        }
+
+        // Open Notes Category Sub-topics View (Topic-wise only)
+        function openNotesCategory() {
+            const container = document.getElementById('notes-subtopics-container');
+            if(!container) return;
+            container.innerHTML = '';
+            let hasTests = false;
+
+            let catKey = 'topic_wise';
+            let cat = categoriesData[catKey];
+            if(cat && cat.subtopics.length > 0) {
+                cat.subtopics.forEach(sub => {
+                    sub.tests.forEach(testName => {
+                        hasTests = true;
+                        container.innerHTML += `
+                            <div class="flex items-center justify-between bg-slate-900 border border-slate-700 hover:border-emerald-500 rounded-xl px-4 py-3 shadow-sm">
+                                <div>
+                                    <div class="text-xs text-indigo-400 font-semibold">${cat.title} > ${sub.name}</div>
+                                    <div class="text-sm font-medium text-white">${testName}</div>
+                                </div>
+                                <button onclick="startStudyNotesView('${catKey}', '${sub.name}', '${testName}')" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs px-3 py-2 rounded-lg font-medium transition whitespace-nowrap">View Notes</button>
+                            </div>
+                        `;
+                    });
+                });
+            }
+
+            if(!hasTests) {
+                container.innerHTML = `<p class="text-xs text-slate-500 text-center py-6">ടോപ്പിക്-വൈസ് മോക്ക് ടെസ്റ്റുകൾ ഒന്നും ലഭ്യമല്ല.</p>`;
+            }
+
+            document.querySelectorAll('main > section').forEach(sec => sec.classList.add('hidden'));
+            document.getElementById('section-notes-subtopics').classList.remove('hidden');
+        }
+
+        // Admin Add Notes dropdown handlers (Topic-wise only)
+        function populateNotesCategories() {
+            const catSel = document.getElementById('notes-admin-category');
+            if(!catSel) return;
+            catSel.innerHTML = '<option value="topic_wise">Topic-wise Exams</option>';
+            populateNotesSubtopics();
+        }
+
+        function populateNotesSubtopics() {
+            const catKey = 'topic_wise';
+            const subSel = document.getElementById('notes-admin-subtopic');
+            if(!subSel) return;
+            subSel.innerHTML = '<option value="">സബ് ടോപ്പിക് തിരഞ്ഞെടുക്കുക</option>';
+
+            if(!categoriesData[catKey] || categoriesData[catKey].subtopics.length === 0) {
+                document.getElementById('notes-admin-testname').innerHTML = '<option value="">ആദ്യം സബ് ടോപ്പിക് തിരഞ്ഞെടുക്കുക</option>';
+                return;
+            }
+
+            categoriesData[catKey].subtopics.forEach(sub => {
+                subSel.innerHTML += `<option value="${sub.name}">${sub.name}</option>`;
+            });
+            populateNotesTests();
+        }
+
+        function populateNotesTests() {
+            const catKey = 'topic_wise';
+            const subName = document.getElementById('notes-admin-subtopic').value;
+            const testSel = document.getElementById('notes-admin-testname');
+            if(!testSel) return;
+            testSel.innerHTML = '<option value="">ടെസ്റ്റ് നെയിം തിരഞ്ഞെടുക്കുക</option>';
+
+            if(!catKey || !subName || !categoriesData[catKey]) return;
+
+            let sub = categoriesData[catKey].subtopics.find(s => s.name === subName);
+            if(!sub || sub.tests.length === 0) return;
+
+            sub.tests.forEach(tName => {
+                testSel.innerHTML += `<option value="${tName}">${tName}</option>`;
+            });
+        }
+
+        // Save Admin Targeted Notes function (Firebase Sync)
+        async function saveAdminTargetedNotes() {
+            const categoryKey = 'topic_wise';
+            const subtopicName = document.getElementById('notes-admin-subtopic').value.trim();
+            const testName = document.getElementById('notes-admin-testname').value;
+            const rawText = document.getElementById('notes-admin-text-input').value.trim();
+
+            if(!subtopicName) { alert('ദയവായി സബ് ടോപ്പിക് തിരഞ്ഞെടുക്കുക!'); return; }
+            if(!testName) { alert('ദയവായി ടെസ്റ്റ് നെയിം തിരഞ്ഞെടുക്കുക!'); return; }
+            if(!rawText) { alert('ദയവായി നോട്ടുകൾ പേസ്റ്റ് ചെയ്യുക!'); return; }
+
+            try {
+                let noteKey = `${categoryKey}|${subtopicName}|${testName}`;
+                studyNotesMap[noteKey] = rawText;
+                localStorage.setItem('psc_study_notes_map_anoop', JSON.stringify(studyNotesMap));
+
+                if(db) {
+                    await db.collection("app_data").doc("psc_database_anoop").set({
+                        categoriesData: categoriesData,
+                        sampleQuestions: sampleQuestions,
+                        studyNotesMap: studyNotesMap,
+                        studyHighlightsMap: studyHighlightsMap,
+                        userProgressData: userProgressData,
+                        reportedQuestionsList: reportedQuestionsList,
+                        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+                }
+
+                alert(`🎉 വിജയകരമായി "${testName}" എന്ന നോട്ടിലേക്ക് വിവരങ്ങൾ സേവ് ചെയ്തു!`);
+                document.getElementById('notes-admin-text-input').value = '';
+                openNotesCategory();
+
+            } catch (error) {
+                alert('എറർ: ' + error.message);
+            }
         }
 
         function renderDashboardCategories() {
@@ -545,8 +1245,9 @@
             if(!grid) return;
 
             let icons = {
-                scert: '📚',
                 topic_wise: '📑',
+                notes: '📝',
+                scert: '📚',
                 ca_daily: '📅',
                 ca_monthly: '📊',
                 malayalam: 'മല',
@@ -560,12 +1261,15 @@
             for(let key in categoriesData) {
                 let cat = categoriesData[key];
                 let icon = icons[key] || '📁';
+                
+                let clickAction = key === 'notes' ? `openNotesCategory()` : `openSubTopics('${key}')`;
+                
                 html += `
-                    <div onclick="openSubTopics('${key}')" class="bg-slate-800 border border-slate-700 p-4 rounded-2xl cursor-pointer hover:border-indigo-500 transition shadow-sm space-y-2">
+                    <div onclick="${clickAction}" class="bg-slate-800 border border-slate-700 p-4 rounded-2xl cursor-pointer hover:border-indigo-500 transition shadow-sm space-y-2">
                         <div class="w-10 h-10 bg-indigo-900/50 rounded-xl flex items-center justify-center text-indigo-400 text-xl font-bold">${icon}</div>
                         <div>
                             <h3 class="font-bold text-sm text-white">${cat.title}</h3>
-                            <p class="text-xs text-slate-400 mt-0.5">കാറ്റഗറി ടെസ്റ്റുകൾ</p>
+                            <p class="text-xs text-slate-400 mt-0.5">${key === 'notes' ? 'സ്റ്റഡി നോട്ട്സ്' : 'കാറ്റഗറി ടെസ്റ്റുകൾ'}</p>
                         </div>
                     </div>
                 `;
@@ -612,6 +1316,8 @@
                     await db.collection("app_data").doc("psc_database_anoop").set({
                         categoriesData: categoriesData,
                         sampleQuestions: sampleQuestions,
+                        studyNotesMap: studyNotesMap,
+                        studyHighlightsMap: studyHighlightsMap,
                         userProgressData: userProgressData,
                         reportedQuestionsList: reportedQuestionsList,
                         updatedAt: firebase.firestore.FieldValue.serverTimestamp()
@@ -691,6 +1397,8 @@
                     await db.collection("app_data").doc("psc_database_anoop").set({
                         categoriesData: categoriesData,
                         sampleQuestions: sampleQuestions,
+                        studyNotesMap: studyNotesMap,
+                        studyHighlightsMap: studyHighlightsMap,
                         userProgressData: userProgressData,
                         reportedQuestionsList: reportedQuestionsList,
                         updatedAt: firebase.firestore.FieldValue.serverTimestamp()
@@ -749,7 +1457,7 @@
 
             if(!subName) { alert('ദയവായി സബ് ടോപ്പിക് തിരഞ്ഞെടുക്കുക!'); return; }
             if(!testName) { alert('ദയവായി മോക്ക് ടെസ്റ്റ് തിരഞ്ഞെടുക്കുക!'); return; }
-            if(!rawText) { alert('ദയവായി പുതിയ JSON ചോദ്യങ്ങൾ പേസ്റ്റ് ചെയ്യുക!'); return; }
+            if(!rawText) { alert('ദയവായി പുതിയ ചോദ്യങ്ങൾ പേസ്റ്റ് ചെയ്യുക!'); return; }
 
             try {
                 let cleanJsonStr = rawText.replace(/```json/g, '').replace(/```/g, '').trim();
@@ -782,6 +1490,8 @@
                     await db.collection("app_data").doc("psc_database_anoop").set({
                         categoriesData: categoriesData,
                         sampleQuestions: sampleQuestions,
+                        studyNotesMap: studyNotesMap,
+                        studyHighlightsMap: studyHighlightsMap,
                         userProgressData: userProgressData,
                         reportedQuestionsList: reportedQuestionsList,
                         updatedAt: firebase.firestore.FieldValue.serverTimestamp()
@@ -847,6 +1557,8 @@
                 db.collection("app_data").doc("psc_database_anoop").set({
                     categoriesData: categoriesData,
                     sampleQuestions: sampleQuestions,
+                    studyNotesMap: studyNotesMap,
+                    studyHighlightsMap: studyHighlightsMap,
                     userProgressData: userProgressData,
                     reportedQuestionsList: reportedQuestionsList,
                     updatedAt: firebase.firestore.FieldValue.serverTimestamp()
@@ -898,6 +1610,8 @@
                     await db.collection("app_data").doc("psc_database_anoop").set({
                         categoriesData: categoriesData,
                         sampleQuestions: sampleQuestions,
+                        studyNotesMap: studyNotesMap,
+                        studyHighlightsMap: studyHighlightsMap,
                         userProgressData: userProgressData,
                         reportedQuestionsList: reportedQuestionsList,
                         updatedAt: firebase.firestore.FieldValue.serverTimestamp()
@@ -924,9 +1638,10 @@
                     <div class="bg-slate-900 border border-slate-700 p-4 rounded-xl space-y-2 text-xs">
                         <div class="flex justify-between items-center text-amber-400 font-bold">
                             <span>ടെസ്റ്റ്: ${rep.testName} (${rep.subtopic})</span>
-                            <div class="flex space-x-2">
-                                <button onclick="openAdminEditModal(${rep.reportId}, ${rep.questionId})" class="bg-indigo-600 hover:bg-indigo-700 text-white px-2.5 py-1 rounded-lg font-medium transition">എഡിറ്റ്</button>
-                                <button onclick="deleteReportedQuestion(${rep.reportId}, ${rep.questionId})" class="bg-red-950/80 border border-red-800 text-red-400 hover:bg-red-900 px-2.5 py-1 rounded-lg font-medium transition">ഡിലീറ്റ്</button>
+                            <div class="flex space-x-1.5 flex-wrap">
+                                <button onclick="openAdminEditModal(${rep.reportId}, ${rep.questionId})" class="bg-indigo-600 hover:bg-indigo-700 text-white px-2 py-1 rounded-lg font-medium transition">എഡിറ്റ്</button>
+                                <button onclick="noActionNeeded(${rep.reportId})" class="bg-slate-700 hover:bg-slate-600 text-slate-200 px-2 py-1 rounded-lg font-medium transition">No Action Needed</button>
+                                <button onclick="deleteReportedQuestion(${rep.reportId}, ${rep.questionId})" class="bg-red-950/80 border border-red-800 text-red-400 hover:bg-red-900 px-2 py-1 rounded-lg font-medium transition">ഡിലീറ്റ്</button>
                             </div>
                         </div>
                         <div class="text-white font-medium">${rep.questionText}</div>
@@ -934,6 +1649,27 @@
                     </div>
                 `;
             });
+        }
+
+        async function noActionNeeded(reportId) {
+            reportedQuestionsList = reportedQuestionsList.filter(r => r.reportId !== reportId);
+            localStorage.setItem('psc_reported_questions_anoop', JSON.stringify(reportedQuestionsList));
+
+            if(db) {
+                try {
+                    await db.collection("app_data").doc("psc_database_anoop").set({
+                        categoriesData: categoriesData,
+                        sampleQuestions: sampleQuestions,
+                        studyNotesMap: studyNotesMap,
+                        studyHighlightsMap: studyHighlightsMap,
+                        userProgressData: userProgressData,
+                        reportedQuestionsList: reportedQuestionsList,
+                        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+                } catch(e) { console.log("No action sync error:", e); }
+            }
+
+            renderAdminReports();
         }
 
         function openAdminEditModal(reportId, questionId) {
@@ -991,6 +1727,8 @@
                     await db.collection("app_data").doc("psc_database_anoop").set({
                         categoriesData: categoriesData,
                         sampleQuestions: sampleQuestions,
+                        studyNotesMap: studyNotesMap,
+                        studyHighlightsMap: studyHighlightsMap,
                         userProgressData: userProgressData,
                         reportedQuestionsList: reportedQuestionsList,
                         updatedAt: firebase.firestore.FieldValue.serverTimestamp()
@@ -1004,7 +1742,7 @@
         }
 
         async function deleteReportedQuestion(reportId, questionId) {
-            if(!confirm("⚠️ ഈ ചോദ്യം ആപ്പിലെ ഡാറ്റാബേസിൽ നിന്ന് പൂർണ്ണമായി ഡിലീറ്റ് ചെയ്യണമെന്നുറപ്പാണോ?")) return;
+            if(!confirm("⚠️ ഈ ചോദ്യം ഡാറ്റാബേസിൽ നിന്ന് പൂർണ്ണമായി ഡിലീറ്റ് ചെയ്യണമെന്നുറപ്പാണോ?")) return;
 
             sampleQuestions = sampleQuestions.filter(q => q.id !== questionId);
             localStorage.setItem('psc_sample_questions_anoop', JSON.stringify(sampleQuestions));
@@ -1017,6 +1755,8 @@
                     await db.collection("app_data").doc("psc_database_anoop").set({
                         categoriesData: categoriesData,
                         sampleQuestions: sampleQuestions,
+                        studyNotesMap: studyNotesMap,
+                        studyHighlightsMap: studyHighlightsMap,
                         userProgressData: userProgressData,
                         reportedQuestionsList: reportedQuestionsList,
                         updatedAt: firebase.firestore.FieldValue.serverTimestamp()
@@ -1096,7 +1836,6 @@
             }
         }
 
-        // Balanced Equal Distribution across selected topics
         function startAccordionCustomTest() {
             const checkboxes = document.querySelectorAll('input[name="revision_test_checkbox"]:checked');
             if(checkboxes.length === 0) {
@@ -1104,7 +1843,6 @@
                 return;
             }
 
-            // Group questions by their source test/topic
             let topicPools = {};
             checkboxes.forEach(cb => {
                 let parts = cb.value.split('|');
@@ -1132,7 +1870,6 @@
                 finalQuestions = finalQuestions.concat(selectedFromTopic);
             });
 
-            // Remove exact duplicate questions based on identical question text
             let uniqueMap = new Map();
             finalQuestions.forEach(qObj => {
                 let qText = (qObj.q || "").trim();
@@ -1141,8 +1878,6 @@
                 }
             });
             let uniqueFiltered = Array.from(uniqueMap.values());
-
-            // Final shuffle and slice to requested count
             let finalSelected = shuffleArray(uniqueFiltered).slice(0, requestedCount);
 
             currentTestTitle = "മൾട്ടി-സെലക്ട് റിവിഷൻ ടെസ്റ്റ്";
@@ -1279,15 +2014,16 @@
 
         function renderQuestionContent(q, containerId) {
             const container = document.getElementById(containerId);
-            let html = `<div class="font-medium text-white text-base mb-3 leading-relaxed">${currentIndex + 1}. ${q.q || q.question || ""}</div>`;
+            if(!container) return;
+            let html = `<div class="font-medium text-base mb-3 leading-relaxed">${q.q || q.question || ""}</div>`;
 
             if (q.statements && Array.isArray(q.statements) && q.statements.length > 0) {
-                html += `<div class="bg-slate-900/80 border border-slate-700/80 p-4 rounded-xl space-y-3 my-3">`;
+                html += `<div class="p-4 rounded-xl space-y-3 my-3 border border-slate-700/50 bg-slate-800/40">`;
                 q.statements.forEach((stmt, sIdx) => {
                     let romanNums = ['i.', 'ii.', 'iii.', 'iv.', 'v.', 'vi.'];
                     let label = romanNums[sIdx] || `${sIdx + 1}.`;
-                    html += `<div class="flex items-start space-x-3 text-slate-200 text-sm leading-relaxed">
-                        <span class="font-bold text-indigo-400 select-none">${label}</span>
+                    html += `<div class="flex items-start space-x-3 text-sm leading-relaxed">
+                        <span class="font-bold select-none">${label}</span>
                         <span class="flex-1">${stmt}</span>
                     </div>`;
                 });
@@ -1295,7 +2031,7 @@
             }
 
             if (q.matchingPairs && Array.isArray(q.matchingPairs) && q.matchingPairs.length > 0) {
-                html += `<div class="grid grid-cols-1 md:grid-cols-2 gap-3 my-3 bg-slate-900/80 border border-slate-700/80 p-4 rounded-xl">`;
+                html += `<div class="grid grid-cols-1 md:grid-cols-2 gap-3 my-3 p-4 rounded-xl border border-slate-700/50 bg-slate-800/40">`;
                 let colAList = [];
                 let colBList = [];
                 q.matchingPairs.forEach(pair => {
@@ -1304,18 +2040,18 @@
                 });
 
                 html += `<div class="space-y-2 border-b md:border-b-0 md:border-r border-slate-700 pb-3 md:pb-0 md:pr-3">
-                    <div class="text-xs font-bold text-indigo-400 uppercase tracking-wider mb-2">പട്ടിക A</div>`;
+                    <div class="text-xs font-bold uppercase tracking-wider mb-2">പട്ടിക A</div>`;
                 colAList.forEach((item, i) => {
-                    html += `<div class="text-slate-200 text-sm py-1 leading-relaxed"><span class="font-bold text-slate-400 mr-2">${i + 1}.</span>${item}</div>`;
+                    html += `<div class="text-sm py-1 leading-relaxed"><span class="font-bold mr-2">${i + 1}.</span>${item}</div>`;
                 });
                 html += `</div>`;
 
                 html += `<div class="space-y-2">
-                    <div class="text-xs font-bold text-indigo-400 uppercase tracking-wider mb-2">പട്ടിക B</div>`;
+                    <div class="text-xs font-bold uppercase tracking-wider mb-2">പട്ടിക B</div>`;
                 colBList.forEach((item, i) => {
                     let letters = ['എ', 'ബി', 'സി', 'ഡി', 'ഇ', 'എഫ്'];
                     let lKey = letters[i] || String.fromCharCode(65 + i);
-                    html += `<div class="text-slate-200 text-sm py-1 leading-relaxed"><span class="font-bold text-slate-400 mr-2">${lKey}.</span>${item}</div>`;
+                    html += `<div class="text-sm py-1 leading-relaxed"><span class="font-bold mr-2">${lKey}.</span>${item}</div>`;
                 });
                 html += `</div>`;
 
@@ -1454,6 +2190,8 @@
                 db.collection("app_data").doc("psc_database_anoop").set({
                     categoriesData: categoriesData,
                     sampleQuestions: sampleQuestions,
+                    studyNotesMap: studyNotesMap,
+                    studyHighlightsMap: studyHighlightsMap,
                     userProgressData: userProgressData,
                     reportedQuestionsList: reportedQuestionsList,
                     updatedAt: firebase.firestore.FieldValue.serverTimestamp()
@@ -1499,6 +2237,8 @@
                 db.collection("app_data").doc("psc_database_anoop").set({
                     categoriesData: categoriesData,
                     sampleQuestions: sampleQuestions,
+                    studyNotesMap: studyNotesMap,
+                    studyHighlightsMap: studyHighlightsMap,
                     userProgressData: userProgressData,
                     reportedQuestionsList: reportedQuestionsList,
                     updatedAt: firebase.firestore.FieldValue.serverTimestamp()
@@ -1528,6 +2268,8 @@
                     await db.collection("app_data").doc("psc_database_anoop").set({
                         categoriesData: categoriesData,
                         sampleQuestions: sampleQuestions,
+                        studyNotesMap: studyNotesMap,
+                        studyHighlightsMap: studyHighlightsMap,
                         userProgressData: userProgressData,
                         reportedQuestionsList: reportedQuestionsList,
                         updatedAt: firebase.firestore.FieldValue.serverTimestamp()
@@ -1657,7 +2399,7 @@
             practiceAttemptedMaster.add(currentPracticeQuestion.id);
 
             const correctIdx = shuffledCurrentCorrectIndex;
-            const correctOptText = shuffledCurrentOptions[correctIdx].optText;
+            const correctOptText = studyShuffledOpts[correctIdx].optText;
             
             let cleanExplanation = currentPracticeQuestion.explanation || "";
             cleanExplanation = cleanExplanation.replace(/\[span_\d+\]|\(start_span\)|\(end_span\)/g, '');
