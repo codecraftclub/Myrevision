@@ -137,7 +137,7 @@
         <section id="section-notes-subtopics" class="hidden space-y-4">
             <div class="flex items-center space-x-3">
                 <button onclick="switchTab('dashboard')" class="bg-slate-800 border border-slate-700 text-slate-300 px-3 py-1.5 rounded-lg font-medium">← തിരികെ ഹോമിലേക്ക്</button>
-                <h2 id="notes-subtopics-header-title" class="text-lg font-bold text-emerald-400">📝 സ്റ്റഡി നോട്ട്സ് (Study Notes)</h2>
+                <h2 class="text-lg font-bold text-emerald-400">📝 സ്റ്റഡി നോട്ട്സ് (Study Notes - Topic-wise)</h2>
             </div>
             <div id="notes-subtopics-container" class="space-y-4"></div>
         </section>
@@ -204,15 +204,19 @@
                 <h3 class="text-md font-bold text-emerald-400">📝 സ്റ്റഡി നോട്ട്സ് ആഡ് ചെയ്യുക (Add Notes)</h3>
                 <div>
                     <label class="block text-sm font-medium text-slate-300 mb-1">കാറ്റഗറി തിരഞ്ഞെടുക്കുക:</label>
-                    <select id="notes-admin-category" class="w-full p-2.5 bg-slate-900 border border-slate-700 text-white rounded-xl text-sm"></select>
+                    <select id="notes-admin-category" onchange="populateNotesSubtopics()" class="w-full p-2.5 bg-slate-900 border border-slate-700 text-white rounded-xl text-sm"></select>
                 </div>
                 <div>
-                    <label class="block text-sm font-medium text-slate-300 mb-1">സബ് ടോപ്പിക് പേര് നൽകുക (ഉദാ: General Notes):</label>
-                    <input type="text" id="notes-admin-subtopic" placeholder="ഉദാ: General" class="w-full p-2.5 bg-slate-900 border border-slate-700 text-white rounded-xl text-sm">
+                    <label class="block text-sm font-medium text-slate-300 mb-1">സബ് ടോപ്പിക് തിരഞ്ഞെടുക്കുക:</label>
+                    <select id="notes-admin-subtopic" onchange="populateNotesTests()" class="w-full p-2.5 bg-slate-900 border border-slate-700 text-white rounded-xl text-sm">
+                        <option value="">ആദ്യം കാറ്റഗറി തിരഞ്ഞെടുക്കുക</option>
+                    </select>
                 </div>
                 <div>
-                    <label class="block text-sm font-medium text-slate-300 mb-1">നോട്ട്സിന്റെ ശീർഷകം നൽകുക (ഉദാ: Important Points):</label>
-                    <input type="text" id="notes-admin-testname" placeholder="ഉദാ: Main Notes" class="w-full p-2.5 bg-slate-900 border border-slate-700 text-white rounded-xl text-sm">
+                    <label class="block text-sm font-medium text-slate-300 mb-1">ടെസ്റ്റ് നെയിം തിരഞ്ഞെടുക്കുക:</label>
+                    <select id="notes-admin-testname" class="w-full p-2.5 bg-slate-900 border border-slate-700 text-white rounded-xl text-sm">
+                        <option value="">ആദ്യം സബ് ടോപ്പിക് തിരഞ്ഞെടുക്കുക</option>
+                    </select>
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-slate-300 mb-1">നോട്ട്സ് ഇവിടെ പേസ്റ്റ് ചെയ്യുക (ടേബിളുകൾ ഉൾപ്പെടെ നേരിട്ട് നൽകാം):</label>
@@ -563,7 +567,6 @@
         let defaultCategoriesOrder = {
             topic_wise: { title: "Topic-wise Exams", subtopics: [] },
             notes: { title: "📝 Study Notes", subtopics: [] },
-            gemini_notes: { title: "✨ Gemini Notes", subtopics: [] },
             scert: { title: "SCERT Based Exams", subtopics: [] },
             ca_daily: { title: "Daily Current Affairs", subtopics: [] },
             ca_monthly: { title: "Monthly Current Affairs", subtopics: [] },
@@ -1124,77 +1127,97 @@
             document.getElementById('section-notes-subtopics').classList.remove('hidden');
         }
 
-        // Open Notes Category or Custom Notes Categories (like Gemini Notes) View
-        function openNotesCategory(catKey = 'notes') {
+        // Open Notes Category Sub-topics View (Topic-wise only)
+        function openNotesCategory() {
             const container = document.getElementById('notes-subtopics-container');
             if(!container) return;
             container.innerHTML = '';
             let hasTests = false;
 
+            let catKey = 'topic_wise';
             let cat = categoriesData[catKey];
-            if(!cat) return;
-
-            document.getElementById('notes-subtopics-header-title').innerText = `📝 ${cat.title}`;
-
-            if(cat && cat.subtopics && cat.subtopics.length > 0) {
+            if(cat && cat.subtopics.length > 0) {
                 cat.subtopics.forEach(sub => {
-                    if(sub.tests && sub.tests.length > 0) {
-                        sub.tests.forEach(testName => {
-                            hasTests = true;
-                            container.innerHTML += `
-                                <div class="flex items-center justify-between bg-slate-900 border border-slate-700 hover:border-emerald-500 rounded-xl px-4 py-3 shadow-sm">
-                                    <div>
-                                        <div class="text-xs text-indigo-400 font-semibold">${cat.title} > ${sub.name}</div>
-                                        <div class="text-sm font-medium text-white">${testName}</div>
-                                    </div>
-                                    <button onclick="startStudyNotesView('${catKey}', '${sub.name}', '${testName}')" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs px-3 py-2 rounded-lg font-medium transition whitespace-nowrap">View Notes</button>
+                    sub.tests.forEach(testName => {
+                        hasTests = true;
+                        container.innerHTML += `
+                            <div class="flex items-center justify-between bg-slate-900 border border-slate-700 hover:border-emerald-500 rounded-xl px-4 py-3 shadow-sm">
+                                <div>
+                                    <div class="text-xs text-indigo-400 font-semibold">${cat.title} > ${sub.name}</div>
+                                    <div class="text-sm font-medium text-white">${testName}</div>
                                 </div>
-                            `;
-                        });
-                    }
+                                <button onclick="startStudyNotesView('${catKey}', '${sub.name}', '${testName}')" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs px-3 py-2 rounded-lg font-medium transition whitespace-nowrap">View Notes</button>
+                            </div>
+                        `;
+                    });
                 });
             }
 
             if(!hasTests) {
-                container.innerHTML = `<p class="text-xs text-slate-500 text-center py-6">ഈ വിഭാഗത്തിൽ നോട്ട്സുകൾ ഒന്നും ലഭ്യമല്ല. അഡ്മിൻ പാനൽ വഴി പുതിയവ ചേർക്കുക.</p>`;
+                container.innerHTML = `<p class="text-xs text-slate-500 text-center py-6">ടോപ്പിക്-വൈസ് മോക്ക് ടെസ്റ്റുകൾ ഒന്നും ലഭ്യമല്ല.</p>`;
             }
 
             document.querySelectorAll('main > section').forEach(sec => sec.classList.add('hidden'));
             document.getElementById('section-notes-subtopics').classList.remove('hidden');
         }
 
-        // Admin Add Notes category dropdown handler
+        // Admin Add Notes dropdown handlers (Topic-wise only)
         function populateNotesCategories() {
             const catSel = document.getElementById('notes-admin-category');
             if(!catSel) return;
-            catSel.innerHTML = '';
-            for(let key in categoriesData) {
-                catSel.innerHTML += `<option value="${key}">${categoriesData[key].title}</option>`;
+            catSel.innerHTML = '<option value="topic_wise">Topic-wise Exams</option>';
+            populateNotesSubtopics();
+        }
+
+        function populateNotesSubtopics() {
+            const catKey = 'topic_wise';
+            const subSel = document.getElementById('notes-admin-subtopic');
+            if(!subSel) return;
+            subSel.innerHTML = '<option value="">സബ് ടോപ്പിക് തിരഞ്ഞെടുക്കുക</option>';
+
+            if(!categoriesData[catKey] || categoriesData[catKey].subtopics.length === 0) {
+                document.getElementById('notes-admin-testname').innerHTML = '<option value="">ആദ്യം സബ് ടോപ്പിക് തിരഞ്ഞെടുക്കുക</option>';
+                return;
             }
+
+            categoriesData[catKey].subtopics.forEach(sub => {
+                subSel.innerHTML += `<option value="${sub.name}">${sub.name}</option>`;
+            });
+            populateNotesTests();
+        }
+
+        function populateNotesTests() {
+            const catKey = 'topic_wise';
+            const subName = document.getElementById('notes-admin-subtopic').value;
+            const testSel = document.getElementById('notes-admin-testname');
+            if(!testSel) return;
+            testSel.innerHTML = '<option value="">ടെസ്റ്റ് നെയിം തിരഞ്ഞെടുക്കുക</option>';
+
+            if(!catKey || !subName || !categoriesData[catKey]) return;
+
+            let sub = categoriesData[catKey].subtopics.find(s => s.name === subName);
+            if(!sub || sub.tests.length === 0) return;
+
+            sub.tests.forEach(tName => {
+                testSel.innerHTML += `<option value="${tName}">${tName}</option>`;
+            });
         }
 
         // Save Admin Targeted Notes function (Firebase Sync)
         async function saveAdminTargetedNotes() {
-            const categoryKey = document.getElementById('notes-admin-category').value;
-            const subtopicName = document.getElementById('notes-admin-subtopic').value.trim() || "General";
-            const testName = document.getElementById('notes-admin-testname').value.trim() || "Main Notes";
+            const categoryKey = 'topic_wise';
+            const subtopicName = document.getElementById('notes-admin-subtopic').value.trim();
+            const testName = document.getElementById('notes-admin-testname').value;
             const rawText = document.getElementById('notes-admin-text-input').value.trim();
 
+            if(!subtopicName) { alert('ദയവായി സബ് ടോപ്പിക് തിരഞ്ഞെടുക്കുക!'); return; }
+            if(!testName) { alert('ദയവായി ടെസ്റ്റ് നെയിം തിരഞ്ഞെടുക്കുക!'); return; }
             if(!rawText) { alert('ദയവായി നോട്ടുകൾ പേസ്റ്റ് ചെയ്യുക!'); return; }
 
             try {
                 let noteKey = `${categoryKey}|${subtopicName}|${testName}`;
                 studyNotesMap[noteKey] = rawText;
                 localStorage.setItem('psc_study_notes_map_anoop', JSON.stringify(studyNotesMap));
-
-                if(!categoriesData[categoryKey]) categoriesData[categoryKey] = { title: categoryKey, subtopics: [] };
-                let subObj = categoriesData[categoryKey].subtopics.find(s => s.name === subtopicName);
-                if(!subObj) {
-                    categoriesData[categoryKey].subtopics.push({ name: subtopicName, tests: [testName] });
-                } else if(!subObj.tests.includes(testName)) {
-                    subObj.tests.push(testName);
-                }
-                localStorage.setItem('psc_categories_data_anoop', JSON.stringify(categoriesData));
 
                 if(db) {
                     await db.collection("app_data").doc("psc_database_anoop").set({
@@ -1210,9 +1233,7 @@
 
                 alert(`🎉 വിജയകരമായി "${testName}" എന്ന നോട്ടിലേക്ക് വിവരങ്ങൾ സേവ് ചെയ്തു!`);
                 document.getElementById('notes-admin-text-input').value = '';
-                document.getElementById('notes-admin-subtopic').value = '';
-                document.getElementById('notes-admin-testname').value = '';
-                switchTab('dashboard');
+                openNotesCategory();
 
             } catch (error) {
                 alert('എറർ: ' + error.message);
@@ -1226,7 +1247,6 @@
             let icons = {
                 topic_wise: '📑',
                 notes: '📝',
-                gemini_notes: '✨',
                 scert: '📚',
                 ca_daily: '📅',
                 ca_monthly: '📊',
@@ -1242,15 +1262,14 @@
                 let cat = categoriesData[key];
                 let icon = icons[key] || '📁';
                 
-                let isNotesCat = (key === 'notes' || key === 'gemini_notes');
-                let clickAction = isNotesCat ? `openNotesCategory('${key}')` : `openSubTopics('${key}')`;
+                let clickAction = key === 'notes' ? `openNotesCategory()` : `openSubTopics('${key}')`;
                 
                 html += `
                     <div onclick="${clickAction}" class="bg-slate-800 border border-slate-700 p-4 rounded-2xl cursor-pointer hover:border-indigo-500 transition shadow-sm space-y-2">
                         <div class="w-10 h-10 bg-indigo-900/50 rounded-xl flex items-center justify-center text-indigo-400 text-xl font-bold">${icon}</div>
                         <div>
                             <h3 class="font-bold text-sm text-white">${cat.title}</h3>
-                            <p class="text-xs text-slate-400 mt-0.5">${isNotesCat ? 'സ്റ്റഡി നോട്ട്സ്' : 'കാറ്റഗറി ടെസ്റ്റുകൾ'}</p>
+                            <p class="text-xs text-slate-400 mt-0.5">${key === 'notes' ? 'സ്റ്റഡി നോട്ട്സ്' : 'കാറ്റഗറി ടെസ്റ്റുകൾ'}</p>
                         </div>
                     </div>
                 `;
