@@ -142,6 +142,15 @@
             <div id="notes-subtopics-container" class="space-y-4"></div>
         </section>
 
+        <!-- GEMINI NOTES SUB-TOPICS VIEW -->
+        <section id="section-gemini-notes-subtopics" class="hidden space-y-4">
+            <div class="flex items-center space-x-3">
+                <button onclick="switchTab('dashboard')" class="bg-slate-800 border border-slate-700 text-slate-300 px-3 py-1.5 rounded-lg font-medium">← തിരികെ ഹോമിലേക്ക്</button>
+                <h2 class="text-lg font-bold text-amber-400">✨ Gemini Notes (സ്റ്റഡി നോട്ട്സ്)</h2>
+            </div>
+            <div id="gemini-notes-subtopics-container" class="space-y-4"></div>
+        </section>
+
         <!-- TAB: ADMIN PANEL (Unified Admin Hub with Buttons) -->
         <section id="section-admin_panel" class="hidden space-y-6">
             <div class="bg-slate-800 border border-slate-700 p-5 rounded-2xl space-y-4 shadow-md">
@@ -153,6 +162,8 @@
                     <button onclick="switchAdminSubSection('add_cat')" id="admin-btn-add_cat" class="admin-sub-btn p-3 bg-indigo-600 text-white rounded-xl text-xs font-bold transition shadow">Add Main Category</button>
                     <button onclick="switchAdminSubSection('pdf_creator')" id="admin-btn-pdf_creator" class="admin-sub-btn p-3 bg-slate-900 border border-slate-700 text-slate-300 rounded-xl text-xs font-medium transition">Mock Creator</button>
                     <button onclick="switchAdminSubSection('add_notes')" id="admin-btn-add_notes" class="admin-sub-btn p-3 bg-slate-900 border border-slate-700 text-slate-300 rounded-xl text-xs font-medium transition">➕ Add Notes</button>
+                    <button onclick="switchAdminSubSection('add_gemini_notes')" id="admin-btn-add_gemini_notes" class="admin-sub-btn p-3 bg-slate-900 border border-slate-700 text-slate-300 rounded-xl text-xs font-medium transition">✨ Add Gemini Notes</button>
+                    <button onclick="switchAdminSubSection('delete_notes')" id="admin-btn-delete_notes" class="admin-sub-btn p-3 bg-slate-900 border border-slate-700 text-slate-300 rounded-xl text-xs font-medium transition">🗑️ Delete Notes</button>
                     <button onclick="switchAdminSubSection('add_more')" id="admin-btn-add_more" class="admin-sub-btn p-3 bg-slate-900 border border-slate-700 text-slate-300 rounded-xl text-xs font-medium transition">Add More Qns</button>
                     <button onclick="switchAdminSubSection('delete_mock')" id="admin-btn-delete_mock" class="admin-sub-btn p-3 bg-slate-900 border border-slate-700 text-slate-300 rounded-xl text-xs font-medium transition">Delete Mock</button>
                     <button onclick="switchAdminSubSection('reported_qns')" id="admin-btn-reported_qns" class="admin-sub-btn p-3 bg-slate-900 border border-slate-700 text-slate-300 rounded-xl text-xs font-medium transition">Reported Questions</button>
@@ -227,6 +238,38 @@
                 </button>
             </div>
 
+            <!-- ADMIN SUB-SECTION: Add Gemini Notes -->
+            <div id="admin-sub-add_gemini_notes" class="admin-sub-section hidden bg-slate-800 border border-slate-700 p-5 rounded-2xl space-y-4 shadow-md">
+                <h3 class="text-md font-bold text-amber-400">✨ Add Gemini Notes (ജെമിനി നോട്ടുകൾ ചേർക്കുക)</h3>
+                <div>
+                    <label class="block text-sm font-medium text-slate-300 mb-1">Topic (സബ് ടോപ്പിക്):</label>
+                    <input type="text" id="gemini-notes-topic" placeholder="ഉദാഹരണത്തിന്: ഇന്ത്യൻ ഭരണഘടന" class="w-full p-2.5 bg-slate-900 border border-slate-700 text-white rounded-xl text-sm">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-slate-300 mb-1">Sub Topic (ടെസ്റ്റ് നെയിം):</label>
+                    <input type="text" id="gemini-notes-subtopic" placeholder="ഉദാഹരണത്തിന്: മൗലിക അവകാശങ്ങൾ" class="w-full p-2.5 bg-slate-900 border border-slate-700 text-white rounded-xl text-sm">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-slate-300 mb-1">Notes Textarea (ടേബിളുകളും മാർക്ക് ഡൗൺ നോട്ടുകളും പേസ്റ്റ് ചെയ്യുക):</label>
+                    <textarea id="gemini-notes-textarea" rows="8" placeholder="| ടേബിൾ ഹെഡർ 1 | ടേബിൾ ഹെഡർ 2 |&#10;|---|---|&#10;| ഡാറ്റ 1 | ഡാറ്റ 2 |&#10;&#10;**പ്രധാനപ്പെട്ട പോയിന്റുകൾ:**&#10;* ഇവിടെ നോട്ടുകൾ എഴുതുക..." class="w-full p-2.5 bg-slate-900 border border-slate-700 text-white rounded-xl text-sm custom-scrollbar"></textarea>
+                </div>
+                <button onclick="saveGeminiNotes()" class="w-full bg-amber-600 hover:bg-amber-700 text-white py-3 rounded-xl font-bold shadow transition">
+                    Gemini Notes സേവ് ചെയ്യുക
+                </button>
+            </div>
+
+            <!-- ADMIN SUB-SECTION: Delete Notes -->
+            <div id="admin-sub-delete_notes" class="admin-sub-section hidden bg-slate-800 border border-slate-700 p-5 rounded-2xl space-y-4 shadow-md">
+                <div class="flex justify-between items-center">
+                    <h3 class="text-md font-bold text-red-400">🗑️ സ്റ്റഡി നോട്ട്സ് ഡിലീറ്റ് ചെയ്യുക (Delete Notes)</h3>
+                    <button onclick="deleteSelectedNotes()" class="bg-red-600 hover:bg-red-700 text-white text-xs px-3 py-1.5 rounded-lg font-bold transition">സെലക്ട് ചെയ്തവ ഡിലീറ്റ് ചെയ്യുക</button>
+                </div>
+                <p class="text-xs text-slate-400">ഡിലീറ്റ് ചെയ്യേണ്ട നോട്ടുകൾ ടിക്ക് ചെയ്ത് സെലക്ട് ചെയ്യുക:</p>
+                <div id="delete-notes-container" class="space-y-3 max-h-96 overflow-y-auto custom-scrollbar p-1">
+                    <p class="text-xs text-slate-500 text-center py-4">സ്റ്റഡി നോട്ടുകൾ ഒന്നും ലഭ്യമല്ല.</p>
+                </div>
+            </div>
+
             <!-- ADMIN SUB-SECTION 3: Add More Qns -->
             <div id="admin-sub-add_more" class="admin-sub-section hidden bg-slate-800 border border-slate-700 p-5 rounded-2xl space-y-4 shadow-md">
                 <h3 class="text-md font-bold text-emerald-400">➕ കൂടുതൽ ചോദ്യങ്ങൾ കൂട്ടിച്ചേർക്കുക (Append)</h3>
@@ -257,7 +300,11 @@
 
             <!-- ADMIN SUB-SECTION 4: Delete Mock -->
             <div id="admin-sub-delete_mock" class="admin-sub-section hidden bg-slate-800 border border-slate-700 p-5 rounded-2xl space-y-4 shadow-md">
-                <h3 class="text-md font-bold text-red-400">🗑️ മോക്ക് ടെസ്റ്റുകൾ ഡിലീറ്റ് ചെയ്യുക</h3>
+                <div class="flex justify-between items-center">
+                    <h3 class="text-md font-bold text-red-400">🗑️ മോക്ക് ടെസ്റ്റുകൾ ഡിലീറ്റ് ചെയ്യുക</h3>
+                    <button onclick="deleteSelectedMocks()" class="bg-red-600 hover:bg-red-700 text-white text-xs px-3 py-1.5 rounded-lg font-bold transition">സെലക്ട് ചെയ്തവ ഡിലീറ്റ് ചെയ്യുക</button>
+                </div>
+                <p class="text-xs text-slate-400">ഡിലീറ്റ് ചെയ്യേണ്ട മോക്ക് ടെസ്റ്റുകൾ ടിക്ക് ചെയ്ത് സെലക്ട് ചെയ്യുക:</p>
                 <div id="delete-mock-container" class="space-y-3 max-h-96 overflow-y-auto custom-scrollbar p-1">
                     <p class="text-xs text-slate-500 text-center py-4">മോക്ക് ടെസ്റ്റുകൾ ഒന്നും ലഭ്യമല്ല.</p>
                 </div>
@@ -567,6 +614,7 @@
         let defaultCategoriesOrder = {
             topic_wise: { title: "Topic-wise Exams", subtopics: [] },
             notes: { title: "📝 Study Notes", subtopics: [] },
+            gemini_notes: { title: "✨ Gemini Notes", subtopics: [] },
             scert: { title: "SCERT Based Exams", subtopics: [] },
             ca_daily: { title: "Daily Current Affairs", subtopics: [] },
             ca_monthly: { title: "Monthly Current Affairs", subtopics: [] },
@@ -674,6 +722,7 @@
             document.getElementById('section-study_zone').classList.add('hidden');
             document.getElementById('section-study-practice').classList.add('hidden');
             document.getElementById('section-notes-subtopics').classList.add('hidden');
+            document.getElementById('section-gemini-notes-subtopics').classList.add('hidden');
             document.getElementById('section-study-notes').classList.add('hidden');
             document.getElementById('section-admin_panel').classList.add('hidden');
             document.getElementById('mock-interface').classList.add('hidden');
@@ -720,6 +769,7 @@
                 document.getElementById('section-study_zone').classList.add('hidden');
                 document.getElementById('section-study-practice').classList.add('hidden');
                 document.getElementById('section-notes-subtopics').classList.add('hidden');
+                document.getElementById('section-gemini-notes-subtopics').classList.add('hidden');
                 document.getElementById('section-study-notes').classList.add('hidden');
                 document.getElementById('mock-interface').classList.add('hidden');
                 document.getElementById('result-interface').classList.add('hidden');
@@ -733,6 +783,7 @@
                 document.getElementById('section-admin_panel').classList.remove('hidden');
                 populateCategoryDropdowns();
                 renderDeleteMockList();
+                renderDeleteNotesList();
                 renderAdminReports();
                 switchAdminSubSection('add_cat');
             } else {
@@ -760,6 +811,10 @@
             }
             if(subId === 'add_notes') {
                 populateNotesCategories();
+            } else if(subId === 'delete_notes') {
+                renderDeleteNotesList();
+            } else if(subId === 'delete_mock') {
+                renderDeleteMockList();
             }
         }
 
@@ -913,6 +968,7 @@
 
         // View Study Notes with Full Table & Markdown Support
         function startStudyNotesView(topicKey, subName, testName) {
+            activeCategoryKey = topicKey;
             activeCurrentNoteKey = `${topicKey}|${subName}|${testName}`;
             let notesData = studyNotesMap[activeCurrentNoteKey];
 
@@ -921,7 +977,7 @@
             container.innerHTML = '';
 
             if(!notesData || (typeof notesData === 'string' && notesData.trim() === '')) {
-                container.innerHTML = `<div class="text-center py-16 text-slate-400 text-base font-medium bg-white p-6 rounded-2xl shadow-sm border border-slate-200">ഈ നോട്ടിനായി വിവരങ്ങൾ ഒന്നും ചേർത്തിട്ടില്ല. <br><span class="text-xs text-slate-400 mt-1 block">അഡ്മിൻ പാനൽ വഴി 'Add Notes' ഉപയോഗിച്ച് നോട്ടുകൾ ചേർക്കുക.</span></div>`;
+                container.innerHTML = `<div class="text-center py-16 text-slate-400 text-base font-medium bg-white p-6 rounded-2xl shadow-sm border border-slate-200">ഈ നോട്ടിനായി വിവരങ്ങൾ ഒന്നും ചേർത്തിട്ടില്ല. <br><span class="text-xs text-slate-400 mt-1 block">അഡ്മിൻ പാനൽ വഴി നോട്ടുകൾ ചേർക്കുക.</span></div>`;
             } else {
                 let lines = notesData.split('\n');
                 let formattedHtml = '';
@@ -1014,7 +1070,7 @@
             document.getElementById('section-study-notes').classList.remove('hidden');
         }
 
-        // Selection Event Listener for Floating Toolbar (Updated for full element support)
+        // Selection Event Listener for Floating Toolbar
         document.addEventListener('mouseup', handleTextSelectionToolbar);
         document.addEventListener('touchend', handleTextSelectionToolbar);
 
@@ -1124,11 +1180,16 @@
         function closeStudyNotesView() {
             document.getElementById('section-study-notes').classList.add('hidden');
             document.getElementById('selection-toolbar').classList.add('hidden');
-            document.getElementById('section-notes-subtopics').classList.remove('hidden');
+            if(activeCategoryKey === 'gemini_notes') {
+                document.getElementById('section-gemini-notes-subtopics').classList.remove('hidden');
+            } else {
+                document.getElementById('section-notes-subtopics').classList.remove('hidden');
+            }
         }
 
-        // Open Notes Category Sub-topics View (Topic-wise only)
+        // Open Notes Category Sub-topics View
         function openNotesCategory() {
+            activeCategoryKey = 'topic_wise';
             const container = document.getElementById('notes-subtopics-container');
             if(!container) return;
             container.innerHTML = '';
@@ -1159,6 +1220,95 @@
 
             document.querySelectorAll('main > section').forEach(sec => sec.classList.add('hidden'));
             document.getElementById('section-notes-subtopics').classList.remove('hidden');
+        }
+
+        // Open Gemini Notes Category Sub-topics View
+        function openGeminiNotesCategory() {
+            activeCategoryKey = 'gemini_notes';
+            const container = document.getElementById('gemini-notes-subtopics-container');
+            if(!container) return;
+            container.innerHTML = '';
+            let hasTests = false;
+
+            let catKey = 'gemini_notes';
+            let cat = categoriesData[catKey];
+            if(cat && cat.subtopics.length > 0) {
+                cat.subtopics.forEach(sub => {
+                    sub.tests.forEach(testName => {
+                        hasTests = true;
+                        container.innerHTML += `
+                            <div class="flex items-center justify-between bg-slate-900 border border-slate-700 hover:border-amber-500 rounded-xl px-4 py-3 shadow-sm">
+                                <div>
+                                    <div class="text-xs text-amber-400 font-semibold">${cat.title} > ${sub.name}</div>
+                                    <div class="text-sm font-medium text-white">${testName}</div>
+                                </div>
+                                <button onclick="startStudyNotesView('${catKey}', '${sub.name}', '${testName}')" class="bg-amber-600 hover:bg-amber-700 text-white text-xs px-3 py-2 rounded-lg font-medium transition whitespace-nowrap">View Notes</button>
+                            </div>
+                        `;
+                    });
+                });
+            }
+
+            if(!hasTests) {
+                container.innerHTML = `<p class="text-xs text-slate-500 text-center py-6">Gemini Notes ഒന്നും ഇതുവരെ ചേർത്തിട്ടില്ല. അഡ്മിൻ പാനൽ വഴി ചേർക്കുക.</p>`;
+            }
+
+            document.querySelectorAll('main > section').forEach(sec => sec.classList.add('hidden'));
+            document.getElementById('section-gemini-notes-subtopics').classList.remove('hidden');
+        }
+
+        // Save Admin Gemini Notes Function (Firebase & LocalStorage Sync)
+        async function saveGeminiNotes() {
+            const topic = document.getElementById('gemini-notes-topic').value.trim();
+            const subtopic = document.getElementById('gemini-notes-subtopic').value.trim();
+            const notesText = document.getElementById('gemini-notes-textarea').value.trim();
+
+            if(!topic) { alert('ദയവായി Topic (സബ് ടോപ്പിക്) നൽകുക!'); return; }
+            if(!subtopic) { alert('ദയവായി Sub Topic (ടെസ്റ്റ് നെയിം) നൽകുക!'); return; }
+            if(!notesText) { alert('ദയവായി നോട്ടുകൾ നൽകുക!'); return; }
+
+            try {
+                let catKey = 'gemini_notes';
+                if(!categoriesData[catKey]) {
+                    categoriesData[catKey] = { title: "✨ Gemini Notes", subtopics: [] };
+                }
+
+                let subObj = categoriesData[catKey].subtopics.find(s => s.name.toLowerCase() === topic.toLowerCase());
+                if(!subObj) {
+                    categoriesData[catKey].subtopics.push({ name: topic, tests: [subtopic] });
+                } else {
+                    if(!subObj.tests.includes(subtopic)) {
+                        subObj.tests.push(subtopic);
+                    }
+                }
+
+                let noteKey = `${catKey}|${topic}|${subtopic}`;
+                studyNotesMap[noteKey] = notesText;
+
+                localStorage.setItem('psc_categories_data_anoop', JSON.stringify(categoriesData));
+                localStorage.setItem('psc_study_notes_map_anoop', JSON.stringify(studyNotesMap));
+
+                if(db) {
+                    await db.collection("app_data").doc("psc_database_anoop").set({
+                        categoriesData: categoriesData,
+                        sampleQuestions: sampleQuestions,
+                        studyNotesMap: studyNotesMap,
+                        studyHighlightsMap: studyHighlightsMap,
+                        userProgressData: userProgressData,
+                        reportedQuestionsList: reportedQuestionsList,
+                        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+                }
+
+                alert(`🎉 വിജയകരമായി "${subtopic}" എന്ന Gemini Note സേവ് ചെയ്തു!`);
+                document.getElementById('gemini-notes-topic').value = '';
+                document.getElementById('gemini-notes-subtopic').value = '';
+                document.getElementById('gemini-notes-textarea').value = '';
+                openGeminiNotesCategory();
+
+            } catch (error) {
+                alert('എറർ: ' + error.message);
+            }
         }
 
         // Admin Add Notes dropdown handlers (Topic-wise only)
@@ -1240,6 +1390,93 @@
             }
         }
 
+        // Render Delete Notes List with Checkboxes
+        function renderDeleteNotesList() {
+            const container = document.getElementById('delete-notes-container');
+            if(!container) return;
+            container.innerHTML = '';
+            let hasNotes = false;
+
+            ['topic_wise', 'gemini_notes'].forEach(catKey => {
+                let cat = categoriesData[catKey];
+                if(cat && cat.subtopics.length > 0) {
+                    cat.subtopics.forEach(sub => {
+                        sub.tests.forEach(testName => {
+                            let noteKey = `${catKey}|${sub.name}|${testName}`;
+                            if(studyNotesMap[noteKey]) {
+                                hasNotes = true;
+                                container.innerHTML += `
+                                    <label class="flex items-center space-x-3 bg-slate-900 border border-slate-700 p-3 rounded-xl cursor-pointer hover:bg-slate-800 transition">
+                                        <input type="checkbox" name="delete_note_checkbox" value="${noteKey}" class="rounded bg-slate-800 border-slate-700 text-red-600 focus:ring-red-500 w-4 h-4">
+                                        <div>
+                                            <div class="text-xs text-indigo-400 font-semibold">${cat.title} > ${sub.name}</div>
+                                            <div class="text-sm font-medium text-white">${testName}</div>
+                                        </div>
+                                    </label>
+                                `;
+                            }
+                        });
+                    });
+                }
+            });
+
+            if(!hasNotes) {
+                container.innerHTML = `<p class="text-xs text-slate-500 text-center py-4">ഡിലീറ്റ് ചെയ്യാൻ സ്റ്റഡി നോട്ടുകൾ ഒന്നും ലഭ്യമല്ല.</p>`;
+            }
+        }
+
+        async function deleteSelectedNotes() {
+            const checkboxes = document.querySelectorAll('input[name="delete_note_checkbox"]:checked');
+            if(checkboxes.length === 0) {
+                alert("ദയവായി ഡിലീറ്റ് ചെയ്യാനായി കുറഞ്ഞത് ഒരു নোটെങ്കിലും ടിക്ക് ചെയ്ത് സെലക്ട് ചെയ്യുക!");
+                return;
+            }
+
+            if(!confirm(`⚠️ സെലക്ട് ചെയ്ത ${checkboxes.length} സ്റ്റഡി നോട്ടുകളും ഡിലീറ്റ് ചെയ്യണമെന്നുറപ്പാണോ?`)) return;
+
+            checkboxes.forEach(cb => {
+                let noteKey = cb.value;
+                delete studyNotesMap[noteKey];
+                delete studyHighlightsMap[noteKey];
+
+                let parts = noteKey.split('|');
+                let catKey = parts[0];
+                let subName = parts[1];
+                let testName = parts[2];
+
+                if(catKey === 'gemini_notes' && categoriesData[catKey]) {
+                    let sub = categoriesData[catKey].subtopics.find(s => s.name === subName);
+                    if(sub) {
+                        sub.tests = sub.tests.filter(t => t !== testName);
+                        if(sub.tests.length === 0) {
+                            categoriesData[catKey].subtopics = categoriesData[catKey].subtopics.filter(s => s.name !== subName);
+                        }
+                    }
+                }
+            });
+
+            localStorage.setItem('psc_study_notes_map_anoop', JSON.stringify(studyNotesMap));
+            localStorage.setItem('psc_study_highlights_map_anoop', JSON.stringify(studyHighlightsMap));
+            localStorage.setItem('psc_categories_data_anoop', JSON.stringify(categoriesData));
+
+            if(db) {
+                try {
+                    await db.collection("app_data").doc("psc_database_anoop").set({
+                        categoriesData: categoriesData,
+                        sampleQuestions: sampleQuestions,
+                        studyNotesMap: studyNotesMap,
+                        studyHighlightsMap: studyHighlightsMap,
+                        userProgressData: userProgressData,
+                        reportedQuestionsList: reportedQuestionsList,
+                        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+                } catch(e) { console.log("Notes delete sync error:", e); }
+            }
+
+            alert("സെലക്ട് ചെയ്ത സ്റ്റഡി നോട്ടുകൾ വിജയകരമായി ഡിലീറ്റ് ചെയ്തു!");
+            renderDeleteNotesList();
+        }
+
         function renderDashboardCategories() {
             const grid = document.getElementById('dashboard-categories-grid');
             if(!grid) return;
@@ -1247,6 +1484,7 @@
             let icons = {
                 topic_wise: '📑',
                 notes: '📝',
+                gemini_notes: '✨',
                 scert: '📚',
                 ca_daily: '📅',
                 ca_monthly: '📊',
@@ -1262,14 +1500,14 @@
                 let cat = categoriesData[key];
                 let icon = icons[key] || '📁';
                 
-                let clickAction = key === 'notes' ? `openNotesCategory()` : `openSubTopics('${key}')`;
+                let clickAction = key === 'notes' ? `openNotesCategory()` : (key === 'gemini_notes' ? `openGeminiNotesCategory()` : `openSubTopics('${key}')`);
                 
                 html += `
                     <div onclick="${clickAction}" class="bg-slate-800 border border-slate-700 p-4 rounded-2xl cursor-pointer hover:border-indigo-500 transition shadow-sm space-y-2">
                         <div class="w-10 h-10 bg-indigo-900/50 rounded-xl flex items-center justify-center text-indigo-400 text-xl font-bold">${icon}</div>
                         <div>
                             <h3 class="font-bold text-sm text-white">${cat.title}</h3>
-                            <p class="text-xs text-slate-400 mt-0.5">${key === 'notes' ? 'സ്റ്റഡി നോട്ട്സ്' : 'കാറ്റഗറി ടെസ്റ്റുകൾ'}</p>
+                            <p class="text-xs text-slate-400 mt-0.5">${key === 'notes' || key === 'gemini_notes' ? 'സ്റ്റഡി നോട്ട്സ്' : 'കാറ്റഗറി ടെസ്റ്റുകൾ'}</p>
                         </div>
                     </div>
                 `;
@@ -1507,6 +1745,7 @@
             }
         }
 
+        // Render Delete Mock List with Checkboxes
         function renderDeleteMockList() {
             const container = document.getElementById('delete-mock-container');
             if(!container) return;
@@ -1520,14 +1759,15 @@
                 cat.subtopics.forEach(sub => {
                     sub.tests.forEach(testName => {
                         hasTests = true;
+                        let uniqueKey = `${catKey}|${sub.name}|${testName}`;
                         container.innerHTML += `
-                            <div class="flex items-center justify-between bg-slate-900 border border-slate-700 p-3 rounded-xl">
+                            <label class="flex items-center space-x-3 bg-slate-900 border border-slate-700 p-3 rounded-xl cursor-pointer hover:bg-slate-800 transition">
+                                <input type="checkbox" name="delete_mock_checkbox" value="${uniqueKey}" class="rounded bg-slate-800 border-slate-700 text-red-600 focus:ring-red-500 w-4 h-4">
                                 <div>
                                     <div class="text-xs text-indigo-400 font-semibold">${cat.title} > ${sub.name}</div>
                                     <div class="text-sm font-medium text-white">${testName}</div>
                                 </div>
-                                <button onclick="deleteSpecificMockTest('${catKey}', '${sub.name}', '${testName}')" class="bg-red-950/80 border border-red-800 text-red-400 hover:bg-red-900 text-xs px-3 py-1.5 rounded-lg font-medium transition">ഡിലീറ്റ്</button>
-                            </div>
+                            </label>
                         `;
                     });
                 });
@@ -1538,34 +1778,52 @@
             }
         }
 
-        function deleteSpecificMockTest(topicKey, subName, testName) {
-            if(!confirm(`⚠️ "${testName}" എന്ന മോക്ക് ടെസ്റ്റും അതിലെ ചോദ്യങ്ങളും ഡിലീറ്റ് ചെയ്യണമെന്നുറപ്പാണോ?`)) return;
-
-            sampleQuestions = sampleQuestions.filter(q => !(q.topic === topicKey && q.subtopic.toLowerCase() === subName.toLowerCase() && q.testName.toLowerCase() === testName.toLowerCase()));
-            localStorage.setItem('psc_sample_questions_anoop', JSON.stringify(sampleQuestions));
-
-            let sub = categoriesData[topicKey].subtopics.find(s => s.name.toLowerCase() === subName.toLowerCase());
-            if(sub) {
-                sub.tests = sub.tests.filter(t => t.toLowerCase() !== testName.toLowerCase());
-                if(sub.tests.length === 0) {
-                    categoriesData[topicKey].subtopics = categoriesData[topicKey].subtopics.filter(s => s.name.toLowerCase() !== subName.toLowerCase());
-                }
+        async function deleteSelectedMocks() {
+            const checkboxes = document.querySelectorAll('input[name="delete_mock_checkbox"]:checked');
+            if(checkboxes.length === 0) {
+                alert("ദയവായി ഡിലീറ്റ് ചെയ്യാനായി കുറഞ്ഞത് ഒരു മോക്ക് ടെസ്റ്റെങ്കിലും ടിക്ക് ചെയ്ത് സെലക്ട് ചെയ്യുക!");
+                return;
             }
+
+            if(!confirm(`⚠️ സെലക്ട് ചെയ്ത ${checkboxes.length} മോക്ക് ടെസ്റ്റുകളും അതിലെ ചോദ്യങ്ങളും ഡിലീറ്റ് ചെയ്യണമെന്നുറപ്പാണോ?`)) return;
+
+            checkboxes.forEach(cb => {
+                let parts = cb.value.split('|');
+                let topicKey = parts[0];
+                let subName = parts[1];
+                let testName = parts[2];
+
+                sampleQuestions = sampleQuestions.filter(q => !(q.topic === topicKey && q.subtopic.toLowerCase() === subName.toLowerCase() && q.testName.toLowerCase() === testName.toLowerCase()));
+
+                if(categoriesData[topicKey]) {
+                    let sub = categoriesData[topicKey].subtopics.find(s => s.name.toLowerCase() === subName.toLowerCase());
+                    if(sub) {
+                        sub.tests = sub.tests.filter(t => t.toLowerCase() !== testName.toLowerCase());
+                        if(sub.tests.length === 0) {
+                            categoriesData[topicKey].subtopics = categoriesData[topicKey].subtopics.filter(s => s.name.toLowerCase() !== subName.toLowerCase());
+                        }
+                    }
+                }
+            });
+
+            localStorage.setItem('psc_sample_questions_anoop', JSON.stringify(sampleQuestions));
             localStorage.setItem('psc_categories_data_anoop', JSON.stringify(categoriesData));
 
             if(db) {
-                db.collection("app_data").doc("psc_database_anoop").set({
-                    categoriesData: categoriesData,
-                    sampleQuestions: sampleQuestions,
-                    studyNotesMap: studyNotesMap,
-                    studyHighlightsMap: studyHighlightsMap,
-                    userProgressData: userProgressData,
-                    reportedQuestionsList: reportedQuestionsList,
-                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-                }).catch(e => console.log(e));
+                try {
+                    await db.collection("app_data").doc("psc_database_anoop").set({
+                        categoriesData: categoriesData,
+                        sampleQuestions: sampleQuestions,
+                        studyNotesMap: studyNotesMap,
+                        studyHighlightsMap: studyHighlightsMap,
+                        userProgressData: userProgressData,
+                        reportedQuestionsList: reportedQuestionsList,
+                        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+                } catch(e) { console.log("Mock delete sync error:", e); }
             }
 
-            alert("മോക്ക് ടെസ്റ്റും ചോദ്യങ്ങളും വിജയകരമായി ഡിലീറ്റ് ചെയ്തു!");
+            alert("സെലക്ട് ചെയ്ത മോക്ക് ടെസ്റ്റുകളും ചോദ്യങ്ങളും വിജയകരമായി ഡിലീറ്റ് ചെയ്തു!");
             renderDeleteMockList();
         }
 
@@ -2338,7 +2596,7 @@
         function openPaletteModal() { document.getElementById('palette-modal').classList.remove('hidden'); }
         function closePaletteModal() { document.getElementById('palette-modal').classList.add('hidden'); }
 
-        // Practice Zone (Fully Fixed and Restored)
+        // Practice Zone
         function initPracticeZone() {
             if(sampleQuestions.length === 0) {
                 alert("പ്രാക്ടീസ് ചെയ്യാൻ ചോദ്യങ്ങൾ ഒന്നുമില്ല. ആദ്യം പുതിയ മോക്ക് ടെസ്റ്റുകൾ ആഡ് ചെയ്യുക!");
