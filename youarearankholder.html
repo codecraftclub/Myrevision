@@ -160,6 +160,7 @@
                 <!-- Admin Action Buttons Bar -->
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-2.5 pt-2">
                     <button onclick="switchAdminSubSection('add_cat')" id="admin-btn-add_cat" class="admin-sub-btn p-3 bg-indigo-600 text-white rounded-xl text-xs font-bold transition shadow">Add Main Category</button>
+                    <button onclick="switchAdminSubSection('progress_admin')" id="admin-btn-progress_admin" class="admin-sub-btn p-3 bg-slate-900 border border-slate-700 text-slate-300 rounded-xl text-xs font-medium transition">📌 Progress Manager</button>
                     <button onclick="switchAdminSubSection('pdf_creator')" id="admin-btn-pdf_creator" class="admin-sub-btn p-3 bg-slate-900 border border-slate-700 text-slate-300 rounded-xl text-xs font-medium transition">Mock Creator</button>
                     <button onclick="switchAdminSubSection('add_notes')" id="admin-btn-add_notes" class="admin-sub-btn p-3 bg-slate-900 border border-slate-700 text-slate-300 rounded-xl text-xs font-medium transition">➕ Add Notes</button>
                     <button onclick="switchAdminSubSection('add_gemini_notes')" id="admin-btn-add_gemini_notes" class="admin-sub-btn p-3 bg-slate-900 border border-slate-700 text-slate-300 rounded-xl text-xs font-medium transition">✨ Add Gemini Notes</button>
@@ -184,6 +185,36 @@
                 <button onclick="addNewMainCategory()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-2.5 rounded-xl text-xs font-bold shadow transition">
                     കാറ്റഗറി സേവ് ചെയ്യുക
                 </button>
+            </div>
+
+            <!-- ADMIN SUB-SECTION: Progress Manager (Add/Delete Topics/Subtopics & Tick Completed) -->
+            <div id="admin-sub-progress_admin" class="admin-sub-section hidden bg-slate-800 border border-slate-700 p-5 rounded-2xl space-y-5 shadow-md">
+                <h3 class="text-md font-bold text-indigo-400">📌 പ്രോഗ്രസ് ട്രാക്കർ മാനേജർ (Admin Panel)</h3>
+                
+                <!-- Add Main Topic & Sub Topic Form -->
+                <div class="bg-slate-900 border border-slate-700 p-4 rounded-xl space-y-3">
+                    <h4 class="text-sm font-bold text-emerald-400">പുതിയ ടോപ്പിക്കും സബ് ടോപ്പിക്കും ചേർക്കുക</h4>
+                    <div>
+                        <label class="block text-xs font-medium text-slate-300 mb-1">മെയിൻ ടോപിക്കിന്റെ പേര്:</label>
+                        <input type="text" id="prog-admin-main-topic" placeholder="ഉദാഹരണത്തിന്: ഇന്ത്യൻ ഭരണഘടന" class="w-full p-2.5 bg-slate-800 border border-slate-700 text-white rounded-xl text-sm">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-slate-300 mb-1">സബ് ടോപിക്കിന്റെ പേര്:</label>
+                        <input type="text" id="prog-admin-sub-topic" placeholder="ഉദാഹരണത്തിന്: മൗലിക അവകാശങ്ങൾ" class="w-full p-2.5 bg-slate-800 border border-slate-700 text-white rounded-xl text-sm">
+                    </div>
+                    <button onclick="adminAddTrackerTopic()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-2.5 rounded-xl text-xs font-bold transition">
+                        ടോപ്പിക് ആഡ് ചെയ്യുക
+                    </button>
+                </div>
+
+                <!-- Manager List with Complete & Delete Options -->
+                <div class="space-y-3">
+                    <h4 class="text-sm font-bold text-amber-400">ടോപ്പിക്കുകൾ മാനേജ് ചെയ്യുക (Tick & Delete)</h4>
+                    <p class="text-xs text-slate-400">ചുവടെയുള്ള ടോപ്പിക്കുകൾ ടിക്ക് ചെയ്ത് കംപ്ലീറ്റ് ചെയ്യാം അല്ലെങ്കിൽ ഡിലീറ്റ് ചെയ്യാം.</p>
+                    <div id="admin-tracker-checklist-container" class="space-y-3 max-h-96 overflow-y-auto custom-scrollbar p-1">
+                        <p class="text-xs text-slate-500 text-center py-4">ടോപ്പിക്കുകൾ ഒന്നും ലഭ്യമല്ല.</p>
+                    </div>
+                </div>
             </div>
 
             <!-- ADMIN SUB-SECTION 2: Mock Creator -->
@@ -391,27 +422,22 @@
         <section id="section-tracker" class="hidden space-y-4">
             <div class="bg-slate-800 border border-slate-700 p-5 rounded-2xl shadow-md space-y-4">
                 <h2 class="text-lg font-bold text-indigo-400">📊 പ്രോഗ്രസ് ട്രാക്കർ (Progress Tracker)</h2>
-                <p class="text-xs text-slate-400">താങ്കൾ ഇതുവരെ പൂർത്തിയാക്കിയ മോക്ക് ടെസ്റ്റുകളുടെ വിവരങ്ങളും ഉയർന്ന മാർക്കുകളും താഴെ കാണാം:</p>
-                <div class="border border-slate-700 rounded-xl overflow-hidden bg-slate-900 flex flex-col" style="max-height: 400px;">
-                    <!-- Static Header Part -->
-                    <table class="w-full text-left border-collapse text-sm flex-shrink-0">
-                        <thead class="bg-slate-950 text-slate-400 shadow-md">
-                            <tr>
-                                <th class="p-3 border-b border-slate-700 w-2/5">മോക്ക് ടെസ്റ്റ് പേര്</th>
-                                <th class="p-3 border-b border-slate-700">ചെയ്ത തവണകൾ</th>
-                                <th class="p-3 border-b border-slate-700">ഉയർന്ന മാർക്ക്</th>
-                                <th class="p-3 border-b border-slate-700">ആകെ മാർക്ക്</th>
-                            </tr>
-                        </thead>
-                    </table>
-                    <!-- Scrollable Body Part -->
-                    <div class="overflow-y-auto custom-scrollbar flex-1">
-                        <table class="w-full text-left border-collapse text-sm">
-                            <tbody id="tracker-table-body" class="text-slate-300">
-                                <tr><td colspan="4" class="p-4 text-center text-xs text-slate-500">ഇതുവരെ ടെസ്റ്റുകൾ ഒന്നും പൂർത്തിയാക്കിയിട്ടില്ല.</td></tr>
-                            </tbody>
-                        </table>
+                <p class="text-xs text-slate-400">താങ്കളുടെ പഠന പുരോഗതിയും പൂർത്തിയാക്കിയ ടോപ്പിക്കുകളുടെ ശതമാനവും താഴെ കാണാം:</p>
+                
+                <!-- Overall Progress Bar Container -->
+                <div class="bg-slate-900 border border-slate-700 p-4 rounded-xl space-y-2">
+                    <div class="flex justify-between items-center text-xs font-bold">
+                        <span class="text-slate-300">ആകെ പ്രോഗ്രസ് (Overall Progress)</span>
+                        <span id="tracker-overall-percentage" class="text-emerald-400 text-sm">0% Completed</span>
                     </div>
+                    <div class="w-full bg-slate-800 rounded-full h-3 overflow-hidden border border-slate-700">
+                        <div id="tracker-progress-bar-fill" class="bg-emerald-500 h-full transition-all duration-500" style="width: 0%;"></div>
+                    </div>
+                </div>
+
+                <!-- Detailed Topics List Container -->
+                <div id="tracker-detailed-container" class="space-y-4">
+                    <p class="text-xs text-slate-500 text-center py-4">ടോപ്പിക്കുകൾ ഒന്നും ലഭ്യമല്ല.</p>
                 </div>
             </div>
         </section>
@@ -645,6 +671,17 @@
         let userProgressData = JSON.parse(localStorage.getItem('psc_user_progress_anoop') || JSON.stringify({}));
         let savedMistakeSets = JSON.parse(localStorage.getItem('psc_saved_mistake_sets_anoop') || JSON.stringify([]));
         let reportedQuestionsList = JSON.parse(localStorage.getItem('psc_reported_questions_anoop') || JSON.stringify([]));
+        
+        // Progress Tracker Structured Data Store
+        let trackerTopicsData = JSON.parse(localStorage.getItem('psc_tracker_topics_data_anoop') || JSON.stringify([
+            {
+                mainTopic: "ഇന്ത്യൻ ഭരണഘടന (Indian Constitution)",
+                subtopics: [
+                    { name: "മൗലിക അവകാശങ്ങൾ", completed: false },
+                    { name: "നിർദ്ദേശക തത്വങ്ങൾ", completed: false }
+                ]
+            }
+        ]));
 
         async function loadDataFromFirebase() {
             if(!db) return;
@@ -684,6 +721,10 @@
                     if(serverData.reportedQuestionsList) {
                         reportedQuestionsList = serverData.reportedQuestionsList;
                         localStorage.setItem('psc_reported_questions_anoop', JSON.stringify(reportedQuestionsList));
+                    }
+                    if(serverData.trackerTopicsData) {
+                        trackerTopicsData = serverData.trackerTopicsData;
+                        localStorage.setItem('psc_tracker_topics_data_anoop', JSON.stringify(trackerTopicsData));
                     }
                 }
             } catch(err) {
@@ -753,7 +794,7 @@
                 initPracticeZone();
             } else if(tabId === 'tracker') {
                 document.getElementById('section-tracker').classList.remove('hidden');
-                renderTrackerTable();
+                renderTrackerUI();
             }
         }
 
@@ -785,6 +826,7 @@
                 renderDeleteMockList();
                 renderDeleteNotesList();
                 renderAdminReports();
+                renderAdminTrackerChecklist();
                 switchAdminSubSection('add_cat');
             } else {
                 alert("❌ തെറ്റായ പിൻ നമ്പർ! വീണ്ടും ശ്രമിക്കുക.");
@@ -815,7 +857,183 @@
                 renderDeleteNotesList();
             } else if(subId === 'delete_mock') {
                 renderDeleteMockList();
+            } else if(subId === 'progress_admin') {
+                renderAdminTrackerChecklist();
             }
+        }
+
+        // Admin Progress Manager Functions
+        async function adminAddTrackerTopic() {
+            let mainTopic = document.getElementById('prog-admin-main-topic').value.trim();
+            let subTopic = document.getElementById('prog-admin-sub-topic').value.trim();
+
+            if(!mainTopic) { alert("ദയവായി മെയിൻ ടോപിക്കിന്റെ പേര് നൽകുക!"); return; }
+            if(!subTopic) { alert("ദയവായി സബ് ടോപിക്കിന്റെ പേര് നൽകുക!"); return; }
+
+            let mainObj = trackerTopicsData.find(m => m.mainTopic.toLowerCase() === mainTopic.toLowerCase());
+            if(mainObj) {
+                if(!mainObj.subtopics.some(s => s.name.toLowerCase() === subTopic.toLowerCase())) {
+                    mainObj.subtopics.push({ name: subTopic, completed: false });
+                } else {
+                    alert("ഈ സബ് ടോപ്പിക് ഇതിനകം നിലവിലുണ്ട്!");
+                    return;
+                }
+            } else {
+                trackerTopicsData.push({
+                    mainTopic: mainTopic,
+                    subtopics: [{ name: subTopic, completed: false }]
+                });
+            }
+
+            saveTrackerDataAndSync();
+            document.getElementById('prog-admin-main-topic').value = '';
+            document.getElementById('prog-admin-sub-topic').value = '';
+            renderAdminTrackerChecklist();
+            alert("🎉 പുതിയ ടോപ്പിക് വിജയകരമായി ചേർത്തു!");
+        }
+
+        function renderAdminTrackerChecklist() {
+            const container = document.getElementById('admin-tracker-checklist-container');
+            if(!container) return;
+            container.innerHTML = '';
+
+            if(trackerTopicsData.length === 0) {
+                container.innerHTML = `<p class="text-xs text-slate-500 text-center py-4">ടോപ്പിക്കുകൾ ഒന്നും ലഭ്യമല്ല.</p>`;
+                return;
+            }
+
+            trackerTopicsData.forEach((mainItem, mIdx) => {
+                let subsHtml = '';
+                mainItem.subtopics.forEach((subItem, sIdx) => {
+                    subsHtml += `
+                        <div class="flex items-center justify-between bg-slate-800 border border-slate-700 p-2.5 rounded-lg text-xs">
+                            <span class="text-slate-200 font-medium">${subItem.name}</span>
+                            <div class="flex items-center space-x-3">
+                                <label class="flex items-center space-x-1.5 cursor-pointer">
+                                    <span class="text-[10px] ${subItem.completed ? 'text-emerald-400 font-bold' : 'text-slate-400'}">${subItem.completed ? 'Completed' : 'Pending'}</span>
+                                    <input type="checkbox" ${subItem.completed ? 'checked' : ''} onchange="toggleSubtopicCompletion(${mIdx}, ${sIdx}, this.checked)" class="rounded bg-slate-900 border-slate-700 text-emerald-600 focus:ring-emerald-500 w-4 h-4">
+                                </label>
+                                <button onclick="deleteTrackerSubtopic(${mIdx}, ${sIdx})" class="bg-red-950/80 border border-red-800 text-red-400 hover:bg-red-900 px-2 py-1 rounded font-medium transition text-[10px]">ഡിലീറ്റ്</button>
+                            </div>
+                        </div>
+                    `;
+                });
+
+                container.innerHTML += `
+                    <div class="bg-slate-900 border border-slate-700 p-3.5 rounded-xl space-y-2">
+                        <div class="flex justify-between items-center">
+                            <div class="font-bold text-indigo-400 text-xs">📂 ${mainItem.mainTopic}</div>
+                            <button onclick="deleteTrackerMainTopic(${mIdx})" class="bg-red-950/80 border border-red-800 text-red-400 hover:bg-red-900 px-2 py-1 rounded font-medium transition text-[10px]">മെയിൻ ടോപ്പിക് ഡിലീറ്റ്</button>
+                        </div>
+                        <div class="space-y-1.5 pl-2 pt-1">${subsHtml}</div>
+                    </div>
+                `;
+            });
+        }
+
+        function toggleSubtopicCompletion(mIdx, sIdx, isChecked) {
+            if(trackerTopicsData[mIdx] && trackerTopicsData[mIdx].subtopics[sIdx]) {
+                trackerTopicsData[mIdx].subtopics[sIdx].completed = isChecked;
+                saveTrackerDataAndSync();
+                renderAdminTrackerChecklist();
+            }
+        }
+
+        function deleteTrackerSubtopic(mIdx, sIdx) {
+            if(!confirm("⚠️ ഈ സബ് ടോപ്പിക് ഡിലീറ്റ് ചെയ്യണമെന്നുറപ്പാണോ?")) return;
+            if(trackerTopicsData[mIdx]) {
+                trackerTopicsData[mIdx].subtopics.splice(sIdx, 1);
+                // If main topic has no subtopics left, remove it as well or keep it empty
+                if(trackerTopicsData[mIdx].subtopics.length === 0) {
+                    trackerTopicsData.splice(mIdx, 1);
+                }
+                saveTrackerDataAndSync();
+                renderAdminTrackerChecklist();
+            }
+        }
+
+        function deleteTrackerMainTopic(mIdx) {
+            if(!confirm("⚠️ ഈ മെയിൻ ടോപിക്കും അതിന് കീഴിലുള്ള എല്ലാ സബ് ടോപ്പിക്കുകളും ഡിലീറ്റ് ചെയ്യണമെന്നുറപ്പാണോ?")) return;
+            trackerTopicsData.splice(mIdx, 1);
+            saveTrackerDataAndSync();
+            renderAdminTrackerChecklist();
+        }
+
+        async function saveTrackerDataAndSync() {
+            localStorage.setItem('psc_tracker_topics_data_anoop', JSON.stringify(trackerTopicsData));
+            if(db) {
+                try {
+                    await db.collection("app_data").doc("psc_database_anoop").set({
+                        categoriesData: categoriesData,
+                        sampleQuestions: sampleQuestions,
+                        studyNotesMap: studyNotesMap,
+                        studyHighlightsMap: studyHighlightsMap,
+                        userProgressData: userProgressData,
+                        reportedQuestionsList: reportedQuestionsList,
+                        trackerTopicsData: trackerTopicsData,
+                        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                    }, { merge: true });
+                } catch(e) { console.log("Tracker sync error:", e); }
+            }
+        }
+
+        // Render Progress Tracker Tab UI
+        function renderTrackerUI() {
+            const overallFill = document.getElementById('tracker-progress-bar-fill');
+            const overallText = document.getElementById('tracker-overall-percentage');
+            const detailedContainer = document.getElementById('tracker-detailed-container');
+            if(!detailedContainer) return;
+            detailedContainer.innerHTML = '';
+
+            let totalSubs = 0;
+            let completedSubs = 0;
+
+            trackerTopicsData.forEach(mainItem => {
+                mainItem.subtopics.forEach(sub => {
+                    totalSubs++;
+                    if(sub.completed) completedSubs++;
+                });
+            });
+
+            let percentage = totalSubs > 0 ? Math.round((completedSubs / totalSubs) * 100) : 0;
+            if(overallFill) overallFill.style.width = `${percentage}%`;
+            if(overallText) overallText.innerText = `${percentage}% Completed (${completedSubs}/${totalSubs})`;
+
+            if(trackerTopicsData.length === 0) {
+                detailedContainer.innerHTML = `<p class="text-xs text-slate-500 text-center py-4">ടോപ്പിക്കുകൾ ഒന്നും ലഭ്യമല്ല.</p>`;
+                return;
+            }
+
+            trackerTopicsData.forEach(mainItem => {
+                let mTotal = mainItem.subtopics.length;
+                let mCompleted = mainItem.subtopics.filter(s => s.completed).length;
+                let mPercentage = mTotal > 0 ? Math.round((mCompleted / mTotal) * 100) : 0;
+
+                let subsListHtml = '';
+                mainItem.subtopics.forEach(sub => {
+                    subsListHtml += `
+                        <div class="flex items-center justify-between bg-slate-900 border border-slate-800 p-2.5 rounded-xl text-xs">
+                            <span class="text-slate-300 font-medium">${sub.name}</span>
+                            <span class="px-2 py-0.5 rounded text-[10px] font-bold ${sub.completed ? 'bg-emerald-950 text-emerald-400 border border-emerald-800' : 'bg-slate-800 text-slate-400'}">
+                                ${sub.completed ? 'Completed' : 'Pending'}
+                            </span>
+                        </div>
+                    `;
+                });
+
+                detailedContainer.innerHTML += `
+                    <div class="bg-slate-900 border border-slate-700 p-4 rounded-xl space-y-3 shadow-md">
+                        <div class="flex justify-between items-center">
+                            <h3 class="font-bold text-white text-sm">📂 ${mainItem.mainTopic}</h3>
+                            <span class="text-xs font-bold text-emerald-400">${mPercentage}% (${mCompleted}/${mTotal})</span>
+                        </div>
+                        <div class="w-full bg-slate-800 rounded-full h-2 overflow-hidden border border-slate-700">
+                            <div class="bg-indigo-500 h-full" style="width: ${mPercentage}%;"></div>
+                        </div>
+                        <div class="space-y-1.5 pt-1">${subsListHtml}</div>
+                    </div>
+                `;
+            });
         }
 
         // Render Study Zone Tests List (Topic-wise only)
@@ -1158,6 +1376,7 @@
                         studyHighlightsMap: studyHighlightsMap,
                         userProgressData: userProgressData,
                         reportedQuestionsList: reportedQuestionsList,
+                        trackerTopicsData: trackerTopicsData,
                         updatedAt: firebase.firestore.FieldValue.serverTimestamp()
                     }, { merge: true });
                 } catch(e) {
@@ -1296,6 +1515,7 @@
                         studyHighlightsMap: studyHighlightsMap,
                         userProgressData: userProgressData,
                         reportedQuestionsList: reportedQuestionsList,
+                        trackerTopicsData: trackerTopicsData,
                         updatedAt: firebase.firestore.FieldValue.serverTimestamp()
                     });
                 }
@@ -1377,6 +1597,7 @@
                         studyHighlightsMap: studyHighlightsMap,
                         userProgressData: userProgressData,
                         reportedQuestionsList: reportedQuestionsList,
+                        trackerTopicsData: trackerTopicsData,
                         updatedAt: firebase.firestore.FieldValue.serverTimestamp()
                     });
                 }
@@ -1468,6 +1689,7 @@
                         studyHighlightsMap: studyHighlightsMap,
                         userProgressData: userProgressData,
                         reportedQuestionsList: reportedQuestionsList,
+                        trackerTopicsData: trackerTopicsData,
                         updatedAt: firebase.firestore.FieldValue.serverTimestamp()
                     });
                 } catch(e) { console.log("Notes delete sync error:", e); }
@@ -1558,6 +1780,7 @@
                         studyHighlightsMap: studyHighlightsMap,
                         userProgressData: userProgressData,
                         reportedQuestionsList: reportedQuestionsList,
+                        trackerTopicsData: trackerTopicsData,
                         updatedAt: firebase.firestore.FieldValue.serverTimestamp()
                     });
                 } catch(e) { console.log("Category sync error:", e); }
@@ -1639,6 +1862,7 @@
                         studyHighlightsMap: studyHighlightsMap,
                         userProgressData: userProgressData,
                         reportedQuestionsList: reportedQuestionsList,
+                        trackerTopicsData: trackerTopicsData,
                         updatedAt: firebase.firestore.FieldValue.serverTimestamp()
                     });
                 }
@@ -1732,6 +1956,7 @@
                         studyHighlightsMap: studyHighlightsMap,
                         userProgressData: userProgressData,
                         reportedQuestionsList: reportedQuestionsList,
+                        trackerTopicsData: trackerTopicsData,
                         updatedAt: firebase.firestore.FieldValue.serverTimestamp()
                     });
                 }
@@ -1818,6 +2043,7 @@
                         studyHighlightsMap: studyHighlightsMap,
                         userProgressData: userProgressData,
                         reportedQuestionsList: reportedQuestionsList,
+                        trackerTopicsData: trackerTopicsData,
                         updatedAt: firebase.firestore.FieldValue.serverTimestamp()
                     });
                 } catch(e) { console.log("Mock delete sync error:", e); }
@@ -1872,6 +2098,7 @@
                         studyHighlightsMap: studyHighlightsMap,
                         userProgressData: userProgressData,
                         reportedQuestionsList: reportedQuestionsList,
+                        trackerTopicsData: trackerTopicsData,
                         updatedAt: firebase.firestore.FieldValue.serverTimestamp()
                     });
                 } catch(e) { console.log("Report sync error:", e); }
@@ -1922,6 +2149,7 @@
                         studyHighlightsMap: studyHighlightsMap,
                         userProgressData: userProgressData,
                         reportedQuestionsList: reportedQuestionsList,
+                        trackerTopicsData: trackerTopicsData,
                         updatedAt: firebase.firestore.FieldValue.serverTimestamp()
                     });
                 } catch(e) { console.log("No action sync error:", e); }
@@ -1989,6 +2217,7 @@
                         studyHighlightsMap: studyHighlightsMap,
                         userProgressData: userProgressData,
                         reportedQuestionsList: reportedQuestionsList,
+                        trackerTopicsData: trackerTopicsData,
                         updatedAt: firebase.firestore.FieldValue.serverTimestamp()
                     });
                 } catch(e) { console.log("Edit sync error:", e); }
@@ -2017,6 +2246,7 @@
                         studyHighlightsMap: studyHighlightsMap,
                         userProgressData: userProgressData,
                         reportedQuestionsList: reportedQuestionsList,
+                        trackerTopicsData: trackerTopicsData,
                         updatedAt: firebase.firestore.FieldValue.serverTimestamp()
                     });
                 } catch(e) { console.log("Admin delete sync error:", e); }
@@ -2377,7 +2607,6 @@
             let rawScore = (correct * 1) - (wrong * 0.33);
             let score = Math.max(0, rawScore).toFixed(2);
             let negScore = (wrong * 0.33).toFixed(2);
-            let totalQCount = currentTestQuestions.length;
 
             document.getElementById('res-score').innerText = score;
             document.getElementById('res-neg').innerText = negScore;
@@ -2401,7 +2630,6 @@
                 saveBtnContainer.innerHTML = `<p class="text-xs text-emerald-400 text-center font-bold">അഭിനന്ദനങ്ങൾ! എല്ലാ ചോദ്യങ്ങളും ശരിയാണ്!</p>`;
             }
 
-            saveTestProgressToTracker(activeTestKeyForTracking, parseFloat(score), totalQCount);
             renderResultAnswers('all');
         }
 
@@ -2452,6 +2680,7 @@
                     studyHighlightsMap: studyHighlightsMap,
                     userProgressData: userProgressData,
                     reportedQuestionsList: reportedQuestionsList,
+                    trackerTopicsData: trackerTopicsData,
                     updatedAt: firebase.firestore.FieldValue.serverTimestamp()
                 }).catch(e => console.log(e));
             }
@@ -2499,66 +2728,13 @@
                     studyHighlightsMap: studyHighlightsMap,
                     userProgressData: userProgressData,
                     reportedQuestionsList: reportedQuestionsList,
+                    trackerTopicsData: trackerTopicsData,
                     updatedAt: firebase.firestore.FieldValue.serverTimestamp()
                 }).catch(e => console.log(e));
             }
 
             renderSavedMistakeSets();
             alert("റിവിഷൻ സെറ്റ് വിജയകരമായി ഡിലീറ്റ് ചെയ്തു!");
-        }
-
-        async function saveTestProgressToTracker(testName, score, totalQCount) {
-            if(!testName) testName = "General Mock Test";
-            if(!userProgressData[testName]) {
-                userProgressData[testName] = { attempts: 0, highestScore: 0, totalQuestions: totalQCount || 0 };
-            }
-            userProgressData[testName].attempts += 1;
-            if(score > userProgressData[testName].highestScore) {
-                userProgressData[testName].highestScore = score;
-            }
-            if(totalQCount) {
-                userProgressData[testName].totalQuestions = totalQCount;
-            }
-
-            localStorage.setItem('psc_user_progress_anoop', JSON.stringify(userProgressData));
-            if(db) {
-                try {
-                    await db.collection("app_data").doc("psc_database_anoop").set({
-                        categoriesData: categoriesData,
-                        sampleQuestions: sampleQuestions,
-                        studyNotesMap: studyNotesMap,
-                        studyHighlightsMap: studyHighlightsMap,
-                        userProgressData: userProgressData,
-                        reportedQuestionsList: reportedQuestionsList,
-                        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-                    });
-                } catch(e) { console.log("Tracker sync error:", e); }
-            }
-        }
-
-        function renderTrackerTable() {
-            const tbody = document.getElementById('tracker-table-body');
-            if(!tbody) return;
-            tbody.innerHTML = '';
-
-            let keys = Object.keys(userProgressData);
-            if(keys.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="4" class="p-4 text-center text-xs text-slate-500">ഇതുവരെ ടെസ്റ്റുകൾ ഒന്നും പൂർത്തിയാക്കിയിട്ടില്ല.</td></tr>`;
-                return;
-            }
-
-            keys.forEach(testName => {
-                let prog = userProgressData[testName];
-                let maxQ = prog.totalQuestions ? prog.totalQuestions : '-';
-                tbody.innerHTML += `
-                    <tr class="border-b border-slate-800 hover:bg-slate-950/50">
-                        <td class="p-3 font-medium text-slate-200">${testName}</td>
-                        <td class="p-3 text-indigo-400 font-bold">${prog.attempts} തവണ</td>
-                        <td class="p-3 text-emerald-400 font-bold">${prog.highestScore} മാർക്ക്</td>
-                        <td class="p-3 text-amber-400 font-bold">${maxQ} മാർക്ക്</td>
-                    </tr>
-                `;
-            });
         }
 
         function renderResultAnswers(filterType) {
