@@ -700,7 +700,7 @@
         async function loadDataFromFirebase() {
             if(!db) return;
             try {
-                const docRef = doc = db.collection("app_data").doc("psc_database_anoop");
+                const docRef = db.collection("app_data").doc("psc_database_anoop");
                 const docSnap = await docRef.get();
                 if (docSnap.exists) {
                     const serverData = docSnap.data();
@@ -873,6 +873,8 @@
                 renderDeleteMockList();
             } else if(subId === 'progress_admin') {
                 renderAdminTrackerChecklist();
+            } else if(subId === 'add_more') {
+                populateCategoryDropdowns();
             }
         }
 
