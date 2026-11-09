@@ -1750,6 +1750,17 @@
                 `;
             }
 
+            // Special Exam card (wrong questions from mock tests)
+            html += `
+                <div onclick="openSpecialExam()" class="bg-slate-800 border border-slate-700 p-4 rounded-2xl cursor-pointer hover:border-indigo-500 transition shadow-sm space-y-2">
+                    <div class="w-10 h-10 bg-indigo-900/50 rounded-xl flex items-center justify-center text-indigo-400 text-xl font-bold">🎯</div>
+                    <div>
+                        <h3 class="font-bold text-sm text-white">Special Exam</h3>
+                        <p class="text-xs text-slate-400 mt-0.5">based on your wrong questions</p>
+                    </div>
+                </div>
+            `;
+
             grid.innerHTML = html;
         }
 
@@ -2449,7 +2460,9 @@
 
         function backToPracticeList() {
             document.getElementById('practice-result-interface').classList.add('hidden');
-            if(activeCategoryKey) {
+            if(activeCategoryKey === 'special_exam') {
+                openSpecialExam();
+            } else if(activeCategoryKey) {
                 openSubTopics(activeCategoryKey);
             } else {
                 switchTab('dashboard');
@@ -2677,6 +2690,7 @@
             }
 
             renderResultAnswers('all');
+            recordWrongForSpecialExam();
         }
 
         function saveMistakesAsNewMockTest() {
@@ -2965,6 +2979,159 @@
             document.getElementById('p-res-attempted').innerText = practiceAttemptedMaster.size;
             document.getElementById('p-res-learned').innerText = practiceLearnedMaster.size;
         }
+
+        // ===================== SPECIAL EXAM (wrong questions) =====================
+        const SPECIAL_EXAM_LS_KEY = 'psc_special_exam_wrong_anoop';
+        const SPECIAL_EXAM_SEEDED_KEY = 'psc_special_exam_seeded_anoop';
+        let specialExamQuestions = [];
+        let specialExamActive = false;
+        try {
+            specialExamQuestions = JSON.parse(localStorage.getItem(SPECIAL_EXAM_LS_KEY) || '[]');
+            if(!Array.isArray(specialExamQuestions)) specialExamQuestions = [];
+        } catch(e) { specialExamQuestions = []; }
+
+        function specialExamKey(q) {
+            let stem = String(q.q || q.question || '').trim();
+            let st = Array.isArray(q.statements) ? q.statements.join('|') : '';
+            let opts = Array.isArray(q.options) ? q.options.map(String).sort().join('|') : '';
+            return stem + '##' + st + '##' + opts;
+        }
+
+        function persistSpecialExam() {
+            try { localStorage.setItem(SPECIAL_EXAM_LS_KEY, JSON.stringify(specialExamQuestions)); } catch(e) { console.log(e); }
+            if(typeof db !== 'undefined' && db) {
+                try {
+                    db.collection("app_data").doc("psc_special_exam_anoop").set({
+                        questions: JSON.parse(JSON.stringify(specialExamQuestions)),
+                        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                    }).catch(e => console.log("Special exam sync error:", e));
+                } catch(e) { console.log(e); }
+            }
+        }
+
+        // returns number of newly added questions (duplicates are skipped)
+        function mergeSpecialExam(list) {
+            let existing = new Set(specialExamQuestions.map(specialExamKey));
+            let added = 0;
+            list.forEach(q => {
+                let k = specialExamKey(q);
+                if(!k.trim() || existing.has(k)) return;
+                existing.add(k);
+                specialExamQuestions.push({ ...JSON.parse(JSON.stringify(q)), id: 'sp_' + Date.now() + '_' + specialExamQuestions.length });
+                added++;
+            });
+            return added;
+        }
+
+        function recordWrongForSpecialExam() {
+            try {
+                let wrong = [];
+                currentTestQuestions.forEach((q, idx) => {
+                    if(userAnswers[idx] !== undefined && userAnswers[idx] !== q.answer) wrong.push(q);
+                });
+                if(wrong.length > 0 && mergeSpecialExam(wrong) > 0) persistSpecialExam();
+
+                // Special Exam-ൽ നിന്നുള്ള ടെസ്റ്റിൽ റിവിഷൻ സെറ്റ് സേവ് ബട്ടൺ ആവശ്യമില്ല
+                if(specialExamActive && currentTestTitle === 'Special Exam') {
+                    let box = document.getElementById('save-mistakes-container');
+                    if(box) box.innerHTML = '';
+                }
+            } catch(e) { console.log("Special exam record error:", e); }
+        }
+
+        function openSpecialExam() {
+            activeCategoryKey = 'special_exam';
+            specialExamActive = false;
+            document.getElementById('subtopic-category-title').innerText = 'Special Exam';
+            const container = document.getElementById('subtopics-container');
+            let count = specialExamQuestions.length;
+
+            let body = count === 0
+                ? `<p class="text-xs text-slate-500 text-center py-6">തെറ്റിയ ചോദ്യങ്ങൾ ഒന്നുമില്ല. മോക്ക് ടെസ്റ്റുകൾ എഴുതുമ്പോൾ തെറ്റുന്ന ചോദ്യങ്ങൾ ഇവിടെ തനിയെ വരും.</p>`
+                : `
+                    <div class="bg-slate-800 border border-slate-700 p-4 rounded-2xl space-y-3 shadow-md">
+                        <h3 class="font-bold text-white text-base">🎯 തെറ്റിയ എല്ലാ ചോദ്യങ്ങളും</h3>
+                        <div class="space-y-2">
+                            <div class="flex items-center space-x-2 bg-slate-900 border border-slate-700 hover:border-indigo-500 rounded-xl px-4 py-3 shadow-sm">
+                                <span class="flex-1 text-slate-200 text-sm font-medium">Special Exam (${count} ചോദ്യങ്ങൾ)</span>
+                                <button onclick="startSpecialExamPractice()" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs px-3 py-1.5 rounded-lg font-medium transition whitespace-nowrap">Practice</button>
+                                <button onclick="startSpecialExamTest()" class="bg-indigo-600 hover:bg-indigo-700 text-white text-xs px-3 py-1.5 rounded-lg font-medium transition whitespace-nowrap">Mock Test</button>
+                            </div>
+                        </div>
+                    </div>`;
+
+            container.innerHTML = `<p class="text-xs text-slate-400 -mt-1">based on your wrong questions</p>` + body;
+            document.getElementById('section-dashboard').classList.add('hidden');
+            document.getElementById('section-subtopics').classList.remove('hidden');
+        }
+
+        function startSpecialExamPractice() {
+            if(specialExamQuestions.length === 0) { alert("പ്രാക്ടീസ് ചെയ്യാൻ ചോദ്യങ്ങൾ ഒന്നും ലഭ്യമല്ല!"); return; }
+            activeCategoryKey = 'special_exam';
+            activeSubtopicName = 'Special Exam';
+            activeOriginalTestName = 'Special Exam';
+            specialExamActive = false;
+
+            practiceQueue = shuffleArray([...specialExamQuestions]);
+            practiceAttemptedMaster.clear();
+            practiceLearnedMaster.clear();
+
+            document.querySelectorAll('main > section').forEach(sec => sec.classList.add('hidden'));
+            document.getElementById('section-subtopics').classList.add('hidden');
+            document.getElementById('section-admin_panel').classList.add('hidden');
+            document.getElementById('mock-interface').classList.add('hidden');
+            document.getElementById('result-interface').classList.add('hidden');
+            document.getElementById('practice-result-interface').classList.add('hidden');
+
+            document.getElementById('section-practice').classList.remove('hidden');
+            loadPracticeQuestion();
+        }
+
+        function startSpecialExamTest() {
+            if(specialExamQuestions.length === 0) { alert("ഈ ടെസ്റ്റിൽ ചോദ്യങ്ങൾ ഒന്നും ലഭ്യമല്ല!"); return; }
+            activeCategoryKey = 'special_exam';
+            activeSubtopicName = 'Special Exam';
+            activeOriginalTestName = 'Special Exam';
+            currentTestTitle = 'Special Exam';
+            activeTestKeyForTracking = 'Special Exam';
+            specialExamActive = true;
+
+            prepareFinalTestQuestions(shuffleArray([...specialExamQuestions]));
+            launchMockTest();
+        }
+
+        // One-time: ഇതുവരെ 'റിവിഷൻ സെറ്റ്' ആയി സേവ് ചെയ്തിട്ടുള്ള തെറ്റിയ ചോദ്യങ്ങൾ Special Exam-ലേക്ക് ചേർക്കുന്നു
+        (function seedSpecialExamOnce() {
+            try {
+                if(localStorage.getItem(SPECIAL_EXAM_SEEDED_KEY)) return;
+                let before = specialExamQuestions.length;
+                savedMistakeSets.forEach(set => {
+                    mergeSpecialExam(sampleQuestions.filter(q => q.testName === set.testName));
+                });
+                if(specialExamQuestions.length !== before) persistSpecialExam();
+                localStorage.setItem(SPECIAL_EXAM_SEEDED_KEY, '1');
+            } catch(e) { console.log("Special exam seed error:", e); }
+        })();
+
+        // മറ്റ് ഡിവൈസുകളിൽ നിന്നുള്ള Special Exam ഡേറ്റ കൂടി ലയിപ്പിക്കുന്നു
+        (async function loadSpecialExamFromCloud() {
+            try {
+                if(typeof db === 'undefined' || !db) return;
+                const snap = await db.collection("app_data").doc("psc_special_exam_anoop").get();
+                if(snap.exists) {
+                    let cloud = snap.data().questions;
+                    if(Array.isArray(cloud)) {
+                        let added = mergeSpecialExam(cloud);
+                        let cloudKeys = new Set(cloud.map(specialExamKey));
+                        let localExtra = specialExamQuestions.some(q => !cloudKeys.has(specialExamKey(q)));
+                        if(added > 0 || localExtra) persistSpecialExam();
+                    }
+                } else if(specialExamQuestions.length > 0) {
+                    persistSpecialExam();
+                }
+            } catch(e) { console.log("Special exam cloud load error:", e); }
+        })();
+        // =================== END SPECIAL EXAM ===================
 
         switchTab('dashboard');
     </script>
