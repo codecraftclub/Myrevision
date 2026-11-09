@@ -3,370 +3,631 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PSC REVISION 2027</title>
-    <!-- Google Fonts for Malayalam Support -->
-    <link href="https://fonts.googleapis.com/css2?family=Manjari:wght@400;700&family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <title>Kerala PSC Smart Revision Portal</title>
+    <!-- Tailwind CSS for Modern UI & Mobile Friendly -->
+    <script src="https://cdn.tailwindcss.com"></script>
     <!-- Firebase SDKs (Compat version) -->
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
     <style>
-        :root {
-            --ink: #0d1a2b;
-            --ink-2: #14253b;
-            --panel: rgba(17, 32, 52, 0.88);
-            --line: rgba(255, 255, 255, 0.10);
-            --text: #eef2f7;
-            --muted: #94a3b8;
-            --pencil: #f5c04e;
-            --coral: #ff7f6e;
-            --achu: #5b9bff;
-            --anoop: #3fc79a;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Poppins', 'Manjari', sans-serif;
-        }
-
-        body {
-            background: radial-gradient(ellipse at 50% 0%, var(--ink-2) 0%, var(--ink) 70%);
-            color: var(--text);
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-            position: relative;
-        }
-
-        /* Line-art study doodles: pencils, books, cap, bulb, eraser (inline SVG, no external files) */
-        body::before {
-            content: "";
-            position: fixed;
-            inset: 0;
-            z-index: 0;
-            pointer-events: none;
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='360' height='360' viewBox='0 0 360 360' fill='none' stroke='white' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round' opacity='0.10'%3E%3Cg transform='translate(40 92) rotate(-40)'%3E%3Crect width='80' height='14' rx='2'/%3E%3Cpath d='M80 0 L100 7 L80 14 M16 0 V14 M88 3.5 V10.5'/%3E%3C/g%3E%3Cg transform='translate(190 30)'%3E%3Cpath d='M0 14 Q30 0 60 14 V64 Q30 50 0 64 Z M60 14 Q90 0 120 14 V64 Q90 50 60 64'/%3E%3Cpath d='M12 26 Q30 20 48 26 M12 38 Q30 32 48 38 M72 26 Q90 20 108 26 M72 38 Q90 32 108 38'/%3E%3C/g%3E%3Cg transform='translate(30 160) rotate(20)'%3E%3Crect width='40' height='18' rx='3'/%3E%3Cpath d='M26 0 V18'/%3E%3C/g%3E%3Cg transform='translate(150 140)'%3E%3Cpath d='M10 34 C0 26 0 8 20 6 C40 8 40 26 30 34 V40 H10 Z M12 46 H28'/%3E%3C/g%3E%3Ccircle cx='312' cy='170' r='24'/%3E%3Cpath d='M300 170 l8 8 l16 -18'/%3E%3Cg transform='translate(30 222)'%3E%3Crect width='90' height='18' rx='2'/%3E%3Crect x='8' y='18' width='76' height='16' rx='2'/%3E%3Crect x='2' y='34' width='86' height='18' rx='2'/%3E%3Cpath d='M14 9h40 M20 26h30 M12 43h44'/%3E%3C/g%3E%3Cg transform='translate(210 215)'%3E%3Cpath d='M0 22 L50 2 L100 22 L50 42 Z M22 33 V56 Q50 70 78 56 V33 M100 22 V48'/%3E%3C/g%3E%3Cpath d='M150 310 H330' stroke-dasharray='4 7'/%3E%3Cpath d='M140 100 v10 M135 105 h10 M330 250 v10 M325 255 h10 M20 330 v10 M15 335 h10'/%3E%3C/svg%3E");
-            background-size: 340px 340px;
-        }
-
-        body::after {
-            content: "";
-            position: fixed;
-            inset: 0;
-            z-index: 0;
-            pointer-events: none;
-            background: radial-gradient(ellipse at center, rgba(13, 26, 43, 0) 40%, rgba(13, 26, 43, 0.75) 100%);
-        }
-
-        .container {
-            position: relative;
-            z-index: 1;
-            width: 100%;
-            max-width: 480px;
-            background: var(--panel);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            border: 1px solid var(--line);
-            border-top: 4px solid var(--pencil);
-            border-radius: 20px;
-            padding: 28px 20px 24px;
-            box-shadow: 0 24px 48px rgba(0, 0, 0, 0.45);
-            text-align: center;
-        }
-
-        h1 {
-            font-size: 1.7rem;
-            color: var(--text);
-            margin-bottom: 6px;
-            font-weight: 700;
-            letter-spacing: 0.04em;
-        }
-
-        .subtitle {
-            font-size: 0.95rem;
-            color: var(--muted);
-            margin-bottom: 18px;
-        }
-
-        .revision-alert-box {
-            background: rgba(255, 127, 110, 0.10);
-            border: 1px dashed rgba(255, 127, 110, 0.55);
-            border-radius: 12px;
-            padding: 12px 15px;
-            margin-bottom: 20px;
-            text-align: center;
-        }
-
-        .revision-alert-title {
-            font-size: 0.8rem;
-            color: #ffb3a8;
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
+        body { background-color: #0f172a; color: #f8fafc; }
+        /* Fluorescent Green Highlight Custom Style */
+        mark.user-highlight {
+            background-color: #4ade80;
+            color: #052e16;
+            padding: 2px 4px;
+            border-radius: 4px;
             font-weight: 600;
-            margin-bottom: 4px;
         }
-
-        @keyframes blink {
-            0% { opacity: 1; }
-            50% { opacity: 0.35; }
-            100% { opacity: 1; }
-        }
-
-        .blink-revision-date {
-            animation: blink 1.2s infinite;
-            color: var(--coral);
-            font-size: 1.05rem;
-            font-weight: 700;
-        }
-
-        .image-box {
+        /* Table styling for notes */
+        .notes-table-container {
             width: 100%;
-            height: 200px;
-            border-radius: 14px;
-            overflow: hidden;
-            margin-bottom: 20px;
-            border: 1px solid var(--line);
-            outline: 3px solid rgba(245, 192, 78, 0.25);
-            outline-offset: 3px;
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.35);
-        }
-
-        .image-box img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            display: block;
-            transition: transform 0.5s ease;
-        }
-
-        .image-box img:hover {
-            transform: scale(1.04);
-        }
-
-        .users-grid {
-            display: flex;
-            flex-direction: column;
-            gap: 14px;
-            width: 100%;
-        }
-
-        .user-card {
-            background: rgba(9, 18, 32, 0.65);
-            border: 1px solid var(--line);
-            border-radius: 14px;
-            padding: 14px;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            transition: border-color 0.25s ease;
-        }
-
-        .user-card:hover {
-            border-color: rgba(255, 255, 255, 0.28);
-        }
-
-        .user-btn {
-            width: 100%;
-            padding: 12px 20px;
-            font-size: 1.05rem;
-            font-weight: 600;
-            border: none;
-            border-radius: 10px;
-            cursor: pointer;
-            color: #08121f;
-            transition: transform 0.2s ease, filter 0.2s ease;
-        }
-
-        .user-btn:hover {
-            transform: translateY(-2px);
-            filter: brightness(1.08);
-        }
-
-        .user-btn:focus-visible,
-        .more-badge:focus-visible,
-        .btn-submit:focus-visible {
-            outline: 3px solid var(--pencil);
-            outline-offset: 2px;
-        }
-
-        .btn-achu {
-            background: var(--achu);
-        }
-
-        .btn-anoop {
-            background: var(--anoop);
-        }
-
-        .updates-container {
-            font-size: 0.85rem;
-            color: #cbd5e1;
-            background: rgba(255, 255, 255, 0.04);
-            padding: 8px 12px;
+            overflow-x: auto;
+            margin: 1rem 0;
             border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        .notes-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+        }
+        .notes-table th, .notes-table td {
+            border: 1px solid #cbd5e1;
+            padding: 10px 14px;
             text-align: left;
-            min-height: 40px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 8px;
-            border-left: 3px solid var(--achu);
-        }
-
-        .updates-container.anoop-update {
-            border-left-color: var(--anoop);
-        }
-
-        .blink-text {
-            animation: blink 1.5s infinite;
-            color: var(--pencil);
-            font-weight: 600;
-        }
-
-        .more-badge {
-            font-size: 0.75rem;
-            background: rgba(255, 255, 255, 0.10);
-            color: var(--text);
-            padding: 4px 9px;
-            border-radius: 6px;
-            font-weight: 600;
-            border: 1px solid var(--line);
-            cursor: pointer;
+            font-size: 0.95rem;
+            color: #1e293b;
             white-space: nowrap;
-            transition: background 0.2s;
         }
-
-        .more-badge:hover {
-            background: rgba(255, 255, 255, 0.18);
+        .notes-table th {
+            background-color: #fee2e2;
+            color: #991b1b;
+            font-weight: bold;
         }
-
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(4, 10, 20, 0.75);
-            backdrop-filter: blur(5px);
-            -webkit-backdrop-filter: blur(5px);
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-            padding: 20px;
-        }
-
-        .modal-content {
-            background: var(--ink-2);
-            padding: 24px;
-            border-radius: 18px;
-            width: 100%;
-            max-width: 380px;
-            text-align: center;
-            border: 1px solid var(--line);
-            border-top: 4px solid var(--pencil);
-            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.5);
-            animation: fadeIn 0.25s ease;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: scale(0.94); }
-            to { opacity: 1; transform: scale(1); }
-        }
-
-        .modal-content h3 {
-            margin-bottom: 12px;
-            font-size: 1.15rem;
-            color: var(--text);
-        }
-
-        .test-list-container {
-            max-height: 250px;
-            overflow-y: auto;
-            text-align: left;
-            margin-bottom: 15px;
-            background: var(--ink);
-            border: 1px solid var(--line);
-            border-radius: 10px;
-            padding: 8px 10px;
-        }
-
-        .test-list-item {
-            font-size: 0.85rem;
-            padding: 8px 6px;
-            border-bottom: 1px dashed rgba(255, 255, 255, 0.12);
-            color: #e2e8f0;
-        }
-
-        .test-list-item:last-child {
-            border-bottom: none;
-        }
-
-        .btn-submit {
-            background: var(--pencil);
-            color: #08121f;
-            border: none;
-            font-weight: 600;
-        }
-
-        @media (prefers-reduced-motion: reduce) {
-            .blink-revision-date,
-            .blink-text,
-            .modal-content {
-                animation: none;
-            }
-        }
-
-        @media (max-width: 380px) {
-            h1 { font-size: 1.45rem; }
-            body::before { background-size: 280px 280px; }
+        .notes-table tr:nth-child(even) {
+            background-color: #f8fafc;
         }
     </style>
 </head>
-<body>
+<body class="font-sans antialiased min-h-screen flex flex-col">
 
-    <div class="container">
-        <h1>PSC REVISION 2027</h1>
-        <p class="subtitle">കേരള പി.എസ്.സി എൽ.ഡി.സി പഠന സഹായി</p>
-        
-        <!-- Next Revision Exam Date / Notification Box -->
-        <div class="revision-alert-box">
-            <div class="revision-alert-title">⏰ റിവിഷൻ എക്സാം അലേർട്ട്</div>
-            <div id="nextExamDateDisplay" class="blink-revision-date">ലോഡ് ചെയ്യുന്നു...</div>
+    <!-- Header -->
+    <header class="bg-slate-900 border-b border-slate-800 p-4 sticky top-0 z-50 flex justify-between items-center shadow-md">
+        <div class="flex items-center space-x-2">
+            <div class="bg-indigo-600 text-white font-bold px-2.5 py-1 rounded-lg text-sm">PSC</div>
+            <h1 class="text-lg font-bold text-white">Smart Revision</h1>
+        </div>
+        <div class="flex items-center space-x-3">
+            <!-- Go to Main Home Button -->
+            <a href="index.html" class="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white text-xs px-3 py-1.5 rounded-lg font-medium shadow transition flex items-center space-x-1">
+                <span>🏠 Go to Main Home</span>
+            </a>
+            <!-- Logged In User Display -->
+            <div id="sync-status" class="text-xs bg-indigo-950 text-indigo-300 px-2.5 py-1 rounded border border-indigo-700 font-bold">👤 Login: അനൂപ്</div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="flex-1 max-w-4xl w-full mx-auto p-4 space-y-6 pb-24">
+
+        <!-- Navigation Tabs -->
+        <div class="flex overflow-x-auto space-x-2 pb-2 custom-scrollbar">
+            <button onclick="switchTab('dashboard')" id="btn-dashboard" class="tab-btn px-4 py-2 bg-indigo-600 text-white rounded-xl text-sm font-medium whitespace-nowrap shadow">ഹോം (Home)</button>
+            <button onclick="switchTab('revision')" id="btn-revision" class="tab-btn px-4 py-2 bg-slate-800 text-slate-300 border border-slate-700 rounded-xl text-sm font-medium whitespace-nowrap">Custom Revision</button>
+            <button onclick="switchTab('practice')" id="btn-practice" class="tab-btn px-4 py-2 bg-slate-800 text-slate-300 border border-slate-700 rounded-xl text-sm font-medium whitespace-nowrap">Practice Zone</button>
+            <button onclick="switchTab('study_zone')" id="btn-study_zone" class="tab-btn px-4 py-2 bg-slate-800 text-slate-300 border border-slate-700 rounded-xl text-sm font-medium whitespace-nowrap">📚 Study Zone</button>
+            <button onclick="switchTab('admin_panel')" id="btn-admin_panel" class="tab-btn px-4 py-2 bg-slate-800 text-slate-300 border border-slate-700 rounded-xl text-sm font-medium whitespace-nowrap">Admin Panel</button>
+            <button onclick="switchTab('tracker')" id="btn-tracker" class="tab-btn px-4 py-2 bg-slate-800 text-slate-300 border border-slate-700 rounded-xl text-sm font-medium whitespace-nowrap">Progress Tracker</button>
         </div>
 
-        <div class="image-box">
-            <img src="home_image.png" alt="PSC Revision Study Setup">
-        </div>
-
-        <div class="users-grid">
-            <!-- Achu Card (Direct Link without PIN) -->
-            <div class="user-card">
-                <div id="achuUpdates" class="updates-container">
-                    <span style="color: #64748b;">പുതിയ മോക്ക് ടെസ്റ്റുകൾ ഒന്നുമില്ല</span>
+        <!-- TAB 1: DASHBOARD -->
+        <section id="section-dashboard" class="space-y-6">
+            <div>
+                <h2 class="text-md font-bold text-slate-200 mb-3">Exam Packs & Categories</h2>
+                <div id="dashboard-categories-grid" class="space-y-5">
+                    <!-- Dynamic Dashboard Categories Rendered Here -->
                 </div>
-                <button class="user-btn btn-achu" onclick="window.location.href='achu.html'">Achu</button>
+            </div>
+        </section>
+
+        <!-- SUB-TOPICS VIEW -->
+        <section id="section-subtopics" class="hidden space-y-4">
+            <div class="flex items-center space-x-3">
+                <button onclick="backToDashboard()" class="bg-slate-800 border border-slate-700 text-slate-300 px-3 py-1.5 rounded-xl text-xs font-medium">← തിരികെ</button>
+                <h2 id="subtopic-category-title" class="text-lg font-bold text-indigo-400">ടോപ്പിക്കുകൾ</h2>
+            </div>
+            <div id="subtopics-container" class="space-y-4"></div>
+        </section>
+
+        <!-- TAB: STUDY ZONE -->
+        <section id="section-study_zone" class="hidden space-y-6">
+            <div class="bg-slate-800 border border-slate-700 p-5 rounded-2xl space-y-4 shadow-md">
+                <h2 class="text-lg font-bold text-indigo-400">📚 സ്റ്റഡി സോൺ (Study Zone)</h2>
+                <p class="text-xs text-slate-400">താഴെ കാണുന്ന മോക്ക് ടെസ്റ്റുകളിൽ നിന്ന് നിങ്ങൾക്ക് 'Practice & Study' തിരഞ്ഞെടുക്കാം:</p>
+                <div id="study-zone-tests-container" class="space-y-3 max-h-[70vh] overflow-y-auto custom-scrollbar p-1">
+                    <p class="text-xs text-slate-500 text-center py-4">മോക്ക് ടെസ്റ്റുകൾ ഒന്നും ലഭ്യമല്ല.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- STUDY ZONE SUB-VIEW: Practice & Study Mode -->
+        <section id="section-study-practice" class="hidden space-y-4">
+            <div class="bg-slate-800 border border-slate-700 p-5 rounded-2xl shadow-xl space-y-6">
+                <div class="flex justify-between items-center border-b border-slate-700 pb-3">
+                    <div id="study-practice-title" class="font-bold text-indigo-400 text-sm">Practice & Study</div>
+                    <button onclick="switchTab('study_zone')" class="bg-slate-700 hover:bg-slate-600 text-white text-xs px-3 py-1.5 rounded-lg font-medium">← ബാക്ക്</button>
+                </div>
+                <div id="study-practice-box" class="space-y-4">
+                    <div id="sp-q-container" class="space-y-3"></div>
+                    <div id="sp-options-box" class="space-y-2.5"></div>
+                    <div id="sp-feedback-banner" class="hidden p-4 rounded-xl text-sm font-medium transition-all space-y-3"></div>
+                </div>
+                <div class="pt-3 border-t border-slate-700 flex justify-between items-center">
+                    <button onclick="loadStudyPracticeQuestion()" class="px-3 py-1.5 bg-slate-700 hover:bg-slate-600 text-white rounded-lg text-xs font-medium">അടുത്തത് (Skip)</button>
+                    <button onclick="toggleStudyPracticeDetails()" class="bg-indigo-950/80 border border-indigo-700 text-indigo-300 hover:bg-indigo-900 text-xs px-3 py-1.5 rounded-lg font-medium transition">🔍 View Details</button>
+                </div>
+                <div id="sp-details-box" class="hidden p-3 bg-indigo-950/40 border border-indigo-800/60 rounded-xl text-xs text-indigo-200 space-y-1"></div>
+            </div>
+        </section>
+
+        <!-- NOTES CATEGORY SUB-TOPICS VIEW -->
+        <section id="section-notes-subtopics" class="hidden space-y-4">
+            <div class="flex items-center space-x-3">
+                <button onclick="switchTab('dashboard')" class="bg-slate-800 border border-slate-700 text-slate-300 px-3 py-1.5 rounded-lg font-medium">← തിരികെ ഹോമിലേക്ക്</button>
+                <h2 class="text-lg font-bold text-emerald-400">📝 സ്റ്റഡി നോട്ട്സ് (Study Notes - Topic-wise)</h2>
+            </div>
+            <div id="notes-subtopics-container" class="space-y-4"></div>
+        </section>
+
+        <!-- GEMINI NOTES SUB-TOPICS VIEW -->
+        <section id="section-gemini-notes-subtopics" class="hidden space-y-4">
+            <div class="flex items-center space-x-3">
+                <button onclick="switchTab('dashboard')" class="bg-slate-800 border border-slate-700 text-slate-300 px-3 py-1.5 rounded-lg font-medium">← തിരികെ ഹോമിലേക്ക്</button>
+                <h2 class="text-lg font-bold text-amber-400">✨ Gemini Notes (സ്റ്റഡി നോട്ട്സ്)</h2>
+            </div>
+            <div id="gemini-notes-subtopics-container" class="space-y-4"></div>
+        </section>
+
+        <!-- TAB: ADMIN PANEL (Unified Admin Hub with Buttons) -->
+        <section id="section-admin_panel" class="hidden space-y-6">
+            <div class="bg-slate-800 border border-slate-700 p-5 rounded-2xl space-y-4 shadow-md">
+                <h2 class="text-lg font-bold text-amber-400">🛡️ അഡ്മിൻ കൺട്രോൾ പാനൽ</h2>
+                <p class="text-xs text-slate-400">ആപ്പിലെ കാറ്റഗറികളും ചോദ്യങ്ങളും കൈകാര്യം ചെയ്യാൻ താഴെയുള്ള ഓപ്ഷനുകൾ ഉപയോഗിക്കുക:</p>
+                
+                <!-- Admin Action Buttons Bar -->
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-2.5 pt-2">
+                    <button onclick="switchAdminSubSection('add_cat')" id="admin-btn-add_cat" class="admin-sub-btn p-3 bg-indigo-600 text-white rounded-xl text-xs font-bold transition shadow">Add Main Category</button>
+                    <button onclick="switchAdminSubSection('progress_admin')" id="admin-btn-progress_admin" class="admin-sub-btn p-3 bg-slate-900 border border-slate-700 text-slate-300 rounded-xl text-xs font-medium transition">📌 Progress Manager</button>
+                    <button onclick="switchAdminSubSection('pdf_creator')" id="admin-btn-pdf_creator" class="admin-sub-btn p-3 bg-slate-900 border border-slate-700 text-slate-300 rounded-xl text-xs font-medium transition">Mock Creator</button>
+                    <button onclick="switchAdminSubSection('add_notes')" id="admin-btn-add_notes" class="admin-sub-btn p-3 bg-slate-900 border border-slate-700 text-slate-300 rounded-xl text-xs font-medium transition">➕ Add Notes</button>
+                    <button onclick="switchAdminSubSection('add_gemini_notes')" id="admin-btn-add_gemini_notes" class="admin-sub-btn p-3 bg-slate-900 border border-slate-700 text-slate-300 rounded-xl text-xs font-medium transition">✨ Add Gemini Notes</button>
+                    <button onclick="switchAdminSubSection('delete_notes')" id="admin-btn-delete_notes" class="admin-sub-btn p-3 bg-slate-900 border border-slate-700 text-slate-300 rounded-xl text-xs font-medium transition">🗑️ Delete Notes</button>
+                    <button onclick="switchAdminSubSection('add_more')" id="admin-btn-add_more" class="admin-sub-btn p-3 bg-slate-900 border border-slate-700 text-slate-300 rounded-xl text-xs font-medium transition">Add More Qns</button>
+                    <button onclick="switchAdminSubSection('delete_mock')" id="admin-btn-delete_mock" class="admin-sub-btn p-3 bg-slate-900 border border-slate-700 text-slate-300 rounded-xl text-xs font-medium transition">Delete Mock</button>
+                    <button onclick="switchAdminSubSection('reported_qns')" id="admin-btn-reported_qns" class="admin-sub-btn p-3 bg-slate-900 border border-slate-700 text-slate-300 rounded-xl text-xs font-medium transition">Reported Questions</button>
+                </div>
             </div>
 
-            <!-- Anoop Card (Direct Link without PIN) -->
-            <div class="user-card">
-                <div id="anoopUpdates" class="updates-container anoop-update">
-                    <span style="color: #64748b;">പുതിയ മോക്ക് ടെസ്റ്റുകൾ ഒന്നുമില്ല</span>
+            <!-- ADMIN SUB-SECTION 1: Add a Main Category -->
+            <div id="admin-sub-add_cat" class="admin-sub-section bg-slate-800 border border-slate-700 p-5 rounded-2xl space-y-4 shadow-md">
+                <h3 class="text-md font-bold text-emerald-400">➕ പുതിയ മെയിൻ കാറ്റഗറി ചേർക്കുക</h3>
+                <div>
+                    <label class="block text-xs font-medium text-slate-300 mb-1">കാറ്റഗറി ഐഡി (Key - ഇംഗ്ലീഷിൽ ചെറിയ അക്ഷരത്തിൽ, ഉദാ: science):</label>
+                    <input type="text" id="new-cat-key" placeholder="science" class="w-full p-2.5 bg-slate-900 border border-slate-700 text-white rounded-xl text-sm">
                 </div>
-                <button class="user-btn btn-anoop" onclick="window.location.href='youarearankholder.html'">Anoop</button>
+                <div>
+                    <label class="block text-xs font-medium text-slate-300 mb-1">കാറ്റഗറി പേര് (മലയാളത്തിലോ ഇംഗ്ലീഷിലോ, ഉദാ: ജനറൽ സയൻസ്):</label>
+                    <input type="text" id="new-cat-title" placeholder="ജനറൽ സയൻസ്" class="w-full p-2.5 bg-slate-900 border border-slate-700 text-white rounded-xl text-sm">
+                </div>
+                <button onclick="addNewMainCategory()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-2.5 rounded-xl text-xs font-bold shadow transition">
+                    കാറ്റഗറി സേവ് ചെയ്യുക
+                </button>
+            </div>
+
+            <!-- ADMIN SUB-SECTION: Progress Manager (Add/Delete Topics/Subtopics & Tick Completed) -->
+            <div id="admin-sub-progress_admin" class="admin-sub-section hidden bg-slate-800 border border-slate-700 p-5 rounded-2xl space-y-5 shadow-md">
+                <h3 class="text-md font-bold text-indigo-400">📌 പ്രോഗ്രസ് ട്രാക്കർ മാനേജർ (Admin Panel)</h3>
+                
+                <!-- Add Main Topic & Sub Topic Form -->
+                <div class="bg-slate-900 border border-slate-700 p-4 rounded-xl space-y-3">
+                    <h4 class="text-sm font-bold text-emerald-400">പുതിയ ടോപ്പിക്കും സബ് ടോപ്പിക്കും ചേർക്കുക</h4>
+                    <div>
+                        <label class="block text-xs font-medium text-slate-300 mb-1">മെയിൻ ടോപിക്കിന്റെ പേര്:</label>
+                        <input type="text" id="prog-admin-main-topic" placeholder="ഉദാഹരണത്തിന്: ഇന്ത്യൻ ഭരണഘടന" class="w-full p-2.5 bg-slate-800 border border-slate-700 text-white rounded-xl text-sm">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-slate-300 mb-1">സബ് ടോപിക്കിന്റെ പേര്:</label>
+                        <input type="text" id="prog-admin-sub-topic" placeholder="ഉദാഹരണത്തിന്: മൗലിക അവകാശങ്ങൾ" class="w-full p-2.5 bg-slate-800 border border-slate-700 text-white rounded-xl text-sm">
+                    </div>
+                    <button onclick="adminAddTrackerTopic()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-2.5 rounded-xl text-xs font-bold transition">
+                        ടോപ്പിക് ആഡ് ചെയ്യുക
+                    </button>
+                </div>
+
+                <!-- Manager List with Complete & Delete Options -->
+                <div class="space-y-3">
+                    <h4 class="text-sm font-bold text-amber-400">ടോപ്പിക്കുകൾ മാനേജ് ചെയ്യുക (Tick & Delete)</h4>
+                    <p class="text-xs text-slate-400">ചുവടെയുള്ള ടോപ്പിക്കുകൾ ടിക്ക് ചെയ്ത് കംപ്ലീറ്റ് ചെയ്യാം അല്ലെങ്കിൽ ഡിലീറ്റ് ചെയ്യാം.</p>
+                    <div id="admin-tracker-checklist-container" class="space-y-3 max-h-96 overflow-y-auto custom-scrollbar p-1">
+                        <p class="text-xs text-slate-500 text-center py-4">ടോപ്പിക്കുകൾ ഒന്നും ലഭ്യമല്ല.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ADMIN SUB-SECTION 2: Mock Creator -->
+            <div id="admin-sub-pdf_creator" class="admin-sub-section hidden bg-slate-800 border border-slate-700 p-5 rounded-2xl space-y-4 shadow-md">
+                <h3 class="text-md font-bold text-indigo-400">✨ മോക്ക് ടെസ്റ്റ് ക്രിയേറ്റർ</h3>
+                <div>
+                    <label class="block text-sm font-medium text-slate-300 mb-1">മെയിൻ കാറ്റഗറി തിരഞ്ഞെടുക്കുക:</label>
+                    <select id="pdf-category" class="w-full p-2.5 bg-slate-900 border border-slate-700 text-white rounded-xl text-sm"></select>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-slate-300 mb-1">സബ് ടോപ്പിക്കിന്റെ പേര്:</label>
+                    <input type="text" id="pdf-subtopic" placeholder="ഉദാഹരണത്തിന്: ഭരണഘടന" class="w-full p-2.5 bg-slate-900 border border-slate-700 text-white rounded-xl text-sm">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-slate-300 mb-1">മോക്ക് ടെസ്റ്റിന്റെ പേര്:</label>
+                    <input type="text" id="pdf-testname" placeholder="ഉദാഹരണത്തിന്: ഭരണഘടന ആഴത്തിലറിയാം" class="w-full p-2.5 bg-slate-900 border border-slate-700 text-white rounded-xl text-sm">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-slate-300 mb-1">JSON ചോദ്യങ്ങൾ ഇവിടെ പേസ്റ്റ് ചെയ്യുക:</label>
+                    <textarea id="gemini-json-input" rows="8" placeholder="[ { 'question': '...', 'options': [...], 'answer': 0, 'explanation': '...' } ]" class="w-full p-2.5 bg-slate-900 border border-slate-700 text-white rounded-xl text-sm custom-scrollbar"></textarea>
+                </div>
+                <button onclick="savePastedGeminiMockTest()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-3 rounded-xl font-medium shadow transition">
+                    മോക്ക് ടെസ്റ്റ് സേവ് ചെയ്യുക
+                </button>
+            </div>
+
+            <!-- ADMIN SUB-SECTION: Add Notes (Text & Table Notes Storage) -->
+            <div id="admin-sub-add_notes" class="admin-sub-section hidden bg-slate-800 border border-slate-700 p-5 rounded-2xl space-y-4 shadow-md">
+                <h3 class="text-md font-bold text-emerald-400">📝 സ്റ്റഡി നോട്ട്സ് ആഡ് ചെയ്യുക (Add Notes)</h3>
+                <div>
+                    <label class="block text-sm font-medium text-slate-300 mb-1">കാറ്റഗറി തിരഞ്ഞെടുക്കുക:</label>
+                    <select id="notes-admin-category" onchange="populateNotesSubtopics()" class="w-full p-2.5 bg-slate-900 border border-slate-700 text-white rounded-xl text-sm"></select>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-slate-300 mb-1">സബ് ടോപ്പിക് തിരഞ്ഞെടുക്കുക:</label>
+                    <select id="notes-admin-subtopic" onchange="populateNotesTests()" class="w-full p-2.5 bg-slate-900 border border-slate-700 text-white rounded-xl text-sm">
+                        <option value="">ആദ്യം കാറ്റഗറി തിരഞ്ഞെടുക്കുക</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-slate-300 mb-1">ടെസ്റ്റ് നെയിം തിരഞ്ഞെടുക്കുക:</label>
+                    <select id="notes-admin-testname" class="w-full p-2.5 bg-slate-900 border border-slate-700 text-white rounded-xl text-sm">
+                        <option value="">ആദ്യം സബ് ടോപ്പിക് തിരഞ്ഞെടുക്കുക</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-slate-300 mb-1">നോട്ട്സ് ഇവിടെ പേസ്റ്റ് ചെയ്യുക (ടേബിളുകൾ ഉൾപ്പെടെ നേരിട്ട് നൽകാം):</label>
+                    <textarea id="notes-admin-text-input" rows="8" placeholder="ടേബിളുകളും നോട്ടുകളും ഇവിടെ പേസ്റ്റ് ചെയ്യുക..." class="w-full p-2.5 bg-slate-900 border border-slate-700 text-white rounded-xl text-sm custom-scrollbar"></textarea>
+                </div>
+                <button onclick="saveAdminTargetedNotes()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-3 rounded-xl font-medium shadow transition">
+                    നോട്ട്സ് അപ്ഡേറ്റ് ചെയ്യുക
+                </button>
+            </div>
+
+            <!-- ADMIN SUB-SECTION: Add Gemini Notes -->
+            <div id="admin-sub-add_gemini_notes" class="admin-sub-section hidden bg-slate-800 border border-slate-700 p-5 rounded-2xl space-y-4 shadow-md">
+                <h3 class="text-md font-bold text-amber-400">✨ Add Gemini Notes (ജെമിനി നോട്ടുകൾ ചേർക്കുക)</h3>
+                <div>
+                    <label class="block text-sm font-medium text-slate-300 mb-1">Topic (സബ് ടോപ്പിക്):</label>
+                    <input type="text" id="gemini-notes-topic" placeholder="ഉദാഹരണത്തിന്: ഇന്ത്യൻ ഭരണഘടന" class="w-full p-2.5 bg-slate-900 border border-slate-700 text-white rounded-xl text-sm">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-slate-300 mb-1">Sub Topic (ടെസ്റ്റ് നെയിം):</label>
+                    <input type="text" id="gemini-notes-subtopic" placeholder="ഉദാഹരണത്തിന്: മൗലിക അവകാശങ്ങൾ" class="w-full p-2.5 bg-slate-900 border border-slate-700 text-white rounded-xl text-sm">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-slate-300 mb-1">Notes Textarea (ടേബിളുകളും മാർക്ക് ഡൗൺ നോട്ടുകളും പേസ്റ്റ് ചെയ്യുക):</label>
+                    <textarea id="gemini-notes-textarea" rows="8" placeholder="| ടേബിൾ ഹെഡർ 1 | ടേബിൾ ഹെഡർ 2 |&#10;|---|---|&#10;| ഡാറ്റ 1 | ഡാറ്റ 2 |&#10;&#10;**പ്രധാനപ്പെട്ട പോയിന്റുകൾ:**&#10;* ഇവിടെ നോട്ടുകൾ എഴുതുക..." class="w-full p-2.5 bg-slate-900 border border-slate-700 text-white rounded-xl text-sm custom-scrollbar"></textarea>
+                </div>
+                <button onclick="saveGeminiNotes()" class="w-full bg-amber-600 hover:bg-amber-700 text-white py-3 rounded-xl font-bold shadow transition">
+                    Gemini Notes സേവ് ചെയ്യുക
+                </button>
+            </div>
+
+            <!-- ADMIN SUB-SECTION: Delete Notes -->
+            <div id="admin-sub-delete_notes" class="admin-sub-section hidden bg-slate-800 border border-slate-700 p-5 rounded-2xl space-y-4 shadow-md">
+                <div class="flex justify-between items-center">
+                    <h3 class="text-md font-bold text-red-400">🗑️ സ്റ്റഡി നോട്ട്സ് ഡിലീറ്റ് ചെയ്യുക (Delete Notes)</h3>
+                    <button onclick="deleteSelectedNotes()" class="bg-red-600 hover:bg-red-700 text-white text-xs px-3 py-1.5 rounded-lg font-bold transition">സെലക്ട് ചെയ്തവ ഡിലീറ്റ് ചെയ്യുക</button>
+                </div>
+                <p class="text-xs text-slate-400">ഡിലീറ്റ് ചെയ്യേണ്ട നോട്ടുകൾ ടിക്ക് ചെയ്ത് സെലക്ട് ചെയ്യുക:</p>
+                <div id="delete-notes-container" class="space-y-3 max-h-96 overflow-y-auto custom-scrollbar p-1">
+                    <p class="text-xs text-slate-500 text-center py-4">സ്റ്റഡി നോട്ടുകൾ ഒന്നും ലഭ്യമല്ല.</p>
+                </div>
+            </div>
+
+            <!-- ADMIN SUB-SECTION 3: Add More Qns -->
+            <div id="admin-sub-add_more" class="admin-sub-section hidden bg-slate-800 border border-slate-700 p-5 rounded-2xl space-y-4 shadow-md">
+                <h3 class="text-md font-bold text-emerald-400">➕ കൂടുതൽ ചോദ്യങ്ങൾ കൂട്ടിച്ചേർക്കുക (Append)</h3>
+                <div>
+                    <label class="block text-sm font-medium text-slate-300 mb-1">മെയിൻ കാറ്റഗറി തിരഞ്ഞെടുക്കുക:</label>
+                    <select id="add-more-category" onchange="populateAddMoreSubtopics()" class="w-full p-2.5 bg-slate-900 border border-slate-700 text-white rounded-xl text-sm"></select>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-slate-300 mb-1">സബ് ടോപ്പിക് തിരഞ്ഞെടുക്കുക:</label>
+                    <select id="add-more-subtopic" onchange="populateAddMoreTests()" class="w-full p-2.5 bg-slate-900 border border-slate-700 text-white rounded-xl text-sm">
+                        <option value="">ആദ്യം കാറ്റഗറി തിരഞ്ഞെടുക്കുക</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-slate-300 mb-1">മോക്ക് ടെസ്റ്റ് തിരഞ്ഞെടുക്കുക:</label>
+                    <select id="add-more-testname" class="w-full p-2.5 bg-slate-900 border border-slate-700 text-white rounded-xl text-sm">
+                        <option value="">ആദ്യം സബ് ടോപ്പിക് തിരഞ്ഞെടുക്കുക</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-slate-300 mb-1">പുതിയ ചോദ്യങ്ങൾ ഇവിടെ പേസ്റ്റ് ചെയ്യുക:</label>
+                    <textarea id="add-more-json-input" rows="8" placeholder="[ { 'question': '...', 'options': [...], 'answer': 0, 'explanation': '...' } ]" class="w-full p-2.5 bg-slate-900 border border-slate-700 text-white rounded-xl text-sm custom-scrollbar"></textarea>
+                </div>
+                <button onclick="appendMoreQuestionsToTest()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-3 rounded-xl font-medium shadow transition">
+                    ചോദ്യങ്ങൾ കൂട്ടിച്ചേർക്കുക
+                </button>
+            </div>
+
+            <!-- ADMIN SUB-SECTION 4: Delete Mock -->
+            <div id="admin-sub-delete_mock" class="admin-sub-section hidden bg-slate-800 border border-slate-700 p-5 rounded-2xl space-y-4 shadow-md">
+                <div class="flex justify-between items-center">
+                    <h3 class="text-md font-bold text-red-400">🗑️ മോക്ക് ടെസ്റ്റുകൾ ഡിലീറ്റ് ചെയ്യുക</h3>
+                    <button onclick="deleteSelectedMocks()" class="bg-red-600 hover:bg-red-700 text-white text-xs px-3 py-1.5 rounded-lg font-bold transition">സെലക്ട് ചെയ്തവ ഡിലീറ്റ് ചെയ്യുക</button>
+                </div>
+                <p class="text-xs text-slate-400">ഡിലീറ്റ് ചെയ്യേണ്ട മോക്ക് ടെസ്റ്റുകൾ ടിക്ക് ചെയ്ത് സെലക്ട് ചെയ്യുക:</p>
+                <div id="delete-mock-container" class="space-y-3 max-h-96 overflow-y-auto custom-scrollbar p-1">
+                    <p class="text-xs text-slate-500 text-center py-4">മോക്ക് ടെസ്റ്റുകൾ ഒന്നും ലഭ്യമല്ല.</p>
+                </div>
+            </div>
+
+            <!-- ADMIN SUB-SECTION 5: Reported Questions -->
+            <div id="admin-sub-reported_qns" class="admin-sub-section hidden bg-slate-800 border border-slate-700 p-5 rounded-2xl space-y-4 shadow-md">
+                <h3 class="text-md font-bold text-amber-400">🚩 റിപ്പോർട്ട് ചെയ്ത ചോദ്യങ്ങൾ (Edit, Delete & No Action)</h3>
+                <div id="admin-reports-container" class="space-y-3 max-h-96 overflow-y-auto custom-scrollbar p-1">
+                    <p class="text-xs text-slate-500 text-center py-4">റിപ്പോർട്ട് ചെയ്ത ചോദ്യങ്ങൾ ഒന്നും ലഭ്യമല്ല.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 2: Custom Revision -->
+        <section id="section-revision" class="hidden space-y-6">
+            <div class="bg-slate-800 border border-slate-700 p-5 rounded-2xl space-y-4 shadow-md">
+                <h2 class="text-lg font-bold text-indigo-400">🎯 മൾട്ടി-സെലക്ട് റിവിഷൻ ടെസ്റ്റ് (Accordion View)</h2>
+                <div id="accordion-container" class="space-y-3 max-h-80 overflow-y-auto custom-scrollbar p-1">
+                    <p class="text-xs text-slate-500 text-center py-4">മോക്ക് ടെസ്റ്റുകൾ ഒന്നും ആഡ് ചെയ്തിട്ടില്ല.</p>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-slate-300 mb-1">ടെസ്റ്റിലെ ആകെ ചോദ്യങ്ങളുടെ എണ്ണം:</label>
+                    <select id="rev-count" class="w-full p-2.5 bg-slate-900 border border-slate-700 text-white rounded-xl text-sm">
+                        <option value="10">10 ചോദ്യങ്ങൾ</option>
+                        <option value="25">25 ചോദ്യങ്ങൾ</option>
+                        <option value="50" selected>50 ചോദ്യങ്ങൾ</option>
+                        <option value="75">75 ചോദ്യങ്ങൾ</option>
+                        <option value="100">100 ചോദ്യങ്ങൾ</option>
+                    </select>
+                </div>
+
+                <button onclick="startAccordionCustomTest()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-2.5 rounded-xl font-medium shadow transition">റിവിഷൻ ടെസ്റ്റ് ആരംഭിക്കുക</button>
+            </div>
+
+            <!-- മൈ റിവിഷൻ സെറ്റുകൾ -->
+            <div class="bg-slate-800 border border-slate-700 p-5 rounded-2xl space-y-4 shadow-md">
+                <h2 class="text-lg font-bold text-indigo-400">📌 മൈ റിവിഷൻ സെറ്റുകൾ (തെറ്റിയവ)</h2>
+                <div id="saved-mistake-sets-container" class="space-y-2">
+                    <p class="text-xs text-slate-500 text-center py-3">റിവിഷൻ സെറ്റുകൾ ഒന്നും സേവ് ചെയ്തിട്ടില്ല.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 3: Practice Zone -->
+        <section id="section-practice" class="hidden space-y-4">
+            <div class="bg-slate-800 border border-slate-700 p-5 rounded-2xl shadow-xl space-y-6">
+                <div class="flex justify-between items-center border-b border-slate-700 pb-3">
+                    <h2 class="text-lg font-bold text-indigo-400">പ്രാക്ടീസ് സോൺ</h2>
+                    <div class="flex items-center space-x-3">
+                        <span id="practice-progress-indicator" class="text-xs text-slate-400">പുരോഗതി</span>
+                        <button onclick="finishPracticeZone()" class="bg-amber-600 hover:bg-amber-700 text-white text-xs px-3 py-1.5 rounded-lg font-medium">Finish</button>
+                    </div>
+                </div>
+                <div id="practice-box" class="space-y-4">
+                    <div id="p-q-container" class="space-y-3"></div>
+                    <div id="p-options-box" class="space-y-2.5"></div>
+                    <div id="practice-feedback-banner" class="hidden p-4 rounded-xl text-sm font-medium transition-all space-y-3"></div>
+                </div>
+                <div class="pt-3 border-t border-slate-700 flex justify-end">
+                    <button onclick="openReportModalForCurrentPractice()" class="bg-rose-950/80 border border-rose-800 text-rose-300 hover:bg-rose-900 text-xs px-3 py-1.5 rounded-lg font-medium transition">🚩 Report Issue</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- PRACTICE RESULT -->
+        <div id="practice-result-interface" class="hidden bg-slate-800 border border-slate-700 p-6 rounded-2xl shadow-xl space-y-6">
+            <h2 class="text-xl font-bold text-indigo-400 text-center">പ്രാക്ടീസ് റിസൾട്ട്</h2>
+            <div class="grid grid-cols-2 gap-4 text-center">
+                <div class="bg-slate-900 p-4 rounded-xl border border-slate-700">
+                    <div class="text-xs text-slate-400">പരിശ്രമിച്ച ചോദ്യങ്ങൾ</div>
+                    <div id="p-res-attempted" class="text-2xl font-bold text-indigo-400">0</div>
+                </div>
+                <div class="bg-slate-900 p-4 rounded-xl border border-slate-700">
+                    <div class="text-xs text-slate-400">പഠിച്ച ചോദ്യങ്ങൾ</div>
+                    <div id="p-res-learned" class="text-2xl font-bold text-emerald-400">0</div>
+                </div>
+            </div>
+            <!-- ബാക്ക് ബട്ടൺ -->
+            <button onclick="backToPracticeList()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-2.5 rounded-xl text-sm font-medium transition shadow">← പ്രാക്ടീസ് ലിസ്റ്റിലേക്ക് മടങ്ങുക</button>
+            <button onclick="switchTab('dashboard')" class="w-full bg-slate-700 hover:bg-slate-600 text-white py-2.5 rounded-xl text-sm font-medium">ഹോമിലേക്ക് മടങ്ങുക</button>
+        </div>
+
+        <!-- TAB 4: Progress Tracker -->
+        <section id="section-tracker" class="hidden space-y-4">
+            <div class="bg-slate-800 border border-slate-700 p-5 rounded-2xl shadow-md space-y-4">
+                <h2 class="text-lg font-bold text-indigo-400">📊 പ്രോഗ്രസ് ട്രാക്കർ (Progress Tracker)</h2>
+                <p class="text-xs text-slate-400">താങ്കളുടെ പഠന പുരോഗതിയും പൂർത്തിയാക്കിയ ടോപ്പിക്കുകളുടെ ശതമാനവും താഴെ കാണാം:</p>
+                
+                <!-- Overall Progress Bar Container -->
+                <div class="bg-slate-900 border border-slate-700 p-4 rounded-xl space-y-2">
+                    <div class="flex justify-between items-center text-xs font-bold">
+                        <span class="text-slate-300">ആകെ പ്രോഗ്രസ് (Overall Progress)</span>
+                        <span id="tracker-overall-percentage" class="text-emerald-400 text-sm">0% Completed</span>
+                    </div>
+                    <div class="w-full bg-slate-800 rounded-full h-3 overflow-hidden border border-slate-700">
+                        <div id="tracker-progress-bar-fill" class="bg-emerald-500 h-full transition-all duration-500" style="width: 0%;"></div>
+                    </div>
+                </div>
+
+                <!-- Detailed Topics List Container -->
+                <div id="tracker-detailed-container" class="space-y-4">
+                    <p class="text-xs text-slate-500 text-center py-4">ടോപ്പിക്കുകൾ ഒന്നും ലഭ്യമല്ല.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ACTIVE MOCK TEST -->
+        <div id="mock-interface" class="hidden bg-slate-800 border border-slate-700 p-6 rounded-2xl shadow-xl space-y-6">
+            <div class="flex justify-between items-center border-b border-slate-700 pb-3">
+                <div id="mock-title" class="font-bold text-indigo-400 text-sm"></div>
+                <div class="flex items-center space-x-3">
+                    <span id="timer-display" class="bg-red-950 text-red-400 border border-red-800 px-3 py-1 rounded-full text-xs font-bold">00:00</span>
+                    <!-- ബുക്ക്മാർക്ക് ബട്ടൺ അപ്ഡേറ്റ് ചെയ്തു -->
+                    <button onclick="toggleBookmark()" id="bookmark-btn" class="text-slate-400 hover:text-amber-400 text-xl transition px-2 py-1 rounded bg-slate-900 border border-slate-700" title="Bookmark Question">🔖</button>
+                    <button onclick="finishMockTestEarly()" class="bg-amber-600 hover:bg-amber-700 text-white text-xs px-3 py-1.5 rounded-lg font-medium">Finish</button>
+                </div>
+            </div>
+            <div id="question-box" class="space-y-4">
+                <div id="q-container" class="space-y-3"></div>
+                <div id="options-box" class="space-y-2.5"></div>
+            </div>
+            <div class="flex justify-between items-center pt-4 border-t border-slate-700">
+                <button onclick="prevQuestion()" class="px-4 py-2 bg-slate-700 hover:bg-slate-600 text-white rounded-xl text-sm font-medium">Previous</button>
+                <div class="flex items-center space-x-2">
+                    <button onclick="openReportModalForCurrentMock()" class="bg-rose-950/80 border border-rose-800 text-rose-300 hover:bg-rose-900 text-xs px-3 py-2 rounded-xl font-medium transition">🚩 Report</button>
+                    <!-- ക്വസ്റ്റ്യൻ പാലറ്റ് ബട്ടൺ ഉറപ്പാക്കി -->
+                    <button onclick="openPaletteModal()" class="px-3 py-2 bg-slate-900 text-slate-300 rounded-xl text-xs border border-slate-700 hover:bg-slate-700 font-bold transition">Palette</button>
+                </div>
+                <button onclick="nextQuestion()" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-sm font-medium">Next</button>
+            </div>
+        </div>
+
+        <!-- RESULT VIEW -->
+        <div id="result-interface" class="hidden bg-slate-800 border border-slate-700 p-6 rounded-2xl shadow-xl space-y-6">
+            <h2 class="text-xl font-bold text-indigo-400 text-center">ടെസ്റ്റ് റിസൾട്ട്</h2>
+            
+            <div class="grid grid-cols-2 gap-4 text-center">
+                <div class="bg-slate-900 p-4 rounded-xl border border-slate-700">
+                    <div class="text-xs text-slate-400">ആകെ മാർക്ക്</div>
+                    <div id="res-score" class="text-2xl font-bold text-indigo-400">0</div>
+                </div>
+                <div class="bg-slate-900 p-4 rounded-xl border border-slate-700">
+                    <div class="text-xs text-slate-400">നെഗറ്റീവ് മാർക്ക്</div>
+                    <div id="res-neg" class="text-2xl font-bold text-red-400">0</div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-3 gap-2 text-center">
+                <div class="bg-slate-900 p-3 rounded-xl border border-slate-700">
+                    <div class="text-xs text-slate-400">ശരി (Correct)</div>
+                    <div id="res-correct" class="text-xl font-bold text-emerald-400">0</div>
+                </div>
+                <div class="bg-slate-900 p-3 rounded-xl border border-slate-700">
+                    <div class="text-xs text-slate-400">തെറ്റ് (Wrong)</div>
+                    <div id="res-wrong" class="text-xl font-bold text-red-400">0</div>
+                </div>
+                <div class="bg-slate-900 p-3 rounded-xl border border-slate-700">
+                    <div class="text-xs text-slate-400">വിട്ടുപോയവ</div>
+                    <div id="res-unattempted" class="text-xl font-bold text-amber-400">0</div>
+                </div>
+            </div>
+
+            <div id="save-mistakes-container"></div>
+
+            <div class="flex space-x-2 pt-2">
+                <button onclick="renderResultAnswers('all')" class="flex-1 bg-slate-700 hover:bg-slate-600 text-white py-1.5 rounded-lg text-xs font-medium">എല്ലാം</button>
+                <button onclick="renderResultAnswers('correct')" class="flex-1 bg-emerald-950/60 border border-emerald-800 text-emerald-300 py-1.5 rounded-lg text-xs font-medium">ശരി മാത്രം</button>
+                <button onclick="renderResultAnswers('wrong')" class="flex-1 bg-red-950/60 border border-red-800 text-red-300 py-1.5 rounded-lg text-xs font-medium">തെറ്റ് മാത്രം</button>
+                <button onclick="renderResultAnswers('unattempted')" class="flex-1 bg-amber-950/60 border border-amber-800 text-amber-300 py-1.5 rounded-lg text-xs font-medium">വിട്ടുപോയവ</button>
+            </div>
+
+            <div class="border-t border-slate-700 pt-4 space-y-3">
+                <h3 class="text-sm font-bold text-slate-200">ഉത്തരങ്ങൾ പരിശോധിക്കുക:</h3>
+                <div id="result-answers-list" class="space-y-3 max-h-72 overflow-y-auto custom-scrollbar p-1"></div>
+            </div>
+            
+            <button onclick="resetToHome()" class="w-full bg-slate-700 hover:bg-slate-600 text-white py-2.5 rounded-xl text-sm font-medium">ഹോമിലേക്ക് മടങ്ങുക</button>
+        </div>
+
+    </main>
+
+    <!-- FULL SCREEN STUDY NOTES OVERLAY VIEW -->
+    <div id="section-study-notes" class="hidden fixed inset-0 z-50 flex flex-col bg-slate-50 text-slate-900 overflow-y-auto p-4 md:p-12">
+        <div class="max-w-4xl w-full mx-auto space-y-6 flex-1 flex flex-col">
+            <!-- Header bar with Topic Title Only -->
+            <div class="flex justify-between items-center border-b pb-4 border-slate-200 sticky top-0 bg-slate-50 z-10 py-3 shadow-sm px-4 rounded-xl">
+                <div id="study-notes-title" class="font-bold text-lg md:text-2xl text-red-600">Study Notes</div>
+                <div class="flex items-center space-x-2">
+                    <button onclick="closeStudyNotesView()" class="bg-slate-700 hover:bg-slate-600 text-white text-xs px-4 py-2 rounded-lg font-medium shadow">← ബാക്ക്</button>
+                </div>
+            </div>
+            <!-- Scrollable content -->
+            <div id="study-notes-scroll-container" class="space-y-4 flex-1 overflow-y-auto custom-scrollbar p-2 leading-relaxed text-slate-800 text-base md:text-lg select-text">
+                <!-- Rich text notes & tables injected here -->
             </div>
         </div>
     </div>
 
-    <!-- Mock Tests List Modal -->
-    <div class="modal" id="listModal">
-        <div class="modal-content">
-            <h3 id="listModalTitle">മോക്ക് ടെസ്റ്റ് ലിസ്റ്റ്</h3>
-            <div id="testListContainer" class="test-list-container">
-                <!-- Dynamic Test Items Go Here -->
+    <!-- Floating Selection Toolbar (Fluorescent Green Highlight & Undo Buttons) -->
+    <div id="selection-toolbar" class="hidden fixed z-50 bg-slate-900 border border-slate-700 shadow-2xl rounded-xl p-2 flex items-center space-x-2 transform -translate-x-1/2 -translate-y-full">
+        <button onclick="applyHighlightSelection()" class="bg-[#4ade80] hover:bg-[#22c55e] text-slate-950 font-bold text-xs px-3 py-1.5 rounded-lg shadow transition flex items-center space-x-1">
+            <span>🖍️ Highlight</span>
+        </button>
+        <button onclick="removeHighlightSelection()" class="bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs px-3 py-1.5 rounded-lg shadow transition flex items-center space-x-1">
+            <span>↺ Undo</span>
+        </button>
+    </div>
+
+    <!-- Admin PIN Verification Modal -->
+    <div id="admin-pin-modal" class="hidden fixed inset-0 bg-black bg-opacity-80 flex justify-center items-center p-4 z-50">
+        <div class="bg-slate-800 border border-slate-700 p-6 rounded-2xl max-w-sm w-full space-y-4 shadow-2xl text-center">
+            <h3 class="font-bold text-amber-400 text-lg">🔒 അഡ്മിൻ സുരക്ഷാ പരിശോധന</h3>
+            <p class="text-xs text-slate-300">അഡ്മിൻ പാനലിലേക്ക് പ്രവേശിക്കാൻ 4-ഡിജിറ്റ് പിൻ നമ്പർ നൽകുക:</p>
+            <input type="password" id="admin-pin-input" maxlength="4" placeholder="••••" class="w-full text-center tracking-widest text-xl p-3 bg-slate-900 border border-slate-700 text-white rounded-xl">
+            <div class="flex space-x-2 pt-2">
+                <button onclick="verifyAdminPin()" class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white py-2.5 rounded-xl text-xs font-bold transition">തുറക്കുക</button>
+                <button onclick="closeAdminPinModal()" class="flex-1 bg-slate-700 hover:bg-slate-600 text-white py-2.5 rounded-xl text-xs font-medium transition">ക്ലോസ്</button>
             </div>
-            <button class="btn-submit" style="width: 100%; padding: 10px; border-radius: 8px; cursor: pointer;" onclick="closeListModal()">മടങ്ങുവൂ</button>
+        </div>
+    </div>
+
+    <!-- Question Palette Modal (അപ്ഡേറ്റ് ചെയ്തത്) -->
+    <div id="palette-modal" class="hidden fixed inset-0 bg-black bg-opacity-70 flex justify-center items-center p-4 z-50">
+        <div class="bg-slate-800 border border-slate-700 p-6 rounded-2xl max-w-md w-full space-y-4 shadow-2xl">
+            <div class="flex justify-between items-center border-b border-slate-700 pb-2">
+                <h3 class="font-bold text-white text-base">ക്വസ്റ്റ്യൻ പാലറ്റ്</h3>
+                <button onclick="closePaletteModal()" class="text-slate-400 hover:text-white text-sm font-bold">✕</button>
+            </div>
+            <!-- കളർ സൂചകങ്ങൾ (Color Indicators) -->
+            <div class="flex flex-wrap gap-3 text-[11px] text-slate-300 bg-slate-900 p-2.5 rounded-xl border border-slate-700">
+                <div class="flex items-center space-x-1.5"><span class="w-3 h-3 rounded bg-emerald-600 inline-block"></span><span>ശരി/അറ്റൻഡ് ചെയ്തവ</span></div>
+                <div class="flex items-center space-x-1.5"><span class="w-3 h-3 rounded bg-amber-500 inline-block"></span><span>ബുക്ക്മാർക്ക് ചെയ്തവ</span></div>
+                <div class="flex items-center space-x-1.5"><span class="w-3 h-3 rounded bg-slate-800 border border-slate-600 inline-block"></span><span>അറ്റൻഡ് ചെയ്യാത്തവ</span></div>
+            </div>
+            <!-- ഡയനാമിക് ഗ്രേഡ് റെണ്ടറിംഗ് കണ്ടെയ്നർ -->
+            <div id="palette-grid" class="grid grid-cols-5 gap-2.5 max-h-60 overflow-y-auto p-1 custom-scrollbar"></div>
+            <button onclick="closePaletteModal()" class="w-full bg-slate-700 hover:bg-slate-600 text-white py-2 rounded-xl text-sm font-medium transition">Close</button>
+        </div>
+    </div>
+
+    <!-- Report Question Modal with Comment Box -->
+    <div id="report-modal" class="hidden fixed inset-0 bg-black bg-opacity-70 flex justify-center items-center p-4 z-50">
+        <div class="bg-slate-800 border border-slate-700 p-6 rounded-2xl max-w-md w-full space-y-4 shadow-2xl">
+            <h3 class="font-bold text-rose-400">🚩 ചോദ്യം റിപ്പോർട്ട് ചെയ്യുക</h3>
+            <p class="text-xs text-slate-300">ഈ ചോദ്യത്തിലെ പ്രശ്നം എന്താണെന്ന് താഴെ കമന്റായി എഴുതുക:</p>
+            <textarea id="report-comment-input" rows="4" placeholder="ഉദാഹരണത്തിന്: ഓപ്ഷൻ തെറ്റാണ് / ഉത്തരം മാറിക്കിടക്കുന്നു..." class="w-full p-2.5 bg-slate-900 border border-slate-700 text-white rounded-xl text-sm custom-scrollbar"></textarea>
+            <div class="flex space-x-2">
+                <button onclick="submitQuestionReport()" class="flex-1 bg-rose-600 hover:bg-rose-700 text-white py-2.5 rounded-xl text-sm font-medium">സബ്മിറ്റ് ചെയ്യുക</button>
+                <button onclick="closeReportModal()" class="flex-1 bg-slate-700 hover:bg-slate-600 text-white py-2.5 rounded-xl text-sm font-medium">ക്ലോസ്</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Admin Edit Question Modal -->
+    <div id="admin-edit-modal" class="hidden fixed inset-0 bg-black bg-opacity-70 flex justify-center items-center p-4 z-50">
+        <div class="bg-slate-800 border border-slate-700 p-6 rounded-2xl max-w-lg w-full space-y-4 shadow-2xl max-h-[90vh] overflow-y-auto custom-scrollbar">
+            <h3 class="font-bold text-amber-400 text-base">✏️ ചോദ്യം എഡിറ്റ് ചെയ്യുക (Admin Edit)</h3>
+            
+            <div>
+                <label class="block text-xs font-medium text-slate-300 mb-1">ചോദ്യം (Question):</label>
+                <textarea id="edit-q-text" rows="3" class="w-full p-2.5 bg-slate-900 border border-slate-700 text-white rounded-xl text-sm custom-scrollbar"></textarea>
+            </div>
+
+            <div class="space-y-2">
+                <label class="block text-xs font-medium text-slate-300">ഓപ്ഷനുകൾ (Options):</label>
+                <input type="text" id="edit-opt-0" placeholder="Option 1" class="w-full p-2 bg-slate-900 border border-slate-700 text-white rounded-lg text-xs">
+                <input type="text" id="edit-opt-1" placeholder="Option 2" class="w-full p-2 bg-slate-900 border border-slate-700 text-white rounded-lg text-xs">
+                <input type="text" id="edit-opt-2" placeholder="Option 3" class="w-full p-2 bg-slate-900 border border-slate-700 text-white rounded-lg text-xs">
+                <input type="text" id="edit-opt-3" placeholder="Option 4" class="w-full p-2 bg-slate-900 border border-slate-700 text-white rounded-lg text-xs">
+            </div>
+
+            <div class="grid grid-cols-2 gap-3">
+                <div>
+                    <label class="block text-xs font-medium text-slate-300 mb-1">ശരിയായ ഉത്തരം (Index 0-3):</label>
+                    <input type="number" id="edit-ans-index" min="0" max="3" class="w-full p-2 bg-slate-900 border border-slate-700 text-white rounded-lg text-xs">
+                </div>
+            </div>
+
+            <div>
+                <label class="block text-xs font-medium text-slate-300 mb-1">വിശദീകരണം (Explanation):</label>
+                <textarea id="edit-explanation" rows="2" class="w-full p-2.5 bg-slate-900 border border-slate-700 text-white rounded-xl text-xs custom-scrollbar"></textarea>
+            </div>
+
+            <input type="hidden" id="edit-target-question-id">
+            <input type="hidden" id="edit-target-report-id">
+
+            <div class="flex space-x-2 pt-2">
+                <button onclick="saveEditedQuestion()" class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white py-2.5 rounded-xl text-xs font-bold transition">അപ്ഡേറ്റ് സേവ് ചെയ്യുക</button>
+                <button onclick="closeAdminEditModal()" class="flex-1 bg-slate-700 hover:bg-slate-600 text-white py-2.5 rounded-xl text-xs font-medium transition">ക്ലോസ്</button>
+            </div>
         </div>
     </div>
 
@@ -382,111 +643,2544 @@
         };
 
         let db;
-        let globalUserTests = { achu: [], anoop: [] };
-
         try {
             firebase.initializeApp(firebaseConfig);
             db = firebase.firestore();
-            fetchHomeUpdates();
+            loadDataFromFirebase();
         } catch(e) {
             console.log("Firebase init error:", e);
         }
 
-        function calculateNextRevisionDate() {
-            const today = new Date();
-            const dayOfWeek = today.getDay();
-            const displayEl = document.getElementById('nextExamDateDisplay');
+        let defaultCategoriesOrder = {
+            topic_wise: { title: "Topic-wise Exams", subtopics: [] },
+            notes: { title: "📝 Study Notes", subtopics: [] },
+            gemini_notes: { title: "✨ Gemini Notes", subtopics: [] },
+            scert: { title: "SCERT Based Exams", subtopics: [] },
+            ca_daily: { title: "Daily Current Affairs", subtopics: [] },
+            ca_monthly: { title: "Monthly Current Affairs", subtopics: [] },
+            malayalam: { title: "മലയാളം (Malayalam)", subtopics: [] },
+            english: { title: "ഇംഗ്ലീഷ് (English)", subtopics: [] },
+            pyq_main: { title: "PREVIOUS YEAR QUESTIONS", subtopics: [] },
+            pyq_malayalam: { title: "Malayalam PYQ", subtopics: [] },
+            pyq_english: { title: "English PYQ", subtopics: [] }
+        };
 
-            if (dayOfWeek === 6) {
-                displayEl.innerHTML = "⚠️ നാളെ റിവിഷൻ എക്സാം!";
-            } else if (dayOfWeek === 0) {
-                displayEl.innerHTML = "🔥 ഇന്ന് റിവിഷൻ എക്സാം ദിവസം!";
-            } else {
-                const daysUntilSunday = 7 - dayOfWeek;
-                let nextSunday = new Date(today);
-                nextSunday.setDate(today.getDate() + daysUntilSunday);
-
-                const options = { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' };
-                const formattedDate = nextSunday.toLocaleDateString('ml-IN', options);
-                displayEl.innerText = `അടുത്ത എക്സാം: ${formattedDate}`;
+        let storedCatData = JSON.parse(localStorage.getItem('psc_categories_data_anoop') || 'null');
+        let categoriesData = {};
+        if (storedCatData) {
+            for (let k in defaultCategoriesOrder) {
+                categoriesData[k] = storedCatData[k] || defaultCategoriesOrder[k];
             }
+            for (let k in storedCatData) {
+                if (!categoriesData[k]) categoriesData[k] = storedCatData[k];
+            }
+        } else {
+            categoriesData = defaultCategoriesOrder;
         }
 
-        calculateNextRevisionDate();
+        let sampleQuestions = JSON.parse(localStorage.getItem('psc_sample_questions_anoop') || JSON.stringify([]));
+        let studyNotesMap = JSON.parse(localStorage.getItem('psc_study_notes_map_anoop') || JSON.stringify({}));
+        let studyHighlightsMap = JSON.parse(localStorage.getItem('psc_study_highlights_map_anoop') || JSON.stringify({}));
 
-        async function fetchHomeUpdates() {
+        let userProgressData = JSON.parse(localStorage.getItem('psc_user_progress_anoop') || JSON.stringify({}));
+        let savedMistakeSets = JSON.parse(localStorage.getItem('psc_saved_mistake_sets_anoop') || JSON.stringify([]));
+        let reportedQuestionsList = JSON.parse(localStorage.getItem('psc_reported_questions_anoop') || JSON.stringify([]));
+        
+        // Progress Tracker Structured Data Store
+        let trackerTopicsData = JSON.parse(localStorage.getItem('psc_tracker_topics_data_anoop') || JSON.stringify([
+            {
+                mainTopic: "ഇന്ത്യൻ ഭരണഘടന (Indian Constitution)",
+                subtopics: [
+                    { name: "മൗലിക അവകാശങ്ങൾ", completed: false },
+                    { name: "നിർദ്ദേശക തത്വങ്ങൾ", completed: false }
+                ]
+            }
+        ]));
+
+        async function loadDataFromFirebase() {
             if(!db) return;
             try {
-                const achuDoc = await db.collection("app_data").doc("psc_database_achu").get();
-                if(achuDoc.exists) {
-                    globalUserTests.achu = extractTests(achuDoc.data());
-                    renderUserUpdates('achu', globalUserTests.achu, 'achuUpdates');
-                }
-
-                const anoopDoc = await db.collection("app_data").doc("psc_database_anoop").get();
-                if(anoopDoc.exists) {
-                    globalUserTests.anoop = extractTests(anoopDoc.data());
-                    renderUserUpdates('anoop', globalUserTests.anoop, 'anoopUpdates');
+                const docRef = db.collection("app_data").doc("psc_database_anoop");
+                const docSnap = await docRef.get();
+                if (docSnap.exists) {
+                    const serverData = docSnap.data();
+                    if(serverData.categoriesData) {
+                        let sData = serverData.categoriesData;
+                        let ordered = {};
+                        for (let k in defaultCategoriesOrder) {
+                            ordered[k] = sData[k] || defaultCategoriesOrder[k];
+                        }
+                        for (let k in sData) {
+                            if (!ordered[k]) ordered[k] = sData[k];
+                        }
+                        categoriesData = ordered;
+                        localStorage.setItem('psc_categories_data_anoop', JSON.stringify(categoriesData));
+                    }
+                    if(serverData.sampleQuestions) {
+                        sampleQuestions = serverData.sampleQuestions;
+                        localStorage.setItem('psc_sample_questions_anoop', JSON.stringify(sampleQuestions));
+                    }
+                    if(serverData.studyNotesMap) {
+                        studyNotesMap = serverData.studyNotesMap;
+                        localStorage.setItem('psc_study_notes_map_anoop', JSON.stringify(studyNotesMap));
+                    }
+                    if(serverData.studyHighlightsMap) {
+                        studyHighlightsMap = serverData.studyHighlightsMap;
+                        localStorage.setItem('psc_study_highlights_map_anoop', JSON.stringify(studyHighlightsMap));
+                    }
+                    if(serverData.userProgressData) {
+                        userProgressData = serverData.userProgressData;
+                        localStorage.setItem('psc_user_progress_anoop', JSON.stringify(userProgressData));
+                    }
+                    if(serverData.reportedQuestionsList) {
+                        reportedQuestionsList = serverData.reportedQuestionsList;
+                        localStorage.setItem('psc_reported_questions_anoop', JSON.stringify(reportedQuestionsList));
+                    }
+                    if(serverData.trackerTopicsData) {
+                        trackerTopicsData = serverData.trackerTopicsData;
+                        localStorage.setItem('psc_tracker_topics_data_anoop', JSON.stringify(trackerTopicsData));
+                    }
                 }
             } catch(err) {
-                console.log("Home updates fetch error:", err);
+                console.log("Firebase load error:", err);
+            }
+            renderDashboardCategories();
+            populateCategoryDropdowns();
+        }
+
+        let currentTestQuestions = [];
+        let currentIndex = 0;
+        let userAnswers = {};
+        let bookmarked = new Set();
+        let timerInterval;
+        let currentTestTitle = "";
+        let activeTestKeyForTracking = "";
+        let activeCategoryKey = "";
+        let activeSubtopicName = "";
+        let activeOriginalTestName = "";
+        let activeCurrentNoteKey = "";
+
+        let practiceQueue = [];
+        let currentPracticeQuestion = null;
+        let practiceAttemptedMaster = new Set();
+        let practiceLearnedMaster = new Set();
+
+        function switchTab(tabId) {
+            if(tabId === 'admin_panel') {
+                document.getElementById('admin-pin-input').value = '';
+                document.getElementById('admin-pin-modal').classList.remove('hidden');
+                return;
+            }
+
+            document.querySelectorAll('main > section').forEach(sec => sec.classList.add('hidden'));
+            document.getElementById('section-subtopics').classList.add('hidden');
+            document.getElementById('section-study_zone').classList.add('hidden');
+            document.getElementById('section-study-practice').classList.add('hidden');
+            document.getElementById('section-notes-subtopics').classList.add('hidden');
+            document.getElementById('section-gemini-notes-subtopics').classList.add('hidden');
+            document.getElementById('section-study-notes').classList.add('hidden');
+            document.getElementById('section-admin_panel').classList.add('hidden');
+            document.getElementById('mock-interface').classList.add('hidden');
+            document.getElementById('result-interface').classList.add('hidden');
+            document.getElementById('practice-result-interface').classList.add('hidden');
+
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.className = "tab-btn px-4 py-2 bg-slate-800 text-slate-300 border border-slate-700 rounded-xl text-sm font-medium whitespace-nowrap";
+            });
+
+            const activeBtn = document.getElementById(`btn-${tabId}`);
+            if(activeBtn) {
+                activeBtn.className = "tab-btn px-4 py-2 bg-indigo-600 text-white rounded-xl text-sm font-medium whitespace-nowrap shadow";
+            }
+
+            if(tabId === 'dashboard') {
+                document.getElementById('section-dashboard').classList.remove('hidden');
+                renderDashboardCategories();
+            } else if(tabId === 'study_zone') {
+                document.getElementById('section-study_zone').classList.remove('hidden');
+                renderStudyZoneTests();
+            } else if(tabId === 'revision') {
+                document.getElementById('section-revision').classList.remove('hidden');
+                populateAccordion();
+                renderSavedMistakeSets();
+            } else if(tabId === 'practice') {
+                document.getElementById('section-practice').classList.remove('hidden');
+                initPracticeZone();
+            } else if(tabId === 'tracker') {
+                document.getElementById('section-tracker').classList.remove('hidden');
+                renderTrackerUI();
             }
         }
 
-        function extractTests(data) {
-            let allTests = [];
-            if(!data || !data.categoriesData) return allTests;
-            for(let catKey in data.categoriesData) {
-                let cat = data.categoriesData[catKey];
-                if(cat.subtopics) {
-                    cat.subtopics.forEach(sub => {
-                        if(sub.tests) {
-                            sub.tests.forEach(testName => {
-                                allTests.push({ topic: sub.name, test: testName });
-                            });
-                        }
-                    });
-                }
-            }
-            return allTests;
-        }
+        const ADMIN_SECRET_PIN = "1234";
 
-        function renderUserUpdates(userKey, allTests, elementId) {
-            const container = document.getElementById(elementId);
-            if(allTests.length > 0) {
-                let latest = allTests[allTests.length - 1];
-                let html = `<span>🔥 <span class="blink-text">${latest.test}</span></span>`;
-                if(allTests.length > 1) {
-                    html += `<button class="more-badge" onclick="openTestListModal('${userKey}')">+${allTests.length - 1} more...</button>`;
-                }
-                container.innerHTML = html;
+        function verifyAdminPin() {
+            let enteredPin = document.getElementById('admin-pin-input').value.trim();
+            if(enteredPin === ADMIN_SECRET_PIN) {
+                document.getElementById('admin-pin-modal').classList.add('hidden');
+                
+                document.querySelectorAll('main > section').forEach(sec => sec.classList.add('hidden'));
+                document.getElementById('section-subtopics').classList.add('hidden');
+                document.getElementById('section-study_zone').classList.add('hidden');
+                document.getElementById('section-study-practice').classList.add('hidden');
+                document.getElementById('section-notes-subtopics').classList.add('hidden');
+                document.getElementById('section-gemini-notes-subtopics').classList.add('hidden');
+                document.getElementById('section-study-notes').classList.add('hidden');
+                document.getElementById('mock-interface').classList.add('hidden');
+                document.getElementById('result-interface').classList.add('hidden');
+                document.getElementById('practice-result-interface').classList.add('hidden');
+
+                document.querySelectorAll('.tab-btn').forEach(btn => {
+                    btn.className = "tab-btn px-4 py-2 bg-slate-800 text-slate-300 border border-slate-700 rounded-xl text-sm font-medium whitespace-nowrap";
+                });
+                document.getElementById('btn-admin_panel').className = "tab-btn px-4 py-2 bg-indigo-600 text-white rounded-xl text-sm font-medium whitespace-nowrap shadow";
+
+                document.getElementById('section-admin_panel').classList.remove('hidden');
+                populateCategoryDropdowns();
+                renderDeleteMockList();
+                renderDeleteNotesList();
+                renderAdminReports();
+                renderAdminTrackerChecklist();
+                switchAdminSubSection('add_cat');
             } else {
-                container.innerHTML = `<span style="color: #64748b;">പുതിയ മോക്ക് ടെസ്റ്റുകൾ ഒന്നുമില്ല</span>`;
+                alert("❌ തെറ്റായ പിൻ നമ്പർ! വീണ്ടും ശ്രമിക്കുക.");
+                document.getElementById('admin-pin-input').value = '';
             }
         }
 
-        function openTestListModal(userKey) {
-            const container = document.getElementById('testListContainer');
-            const titleEl = document.getElementById('listModalTitle');
-            container.innerHTML = '';
+        function closeAdminPinModal() {
+            document.getElementById('admin-pin-modal').classList.add('hidden');
+        }
 
-            titleEl.innerText = `${userKey === 'achu' ? 'അച്ചുവിന്റെ' : 'അനൂപിന്റെ'} മോക്ക് ടെസ്റ്റുകൾ`;
-            let tests = globalUserTests[userKey] || [];
+        function switchAdminSubSection(subId) {
+            document.querySelectorAll('.admin-sub-section').forEach(sec => sec.classList.add('hidden'));
+            document.querySelectorAll('.admin-sub-btn').forEach(btn => {
+                btn.className = "admin-sub-btn p-3 bg-slate-900 border border-slate-700 text-slate-300 rounded-xl text-xs font-medium transition";
+            });
 
-            if(tests.length === 0) {
-                container.innerHTML = `<div class="test-list-item text-center">ടെസ്റ്റുകൾ ഒന്നും ലഭ്യമല്ല.</div>`;
+            const targetSec = document.getElementById(`admin-sub-${subId}`);
+            const targetBtn = document.getElementById(`admin-btn-${subId}`);
+
+            if(targetSec) targetSec.classList.remove('hidden');
+            if(targetBtn) {
+                targetBtn.className = "admin-sub-btn p-3 bg-indigo-600 text-white rounded-xl text-xs font-bold transition shadow";
+            }
+            if(subId === 'add_notes') {
+                populateNotesCategories();
+            } else if(subId === 'delete_notes') {
+                renderDeleteNotesList();
+            } else if(subId === 'delete_mock') {
+                renderDeleteMockList();
+            } else if(subId === 'progress_admin') {
+                renderAdminTrackerChecklist();
+            } else if(subId === 'add_more') {
+                populateCategoryDropdowns();
+            }
+        }
+
+        // Admin Progress Manager Functions
+        async function adminAddTrackerTopic() {
+            let mainTopic = document.getElementById('prog-admin-main-topic').value.trim();
+            let subTopic = document.getElementById('prog-admin-sub-topic').value.trim();
+
+            if(!mainTopic) { alert("ദയവായി മെയിൻ ടോപിക്കിന്റെ പേര് നൽകുക!"); return; }
+            if(!subTopic) { alert("ദയവായി സബ് ടോപിക്കിന്റെ പേര് നൽകുക!"); return; }
+
+            let mainObj = trackerTopicsData.find(m => m.mainTopic.toLowerCase() === mainTopic.toLowerCase());
+            if(mainObj) {
+                if(!mainObj.subtopics.some(s => s.name.toLowerCase() === subTopic.toLowerCase())) {
+                    mainObj.subtopics.push({ name: subTopic, completed: false });
+                } else {
+                    alert("ഈ സബ് ടോപ്പിക് ഇതിനകം നിലവിലുണ്ട്!");
+                    return;
+                }
             } else {
-                tests.forEach((item, idx) => {
-                    container.innerHTML += `<div class="test-list-item"><b>${idx + 1}.</b> ${item.test} <span style="font-size:0.7rem; color:#94a3b8;">(${item.topic})</span></div>`;
+                trackerTopicsData.push({
+                    mainTopic: mainTopic,
+                    subtopics: [{ name: subTopic, completed: false }]
                 });
             }
 
-            document.getElementById('listModal').style.display = 'flex';
+            saveTrackerDataAndSync();
+            document.getElementById('prog-admin-main-topic').value = '';
+            document.getElementById('prog-admin-sub-topic').value = '';
+            renderAdminTrackerChecklist();
+            alert("🎉 പുതിയ ടോപ്പിക് വിജയകരമായി ചേർത്തു!");
         }
 
-        function closeListModal() {
-            document.getElementById('listModal').style.display = 'none';
+        function renderAdminTrackerChecklist() {
+            const container = document.getElementById('admin-tracker-checklist-container');
+            if(!container) return;
+            container.innerHTML = '';
+
+            if(trackerTopicsData.length === 0) {
+                container.innerHTML = `<p class="text-xs text-slate-500 text-center py-4">ടോപ്പിക്കുകൾ ഒന്നും ലഭ്യമല്ല.</p>`;
+                return;
+            }
+
+            trackerTopicsData.forEach((mainItem, mIdx) => {
+                let subsHtml = '';
+                mainItem.subtopics.forEach((subItem, sIdx) => {
+                    subsHtml += `
+                        <div class="flex items-center justify-between bg-slate-800 border border-slate-700 p-2.5 rounded-lg text-xs">
+                            <span class="text-slate-200 font-medium">${subItem.name}</span>
+                            <div class="flex items-center space-x-3">
+                                <label class="flex items-center space-x-1.5 cursor-pointer">
+                                    <span class="text-[10px] ${subItem.completed ? 'text-emerald-400 font-bold' : 'text-slate-400'}">${subItem.completed ? 'Completed' : 'Pending'}</span>
+                                    <input type="checkbox" ${subItem.completed ? 'checked' : ''} onchange="toggleSubtopicCompletion(${mIdx}, ${sIdx}, this.checked)" class="rounded bg-slate-900 border-slate-700 text-emerald-600 focus:ring-emerald-500 w-4 h-4">
+                                </label>
+                                <button onclick="deleteTrackerSubtopic(${mIdx}, ${sIdx})" class="bg-red-950/80 border border-red-800 text-red-400 hover:bg-red-900 px-2 py-1 rounded font-medium transition text-[10px]">ഡിലീറ്റ്</button>
+                            </div>
+                        </div>
+                    `;
+                });
+
+                container.innerHTML += `
+                    <div class="bg-slate-900 border border-slate-700 p-3.5 rounded-xl space-y-2">
+                        <div class="flex justify-between items-center">
+                            <div class="font-bold text-indigo-400 text-xs">📂 ${mainItem.mainTopic}</div>
+                            <button onclick="deleteTrackerMainTopic(${mIdx})" class="bg-red-950/80 border border-red-800 text-red-400 hover:bg-red-900 px-2 py-1 rounded font-medium transition text-[10px]">മെയിൻ ടോപ്പിക് ഡിലീറ്റ്</button>
+                        </div>
+                        <div class="space-y-1.5 pl-2 pt-1">${subsHtml}</div>
+                    </div>
+                `;
+            });
         }
+
+        function toggleSubtopicCompletion(mIdx, sIdx, isChecked) {
+            if(trackerTopicsData[mIdx] && trackerTopicsData[mIdx].subtopics[sIdx]) {
+                trackerTopicsData[mIdx].subtopics[sIdx].completed = isChecked;
+                saveTrackerDataAndSync();
+                renderAdminTrackerChecklist();
+            }
+        }
+
+        function deleteTrackerSubtopic(mIdx, sIdx) {
+            if(!confirm("⚠️ ഈ സബ് ടോപ്പിക് ഡിലീറ്റ് ചെയ്യണമെന്നുറപ്പാണോ?")) return;
+            if(trackerTopicsData[mIdx]) {
+                trackerTopicsData[mIdx].subtopics.splice(sIdx, 1);
+                if(trackerTopicsData[mIdx].subtopics.length === 0) {
+                    trackerTopicsData.splice(mIdx, 1);
+                }
+                saveTrackerDataAndSync();
+                renderAdminTrackerChecklist();
+            }
+        }
+
+        function deleteTrackerMainTopic(mIdx) {
+            if(!confirm("⚠️ ഈ മെയിൻ ടോപിക്കും അതിന് കീഴിലുള്ള എല്ലാ സബ് ടോപ്പിക്കുകളും ഡിലീറ്റ് ചെയ്യണമെന്നുറപ്പാണോ?")) return;
+            trackerTopicsData.splice(mIdx, 1);
+            saveTrackerDataAndSync();
+            renderAdminTrackerChecklist();
+        }
+
+        async function saveTrackerDataAndSync() {
+            localStorage.setItem('psc_tracker_topics_data_anoop', JSON.stringify(trackerTopicsData));
+            if(db) {
+                try {
+                    await db.collection("app_data").doc("psc_database_anoop").set({
+                        categoriesData: categoriesData,
+                        sampleQuestions: sampleQuestions,
+                        studyNotesMap: studyNotesMap,
+                        studyHighlightsMap: studyHighlightsMap,
+                        userProgressData: userProgressData,
+                        reportedQuestionsList: reportedQuestionsList,
+                        trackerTopicsData: trackerTopicsData,
+                        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                    }, { merge: true });
+                } catch(e) { console.log("Tracker sync error:", e); }
+            }
+        }
+
+        // Render Progress Tracker Tab UI
+        function renderTrackerUI() {
+            const overallFill = document.getElementById('tracker-progress-bar-fill');
+            const overallText = document.getElementById('tracker-overall-percentage');
+            const detailedContainer = document.getElementById('tracker-detailed-container');
+            if(!detailedContainer) return;
+            detailedContainer.innerHTML = '';
+
+            let totalSubs = 0;
+            let completedSubs = 0;
+
+            trackerTopicsData.forEach(mainItem => {
+                mainItem.subtopics.forEach(sub => {
+                    totalSubs++;
+                    if(sub.completed) completedSubs++;
+                });
+            });
+
+            let percentage = totalSubs > 0 ? Math.round((completedSubs / totalSubs) * 100) : 0;
+            if(overallFill) overallFill.style.width = `${percentage}%`;
+            if(overallText) overallText.innerText = `${percentage}% Completed (${completedSubs}/${totalSubs})`;
+
+            if(trackerTopicsData.length === 0) {
+                detailedContainer.innerHTML = `<p class="text-xs text-slate-500 text-center py-4">ടോപ്പിക്കുകൾ ഒന്നും ലഭ്യമല്ല.</p>`;
+                return;
+            }
+
+            trackerTopicsData.forEach(mainItem => {
+                let mTotal = mainItem.subtopics.length;
+                let mCompleted = mainItem.subtopics.filter(s => s.completed).length;
+                let mPercentage = mTotal > 0 ? Math.round((mCompleted / mTotal) * 100) : 0;
+
+                let subsListHtml = '';
+                mainItem.subtopics.forEach(sub => {
+                    subsListHtml += `
+                        <div class="flex items-center justify-between bg-slate-900 border border-slate-800 p-2.5 rounded-xl text-xs">
+                            <span class="text-slate-300 font-medium">${sub.name}</span>
+                            <span class="px-2 py-0.5 rounded text-[10px] font-bold ${sub.completed ? 'bg-emerald-950 text-emerald-400 border border-emerald-800' : 'bg-slate-800 text-slate-400'}">
+                                ${sub.completed ? 'Completed' : 'Pending'}
+                            </span>
+                        </div>
+                    `;
+                });
+
+                detailedContainer.innerHTML += `
+                    <div class="bg-slate-900 border border-slate-700 p-4 rounded-xl space-y-3 shadow-md">
+                        <div class="flex justify-between items-center">
+                            <h3 class="font-bold text-white text-sm">📂 ${mainItem.mainTopic}</h3>
+                            <span class="text-xs font-bold text-emerald-400">${mPercentage}% (${mCompleted}/${mTotal})</span>
+                        </div>
+                        <div class="w-full bg-slate-800 rounded-full h-2 overflow-hidden border border-slate-700">
+                            <div class="bg-indigo-500 h-full" style="width: ${mPercentage}%;"></div>
+                        </div>
+                        <div class="space-y-1.5 pt-1">${subsListHtml}</div>
+                    </div>
+                `;
+            });
+        }
+
+        // Render Study Zone Tests List (Topic-wise only)
+        function renderStudyZoneTests() {
+            const container = document.getElementById('study-zone-tests-container');
+            if(!container) return;
+            container.innerHTML = '';
+            let hasTests = false;
+
+            let catKey = 'topic_wise';
+            let cat = categoriesData[catKey];
+            if(cat && cat.subtopics.length > 0) {
+                cat.subtopics.forEach(sub => {
+                    sub.tests.forEach(testName => {
+                        hasTests = true;
+                        container.innerHTML += `
+                            <div class="flex flex-col md:flex-row items-start md:items-center justify-between bg-slate-900 border border-slate-700 p-3.5 rounded-xl gap-2">
+                                <div>
+                                    <div class="text-xs text-indigo-400 font-semibold">${cat.title} > ${sub.name}</div>
+                                    <div class="text-sm font-medium text-white">${testName}</div>
+                                </div>
+                                <div class="flex space-x-2 w-full md:w-auto justify-end">
+                                    <button onclick="startStudyPractice('${catKey}', '${sub.name}', '${testName}')" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs px-3 py-1.5 rounded-lg font-medium transition">Practice & Study</button>
+                                </div>
+                            </div>
+                        `;
+                    });
+                });
+            }
+
+            if(!hasTests) {
+                container.innerHTML = `<p class="text-xs text-slate-500 text-center py-4">ടോപ്പിക്-വൈസ് മോക്ക് ടെസ്റ്റുകൾ ഒന്നും ലഭ്യമല്ല.</p>`;
+            }
+        }
+
+        // Study Practice Mode Logic
+        let studyPracticeQueue = [];
+        let currentStudyPracticeQuestion = null;
+        let studyShuffledOpts = [];
+        let studyShuffledCorrectIdx = 0;
+
+        function startStudyPractice(topicKey, subName, testName) {
+            let filtered = sampleQuestions.filter(q => q.topic === topicKey && q.subtopic === subName && q.testName === testName);
+            if(filtered.length === 0) { alert("ചോദ്യങ്ങൾ ഒന്നും ലഭ്യമല്ല!"); return; }
+
+            studyPracticeQueue = shuffleArray([...filtered]);
+            document.querySelectorAll('main > section').forEach(sec => sec.classList.add('hidden'));
+            document.getElementById('section-study-practice').classList.remove('hidden');
+            loadStudyPracticeQuestion();
+        }
+
+        function loadStudyPracticeQuestion() {
+            if(studyPracticeQueue.length === 0) {
+                alert("പ്രാക്ടീസ് പൂർത്തിയായി!");
+                switchTab('study_zone');
+                return;
+            }
+            currentStudyPracticeQuestion = studyPracticeQueue.shift();
+            renderQuestionContent(currentStudyPracticeQuestion, 'sp-q-container');
+            
+            const banner = document.getElementById('sp-feedback-banner');
+            if(banner) {
+                banner.classList.add('hidden');
+                banner.innerHTML = '';
+            }
+            const detailsBox = document.getElementById('sp-details-box');
+            if(detailsBox) {
+                detailsBox.classList.add('hidden');
+                detailsBox.innerHTML = '';
+            }
+
+            const optsBox = document.getElementById('sp-options-box');
+            if(!optsBox) return;
+            optsBox.innerHTML = '';
+
+            let originalOpts = currentStudyPracticeQuestion.options.map((opt, idx) => ({
+                optText: opt,
+                isCorrect: idx === currentStudyPracticeQuestion.answer
+            }));
+            studyShuffledOpts = shuffleArray(originalOpts);
+            studyShuffledCorrectIdx = studyShuffledOpts.findIndex(item => item.isCorrect);
+
+            studyShuffledOpts.forEach((item, idx) => {
+                optsBox.innerHTML += `
+                    <button onclick="checkStudyPracticeAnswer(${idx})" class="w-full text-left p-3.5 border border-slate-700 bg-slate-900/50 text-slate-300 rounded-xl hover:bg-slate-700 transition">
+                        ${item.optText}
+                    </button>
+                `;
+            });
+        }
+
+        function checkStudyPracticeAnswer(selectedIdx) {
+            if(!currentStudyPracticeQuestion) return;
+            const banner = document.getElementById('sp-feedback-banner');
+            if(!banner) return;
+            banner.classList.remove('hidden');
+            const parentBox = document.getElementById('sp-options-box');
+            if(parentBox) {
+                Array.from(parentBox.children).forEach(child => child.disabled = true);
+            }
+
+            const correctIdx = studyShuffledCorrectIdx;
+            const correctOptText = studyShuffledOpts[correctIdx].optText;
+            
+            let cleanExplanation = currentStudyPracticeQuestion.explanation || "";
+            cleanExplanation = cleanExplanation.replace(/\[span_\d+\]|\(start_span\)|\(end_span\)/g, '');
+
+            const buttons = parentBox ? parentBox.children : [];
+
+            if(selectedIdx === correctIdx) {
+                practiceLearnedMaster.add(currentStudyPracticeQuestion.id);
+                if(buttons[selectedIdx]) {
+                    buttons[selectedIdx].className = "w-full text-left p-3.5 border border-emerald-500 bg-emerald-950/80 text-emerald-300 rounded-xl font-medium transition";
+                }
+                banner.className = "p-2 rounded-xl text-xs font-medium bg-emerald-900/80 border border-emerald-600 text-emerald-200";
+                banner.innerHTML = `ശരി ഉത്തരം! (Correct)`;
+                setTimeout(() => { loadStudyPracticeQuestion(); }, 1000);
+            } else {
+                if(buttons[selectedIdx]) {
+                    buttons[selectedIdx].className = "w-full text-left p-3.5 border border-red-500 bg-red-950/80 text-red-300 rounded-xl font-medium transition";
+                }
+                if(buttons[correctIdx]) {
+                    buttons[correctIdx].className = "w-full text-left p-3.5 border border-emerald-500 bg-emerald-950/80 text-emerald-300 rounded-xl font-medium transition";
+                }
+                const explanationText = cleanExplanation ? `<br><span class="text-xs text-indigo-200 mt-1 block">💡 വിശദീകരണം: ${cleanExplanation}</span>` : '';
+                banner.className = "p-4 rounded-xl text-sm font-medium bg-red-900/80 border border-red-600 text-red-200 shadow-lg space-y-3";
+                banner.innerHTML = `
+                    ❌ ഉത്തരം തെറ്റാണ്!<br><span class="text-xs text-emerald-300 mt-1 block font-bold">ശരിയായ ഉത്തരം: ${correctOptText}</span>${explanationText}
+                    <button onclick="loadStudyPracticeQuestion()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-2 rounded-xl text-xs font-bold shadow transition mt-2">അടുത്തത് (Next)</button>
+                `;
+            }
+        }
+
+        function toggleStudyPracticeDetails() {
+            if(!currentStudyPracticeQuestion) return;
+            const detailsBox = document.getElementById('sp-details-box');
+            if(!detailsBox) return;
+
+            if(detailsBox.classList.contains('hidden')) {
+                let cleanExp = (currentStudyPracticeQuestion.explanation || "").replace(/\[span_\d+\]|\(start_span\)|\(end_span\)/g, '');
+                detailsBox.innerHTML = `
+                    <div class="font-bold text-emerald-400">ശരിയായ ഉത്തരം: ${currentStudyPracticeQuestion.options[currentStudyPracticeQuestion.answer]}</div>
+                    ${cleanExp ? `<div class="mt-1 text-slate-200">💡 വിശദീകരണം: ${cleanExp}</div>` : ''}
+                `;
+                detailsBox.classList.remove('hidden');
+            } else {
+                detailsBox.classList.add('hidden');
+            }
+        }
+
+        // View Study Notes with Full Table & Markdown Support
+        function startStudyNotesView(topicKey, subName, testName) {
+            activeCategoryKey = topicKey;
+            activeCurrentNoteKey = `${topicKey}|${subName}|${testName}`;
+            let notesData = studyNotesMap[activeCurrentNoteKey];
+
+            document.getElementById('study-notes-title').innerText = testName;
+            const container = document.getElementById('study-notes-scroll-container');
+            container.innerHTML = '';
+
+            if(!notesData || (typeof notesData === 'string' && notesData.trim() === '')) {
+                container.innerHTML = `<div class="text-center py-16 text-slate-400 text-base font-medium bg-white p-6 rounded-2xl shadow-sm border border-slate-200">ഈ നോട്ടിനായി വിവരങ്ങൾ ഒന്നും ചേർത്തിട്ടില്ല. <br><span class="text-xs text-slate-400 mt-1 block">അഡ്മിൻ പാനൽ വഴി നോട്ടുകൾ ചേർക്കുക.</span></div>`;
+            } else {
+                let lines = notesData.split('\n');
+                let formattedHtml = '';
+                let inTable = false;
+                let tableHtml = '';
+                
+                lines.forEach((line, lIdx) => {
+                    let trimmed = line.trim();
+                    if(!trimmed) {
+                        if(inTable) {
+                            tableHtml += `</table></div>`;
+                            formattedHtml += tableHtml;
+                            tableHtml = '';
+                            inTable = false;
+                        }
+                        return;
+                    }
+                    
+                    if(trimmed.startsWith('|') && trimmed.endsWith('|')) {
+                        if(!inTable) {
+                            inTable = true;
+                            tableHtml = `<div class="notes-table-container my-4"><table class="notes-table">`;
+                        }
+                        let cols = trimmed.split('|').filter(c => c.trim() !== '');
+                        if(cols.every(c => c.replace(/[:\-]/g, '').trim() === '')) {
+                            return;
+                        }
+                        
+                        let isHeader = !tableHtml.includes('<tr>');
+                        let rowTag = isHeader ? 'th' : 'td';
+                        tableHtml += `<tr>`;
+                        cols.forEach(col => {
+                            tableHtml += `<${rowTag}>${formatInlineStyles(col.trim())}</${rowTag}>`;
+                        });
+                        tableHtml += `</tr>`;
+                        return;
+                    } else if(inTable) {
+                        tableHtml += `</table></div>`;
+                        formattedHtml += tableHtml;
+                        tableHtml = '';
+                        inTable = false;
+                    }
+                    
+                    let renderedText = formatInlineStyles(trimmed);
+                    
+                    if(trimmed.startsWith('* ') || trimmed.startsWith('- ')) {
+                        let text = formatInlineStyles(trimmed.substring(2));
+                        formattedHtml += `
+                            <div class="note-card bg-white border-l-4 border-red-600 p-4 rounded-xl shadow-sm hover:shadow-md transition space-y-1 mb-4" data-line="${lIdx}">
+                                <div class="flex items-start space-x-3">
+                                    <span class="text-red-600 font-bold text-lg leading-none">•</span>
+                                    <div class="note-text flex-1 text-slate-800 text-base md:text-lg leading-relaxed">${text}</div>
+                                </div>
+                            </div>
+                        `;
+                    } else if(/^\d+\.\s/.test(trimmed)) {
+                        let parts = trimmed.split(/^\d+\.\s/);
+                        let text = formatInlineStyles(parts[1] || trimmed);
+                        let numMatch = trimmed.match(/^\d+\./)[0];
+                        formattedHtml += `
+                            <div class="note-card bg-red-50/50 border border-red-100 p-4 rounded-xl shadow-sm hover:shadow-md transition space-y-1 mb-4" data-line="${lIdx}">
+                                <div class="flex items-start space-x-3">
+                                    <span class="bg-red-600 text-white font-bold text-xs px-2 py-1 rounded-md shadow-sm">${numMatch}</span>
+                                    <div class="note-text flex-1 text-slate-900 font-medium text-base md:text-lg leading-relaxed">${text}</div>
+                                </div>
+                            </div>
+                        `;
+                    } else if(trimmed.startsWith('# ') || trimmed.startsWith('### ')) {
+                        let headingText = trimmed.replace(/^#+\s/, '');
+                        formattedHtml += `<h3 class="font-extrabold text-xl md:text-2xl text-red-600 mt-8 mb-4 border-b-2 border-red-200 pb-2 flex items-center space-x-2"><span>📌</span><span>${headingText}</span></h3>`;
+                    } else {
+                        formattedHtml += `
+                            <div class="note-card bg-amber-50/40 border border-amber-200/50 p-4 rounded-xl shadow-sm mb-4" data-line="${lIdx}">
+                                <p class="note-text text-slate-800 text-base md:text-lg leading-relaxed">${renderedText}</p>
+                            </div>
+                        `;
+                    }
+                });
+
+                if(inTable) {
+                    tableHtml += `</table></div>`;
+                    formattedHtml += tableHtml;
+                }
+
+                container.innerHTML = `<div class="space-y-3 pb-6">${formattedHtml}</div>`;
+                applySavedHighlightsToDOM();
+            }
+
+            document.querySelectorAll('main > section').forEach(sec => sec.classList.add('hidden'));
+            document.getElementById('section-study-notes').classList.remove('hidden');
+        }
+
+        // Selection Event Listener for Floating Toolbar
+        document.addEventListener('mouseup', handleTextSelectionToolbar);
+        document.addEventListener('touchend', handleTextSelectionToolbar);
+
+        let selectedTextGlobal = "";
+
+        function handleTextSelectionToolbar() {
+            const selection = window.getSelection();
+            const toolbar = document.getElementById('selection-toolbar');
+            const notesSection = document.getElementById('section-study-notes');
+            
+            if(!selection || selection.isCollapsed || notesSection.classList.contains('hidden')) {
+                if(toolbar && (!selection || !selection.toString().trim())) {
+                    toolbar.classList.add('hidden');
+                }
+                return;
+            }
+
+            selectedTextGlobal = selection.toString().trim();
+            if(selectedTextGlobal.length > 1) {
+                try {
+                    let range = selection.getRangeAt(0);
+                    let rect = range.getBoundingClientRect();
+                    toolbar.style.top = `${rect.top + window.scrollY - 45}px`;
+                    toolbar.style.left = `${rect.left + (rect.width / 2) + window.scrollX}px`;
+                    toolbar.classList.remove('hidden');
+                } catch(e) {
+                    toolbar.classList.add('hidden');
+                }
+            } else {
+                toolbar.classList.add('hidden');
+            }
+        }
+
+        function applyHighlightSelection() {
+            if(!selectedTextGlobal || !activeCurrentNoteKey) return;
+            if(!studyHighlightsMap[activeCurrentNoteKey]) {
+                studyHighlightsMap[activeCurrentNoteKey] = [];
+            }
+            if(!studyHighlightsMap[activeCurrentNoteKey].includes(selectedTextGlobal)) {
+                studyHighlightsMap[activeCurrentNoteKey].push(selectedTextGlobal);
+                syncHighlightsToFirebaseAndStorage();
+                applySavedHighlightsToDOM();
+            }
+            document.getElementById('selection-toolbar').classList.add('hidden');
+            window.getSelection().removeAllRanges();
+        }
+
+        function removeHighlightSelection() {
+            if(!selectedTextGlobal || !activeCurrentNoteKey) return;
+            if(studyHighlightsMap[activeCurrentNoteKey]) {
+                studyHighlightsMap[activeCurrentNoteKey] = studyHighlightsMap[activeCurrentNoteKey].filter(h => h !== selectedTextGlobal);
+                syncHighlightsToFirebaseAndStorage();
+                startStudyNotesView(activeCurrentNoteKey.split('|')[0], activeCurrentNoteKey.split('|')[1], activeCurrentNoteKey.split('|')[2]);
+            }
+            document.getElementById('selection-toolbar').classList.add('hidden');
+            window.getSelection().removeAllRanges();
+        }
+
+        function applySavedHighlightsToDOM() {
+            if(!activeCurrentNoteKey || !studyHighlightsMap[activeCurrentNoteKey]) return;
+            let highlights = studyHighlightsMap[activeCurrentNoteKey];
+
+            document.querySelectorAll('.note-text, .notes-table td, .notes-table th').forEach(el => {
+                let html = el.innerHTML;
+                highlights.forEach(phrase => {
+                    if(!phrase) return;
+                    let escaped = phrase.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+                    let regex = new RegExp(`(${escaped})`, 'g');
+                    if(!html.includes('user-highlight')) {
+                        html = html.replace(regex, `<mark class="user-highlight">$1</mark>`);
+                    }
+                });
+                el.innerHTML = html;
+            });
+        }
+
+        async function syncHighlightsToFirebaseAndStorage() {
+            localStorage.setItem('psc_study_highlights_map_anoop', JSON.stringify(studyHighlightsMap));
+            if(db && activeCurrentNoteKey) {
+                try {
+                    await db.collection("app_data").doc("psc_database_anoop").set({
+                        categoriesData: categoriesData,
+                        sampleQuestions: sampleQuestions,
+                        studyNotesMap: studyNotesMap,
+                        studyHighlightsMap: studyHighlightsMap,
+                        userProgressData: userProgressData,
+                        reportedQuestionsList: reportedQuestionsList,
+                        trackerTopicsData: trackerTopicsData,
+                        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                    }, { merge: true });
+                } catch(e) {
+                    console.log("Highlight sync error:", e);
+                }
+            }
+        }
+
+        function formatInlineStyles(str) {
+            str = str.replace(/\*\*(.*?)\*\*/g, '<strong class="font-bold text-red-600 bg-red-50 px-1 rounded">$1</strong>');
+            if(str.includes(':') && !str.includes('<strong')) {
+                let parts = str.split(':');
+                if(parts[0].length < 40) {
+                    str = `<strong class="font-bold text-red-600">${parts[0]}:</strong><span class="text-slate-700">${parts.slice(1).join(':')}</span>`;
+                }
+            }
+            return str;
+        }
+
+        function closeStudyNotesView() {
+            document.getElementById('section-study-notes').classList.add('hidden');
+            document.getElementById('selection-toolbar').classList.add('hidden');
+            if(activeCategoryKey === 'gemini_notes') {
+                document.getElementById('section-gemini-notes-subtopics').classList.remove('hidden');
+            } else {
+                document.getElementById('section-notes-subtopics').classList.remove('hidden');
+            }
+        }
+
+        // Open Notes Category Sub-topics View
+        function openNotesCategory() {
+            activeCategoryKey = 'topic_wise';
+            const container = document.getElementById('notes-subtopics-container');
+            if(!container) return;
+            container.innerHTML = '';
+            let hasTests = false;
+
+            let catKey = 'topic_wise';
+            let cat = categoriesData[catKey];
+            if(cat && cat.subtopics.length > 0) {
+                cat.subtopics.forEach(sub => {
+                    sub.tests.forEach(testName => {
+                        hasTests = true;
+                        container.innerHTML += `
+                            <div class="flex items-center justify-between bg-slate-900 border border-slate-700 hover:border-emerald-500 rounded-xl px-4 py-3 shadow-sm">
+                                <div>
+                                    <div class="text-xs text-indigo-400 font-semibold">${cat.title} > ${sub.name}</div>
+                                    <div class="text-sm font-medium text-white">${testName}</div>
+                                </div>
+                                <button onclick="startStudyNotesView('${catKey}', '${sub.name}', '${testName}')" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs px-3 py-2 rounded-lg font-medium transition whitespace-nowrap">View Notes</button>
+                            </div>
+                        `;
+                    });
+                });
+            }
+
+            if(!hasTests) {
+                container.innerHTML = `<p class="text-xs text-slate-500 text-center py-6">ടോപ്പിക്-വൈസ് മോക്ക് ടെസ്റ്റുകൾ ഒന്നും ലഭ്യമല്ല.</p>`;
+            }
+
+            document.querySelectorAll('main > section').forEach(sec => sec.classList.add('hidden'));
+            document.getElementById('section-notes-subtopics').classList.remove('hidden');
+        }
+
+        // Open Gemini Notes Category Sub-topics View
+        function openGeminiNotesCategory() {
+            activeCategoryKey = 'gemini_notes';
+            const container = document.getElementById('gemini-notes-subtopics-container');
+            if(!container) return;
+            container.innerHTML = '';
+            let hasTests = false;
+
+            let catKey = 'gemini_notes';
+            let cat = categoriesData[catKey];
+            if(cat && cat.subtopics.length > 0) {
+                cat.subtopics.forEach(sub => {
+                    sub.tests.forEach(testName => {
+                        hasTests = true;
+                        container.innerHTML += `
+                            <div class="flex items-center justify-between bg-slate-900 border border-slate-700 hover:border-amber-500 rounded-xl px-4 py-3 shadow-sm">
+                                <div>
+                                    <div class="text-xs text-amber-400 font-semibold">${cat.title} > ${sub.name}</div>
+                                    <div class="text-sm font-medium text-white">${testName}</div>
+                                </div>
+                                <button onclick="startStudyNotesView('${catKey}', '${sub.name}', '${testName}')" class="bg-amber-600 hover:bg-amber-700 text-white text-xs px-3 py-2 rounded-lg font-medium transition whitespace-nowrap">View Notes</button>
+                            </div>
+                        `;
+                    });
+                });
+            }
+
+            if(!hasTests) {
+                container.innerHTML = `<p class="text-xs text-slate-500 text-center py-6">Gemini Notes ഒന്നും ഇതുവരെ ചേർത്തിട്ടില്ല. അഡ്മിൻ പാനൽ വഴി ചേർക്കുക.</p>`;
+            }
+
+            document.querySelectorAll('main > section').forEach(sec => sec.classList.add('hidden'));
+            document.getElementById('section-gemini-notes-subtopics').classList.remove('hidden');
+        }
+
+        // Save Admin Gemini Notes Function (Firebase & LocalStorage Sync)
+        async function saveGeminiNotes() {
+            const topic = document.getElementById('gemini-notes-topic').value.trim();
+            const subtopic = document.getElementById('gemini-notes-subtopic').value.trim();
+            const notesText = document.getElementById('gemini-notes-textarea').value.trim();
+
+            if(!topic) { alert('ദയവായി Topic (സബ് ടോപ്പിക്) നൽകുക!'); return; }
+            if(!subtopic) { alert('ദയവായി Sub Topic (ടെസ്റ്റ് നെയിം) നൽകുക!'); return; }
+            if(!notesText) { alert('ദയവായി നോട്ടുകൾ നൽകുക!'); return; }
+
+            try {
+                let catKey = 'gemini_notes';
+                if(!categoriesData[catKey]) {
+                    categoriesData[catKey] = { title: "✨ Gemini Notes", subtopics: [] };
+                }
+
+                let subObj = categoriesData[catKey].subtopics.find(s => s.name.toLowerCase() === topic.toLowerCase());
+                if(!subObj) {
+                    categoriesData[catKey].subtopics.push({ name: topic, tests: [subtopic] });
+                } else {
+                    if(!subObj.tests.includes(subtopic)) {
+                        subObj.tests.push(subtopic);
+                    }
+                }
+
+                let noteKey = `${catKey}|${topic}|${subtopic}`;
+                studyNotesMap[noteKey] = notesText;
+
+                localStorage.setItem('psc_categories_data_anoop', JSON.stringify(categoriesData));
+                localStorage.setItem('psc_study_notes_map_anoop', JSON.stringify(studyNotesMap));
+
+                if(db) {
+                    await db.collection("app_data").doc("psc_database_anoop").set({
+                        categoriesData: categoriesData,
+                        sampleQuestions: sampleQuestions,
+                        studyNotesMap: studyNotesMap,
+                        studyHighlightsMap: studyHighlightsMap,
+                        userProgressData: userProgressData,
+                        reportedQuestionsList: reportedQuestionsList,
+                        trackerTopicsData: trackerTopicsData,
+                        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+                }
+
+                alert(`🎉 വിജയകരമായി "${subtopic}" എന്ന Gemini Note സേവ് ചെയ്തു!`);
+                document.getElementById('gemini-notes-topic').value = '';
+                document.getElementById('gemini-notes-subtopic').value = '';
+                document.getElementById('gemini-notes-textarea').value = '';
+                openGeminiNotesCategory();
+
+            } catch (error) {
+                alert('എറർ: ' + error.message);
+            }
+        }
+
+        // Admin Add Notes dropdown handlers (Topic-wise only)
+        function populateNotesCategories() {
+            const catSel = document.getElementById('notes-admin-category');
+            if(!catSel) return;
+            catSel.innerHTML = '<option value="topic_wise">Topic-wise Exams</option>';
+            populateNotesSubtopics();
+        }
+
+        function populateNotesSubtopics() {
+            const catKey = 'topic_wise';
+            const subSel = document.getElementById('notes-admin-subtopic');
+            if(!subSel) return;
+            subSel.innerHTML = '<option value="">സബ് ടോപ്പിക് തിരഞ്ഞെടുക്കുക</option>';
+
+            if(!categoriesData[catKey] || categoriesData[catKey].subtopics.length === 0) {
+                document.getElementById('notes-admin-testname').innerHTML = '<option value="">ആദ്യം സബ് ടോപ്പിക് തിരഞ്ഞെടുക്കുക</option>';
+                return;
+            }
+
+            categoriesData[catKey].subtopics.forEach(sub => {
+                subSel.innerHTML += `<option value="${sub.name}">${sub.name}</option>`;
+            });
+            populateNotesTests();
+        }
+
+        function populateNotesTests() {
+            const catKey = 'topic_wise';
+            const subName = document.getElementById('notes-admin-subtopic').value;
+            const testSel = document.getElementById('notes-admin-testname');
+            if(!testSel) return;
+            testSel.innerHTML = '<option value="">ടെസ്റ്റ് നെയിം തിരഞ്ഞെടുക്കുക</option>';
+
+            if(!catKey || !subName || !categoriesData[catKey]) return;
+
+            let sub = categoriesData[catKey].subtopics.find(s => s.name === subName);
+            if(!sub || sub.tests.length === 0) return;
+
+            sub.tests.forEach(tName => {
+                testSel.innerHTML += `<option value="${tName}">${tName}</option>`;
+            });
+        }
+
+        // Save Admin Targeted Notes function (Firebase Sync)
+        async function saveAdminTargetedNotes() {
+            const categoryKey = 'topic_wise';
+            const subtopicName = document.getElementById('notes-admin-subtopic').value.trim();
+            const testName = document.getElementById('notes-admin-testname').value;
+            const rawText = document.getElementById('notes-admin-text-input').value.trim();
+
+            if(!subtopicName) { alert('ദയവായി സബ് ടോപ്പിക് തിരഞ്ഞെടുക്കുക!'); return; }
+            if(!testName) { alert('ദയവായി ടെസ്റ്റ് നെയിം തിരഞ്ഞെടുക്കുക!'); return; }
+            if(!rawText) { alert('ദയവായി നോട്ടുകൾ പേസ്റ്റ് ചെയ്യുക!'); return; }
+
+            try {
+                let noteKey = `${categoryKey}|${subtopicName}|${testName}`;
+                studyNotesMap[noteKey] = rawText;
+                localStorage.setItem('psc_study_notes_map_anoop', JSON.stringify(studyNotesMap));
+
+                if(db) {
+                    await db.collection("app_data").doc("psc_database_anoop").set({
+                        categoriesData: categoriesData,
+                        sampleQuestions: sampleQuestions,
+                        studyNotesMap: studyNotesMap,
+                        studyHighlightsMap: studyHighlightsMap,
+                        userProgressData: userProgressData,
+                        reportedQuestionsList: reportedQuestionsList,
+                        trackerTopicsData: trackerTopicsData,
+                        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+                }
+
+                alert(`🎉 വിജയകരമായി "${testName}" എന്ന നോട്ടിലേക്ക് വിവരങ്ങൾ സേവ് ചെയ്തു!`);
+                document.getElementById('notes-admin-text-input').value = '';
+                openNotesCategory();
+
+            } catch (error) {
+                alert('എറർ: ' + error.message);
+            }
+        }
+
+        // Render Delete Notes List with Checkboxes
+        function renderDeleteNotesList() {
+            const container = document.getElementById('delete-notes-container');
+            if(!container) return;
+            container.innerHTML = '';
+            let hasNotes = false;
+
+            ['topic_wise', 'gemini_notes'].forEach(catKey => {
+                let cat = categoriesData[catKey];
+                if(cat && cat.subtopics.length > 0) {
+                    cat.subtopics.forEach(sub => {
+                        sub.tests.forEach(testName => {
+                            let noteKey = `${catKey}|${sub.name}|${testName}`;
+                            if(studyNotesMap[noteKey]) {
+                                hasNotes = true;
+                                container.innerHTML += `
+                                    <label class="flex items-center space-x-3 bg-slate-900 border border-slate-700 p-3 rounded-xl cursor-pointer hover:bg-slate-800 transition">
+                                        <input type="checkbox" name="delete_note_checkbox" value="${noteKey}" class="rounded bg-slate-800 border-slate-700 text-red-600 focus:ring-red-500 w-4 h-4">
+                                        <div>
+                                            <div class="text-xs text-indigo-400 font-semibold">${cat.title} > ${sub.name}</div>
+                                            <div class="text-sm font-medium text-white">${testName}</div>
+                                        </div>
+                                    </label>
+                                `;
+                            }
+                        });
+                    });
+                }
+            });
+
+            if(!hasNotes) {
+                container.innerHTML = `<p class="text-xs text-slate-500 text-center py-4">ഡിലീറ്റ് ചെയ്യാൻ സ്റ്റഡി നോട്ടുകൾ ഒന്നും ലഭ്യമല്ല.</p>`;
+            }
+        }
+
+        async function deleteSelectedNotes() {
+            const checkboxes = document.querySelectorAll('input[name="delete_note_checkbox"]:checked');
+            if(checkboxes.length === 0) {
+                alert("ദയവായി ഡിലീറ്റ് ചെയ്യാനായി കുറഞ്ഞത് ഒരു നോട്ടെങ്കിലും ടിക്ക് ചെയ്ത് സെലക്ട് ചെയ്യുക!");
+                return;
+            }
+
+            if(!confirm(`⚠️ സെലക്ട് ചെയ്ത ${checkboxes.length} സ്റ്റഡി നോട്ടുകളും ഡിലീറ്റ് ചെയ്യണമെന്നുറപ്പാണോ?`)) return;
+
+            checkboxes.forEach(cb => {
+                let noteKey = cb.value;
+                delete studyNotesMap[noteKey];
+                delete studyHighlightsMap[noteKey];
+
+                let parts = noteKey.split('|');
+                let catKey = parts[0];
+                let subName = parts[1];
+                let testName = parts[2];
+
+                if(catKey === 'gemini_notes' && categoriesData[catKey]) {
+                    let sub = categoriesData[catKey].subtopics.find(s => s.name === subName);
+                    if(sub) {
+                        sub.tests = sub.tests.filter(t => t !== testName);
+                        if(sub.tests.length === 0) {
+                            categoriesData[catKey].subtopics = categoriesData[catKey].subtopics.filter(s => s.name !== subName);
+                        }
+                    }
+                }
+            });
+
+            localStorage.setItem('psc_study_notes_map_anoop', JSON.stringify(studyNotesMap));
+            localStorage.setItem('psc_study_highlights_map_anoop', JSON.stringify(studyHighlightsMap));
+            localStorage.setItem('psc_categories_data_anoop', JSON.stringify(categoriesData));
+
+            if(db) {
+                try {
+                    await db.collection("app_data").doc("psc_database_anoop").set({
+                        categoriesData: categoriesData,
+                        sampleQuestions: sampleQuestions,
+                        studyNotesMap: studyNotesMap,
+                        studyHighlightsMap: studyHighlightsMap,
+                        userProgressData: userProgressData,
+                        reportedQuestionsList: reportedQuestionsList,
+                        trackerTopicsData: trackerTopicsData,
+                        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+                } catch(e) { console.log("Notes delete sync error:", e); }
+            }
+
+            alert("സെലക്ട് ചെയ്ത സ്റ്റഡി നോട്ടുകൾ വിജയകരമായി ഡിലീറ്റ് ചെയ്തു!");
+            renderDeleteNotesList();
+        }
+
+        function renderDashboardCategories() {
+            const grid = document.getElementById('dashboard-categories-grid');
+            if(!grid) return;
+
+            let icons = {
+                topic_wise: '📑', notes: '📝', gemini_notes: '✨', scert: '📚',
+                ca_daily: '📅', ca_monthly: '📊', malayalam: 'മല', english: 'En',
+                pyq_main: '📜', pyq_malayalam: 'മല PYQ', pyq_english: 'En PYQ'
+            };
+
+            // നിറങ്ങൾ: [കാർഡ് ഗ്രേഡിയന്റ് 1, ഗ്രേഡിയന്റ് 2, ബോർഡർ, ഐക്കൺ ടൈൽ]
+            let palette = {
+                topic_wise:   ['#4a1d1d', '#1e293b', '#f87171', '#ef4444'],
+                scert:        ['#0f3d2e', '#1e293b', '#34d399', '#10b981'],
+                ca_daily:     ['#4a3410', '#1e293b', '#fbbf24', '#f59e0b'],
+                ca_monthly:   ['#3b1d5e', '#1e293b', '#c084fc', '#a855f7'],
+                weekly:       ['#0f3d43', '#1e293b', '#2dd4bf', '#14b8a6'],
+                malayalam:    ['#4a1d36', '#1e293b', '#fb7185', '#f43f5e'],
+                english:      ['#10304f', '#1e293b', '#60a5fa', '#3b82f6'],
+                pyq_main:     ['#2e1f5e', '#1e293b', '#a78bfa', '#8b5cf6'],
+                pyq_english:  ['#13324d', '#1e293b', '#38bdf8', '#0ea5e9'],
+                pyq_malayalam:['#4a1d4a', '#1e293b', '#f472b6', '#ec4899'],
+                gemini_notes: ['#4d3a0e', '#1e293b', '#facc15', '#eab308'],
+                notes:        ['#0f4030', '#1e293b', '#4ade80', '#22c55e'],
+                special:      ['#4f1d1d', '#1e293b', '#fb923c', '#f97316']
+            };
+            let fallback = ['indigo','orange','cyan','lime'].map((n, i) => [
+                ['#1f2a5e','#3d2a10','#0f3d43','#2f3d10'][i], '#1e293b',
+                ['#818cf8','#fb923c','#22d3ee','#a3e635'][i],
+                ['#6366f1','#f97316','#06b6d4','#84cc16'][i]
+            ]);
+            let fbIndex = 0;
+
+            function cardHtml(clickAction, icon, title, sub, colors) {
+                return `
+                    <div onclick="${clickAction}" class="shrink-0 w-44 snap-start rounded-3xl cursor-pointer active:scale-95 hover:brightness-110 transition shadow-lg p-4 space-y-3"
+                         style="background:linear-gradient(145deg, ${colors[0]}, ${colors[1]}); border:1px solid ${colors[2]}55;">
+                        <div class="w-12 h-12 rounded-2xl flex items-center justify-center text-2xl font-bold text-white shadow-md" style="background:${colors[3]};">${icon}</div>
+                        <div>
+                            <h3 class="font-bold text-sm text-white leading-snug">${title}</h3>
+                            <p class="text-xs mt-1" style="color:${colors[2]};">${sub}</p>
+                        </div>
+                    </div>
+                `;
+            }
+
+            function catCard(key) {
+                let cat = categoriesData[key];
+                let isWeekly = /weekly/i.test(cat.title || '') || /weekly/i.test(key);
+                let icon = icons[key] || (isWeekly ? '🗓️' : '📁');
+                let colors = palette[key] || (isWeekly ? palette.weekly : fallback[fbIndex++ % fallback.length]);
+                let clickAction = key === 'notes' ? `openNotesCategory()` : (key === 'gemini_notes' ? `openGeminiNotesCategory()` : `openSubTopics('${key}')`);
+                let sub = (key === 'notes' || key === 'gemini_notes') ? 'സ്റ്റഡി നോട്ട്സ്' : 'കാറ്റഗറി ടെസ്റ്റുകൾ';
+                return cardHtml(clickAction, icon, cat.title, sub, colors);
+            }
+
+            const specialCard = cardHtml('openSpecialExam()', '🎯', 'Special Exam', 'based on your wrong questions', palette.special);
+
+            let allKeys = Object.keys(categoriesData);
+            let used = new Set();
+            let weeklyKeys = allKeys.filter(k => /weekly/i.test(categoriesData[k].title || '') || /weekly/i.test(k));
+
+            let groups = [
+                { title: '🎓 Exam Packs', keys: ['topic_wise', 'scert', 'ca_daily', 'ca_monthly', ...weeklyKeys, 'malayalam', 'english'] },
+                { title: '📜 Previous Year Questions', keys: ['pyq_main', 'pyq_english', 'pyq_malayalam'] },
+                { title: '📝 Study Notes', keys: ['gemini_notes', 'notes'] }
+            ];
+
+            function row(title, cards) {
+                return `
+                    <div>
+                        <div class="flex items-center justify-between mb-3">
+                            <h3 class="text-lg font-extrabold text-white">${title}</h3>
+                            <span class="text-xs font-semibold text-indigo-400">Swipe ›</span>
+                        </div>
+                        <div class="flex overflow-x-auto snap-x snap-mandatory space-x-3 pb-3 custom-scrollbar">
+                            ${cards}
+                        </div>
+                    </div>
+                `;
+            }
+
+            let html = '';
+            groups.forEach(g => {
+                let keys = g.keys.filter(k => categoriesData[k] && !used.has(k));
+                keys.forEach(k => used.add(k));
+                if(keys.length === 0) return;
+                html += row(g.title, keys.map(catCard).join(''));
+            });
+
+            // ബാക്കിയുള്ള കാറ്റഗറികൾ + Special Exam
+            let rest = allKeys.filter(k => !used.has(k));
+            html += row('🎯 More', rest.map(catCard).join('') + specialCard);
+
+            grid.innerHTML = html;
+        }
+
+        function populateCategoryDropdowns() {
+            const selects = [document.getElementById('pdf-category'), document.getElementById('add-more-category')];
+            selects.forEach(sel => {
+                if(!sel) return;
+                let currentVal = sel.value;
+                sel.innerHTML = '';
+                for(let key in categoriesData) {
+                    sel.innerHTML += `<option value="${key}">${categoriesData[key].title}</option>`;
+                }
+                if(currentVal) sel.value = currentVal;
+            });
+            if(typeof populateAddMoreSubtopics === 'function') {
+                populateAddMoreSubtopics();
+            }
+        }
+
+        async function addNewMainCategory() {
+            let keyInput = document.getElementById('new-cat-key').value.trim().toLowerCase().replace(/\s+/g, '_');
+            let titleInput = document.getElementById('new-cat-title').value.trim();
+
+            if(!keyInput || !titleInput) {
+                alert('ദയവായി കാറ്റഗറി ഐഡിയും (Key) പേരും നൽകുക!');
+                return;
+            }
+
+            if(categoriesData[keyInput]) {
+                alert('ഈ കാറ്റഗറി കീ ഇതിനകം നിലവിലുണ്ട്!');
+                return;
+            }
+
+            categoriesData[keyInput] = { title: titleInput, subtopics: [] };
+            localStorage.setItem('psc_categories_data_anoop', JSON.stringify(categoriesData));
+
+            if(db) {
+                try {
+                    await db.collection("app_data").doc("psc_database_anoop").set({
+                        categoriesData: categoriesData,
+                        sampleQuestions: sampleQuestions,
+                        studyNotesMap: studyNotesMap,
+                        studyHighlightsMap: studyHighlightsMap,
+                        userProgressData: userProgressData,
+                        reportedQuestionsList: reportedQuestionsList,
+                        trackerTopicsData: trackerTopicsData,
+                        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+                } catch(e) { console.log("Category sync error:", e); }
+            }
+
+            alert(`🎉 "${titleInput}" പുതിയ കാറ്റഗറി വിജയകരമായി ക്രിയേറ്റ് ചെയ്തു!`);
+            document.getElementById('new-cat-key').value = '';
+            document.getElementById('new-cat-title').value = '';
+            renderDashboardCategories();
+            populateCategoryDropdowns();
+            switchTab('dashboard');
+        }
+
+        async function savePastedGeminiMockTest() {
+            const categoryKey = document.getElementById('pdf-category').value;
+            const subtopicName = document.getElementById('pdf-subtopic').value.trim();
+            const testName = document.getElementById('pdf-testname').value.trim();
+            const rawText = document.getElementById('gemini-json-input').value.trim();
+
+            if(!subtopicName) { alert('ദയവായി സബ് ടോപ്പിക്കിന്റെ പേര് നൽകുക!'); return; }
+            if(!testName) { alert('ദയവായി മോക്ക് ടെസ്റ്റിന്റെ പേര് നൽകുക!'); return; }
+            if(!rawText) { alert('ദയവായി ചോദ്യങ്ങൾ JSON രൂപത്തിൽ പേസ്റ്റ് ചെയ്യുക!'); return; }
+
+            try {
+                let cleanJsonStr = rawText.replace(/```json/g, '').replace(/```/g, '').trim();
+                let generatedQuestions = JSON.parse(cleanJsonStr);
+
+                if(!Array.isArray(generatedQuestions) || generatedQuestions.length === 0) {
+                    throw new Error("JSON ഫോർമാറ്റിൽ ചോദ്യങ്ങൾ കണ്ടെത്താനായില്ല.");
+                }
+
+                if(!categoriesData[categoryKey]) categoriesData[categoryKey] = { title: categoryKey, subtopics: [] };
+                let existingSub = categoriesData[categoryKey].subtopics.find(s => s.name.toLowerCase() === subtopicName.toLowerCase());
+                
+                if(existingSub) {
+                    let existingTestIndex = existingSub.tests.findIndex(t => t.toLowerCase() === testName.toLowerCase());
+                    if(existingTestIndex !== -1) {
+                        let replaceConfirmed = confirm(`⚠️ "${subtopicName}" എന്ന സബ് ടോപ്പിക്കിൽ "${testName}" എന്ന പേരിൽ ഇതിനകം ഒരു ടെസ്റ്റ് ഉണ്ട്. അത് റീപ്ലേസ് ചെയ്യണോ?`);
+                        if(replaceConfirmed) {
+                            sampleQuestions = sampleQuestions.filter(q => !(q.topic === categoryKey && q.subtopic.toLowerCase() === subtopicName.toLowerCase() && q.testName.toLowerCase() === testName.toLowerCase()));
+                        } else {
+                            return;
+                        }
+                    }
+                }
+
+                if(!existingSub) {
+                    categoriesData[categoryKey].subtopics.push({ name: subtopicName, tests: [testName] });
+                } else {
+                    if(!existingSub.tests.includes(testName)) {
+                        existingSub.tests.push(testName);
+                    }
+                }
+
+                generatedQuestions.forEach((gq, idx) => {
+                    sampleQuestions.push({
+                        id: Date.now() + idx,
+                        topic: categoryKey,
+                        subtopic: subtopicName,
+                        testName: testName,
+                        type: gq.type || "normal",
+                        q: gq.question,
+                        statements: gq.statements || [],
+                        matchingPairs: gq.matchingPairs || [],
+                        options: gq.options,
+                        answer: gq.answer !== undefined ? gq.answer : 0,
+                        explanation: gq.explanation || ""
+                    });
+                });
+
+                localStorage.setItem('psc_categories_data_anoop', JSON.stringify(categoriesData));
+                localStorage.setItem('psc_sample_questions_anoop', JSON.stringify(sampleQuestions));
+
+                if(db) {
+                    await db.collection("app_data").doc("psc_database_anoop").set({
+                        categoriesData: categoriesData,
+                        sampleQuestions: sampleQuestions,
+                        studyNotesMap: studyNotesMap,
+                        studyHighlightsMap: studyHighlightsMap,
+                        userProgressData: userProgressData,
+                        reportedQuestionsList: reportedQuestionsList,
+                        trackerTopicsData: trackerTopicsData,
+                        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+                }
+
+                alert(`🎉 വിജയകരമായി ${generatedQuestions.length} ചോദ്യങ്ങൾ സേവ് ചെയ്തു!`);
+                document.getElementById('gemini-json-input').value = '';
+                openSubTopics(categoryKey);
+
+            } catch (error) {
+                alert('JSON എറർ: കൃത്യമായ ഫോർമാറ്റിലാണോ എന്ന് പരിശോധിക്കുക. (' + error.message + ')');
+            }
+        }
+
+        function populateAddMoreSubtopics() {
+            const catKey = document.getElementById('add-more-category').value;
+            const subSelect = document.getElementById('add-more-subtopic');
+            if(!subSelect) return;
+            subSelect.innerHTML = '<option value="">സബ് ടോപ്പിക് തിരഞ്ഞെടുക്കുക</option>';
+
+            if(!categoriesData[catKey] || categoriesData[catKey].subtopics.length === 0) {
+                const testSelect = document.getElementById('add-more-testname');
+                if(testSelect) testSelect.innerHTML = '<option value="">ആദ്യം സബ് ടോപ്പിക് തിരഞ്ഞെടുക്കുക</option>';
+                return;
+            }
+
+            categoriesData[catKey].subtopics.forEach(sub => {
+                subSelect.innerHTML += `<option value="${sub.name}">${sub.name}</option>`;
+            });
+            populateAddMoreTests();
+        }
+
+        function populateAddMoreTests() {
+            const catKey = document.getElementById('add-more-category').value;
+            const subName = document.getElementById('add-more-subtopic').value;
+            const testSelect = document.getElementById('add-more-testname');
+            if(!testSelect) return;
+            testSelect.innerHTML = '<option value="">മോക്ക് ടെസ്റ്റ് തിരഞ്ഞെടുക്കുക</option>';
+
+            if(!catKey || !subName || !categoriesData[catKey]) return;
+
+            let sub = categoriesData[catKey].subtopics.find(s => s.name === subName);
+            if(!sub || sub.tests.length === 0) return;
+
+            sub.tests.forEach(tName => {
+                testSelect.innerHTML += `<option value="${tName}">${tName}</option>`;
+            });
+        }
+
+        async function appendMoreQuestionsToTest() {
+            const catKey = document.getElementById('add-more-category').value;
+            const subName = document.getElementById('add-more-subtopic').value;
+            const testName = document.getElementById('add-more-testname').value;
+            const rawText = document.getElementById('add-more-json-input').value.trim();
+
+            if(!subName) { alert('ദയവായി സബ് ടോപ്പിക് തിരഞ്ഞെടുക്കുക!'); return; }
+            if(!testName) { alert('ദയവായി മോക്ക് ടെസ്റ്റ് തിരഞ്ഞെടുക്കുക!'); return; }
+            if(!rawText) { alert('ദയവായി പുതിയ ചോദ്യങ്ങൾ പേസ്റ്റ് ചെയ്യുക!'); return; }
+
+            try {
+                let cleanJsonStr = rawText.replace(/```json/g, '').replace(/```/g, '').trim();
+                let newQuestions = JSON.parse(cleanJsonStr);
+
+                if(!Array.isArray(newQuestions) || newQuestions.length === 0) {
+                    throw new Error("JSON ഫോർമാറ്റിൽ ചോദ്യങ്ങൾ കണ്ടെത്താനായില്ല.");
+                }
+
+                newQuestions.forEach((gq, idx) => {
+                    sampleQuestions.push({
+                        id: Date.now() + idx,
+                        topic: catKey,
+                        subtopic: subName,
+                        testName: testName,
+                        type: gq.type || "normal",
+                        q: gq.question,
+                        statements: gq.statements || [],
+                        matchingPairs: gq.matchingPairs || [],
+                        options: gq.options,
+                        answer: gq.answer !== undefined ? gq.answer : 0,
+                        explanation: gq.explanation || ""
+                    });
+                });
+
+                localStorage.setItem('psc_categories_data_anoop', JSON.stringify(categoriesData));
+                localStorage.setItem('psc_sample_questions_anoop', JSON.stringify(sampleQuestions));
+
+                if(db) {
+                    await db.collection("app_data").doc("psc_database_anoop").set({
+                        categoriesData: categoriesData,
+                        sampleQuestions: sampleQuestions,
+                        studyNotesMap: studyNotesMap,
+                        studyHighlightsMap: studyHighlightsMap,
+                        userProgressData: userProgressData,
+                        reportedQuestionsList: reportedQuestionsList,
+                        trackerTopicsData: trackerTopicsData,
+                        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+                }
+
+                alert(`🎉 വിജയകരമായി ${newQuestions.length} പുതിയ ചോദ്യങ്ങൾ "${testName}" എന്ന മോക്ക് ടെസ്റ്റിലേക്ക് കൂട്ടിച്ചേർത്തു!`);
+                document.getElementById('add-more-json-input').value = '';
+                switchTab('dashboard');
+
+            } catch (error) {
+                alert('JSON എറർ: കൃത്യമായ ഫോർമാറ്റിലാണോ എന്ന് പരിശോധിക്കുക. (' + error.message + ')');
+            }
+        }
+
+        // Render Delete Mock List with Checkboxes
+        function renderDeleteMockList() {
+            const container = document.getElementById('delete-mock-container');
+            if(!container) return;
+            container.innerHTML = '';
+            let hasTests = false;
+
+            for(let catKey in categoriesData) {
+                let cat = categoriesData[catKey];
+                if(cat.subtopics.length === 0) continue;
+                
+                cat.subtopics.forEach(sub => {
+                    sub.tests.forEach(testName => {
+                        hasTests = true;
+                        let uniqueKey = `${catKey}|${sub.name}|${testName}`;
+                        container.innerHTML += `
+                            <label class="flex items-center space-x-3 bg-slate-900 border border-slate-700 p-3 rounded-xl cursor-pointer hover:bg-slate-800 transition">
+                                <input type="checkbox" name="delete_mock_checkbox" value="${uniqueKey}" class="rounded bg-slate-800 border-slate-700 text-red-600 focus:ring-red-500 w-4 h-4">
+                                <div>
+                                    <div class="text-xs text-indigo-400 font-semibold">${cat.title} > ${sub.name}</div>
+                                    <div class="text-sm font-medium text-white">${testName}</div>
+                                </div>
+                            </label>
+                        `;
+                    });
+                });
+            }
+
+            if(!hasTests) {
+                container.innerHTML = `<p class="text-xs text-slate-500 text-center py-4">ഡിലീറ്റ് ചെയ്യാൻ മോക്ക് ടെസ്റ്റുകൾ ഒന്നും ലഭ്യമല്ല.</p>`;
+            }
+        }
+
+        async function deleteSelectedMocks() {
+            const checkboxes = document.querySelectorAll('input[name="delete_mock_checkbox"]:checked');
+            if(checkboxes.length === 0) {
+                alert("ദയവായി ഡിലീറ്റ് ചെയ്യാനായി കുറഞ്ഞത് ഒരു മോക്ക് ടെസ്റ്റെങ്കിലും ടിക്ക് ചെയ്ത് സെലക്ട് ചെയ്യുക!");
+                return;
+            }
+
+            if(!confirm(`⚠️ സെലക്ട് ചെയ്ത ${checkboxes.length} മോക്ക് ടെസ്റ്റുകളും അതിലെ ചോദ്യങ്ങളും ഡിലീറ്റ് ചെയ്യണമെന്നുറപ്പാണോ?`)) return;
+
+            checkboxes.forEach(cb => {
+                let parts = cb.value.split('|');
+                let topicKey = parts[0];
+                let subName = parts[1];
+                let testName = parts[2];
+
+                sampleQuestions = sampleQuestions.filter(q => !(q.topic === topicKey && q.subtopic.toLowerCase() === subName.toLowerCase() && q.testName.toLowerCase() === testName.toLowerCase()));
+
+                if(categoriesData[topicKey]) {
+                    let sub = categoriesData[topicKey].subtopics.find(s => s.name.toLowerCase() === subName.toLowerCase());
+                    if(sub) {
+                        sub.tests = sub.tests.filter(t => t.toLowerCase() !== testName.toLowerCase());
+                        if(sub.tests.length === 0) {
+                            categoriesData[topicKey].subtopics = categoriesData[topicKey].subtopics.filter(s => s.name.toLowerCase() !== subName.toLowerCase());
+                        }
+                    }
+                }
+            });
+
+            localStorage.setItem('psc_sample_questions_anoop', JSON.stringify(sampleQuestions));
+            localStorage.setItem('psc_categories_data_anoop', JSON.stringify(categoriesData));
+
+            if(db) {
+                try {
+                    await db.collection("app_data").doc("psc_database_anoop").set({
+                        categoriesData: categoriesData,
+                        sampleQuestions: sampleQuestions,
+                        studyNotesMap: studyNotesMap,
+                        studyHighlightsMap: studyHighlightsMap,
+                        userProgressData: userProgressData,
+                        reportedQuestionsList: reportedQuestionsList,
+                        trackerTopicsData: trackerTopicsData,
+                        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+                } catch(e) { console.log("Mock delete sync error:", e); }
+            }
+
+            alert("സെലക്ട് ചെയ്ത മോക്ക് ടെസ്റ്റുകളും ചോദ്യങ്ങളും വിജയകരമായി ഡിലീറ്റ് ചെയ്തു!");
+            renderDeleteMockList();
+        }
+
+        let reportTargetQuestion = null;
+
+        function openReportModalForCurrentMock() {
+            reportTargetQuestion = currentTestQuestions[currentIndex];
+            document.getElementById('report-comment-input').value = '';
+            document.getElementById('report-modal').classList.remove('hidden');
+        }
+
+        function openReportModalForCurrentPractice() {
+            reportTargetQuestion = currentPracticeQuestion;
+            document.getElementById('report-comment-input').value = '';
+            document.getElementById('report-modal').classList.remove('hidden');
+        }
+
+        function closeReportModal() {
+            document.getElementById('report-modal').classList.add('hidden');
+            reportTargetQuestion = null;
+        }
+
+        async function submitQuestionReport() {
+            if(!reportTargetQuestion) return;
+            const comment = document.getElementById('report-comment-input').value.trim();
+            if(!comment) { alert('ദയവായി പ്രശ്നം എന്താണെന്ന് ചെറിയൊരു കമന്റ് എഴുതുക!'); return; }
+
+            let reportObj = {
+                reportId: Date.now(),
+                questionId: reportTargetQuestion.id || 0,
+                questionText: reportTargetQuestion.q || reportTargetQuestion.question || "",
+                testName: reportTargetQuestion.testName || "General",
+                subtopic: reportTargetQuestion.subtopic || "",
+                comment: comment
+            };
+
+            reportedQuestionsList.push(reportObj);
+            localStorage.setItem('psc_reported_questions_anoop', JSON.stringify(reportedQuestionsList));
+
+            if(db) {
+                try {
+                    await db.collection("app_data").doc("psc_database_anoop").set({
+                        categoriesData: categoriesData,
+                        sampleQuestions: sampleQuestions,
+                        studyNotesMap: studyNotesMap,
+                        studyHighlightsMap: studyHighlightsMap,
+                        userProgressData: userProgressData,
+                        reportedQuestionsList: reportedQuestionsList,
+                        trackerTopicsData: trackerTopicsData,
+                        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+                } catch(e) { console.log("Report sync error:", e); }
+            }
+
+            alert("🚩 ചോദ്യം വിജയകരമായി അഡ്മിൻ പാനലിലേക്ക് റിപ്പോർട്ട് ചെയ്തു!");
+            closeReportModal();
+        }
+
+        function renderAdminReports() {
+            const container = document.getElementById('admin-reports-container');
+            if(!container) return;
+            container.innerHTML = '';
+
+            if(reportedQuestionsList.length === 0) {
+                container.innerHTML = `<p class="text-xs text-slate-500 text-center py-4">റിപ്പോർട്ട് ചെയ്ത ചോദ്യങ്ങൾ ഒന്നും ലഭ്യമല്ല.</p>`;
+                return;
+            }
+
+            reportedQuestionsList.forEach((rep) => {
+                container.innerHTML += `
+                    <div class="bg-slate-900 border border-slate-700 p-4 rounded-xl space-y-2 text-xs">
+                        <div class="flex justify-between items-center text-amber-400 font-bold">
+                            <span>ടെസ്റ്റ്: ${rep.testName} (${rep.subtopic})</span>
+                            <div class="flex space-x-1.5 flex-wrap">
+                                <button onclick="openAdminEditModal(${rep.reportId}, ${rep.questionId})" class="bg-indigo-600 hover:bg-indigo-700 text-white px-2 py-1 rounded-lg font-medium transition">എഡിറ്റ്</button>
+                                <button onclick="noActionNeeded(${rep.reportId})" class="bg-slate-700 hover:bg-slate-600 text-slate-200 px-2 py-1 rounded-lg font-medium transition">No Action Needed</button>
+                                <button onclick="deleteReportedQuestion(${rep.reportId}, ${rep.questionId})" class="bg-red-950/80 border border-red-800 text-red-400 hover:bg-red-900 px-2 py-1 rounded-lg font-medium transition">ഡിലീറ്റ്</button>
+                            </div>
+                        </div>
+                        <div class="text-white font-medium">${rep.questionText}</div>
+                        <div class="text-indigo-300 bg-indigo-950/40 p-2 rounded">💬 ഉപയോക്താവിന്റെ കമന്റ്: ${rep.comment}</div>
+                    </div>
+                `;
+            });
+        }
+
+        async function noActionNeeded(reportId) {
+            reportedQuestionsList = reportedQuestionsList.filter(r => r.reportId !== reportId);
+            localStorage.setItem('psc_reported_questions_anoop', JSON.stringify(reportedQuestionsList));
+
+            if(db) {
+                try {
+                    await db.collection("app_data").doc("psc_database_anoop").set({
+                        categoriesData: categoriesData,
+                        sampleQuestions: sampleQuestions,
+                        studyNotesMap: studyNotesMap,
+                        studyHighlightsMap: studyHighlightsMap,
+                        userProgressData: userProgressData,
+                        reportedQuestionsList: reportedQuestionsList,
+                        trackerTopicsData: trackerTopicsData,
+                        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+                } catch(e) { console.log("No action sync error:", e); }
+            }
+
+            renderAdminReports();
+        }
+
+        function openAdminEditModal(reportId, questionId) {
+            let qObj = sampleQuestions.find(q => q.id === questionId);
+            if(!qObj) {
+                alert("ഈ ചോദ്യം ഡാറ്റാബേസിൽ കണ്ടെത്താനായില്ല!");
+                return;
+            }
+
+            document.getElementById('edit-target-question-id').value = questionId;
+            document.getElementById('edit-target-report-id').value = reportId;
+            document.getElementById('edit-q-text').value = qObj.q || qObj.question || "";
+            document.getElementById('edit-opt-0').value = qObj.options && qObj.options[0] ? qObj.options[0] : "";
+            document.getElementById('edit-opt-1').value = qObj.options && qObj.options[1] ? qObj.options[1] : "";
+            document.getElementById('edit-opt-2').value = qObj.options && qObj.options[2] ? qObj.options[2] : "";
+            document.getElementById('edit-opt-3').value = qObj.options && qObj.options[3] ? qObj.options[3] : "";
+            document.getElementById('edit-ans-index').value = qObj.answer !== undefined ? qObj.answer : 0;
+            document.getElementById('edit-explanation').value = qObj.explanation || "";
+
+            document.getElementById('admin-edit-modal').classList.remove('hidden');
+        }
+
+        function closeAdminEditModal() {
+            document.getElementById('admin-edit-modal').classList.add('hidden');
+        }
+
+        async function saveEditedQuestion() {
+            let qId = parseInt(document.getElementById('edit-target-question-id').value);
+            let rId = parseInt(document.getElementById('edit-target-report-id').value);
+
+            let newQText = document.getElementById('edit-q-text').value.trim();
+            let opt0 = document.getElementById('edit-opt-0').value.trim();
+            let opt1 = document.getElementById('edit-opt-1').value.trim();
+            let opt2 = document.getElementById('edit-opt-2').value.trim();
+            let opt3 = document.getElementById('edit-opt-3').value.trim();
+            let newAns = parseInt(document.getElementById('edit-ans-index').value);
+            let newExp = document.getElementById('edit-explanation').value.trim();
+
+            if(!newQText) { alert('ചോദ്യം നൽകുക!'); return; }
+
+            let qIndex = sampleQuestions.findIndex(q => q.id === qId);
+            if(qIndex !== -1) {
+                sampleQuestions[qIndex].q = newQText;
+                sampleQuestions[qIndex].options = [opt0, opt1, opt2, opt3];
+                sampleQuestions[qIndex].answer = isNaN(newAns) ? 0 : newAns;
+                sampleQuestions[qIndex].explanation = newExp;
+                localStorage.setItem('psc_sample_questions_anoop', JSON.stringify(sampleQuestions));
+            }
+
+            reportedQuestionsList = reportedQuestionsList.filter(r => r.reportId !== rId);
+            localStorage.setItem('psc_reported_questions_anoop', JSON.stringify(reportedQuestionsList));
+
+            if(db) {
+                try {
+                    await db.collection("app_data").doc("psc_database_anoop").set({
+                        categoriesData: categoriesData,
+                        sampleQuestions: sampleQuestions,
+                        studyNotesMap: studyNotesMap,
+                        studyHighlightsMap: studyHighlightsMap,
+                        userProgressData: userProgressData,
+                        reportedQuestionsList: reportedQuestionsList,
+                        trackerTopicsData: trackerTopicsData,
+                        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+                } catch(e) { console.log("Edit sync error:", e); }
+            }
+
+            alert("🎉 ചോദ്യം വിജയകരമായി എഡിറ്റ് ചെയ്ത് അപ്ഡേറ്റ് ചെയ്തു!");
+            closeAdminEditModal();
+            renderAdminReports();
+        }
+
+        async function deleteReportedQuestion(reportId, questionId) {
+            if(!confirm("⚠️ ഈ ചോദ്യം ഡാറ്റാബേസിൽ നിന്ന് പൂർണ്ണമായി ഡിലീറ്റ് ചെയ്യണമെന്നുറപ്പാണോ?")) return;
+
+            sampleQuestions = sampleQuestions.filter(q => q.id !== questionId);
+            localStorage.setItem('psc_sample_questions_anoop', JSON.stringify(sampleQuestions));
+
+            reportedQuestionsList = reportedQuestionsList.filter(r => r.reportId !== reportId);
+            localStorage.setItem('psc_reported_questions_anoop', JSON.stringify(reportedQuestionsList));
+
+            if(db) {
+                try {
+                    await db.collection("app_data").doc("psc_database_anoop").set({
+                        categoriesData: categoriesData,
+                        sampleQuestions: sampleQuestions,
+                        studyNotesMap: studyNotesMap,
+                        studyHighlightsMap: studyHighlightsMap,
+                        userProgressData: userProgressData,
+                        reportedQuestionsList: reportedQuestionsList,
+                        trackerTopicsData: trackerTopicsData,
+                        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+                } catch(e) { console.log("Admin delete sync error:", e); }
+            }
+
+            alert("ചോദ്യം വിജയകരമായി ഡിലീറ്റ് ചെയ്തു!");
+            renderAdminReports();
+        }
+
+        function populateAccordion() {
+            const container = document.getElementById('accordion-container');
+            if(!container) return;
+            container.innerHTML = '';
+            let hasTests = false;
+
+            for(let catKey in categoriesData) {
+                let cat = categoriesData[catKey];
+                if(cat.subtopics.length === 0) continue;
+                hasTests = true;
+                let accordionId = `acc-${catKey}`;
+                let testsListHtml = '';
+
+                cat.subtopics.forEach(sub => {
+                    sub.tests.forEach(test => {
+                        let val = `${catKey}|${sub.name}|${test}`;
+                        testsListHtml += `
+                            <label class="flex items-center space-x-2 py-1.5 px-3 hover:bg-slate-800 rounded cursor-pointer text-xs text-slate-300">
+                                <input type="checkbox" name="revision_test_checkbox" value="${val}" data-cat="${catKey}" class="cat-checkbox-${catKey} rounded bg-slate-800 border-slate-700 text-indigo-600 focus:ring-indigo-500">
+                                <span class="font-medium">${sub.name} > ${test}</span>
+                            </label>
+                        `;
+                    });
+                });
+
+                container.innerHTML += `
+                    <div class="border border-slate-700 rounded-xl overflow-hidden bg-slate-900">
+                        <div class="flex justify-between items-center bg-slate-950 px-3 py-2.5 border-b border-slate-800">
+                            <button onclick="toggleAccordion('${accordionId}')" class="flex-1 text-left font-bold text-sm text-indigo-400 hover:text-indigo-300 transition flex justify-between items-center">
+                                <span>📂 ${cat.title}</span>
+                                <span id="icon-${accordionId}" class="text-xs">▼</span>
+                            </button>
+                            <label class="ml-3 flex items-center space-x-1.5 cursor-pointer text-xs text-emerald-400 font-medium bg-emerald-950/60 border border-emerald-800/60 px-2 py-1 rounded">
+                                <input type="checkbox" onchange="toggleCategorySelectAll('${catKey}', this)" class="rounded bg-slate-900 border-slate-700 text-emerald-600 focus:ring-emerald-500">
+                                <span>Select All</span>
+                            </label>
+                        </div>
+                        <div id="${accordionId}" class="hidden p-2 space-y-1">
+                            ${testsListHtml}
+                        </div>
+                    </div>
+                `;
+            }
+
+            if(!hasTests) {
+                container.innerHTML = `<p class="text-xs text-slate-500 text-center py-4">മോക്ക് ടെസ്റ്റുകൾ ഒന്നും ആഡ് ചെയ്തിട്ടില്ല.</p>`;
+            }
+        }
+
+        function toggleCategorySelectAll(catKey, masterCheckbox) {
+            const checkboxes = document.querySelectorAll(`.cat-checkbox-${catKey}`);
+            checkboxes.forEach(cb => {
+                cb.checked = masterCheckbox.checked;
+            });
+        }
+
+        function toggleAccordion(accId) {
+            const el = document.getElementById(accId);
+            const icon = document.getElementById(`icon-${accId}`);
+            if(el.classList.contains('hidden')) {
+                el.classList.remove('hidden');
+                icon.innerText = "▲";
+            } else {
+                el.classList.add('hidden');
+                icon.innerText = "▼";
+            }
+        }
+
+        function startAccordionCustomTest() {
+            const checkboxes = document.querySelectorAll('input[name="revision_test_checkbox"]:checked');
+            if(checkboxes.length === 0) {
+                alert("ദയവായി റിവിഷനായി കുറഞ്ഞത് ഒരു മോക്ക് ടെസ്റ്റെങ്കിലും ടിക്ക് ചെയ്ത് സെലക്ട് ചെയ്യുക!");
+                return;
+            }
+
+            let topicPools = {};
+            checkboxes.forEach(cb => {
+                let parts = cb.value.split('|');
+                let catKey = parts[0];
+                let subName = parts[1];
+                let testName = parts[2];
+                let key = `${catKey}|${subName}|${testName}`;
+                
+                let matched = sampleQuestions.filter(q => q.topic === catKey && q.subtopic === subName && q.testName === testName);
+                if(matched.length > 0) {
+                    topicPools[key] = shuffleArray(matched);
+                }
+            });
+
+            let activeKeys = Object.keys(topicPools);
+            if(activeKeys.length === 0) { alert("ചോദ്യങ്ങൾ ഒന്നും ലഭ്യമല്ല!"); return; }
+
+            const requestedCount = parseInt(document.getElementById('rev-count').value);
+            let perTopicCount = Math.ceil(requestedCount / activeKeys.length);
+
+            let finalQuestions = [];
+            activeKeys.forEach(key => {
+                let pool = topicPools[key];
+                let selectedFromTopic = pool.slice(0, perTopicCount);
+                finalQuestions = finalQuestions.concat(selectedFromTopic);
+            });
+
+            let uniqueMap = new Map();
+            finalQuestions.forEach(qObj => {
+                let qText = (qObj.q || "").trim();
+                if(!uniqueMap.has(qText)) {
+                    uniqueMap.set(qText, qObj);
+                }
+            });
+            let uniqueFiltered = Array.from(uniqueMap.values());
+            let finalSelected = shuffleArray(uniqueFiltered).slice(0, requestedCount);
+
+            currentTestTitle = "മൾട്ടി-സെലക്ട് റിവിഷൻ ടെസ്റ്റ്";
+            activeTestKeyForTracking = "Custom Revision Test";
+            prepareFinalTestQuestions(finalSelected);
+            launchMockTest();
+        }
+
+        function openSubTopics(catKey) {
+            activeCategoryKey = catKey;
+            const cat = categoriesData[catKey];
+            if(!cat) return;
+            document.getElementById('subtopic-category-title').innerText = cat.title;
+            const container = document.getElementById('subtopics-container');
+            container.innerHTML = '';
+
+            if(cat.subtopics.length === 0) {
+                container.innerHTML = `<p class="text-xs text-slate-500 text-center py-6">സബ്-ടോപ്പിക്കുകൾ ഒന്നും ലഭ്യമല്ല. 'Mock Creator' ഉപയോഗിച്ച് പുതിയവ ചേർക്കുക.</p>`;
+                document.getElementById('section-dashboard').classList.add('hidden');
+                document.getElementById('section-subtopics').classList.remove('hidden');
+                return;
+            }
+
+            cat.subtopics.forEach(sub => {
+                let testsHtml = sub.tests.map(tName => `
+                    <div class="flex items-center space-x-2 bg-slate-900 border border-slate-700 hover:border-indigo-500 rounded-xl px-4 py-3 shadow-sm">
+                        <span class="flex-1 text-slate-200 text-sm font-medium">${tName}</span>
+                        <button onclick="startSpecificPractice('${catKey}', '${sub.name}', '${tName}')" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs px-3 py-1.5 rounded-lg font-medium transition whitespace-nowrap">Practice</button>
+                        <button onclick="startSpecificTest('${catKey}', '${sub.name}', '${tName}')" class="bg-indigo-600 hover:bg-indigo-700 text-white text-xs px-3 py-1.5 rounded-lg font-medium transition whitespace-nowrap">Mock Test</button>
+                    </div>
+                `).join('');
+
+                container.innerHTML += `
+                    <div class="bg-slate-800 border border-slate-700 p-4 rounded-2xl space-y-3 shadow-md">
+                        <h3 class="font-bold text-white text-base">📌 ${sub.name}</h3>
+                        <div class="space-y-2">${testsHtml}</div>
+                    </div>
+                `;
+            });
+
+            document.getElementById('section-dashboard').classList.add('hidden');
+            document.getElementById('section-subtopics').classList.remove('hidden');
+        }
+
+        function startSpecificPractice(topicKey, subName, testName) {
+            activeCategoryKey = topicKey;
+            activeSubtopicName = subName;
+            activeOriginalTestName = testName;
+            let filtered = sampleQuestions.filter(q => q.topic === topicKey && q.subtopic === subName && q.testName === testName);
+            if(filtered.length === 0) { alert("ഈ ടെസ്റ്റിൽ പ്രാക്ടീസ് ചെയ്യാൻ ചോദ്യങ്ങൾ ഒന്നും ലഭ്യമല്ല!"); return; }
+
+            practiceQueue = shuffleArray([...filtered]);
+            practiceAttemptedMaster.clear();
+            practiceLearnedMaster.clear();
+
+            document.querySelectorAll('main > section').forEach(sec => sec.classList.add('hidden'));
+            document.getElementById('section-subtopics').classList.add('hidden');
+            document.getElementById('section-admin_panel').classList.add('hidden');
+            document.getElementById('mock-interface').classList.add('hidden');
+            document.getElementById('result-interface').classList.add('hidden');
+            document.getElementById('practice-result-interface').classList.add('hidden');
+            
+            document.getElementById('section-practice').classList.remove('hidden');
+            loadPracticeQuestion();
+        }
+
+        function backToPracticeList() {
+            document.getElementById('practice-result-interface').classList.add('hidden');
+            if(activeCategoryKey === 'special_exam') {
+                openSpecialExam();
+            } else if(activeCategoryKey) {
+                openSubTopics(activeCategoryKey);
+            } else {
+                switchTab('dashboard');
+            }
+        }
+
+        function backToDashboard() {
+            document.getElementById('section-subtopics').classList.add('hidden');
+            document.getElementById('section-dashboard').classList.remove('hidden');
+            renderDashboardCategories();
+        }
+
+        function shuffleArray(array) {
+            let arr = [...array];
+            for (let i = arr.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [arr[i], arr[j]] = [arr[j], arr[i]];
+            }
+            return arr;
+        }
+
+        function startSpecificTest(topicKey, subName, testName) {
+            activeCategoryKey = topicKey;
+            activeSubtopicName = subName;
+            activeOriginalTestName = testName;
+            currentTestTitle = `${subName} - ${testName}`;
+            activeTestKeyForTracking = `${subName} : ${testName}`;
+            let filtered = sampleQuestions.filter(q => q.topic === topicKey && q.subtopic === subName && q.testName === testName);
+            if(filtered.length === 0) { alert("ഈ ടെസ്റ്റിൽ ചോദ്യങ്ങൾ ഒന്നും ലഭ്യമല്ല!"); return; }
+            
+            prepareFinalTestQuestions(shuffleArray(filtered));
+            launchMockTest();
+        }
+
+        function prepareFinalTestQuestions(sourceArray) {
+            currentTestQuestions = sourceArray.map(q => {
+                let options = [...q.options];
+                let correctOptText = options[q.answer];
+                let shuffledOpts = shuffleArray(options);
+                let newAnswerIndex = shuffledOpts.indexOf(correctOptText);
+                return { ...q, options: shuffledOpts, answer: newAnswerIndex };
+            });
+        }
+
+        function launchMockTest() {
+            document.querySelectorAll('main > section').forEach(sec => sec.classList.add('hidden'));
+            document.getElementById('section-subtopics').classList.add('hidden');
+            document.getElementById('section-admin_panel').classList.add('hidden');
+            document.getElementById('mock-interface').classList.remove('hidden');
+            currentIndex = 0;
+            userAnswers = {};
+            bookmarked.clear();
+            loadQuestion();
+            startTimer();
+        }
+
+        let testTimeLeft = 0;
+        function startTimer() {
+            clearInterval(timerInterval);
+            testTimeLeft = currentTestQuestions.length * 50;
+            updateTimerDisplay();
+            timerInterval = setInterval(() => {
+                testTimeLeft--;
+                updateTimerDisplay();
+                if(testTimeLeft <= 0) { clearInterval(timerInterval); finishMockTest(); }
+            }, 1000);
+        }
+
+        function updateTimerDisplay() {
+            let m = Math.floor(testTimeLeft / 60);
+            let s = testTimeLeft % 60;
+            document.getElementById('timer-display').innerText = `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+        }
+
+        function renderQuestionContent(q, containerId) {
+            const container = document.getElementById(containerId);
+            if(!container) return;
+            let html = `<div class="font-medium text-base mb-3 leading-relaxed">${q.q || q.question || ""}</div>`;
+
+            if (q.statements && Array.isArray(q.statements) && q.statements.length > 0) {
+                html += `<div class="p-4 rounded-xl space-y-3 my-3 border border-slate-700/50 bg-slate-800/40">`;
+                q.statements.forEach((stmt, sIdx) => {
+                    let romanNums = ['i.', 'ii.', 'iii.', 'iv.', 'v.', 'vi.'];
+                    let label = romanNums[sIdx] || `${sIdx + 1}.`;
+                    html += `<div class="flex items-start space-x-3 text-sm leading-relaxed">
+                        <span class="font-bold select-none">${label}</span>
+                        <span class="flex-1">${stmt}</span>
+                    </div>`;
+                });
+                html += `</div>`;
+            }
+
+            if (q.matchingPairs && Array.isArray(q.matchingPairs) && q.matchingPairs.length > 0) {
+                html += `<div class="grid grid-cols-1 md:grid-cols-2 gap-3 my-3 p-4 rounded-xl border border-slate-700/50 bg-slate-800/40">`;
+                let colAList = [];
+                let colBList = [];
+                q.matchingPairs.forEach(pair => {
+                    if(pair.left) colAList.push(pair.left);
+                    if(pair.right) colBList.push(pair.right);
+                });
+
+                html += `<div class="space-y-2 border-b md:border-b-0 md:border-r border-slate-700 pb-3 md:pb-0 md:pr-3">
+                    <div class="text-xs font-bold uppercase tracking-wider mb-2">പട്ടിക A</div>`;
+                colAList.forEach((item, i) => {
+                    html += `<div class="text-sm py-1 leading-relaxed"><span class="font-bold mr-2">${i + 1}.</span>${item}</div>`;
+                });
+                html += `</div>`;
+
+                html += `<div class="space-y-2">
+                    <div class="text-xs font-bold uppercase tracking-wider mb-2">പട്ടിക B</div>`;
+                colBList.forEach((item, i) => {
+                    let letters = ['എ', 'ബി', 'സി', 'ഡി', 'ഇ', 'എഫ്'];
+                    let lKey = letters[i] || String.fromCharCode(65 + i);
+                    html += `<div class="text-sm py-1 leading-relaxed"><span class="font-bold mr-2">${lKey}.</span>${item}</div>`;
+                });
+                html += `</div>`;
+
+                html += `</div>`;
+            }
+
+            container.innerHTML = html;
+        }
+
+        function loadQuestion() {
+            const q = currentTestQuestions[currentIndex];
+            document.getElementById('mock-title').innerText = `${currentTestTitle} (${currentIndex + 1}/${currentTestQuestions.length})`;
+            renderQuestionContent(q, 'q-container');
+
+            // ബുക്ക്മാർക്ക് ബട്ടൺ സ്റ്റൈൽ അപ്ഡേറ്റ് ചെയ്യുക
+            const bmBtn = document.getElementById('bookmark-btn');
+            if(bmBtn) {
+                if(bookmarked.has(currentIndex)) {
+                    bmBtn.className = "text-amber-400 text-xl transition px-2 py-1 rounded bg-amber-950/60 border border-amber-600 font-bold";
+                    bmBtn.title = "Bookmarked";
+                } else {
+                    bmBtn.className = "text-slate-400 hover:text-amber-400 text-xl transition px-2 py-1 rounded bg-slate-900 border border-slate-700";
+                    bmBtn.title = "Bookmark Question";
+                }
+            }
+
+            const optsBox = document.getElementById('options-box');
+            optsBox.innerHTML = '';
+            q.options.forEach((opt, idx) => {
+                const isSelected = userAnswers[currentIndex] === idx;
+                optsBox.innerHTML += `
+                    <label class="block p-3.5 border rounded-xl cursor-pointer transition ${isSelected ? 'border-indigo-500 bg-indigo-950/60 text-white font-medium' : 'border-slate-700 bg-slate-900/50 text-slate-300 hover:bg-slate-700'}">
+                        <input type="radio" name="q_option" value="${idx}" ${isSelected ? 'checked' : ''} onclick="selectOption(${idx})" class="mr-2.5">
+                        ${opt}
+                    </label>
+                `;
+            });
+        }
+
+        function selectOption(idx) { 
+            userAnswers[currentIndex] = idx; 
+        }
+        
+        function nextQuestion() { 
+            if(currentIndex < currentTestQuestions.length - 1) { currentIndex++; loadQuestion(); } 
+            else { checkUnattemptedAndFinish(); } 
+        }
+
+        function prevQuestion() { 
+            if(currentIndex > 0) { currentIndex--; loadQuestion(); } 
+        }
+
+        // മോക്ക് ടെസ്റ്റിൽ ബുക്ക്മാർക്ക് ടോഗിൾ ചെയ്യുന്ന ഫങ്ഷൻ
+        function toggleBookmark() {
+            if(bookmarked.has(currentIndex)) {
+                bookmarked.delete(currentIndex);
+            } else {
+                bookmarked.add(currentIndex);
+            }
+            loadQuestion(); // സ്റ്റൈൽ അപ്ഡേറ്റ് ചെയ്യാൻ
+        }
+
+        function finishMockTestEarly() { checkUnattemptedAndFinish(); }
+
+        function checkUnattemptedAndFinish() {
+            let unattemptedCount = 0;
+            currentTestQuestions.forEach((_, idx) => { if(userAnswers[idx] === undefined) unattemptedCount++; });
+
+            let confirmMsg = "നിങ്ങൾ എക്സാം ഫിനിഷ് ചെയ്യുവാൻ പോകുകയാണ് ഉറപ്പാണോ?";
+            if(unattemptedCount > 0) confirmMsg = `⚠️ നിങ്ങൾ ${unattemptedCount} ചോദ്യങ്ങൾ അറ്റൻഡ് ചെയ്തിട്ടില്ല!\n\nഎക്സാം ഇപ്പോൾത്തന്നെ ഫിനിഷ് ചെയ്യണമെന്നുറപ്പാണോ?`;
+
+            if(confirm(confirmMsg)) finishMockTest();
+        }
+
+        function finishMockTest() {
+            clearInterval(timerInterval);
+            document.getElementById('mock-interface').classList.add('hidden');
+            document.getElementById('result-interface').classList.remove('hidden');
+
+            let correct = 0, wrong = 0, unattempted = 0;
+            currentTestQuestions.forEach((q, idx) => {
+                if(userAnswers[idx] === undefined) unattempted++;
+                else if(userAnswers[idx] === q.answer) correct++;
+                else wrong++;
+            });
+
+            let rawScore = (correct * 1) - (wrong * 0.33);
+            let score = Math.max(0, rawScore).toFixed(2);
+            let negScore = (wrong * 0.33).toFixed(2);
+
+            document.getElementById('res-score').innerText = score;
+            document.getElementById('res-neg').innerText = negScore;
+            document.getElementById('res-correct').innerText = correct;
+            document.getElementById('res-wrong').innerText = wrong;
+            document.getElementById('res-unattempted').innerText = unattempted;
+
+            let saveBtnContainer = document.getElementById('save-mistakes-container');
+            if(wrong > 0 || unattempted > 0) {
+                let defaultSuggestedName = `${activeOriginalTestName || "Mock Test"} (തെറ്റിയവ)`;
+                saveBtnContainer.innerHTML = `
+                    <div class="bg-slate-900 border border-slate-700 p-4 rounded-xl space-y-3">
+                        <label class="block text-xs font-medium text-slate-300">റിവിഷൻ സെറ്റിന്റെ പേര് (മാറ്റി നൽകാം):</label>
+                        <input type="text" id="custom-mistake-test-name" value="${defaultSuggestedName}" class="w-full p-2.5 bg-slate-800 border border-slate-700 text-white rounded-xl text-sm">
+                        <button onclick="saveMistakesAsNewMockTest()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-2.5 rounded-xl text-xs font-bold shadow transition">
+                            📌 തെറ്റിയ ചോദ്യങ്ങൾ റിവിഷൻ സെറ്റായി സേവ് ചെയ്യുക
+                        </button>
+                    </div>
+                `;
+            } else {
+                saveBtnContainer.innerHTML = `<p class="text-xs text-emerald-400 text-center font-bold">അഭിനന്ദനങ്ങൾ! എല്ലാ ചോദ്യങ്ങളും ശരിയാണ്!</p>`;
+            }
+
+            renderResultAnswers('all');
+            recordWrongForSpecialExam();
+        }
+
+        function saveMistakesAsNewMockTest() {
+            let customNameInput = document.getElementById('custom-mistake-test-name');
+            let newTestName = customNameInput ? customNameInput.value.trim() : `${activeOriginalTestName} (തെറ്റിയവ)`;
+            if(!newTestName) newTestName = `${activeOriginalTestName} (തെറ്റിയവ)`;
+
+            let wrongQuestions = [];
+            currentTestQuestions.forEach((q, idx) => {
+                const userAns = userAnswers[idx];
+                if(userAns === undefined || userAns !== q.answer) {
+                    wrongQuestions.push(q);
+                }
+            });
+
+            if(wrongQuestions.length === 0) {
+                alert("സേവ് ചെയ്യാൻ തെറ്റിയ ചോദ്യങ്ങൾ ഒന്നും ലഭ്യമല്ല!");
+                return;
+            }
+
+            let subName = activeSubtopicName || "Revision Set";
+            let catKey = activeCategoryKey || "topic_wise";
+
+            wrongQuestions.forEach((wq, idx) => {
+                sampleQuestions.push({
+                    ...wq,
+                    id: Date.now() + idx,
+                    topic: catKey,
+                    subtopic: subName,
+                    testName: newTestName
+                });
+            });
+
+            let setObj = { categoryKey: catKey, subtopicName: subName, testName: newTestName };
+            if(!savedMistakeSets.some(s => s.testName === newTestName)) {
+                savedMistakeSets.push(setObj);
+                localStorage.setItem('psc_saved_mistake_sets_anoop', JSON.stringify(savedMistakeSets));
+            }
+
+            localStorage.setItem('psc_sample_questions_anoop', JSON.stringify(sampleQuestions));
+
+            if(db) {
+                db.collection("app_data").doc("psc_database_anoop").set({
+                    categoriesData: categoriesData,
+                    sampleQuestions: sampleQuestions,
+                    studyNotesMap: studyNotesMap,
+                    studyHighlightsMap: studyHighlightsMap,
+                    userProgressData: userProgressData,
+                    reportedQuestionsList: reportedQuestionsList,
+                    trackerTopicsData: trackerTopicsData,
+                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                }).catch(e => console.log(e));
+            }
+
+            alert(`🎉 "${newTestName}" വിജയകരമായി 'മൈ റിവിഷൻ സെറ്റുകൾ' (Custom Revision)-ൽ സേവ് ചെയ്തു!`);
+        }
+
+        function renderSavedMistakeSets() {
+            const container = document.getElementById('saved-mistake-sets-container');
+            if(!container) return;
+            container.innerHTML = '';
+
+            if(savedMistakeSets.length === 0) {
+                container.innerHTML = `<p class="text-xs text-slate-500 text-center py-3">റിവിഷൻ സെറ്റുകൾ ഒന്നും സേവ് ചെയ്തിട്ടില്ല.</p>`;
+                return;
+            }
+
+            savedMistakeSets.forEach((setInfo) => {
+                container.innerHTML += `
+                    <div class="flex items-center justify-between bg-slate-900 border border-slate-700 p-3 rounded-xl">
+                        <span class="text-xs font-medium text-slate-200">📌 ${setInfo.testName}</span>
+                        <div class="flex space-x-2">
+                            <button onclick="startSpecificTest('${setInfo.categoryKey}', '${setInfo.subtopicName}', '${setInfo.testName}')" class="bg-indigo-600 hover:bg-indigo-700 text-white text-xs px-2.5 py-1 rounded-lg font-medium transition">ചെയ്തു നോക്കൂ</button>
+                            <button onclick="deleteMistakeSet('${setInfo.testName}')" class="bg-red-950/80 border border-red-800 text-red-400 hover:bg-red-900 text-xs px-2.5 py-1 rounded-lg font-medium transition">ഡിലീറ്റ്</button>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function deleteMistakeSet(setName) {
+            if(!confirm(`⚠️ "${setName}" എന്ന റിവിഷൻ സെറ്റ് ഡിലീറ്റ് ചെയ്യണമെന്നുറപ്പാണോ?`)) return;
+
+            savedMistakeSets = savedMistakeSets.filter(s => s.testName !== setName);
+            localStorage.setItem('psc_saved_mistake_sets_anoop', JSON.stringify(savedMistakeSets));
+
+            sampleQuestions = sampleQuestions.filter(q => q.testName !== setName);
+            localStorage.setItem('psc_sample_questions_anoop', JSON.stringify(sampleQuestions));
+
+            if(db) {
+                db.collection("app_data").doc("psc_database_anoop").set({
+                    categoriesData: categoriesData,
+                    sampleQuestions: sampleQuestions,
+                    studyNotesMap: studyNotesMap,
+                    studyHighlightsMap: studyHighlightsMap,
+                    userProgressData: userProgressData,
+                    reportedQuestionsList: reportedQuestionsList,
+                    trackerTopicsData: trackerTopicsData,
+                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                }).catch(e => console.log(e));
+            }
+
+            renderSavedMistakeSets();
+            alert("റിവിഷൻ സെറ്റ് വിജയകരമായി ഡിലീറ്റ് ചെയ്തു!");
+        }
+
+        function renderResultAnswers(filterType) {
+            const listContainer = document.getElementById('result-answers-list');
+            if(!listContainer) return;
+            listContainer.innerHTML = '';
+
+            currentTestQuestions.forEach((q, idx) => {
+                const userAns = userAnswers[idx];
+                let status = 'unattempted';
+                if(userAns !== undefined) status = (userAns === q.answer) ? 'correct' : 'wrong';
+
+                if(filterType !== 'all' && filterType !== status) return;
+
+                let statusBadge = status === 'correct' ? '<span class="text-xs text-emerald-400 font-bold">✓ ശരി</span>' : (status === 'wrong' ? '<span class="text-xs text-red-400 font-bold">✕ തെറ്റ്</span>' : '<span class="text-xs text-amber-400 font-bold">- വിട്ടുപോയവ</span>');
+                let userAnsText = userAns !== undefined ? q.options[userAns] : 'ഒന്നുമില്ല';
+                let correctAnsText = q.options[q.answer];
+
+                let cleanExplanation = q.explanation || "";
+                cleanExplanation = cleanExplanation.replace(/\[span_\d+\]|\(start_span\)|\(end_span\)/g, '');
+
+                listContainer.innerHTML += `
+                    <div class="bg-slate-900 border border-slate-700 p-3.5 rounded-xl space-y-2 text-xs">
+                        <div class="flex justify-between items-center"><span class="font-bold text-slate-300">ചോദ്യം ${idx + 1}</span>${statusBadge}</div>
+                        <div class="font-medium text-white">${q.q}</div>
+                        ${cleanExplanation ? `<div class="text-indigo-300 bg-indigo-950/40 p-2 rounded">💡 വിശദീകരണം: ${cleanExplanation}</div>` : ''}
+                        <div class="text-slate-400">നിങ്ങളുടെ ഉത്തരം: <span class="${status === 'correct' ? 'text-emerald-400' : 'text-red-400'} font-bold">${userAnsText}</span></div>
+                        ${status !== 'correct' ? `<div class="text-emerald-400 font-bold">ശരിയായ ഉത്തരം: ${correctAnsText}</div>` : ''}
+                    </div>
+                `;
+            });
+        }
+
+        function resetToHome() { switchTab('dashboard'); }
+        
+        // ക്വസ്റ്റ്യൻ പാലറ്റ് തുറക്കുന്നതും വിവിധ കളറുകൾ നൽകി റെൻഡർ ചെയ്യുന്നതുമായ ഫങ്ഷൻ
+        function openPaletteModal() { 
+            const grid = document.getElementById('palette-grid');
+            if(grid) {
+                grid.innerHTML = '';
+                currentTestQuestions.forEach((_, idx) => {
+                    let isAnswered = userAnswers[idx] !== undefined;
+                    let isBookmarked = bookmarked.has(idx);
+                    
+                    // കളറിംഗ് മുൻഗണന: ബുക്ക്മാർക്ക് ആണെങ്കിൽ മഞ്ഞ/ആംബർ, അറ്റൻഡ് ചെയ്തെങ്കിൽ പച്ച, അല്ലെങ്കിൽ സാധാരണ
+                    let btnClass = "w-10 h-10 rounded-xl font-bold text-xs flex items-center justify-center transition border ";
+                    if(isBookmarked) {
+                        btnClass += "bg-amber-600 border-amber-500 text-white shadow";
+                    } else if(isAnswered) {
+                        btnClass += "bg-emerald-600 border-emerald-500 text-white shadow";
+                    } else {
+                        btnClass += "bg-slate-900 border-slate-700 text-slate-300 hover:bg-slate-700";
+                    }
+
+                    if(idx === currentIndex) {
+                        btnClass += " ring-2 ring-indigo-400";
+                    }
+
+                    grid.innerHTML += `
+                        <button onclick="jumpToQuestion(${idx})" class="${btnClass}">
+                            ${idx + 1}
+                        </button>
+                    `;
+                });
+            }
+            document.getElementById('palette-modal').classList.remove('hidden'); 
+        }
+
+        function closePaletteModal() { 
+            document.getElementById('palette-modal').classList.add('hidden'); 
+        }
+
+        function jumpToQuestion(idx) {
+            currentIndex = idx;
+            loadQuestion();
+            closePaletteModal();
+        }
+
+        // Practice Zone
+        function initPracticeZone() {
+            if(sampleQuestions.length === 0) {
+                alert("പ്രാക്ടീസ് ചെയ്യാൻ ചോദ്യങ്ങൾ ഒന്നുമില്ല. ആദ്യം പുതിയ മോക്ക് ടെസ്റ്റുകൾ ആഡ് ചെയ്യുക!");
+                switchTab('dashboard');
+                return;
+            }
+            practiceQueue = shuffleArray([...sampleQuestions]);
+            practiceAttemptedMaster.clear();
+            practiceLearnedMaster.clear();
+            loadPracticeQuestion();
+        }
+
+        let practiceShuffledOpts = [];
+        let practiceShuffledCorrectIdx = 0;
+
+        function loadPracticeQuestion() {
+            if(practiceQueue.length === 0) { finishPracticeZone(); return; }
+            currentPracticeQuestion = practiceQueue.shift();
+            const progInd = document.getElementById('practice-progress-indicator');
+            if(progInd) progInd.innerText = `ബാക്കി ചോദ്യങ്ങൾ: ${practiceQueue.length + 1}`;
+            renderQuestionContent(currentPracticeQuestion, 'p-q-container');
+            
+            const banner = document.getElementById('practice-feedback-banner');
+            if(banner) {
+                banner.classList.add('hidden');
+                banner.innerHTML = '';
+            }
+
+            const optsBox = document.getElementById('p-options-box');
+            if(!optsBox) return;
+            optsBox.innerHTML = '';
+
+            let originalOpts = currentPracticeQuestion.options.map((opt, idx) => ({
+                optText: opt,
+                isCorrect: idx === currentPracticeQuestion.answer
+            }));
+            practiceShuffledOpts = shuffleArray(originalOpts);
+            practiceShuffledCorrectIdx = practiceShuffledOpts.findIndex(item => item.isCorrect);
+
+            practiceShuffledOpts.forEach((item, idx) => {
+                optsBox.innerHTML += `
+                    <button onclick="checkPracticeAnswer(${idx})" class="w-full text-left p-3.5 border border-slate-700 bg-slate-900/50 text-slate-300 rounded-xl hover:bg-slate-700 transition">
+                        ${item.optText}
+                    </button>
+                `;
+            });
+        }
+
+        function checkPracticeAnswer(selectedIdx) {
+            if(!currentPracticeQuestion) return;
+            const banner = document.getElementById('practice-feedback-banner');
+            if(!banner) return;
+            banner.classList.remove('hidden');
+            const parentBox = document.getElementById('p-options-box');
+            if(parentBox) {
+                Array.from(parentBox.children).forEach(child => child.disabled = true);
+            }
+            practiceAttemptedMaster.add(currentPracticeQuestion.id);
+
+            const correctIdx = practiceShuffledCorrectIdx;
+            const correctOptText = practiceShuffledOpts[correctIdx].optText;
+            
+            let cleanExplanation = currentPracticeQuestion.explanation || "";
+            cleanExplanation = cleanExplanation.replace(/\[span_\d+\]|\(start_span\)|\(end_span\)/g, '');
+
+            const buttons = parentBox ? parentBox.children : [];
+
+            if(selectedIdx === correctIdx) {
+                practiceLearnedMaster.add(currentPracticeQuestion.id);
+                if(buttons[selectedIdx]) {
+                    buttons[selectedIdx].className = "w-full text-left p-3.5 border border-emerald-500 bg-emerald-950/80 text-emerald-300 rounded-xl font-medium transition";
+                }
+                banner.className = "p-2 rounded-xl text-xs font-medium bg-emerald-900/80 border border-emerald-600 text-emerald-200";
+                banner.innerHTML = `ശരി ഉത്തരം! (Correct)`;
+                setTimeout(() => { loadPracticeQuestion(); }, 1000);
+            } else {
+                if(buttons[selectedIdx]) {
+                    buttons[selectedIdx].className = "w-full text-left p-3.5 border border-red-500 bg-red-950/80 text-red-300 rounded-xl font-medium transition";
+                }
+                if(buttons[correctIdx]) {
+                    buttons[correctIdx].className = "w-full text-left p-3.5 border border-emerald-500 bg-emerald-950/80 text-emerald-300 rounded-xl font-medium transition";
+                }
+                const explanationText = cleanExplanation ? `<br><span class="text-xs text-indigo-200 mt-1 block">💡 വിശദീകരണം: ${cleanExplanation}</span>` : '';
+                banner.className = "p-4 rounded-xl text-sm font-medium bg-red-900/80 border border-red-600 text-red-200 shadow-lg space-y-3";
+                banner.innerHTML = `
+                    ❌ ഉത്തരം തെറ്റാണ്!<br><span class="text-xs text-emerald-300 mt-1 block font-bold">ശരിയായ ഉത്തരം: ${correctOptText}</span>${explanationText}
+                    <button onclick="handleWrongQuestionRetry()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-2 rounded-xl text-xs font-bold shadow transition mt-2">അടുത്തത് (Next)</button>
+                `;
+            }
+        }
+
+        function handleWrongQuestionRetry() {
+            if(!currentPracticeQuestion) return;
+            let insertPos = Math.floor(Math.random() * 3) + 2;
+            if(insertPos > practiceQueue.length) practiceQueue.push(currentPracticeQuestion);
+            else practiceQueue.splice(insertPos, 0, currentPracticeQuestion);
+            loadPracticeQuestion();
+        }
+
+        function finishPracticeZone() {
+            document.getElementById('section-practice').classList.add('hidden');
+            document.getElementById('practice-result-interface').classList.remove('hidden');
+            document.getElementById('p-res-attempted').innerText = practiceAttemptedMaster.size;
+            document.getElementById('p-res-learned').innerText = practiceLearnedMaster.size;
+        }
+
+        // ===================== SPECIAL EXAM (wrong questions) =====================
+        const SPECIAL_EXAM_LS_KEY = 'psc_special_exam_wrong_anoop';
+        const SPECIAL_EXAM_SEEDED_KEY = 'psc_special_exam_seeded_anoop';
+        let specialExamQuestions = [];
+        let specialExamActive = false;
+        try {
+            specialExamQuestions = JSON.parse(localStorage.getItem(SPECIAL_EXAM_LS_KEY) || '[]');
+            if(!Array.isArray(specialExamQuestions)) specialExamQuestions = [];
+        } catch(e) { specialExamQuestions = []; }
+
+        function specialExamKey(q) {
+            let stem = String(q.q || q.question || '').trim();
+            let st = Array.isArray(q.statements) ? q.statements.join('|') : '';
+            let opts = Array.isArray(q.options) ? q.options.map(String).sort().join('|') : '';
+            return stem + '##' + st + '##' + opts;
+        }
+
+        function persistSpecialExam() {
+            try { localStorage.setItem(SPECIAL_EXAM_LS_KEY, JSON.stringify(specialExamQuestions)); } catch(e) { console.log(e); }
+            if(typeof db !== 'undefined' && db) {
+                try {
+                    db.collection("app_data").doc("psc_special_exam_anoop").set({
+                        questions: JSON.parse(JSON.stringify(specialExamQuestions)),
+                        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                    }).catch(e => console.log("Special exam sync error:", e));
+                } catch(e) { console.log(e); }
+            }
+        }
+
+        // returns number of newly added questions (duplicates are skipped)
+        function mergeSpecialExam(list) {
+            let existing = new Set(specialExamQuestions.map(specialExamKey));
+            let added = 0;
+            list.forEach(q => {
+                let k = specialExamKey(q);
+                if(!k.trim() || existing.has(k)) return;
+                existing.add(k);
+                specialExamQuestions.push({ ...JSON.parse(JSON.stringify(q)), id: 'sp_' + Date.now() + '_' + specialExamQuestions.length });
+                added++;
+            });
+            return added;
+        }
+
+        function recordWrongForSpecialExam() {
+            try {
+                let wrong = [];
+                currentTestQuestions.forEach((q, idx) => {
+                    if(userAnswers[idx] !== undefined && userAnswers[idx] !== q.answer) wrong.push(q);
+                });
+                if(wrong.length > 0 && mergeSpecialExam(wrong) > 0) persistSpecialExam();
+
+                // Special Exam-ൽ നിന്നുള്ള ടെസ്റ്റിൽ റിവിഷൻ സെറ്റ് സേവ് ബട്ടൺ ആവശ്യമില്ല
+                if(specialExamActive && currentTestTitle === 'Special Exam') {
+                    let box = document.getElementById('save-mistakes-container');
+                    if(box) box.innerHTML = '';
+                }
+            } catch(e) { console.log("Special exam record error:", e); }
+        }
+
+        function openSpecialExam() {
+            activeCategoryKey = 'special_exam';
+            specialExamActive = false;
+            document.getElementById('subtopic-category-title').innerText = 'Special Exam';
+            const container = document.getElementById('subtopics-container');
+            let count = specialExamQuestions.length;
+
+            let body = count === 0
+                ? `<p class="text-xs text-slate-500 text-center py-6">തെറ്റിയ ചോദ്യങ്ങൾ ഒന്നുമില്ല. മോക്ക് ടെസ്റ്റുകൾ എഴുതുമ്പോൾ തെറ്റുന്ന ചോദ്യങ്ങൾ ഇവിടെ തനിയെ വരും.</p>`
+                : `
+                    <div class="bg-slate-800 border border-slate-700 p-4 rounded-2xl space-y-3 shadow-md">
+                        <h3 class="font-bold text-white text-base">🎯 തെറ്റിയ എല്ലാ ചോദ്യങ്ങളും</h3>
+                        <div class="space-y-2">
+                            <div class="flex items-center space-x-2 bg-slate-900 border border-slate-700 hover:border-indigo-500 rounded-xl px-4 py-3 shadow-sm">
+                                <span class="flex-1 text-slate-200 text-sm font-medium">Special Exam (${count} ചോദ്യങ്ങൾ)</span>
+                                <button onclick="startSpecialExamPractice()" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs px-3 py-1.5 rounded-lg font-medium transition whitespace-nowrap">Practice</button>
+                                <button onclick="startSpecialExamTest()" class="bg-indigo-600 hover:bg-indigo-700 text-white text-xs px-3 py-1.5 rounded-lg font-medium transition whitespace-nowrap">Mock Test</button>
+                            </div>
+                        </div>
+                    </div>`;
+
+            container.innerHTML = `<p class="text-xs text-slate-400 -mt-1">based on your wrong questions</p>` + body;
+            document.getElementById('section-dashboard').classList.add('hidden');
+            document.getElementById('section-subtopics').classList.remove('hidden');
+        }
+
+        function startSpecialExamPractice() {
+            if(specialExamQuestions.length === 0) { alert("പ്രാക്ടീസ് ചെയ്യാൻ ചോദ്യങ്ങൾ ഒന്നും ലഭ്യമല്ല!"); return; }
+            activeCategoryKey = 'special_exam';
+            activeSubtopicName = 'Special Exam';
+            activeOriginalTestName = 'Special Exam';
+            specialExamActive = false;
+
+            practiceQueue = shuffleArray([...specialExamQuestions]);
+            practiceAttemptedMaster.clear();
+            practiceLearnedMaster.clear();
+
+            document.querySelectorAll('main > section').forEach(sec => sec.classList.add('hidden'));
+            document.getElementById('section-subtopics').classList.add('hidden');
+            document.getElementById('section-admin_panel').classList.add('hidden');
+            document.getElementById('mock-interface').classList.add('hidden');
+            document.getElementById('result-interface').classList.add('hidden');
+            document.getElementById('practice-result-interface').classList.add('hidden');
+
+            document.getElementById('section-practice').classList.remove('hidden');
+            loadPracticeQuestion();
+        }
+
+        function startSpecialExamTest() {
+            if(specialExamQuestions.length === 0) { alert("ഈ ടെസ്റ്റിൽ ചോദ്യങ്ങൾ ഒന്നും ലഭ്യമല്ല!"); return; }
+            activeCategoryKey = 'special_exam';
+            activeSubtopicName = 'Special Exam';
+            activeOriginalTestName = 'Special Exam';
+            currentTestTitle = 'Special Exam';
+            activeTestKeyForTracking = 'Special Exam';
+            specialExamActive = true;
+
+            prepareFinalTestQuestions(shuffleArray([...specialExamQuestions]));
+            launchMockTest();
+        }
+
+        // One-time: ഇതുവരെ 'റിവിഷൻ സെറ്റ്' ആയി സേവ് ചെയ്തിട്ടുള്ള തെറ്റിയ ചോദ്യങ്ങൾ Special Exam-ലേക്ക് ചേർക്കുന്നു
+        (function seedSpecialExamOnce() {
+            try {
+                if(localStorage.getItem(SPECIAL_EXAM_SEEDED_KEY)) return;
+                let before = specialExamQuestions.length;
+                savedMistakeSets.forEach(set => {
+                    mergeSpecialExam(sampleQuestions.filter(q => q.testName === set.testName));
+                });
+                if(specialExamQuestions.length !== before) persistSpecialExam();
+                localStorage.setItem(SPECIAL_EXAM_SEEDED_KEY, '1');
+            } catch(e) { console.log("Special exam seed error:", e); }
+        })();
+
+        // മറ്റ് ഡിവൈസുകളിൽ നിന്നുള്ള Special Exam ഡേറ്റ കൂടി ലയിപ്പിക്കുന്നു
+        (async function loadSpecialExamFromCloud() {
+            try {
+                if(typeof db === 'undefined' || !db) return;
+                const snap = await db.collection("app_data").doc("psc_special_exam_anoop").get();
+                if(snap.exists) {
+                    let cloud = snap.data().questions;
+                    if(Array.isArray(cloud)) {
+                        let added = mergeSpecialExam(cloud);
+                        let cloudKeys = new Set(cloud.map(specialExamKey));
+                        let localExtra = specialExamQuestions.some(q => !cloudKeys.has(specialExamKey(q)));
+                        if(added > 0 || localExtra) persistSpecialExam();
+                    }
+                } else if(specialExamQuestions.length > 0) {
+                    persistSpecialExam();
+                }
+            } catch(e) { console.log("Special exam cloud load error:", e); }
+        })();
+        // =================== END SPECIAL EXAM ===================
+
+        switchTab('dashboard');
     </script>
 </body>
 </html>
