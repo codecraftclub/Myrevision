@@ -87,7 +87,7 @@
         <section id="section-dashboard" class="space-y-6">
             <div>
                 <h2 class="text-md font-bold text-slate-200 mb-3">Exam Packs & Categories</h2>
-                <div id="dashboard-categories-grid" class="grid grid-cols-2 gap-3">
+                <div id="dashboard-categories-grid" class="space-y-5">
                     <!-- Dynamic Dashboard Categories Rendered Here -->
                 </div>
             </div>
@@ -1719,47 +1719,94 @@
             if(!grid) return;
 
             let icons = {
-                topic_wise: '📑',
-                notes: '📝',
-                gemini_notes: '✨',
-                scert: '📚',
-                ca_daily: '📅',
-                ca_monthly: '📊',
-                malayalam: 'മല',
-                english: 'En',
-                pyq_main: '📜',
-                pyq_malayalam: 'മല PYQ',
-                pyq_english: 'En PYQ'
+                topic_wise: '📑', notes: '📝', gemini_notes: '✨', scert: '📚',
+                ca_daily: '📅', ca_monthly: '📊', malayalam: 'മല', english: 'En',
+                pyq_main: '📜', pyq_malayalam: 'മല PYQ', pyq_english: 'En PYQ'
             };
 
-            let html = '';
-            for(let key in categoriesData) {
-                let cat = categoriesData[key];
-                let icon = icons[key] || '📁';
-                
-                let clickAction = key === 'notes' ? `openNotesCategory()` : (key === 'gemini_notes' ? `openGeminiNotesCategory()` : `openSubTopics('${key}')`);
-                
-                html += `
-                    <div onclick="${clickAction}" class="bg-slate-800 border border-slate-700 p-4 rounded-2xl cursor-pointer hover:border-indigo-500 transition shadow-sm space-y-2">
-                        <div class="w-10 h-10 bg-indigo-900/50 rounded-xl flex items-center justify-center text-indigo-400 text-xl font-bold">${icon}</div>
+            // നിറങ്ങൾ: [കാർഡ് ഗ്രേഡിയന്റ് 1, ഗ്രേഡിയന്റ് 2, ബോർഡർ, ഐക്കൺ ടൈൽ]
+            let palette = {
+                topic_wise:   ['#4a1d1d', '#1e293b', '#f87171', '#ef4444'],
+                scert:        ['#0f3d2e', '#1e293b', '#34d399', '#10b981'],
+                ca_daily:     ['#4a3410', '#1e293b', '#fbbf24', '#f59e0b'],
+                ca_monthly:   ['#3b1d5e', '#1e293b', '#c084fc', '#a855f7'],
+                weekly:       ['#0f3d43', '#1e293b', '#2dd4bf', '#14b8a6'],
+                malayalam:    ['#4a1d36', '#1e293b', '#fb7185', '#f43f5e'],
+                english:      ['#10304f', '#1e293b', '#60a5fa', '#3b82f6'],
+                pyq_main:     ['#2e1f5e', '#1e293b', '#a78bfa', '#8b5cf6'],
+                pyq_english:  ['#13324d', '#1e293b', '#38bdf8', '#0ea5e9'],
+                pyq_malayalam:['#4a1d4a', '#1e293b', '#f472b6', '#ec4899'],
+                gemini_notes: ['#4d3a0e', '#1e293b', '#facc15', '#eab308'],
+                notes:        ['#0f4030', '#1e293b', '#4ade80', '#22c55e'],
+                special:      ['#4f1d1d', '#1e293b', '#fb923c', '#f97316']
+            };
+            let fallback = ['indigo','orange','cyan','lime'].map((n, i) => [
+                ['#1f2a5e','#3d2a10','#0f3d43','#2f3d10'][i], '#1e293b',
+                ['#818cf8','#fb923c','#22d3ee','#a3e635'][i],
+                ['#6366f1','#f97316','#06b6d4','#84cc16'][i]
+            ]);
+            let fbIndex = 0;
+
+            function cardHtml(clickAction, icon, title, sub, colors) {
+                return `
+                    <div onclick="${clickAction}" class="shrink-0 w-44 snap-start rounded-3xl cursor-pointer active:scale-95 hover:brightness-110 transition shadow-lg p-4 space-y-3"
+                         style="background:linear-gradient(145deg, ${colors[0]}, ${colors[1]}); border:1px solid ${colors[2]}55;">
+                        <div class="w-12 h-12 rounded-2xl flex items-center justify-center text-2xl font-bold text-white shadow-md" style="background:${colors[3]};">${icon}</div>
                         <div>
-                            <h3 class="font-bold text-sm text-white">${cat.title}</h3>
-                            <p class="text-xs text-slate-400 mt-0.5">${key === 'notes' || key === 'gemini_notes' ? 'സ്റ്റഡി നോട്ട്സ്' : 'കാറ്റഗറി ടെസ്റ്റുകൾ'}</p>
+                            <h3 class="font-bold text-sm text-white leading-snug">${title}</h3>
+                            <p class="text-xs mt-1" style="color:${colors[2]};">${sub}</p>
                         </div>
                     </div>
                 `;
             }
 
-            // Special Exam card (wrong questions from mock tests)
-            html += `
-                <div onclick="openSpecialExam()" class="bg-slate-800 border border-slate-700 p-4 rounded-2xl cursor-pointer hover:border-indigo-500 transition shadow-sm space-y-2">
-                    <div class="w-10 h-10 bg-indigo-900/50 rounded-xl flex items-center justify-center text-indigo-400 text-xl font-bold">🎯</div>
+            function catCard(key) {
+                let cat = categoriesData[key];
+                let isWeekly = /weekly/i.test(cat.title || '') || /weekly/i.test(key);
+                let icon = icons[key] || (isWeekly ? '🗓️' : '📁');
+                let colors = palette[key] || (isWeekly ? palette.weekly : fallback[fbIndex++ % fallback.length]);
+                let clickAction = key === 'notes' ? `openNotesCategory()` : (key === 'gemini_notes' ? `openGeminiNotesCategory()` : `openSubTopics('${key}')`);
+                let sub = (key === 'notes' || key === 'gemini_notes') ? 'സ്റ്റഡി നോട്ട്സ്' : 'കാറ്റഗറി ടെസ്റ്റുകൾ';
+                return cardHtml(clickAction, icon, cat.title, sub, colors);
+            }
+
+            const specialCard = cardHtml('openSpecialExam()', '🎯', 'Special Exam', 'based on your wrong questions', palette.special);
+
+            let allKeys = Object.keys(categoriesData);
+            let used = new Set();
+            let weeklyKeys = allKeys.filter(k => /weekly/i.test(categoriesData[k].title || '') || /weekly/i.test(k));
+
+            let groups = [
+                { title: '🎓 Exam Packs', keys: ['topic_wise', 'scert', 'ca_daily', 'ca_monthly', ...weeklyKeys, 'malayalam', 'english'] },
+                { title: '📜 Previous Year Questions', keys: ['pyq_main', 'pyq_english', 'pyq_malayalam'] },
+                { title: '📝 Study Notes', keys: ['gemini_notes', 'notes'] }
+            ];
+
+            function row(title, cards) {
+                return `
                     <div>
-                        <h3 class="font-bold text-sm text-white">Special Exam</h3>
-                        <p class="text-xs text-slate-400 mt-0.5">based on your wrong questions</p>
+                        <div class="flex items-center justify-between mb-3">
+                            <h3 class="text-lg font-extrabold text-white">${title}</h3>
+                            <span class="text-xs font-semibold text-indigo-400">Swipe ›</span>
+                        </div>
+                        <div class="flex overflow-x-auto snap-x snap-mandatory space-x-3 pb-3 custom-scrollbar">
+                            ${cards}
+                        </div>
                     </div>
-                </div>
-            `;
+                `;
+            }
+
+            let html = '';
+            groups.forEach(g => {
+                let keys = g.keys.filter(k => categoriesData[k] && !used.has(k));
+                keys.forEach(k => used.add(k));
+                if(keys.length === 0) return;
+                html += row(g.title, keys.map(catCard).join(''));
+            });
+
+            // ബാക്കിയുള്ള കാറ്റഗറികൾ + Special Exam
+            let rest = allKeys.filter(k => !used.has(k));
+            html += row('🎯 More', rest.map(catCard).join('') + specialCard);
 
             grid.innerHTML = html;
         }
