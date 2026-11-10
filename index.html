@@ -4,6 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kerala PSC Smart Revision Portal</title>
+    <meta name="theme-color" content="#0f172a">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="PSC Revision">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="icon" type="image/png" href="icon-192.png">
+    <link rel="apple-touch-icon" href="icon-192.png">
+    <link rel="manifest" href="manifest.json">
     <!-- Tailwind CSS for Modern UI & Mobile Friendly -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Firebase SDKs (Compat version) -->
@@ -50,12 +58,245 @@
         .notes-table tr:nth-child(even) {
             background-color: #f8fafc;
         }
+        /* ===== കളർ തീം: എല്ലാ ടാബുകൾക്കും ഹോമിലെ പോലെ കളർഫുൾ ശൈലി (ഡാറ്റ/ഫങ്ഷൻ ബാധിക്കില്ല) ===== */
+        #section-revision { --ac:#ea580c; --acrgb:234,88,12; --ac2:#c2410c; --actxt:#fed7aa; }
+        #section-practice { --ac:#059669; --acrgb:5,150,105; --ac2:#0f766e; --actxt:#99f6e4; }
+        #section-study_zone { --ac:#9333ea; --acrgb:147,51,234; --ac2:#be185d; --actxt:#fbcfe8; }
+        #section-study-practice { --ac:#9333ea; --acrgb:147,51,234; --ac2:#be185d; --actxt:#fbcfe8; }
+        #section-tracker { --ac:#0284c7; --acrgb:2,132,199; --ac2:#0f766e; --actxt:#bae6fd; }
+        #section-admin_panel { --ac:#e11d48; --acrgb:225,29,72; --ac2:#c2410c; --actxt:#fecdd3; }
+        #section-subtopics { --ac:#4f46e5; --acrgb:79,70,229; --ac2:#7c3aed; --actxt:#c7d2fe; }
+        #section-notes-subtopics { --ac:#16a34a; --acrgb:22,163,74; --ac2:#0f766e; --actxt:#bbf7d0; }
+        #section-gemini-notes-subtopics { --ac:#ca8a04; --acrgb:202,138,4; --ac2:#c2410c; --actxt:#fde68a; }
+
+        :is(#section-revision, #section-practice, #section-study_zone, #section-study-practice, #section-tracker, #section-admin_panel, #section-subtopics, #section-notes-subtopics, #section-gemini-notes-subtopics) .bg-slate-800 {
+            background: linear-gradient(145deg, rgba(var(--acrgb),0.16), #111827 60%) !important;
+            border: 1px solid rgba(var(--acrgb),0.55) !important;
+            border-radius: 1.5rem !important;
+            box-shadow: 0 8px 22px rgba(0,0,0,0.4) !important;
+        }
+        :is(#section-revision, #section-practice, #section-study_zone, #section-study-practice, #section-tracker, #section-admin_panel, #section-subtopics, #section-notes-subtopics, #section-gemini-notes-subtopics) .bg-slate-900 {
+            background: rgba(8,13,26,0.75) !important;
+            border-color: rgba(var(--acrgb),0.40) !important;
+            border-radius: 1rem !important;
+        }
+        :is(#section-revision, #section-practice, #section-study_zone, #section-study-practice, #section-tracker, #section-admin_panel, #section-subtopics, #section-notes-subtopics, #section-gemini-notes-subtopics) .border-slate-700 { border-color: rgba(var(--acrgb),0.40) !important; }
+        :is(#section-revision, #section-practice, #section-study_zone, #section-study-practice, #section-tracker, #section-admin_panel, #section-subtopics, #section-notes-subtopics, #section-gemini-notes-subtopics) .border-slate-800 { border-color: rgba(var(--acrgb),0.30) !important; }
+
+        /* വായിക്കാൻ എളുപ്പത്തിന്: മങ്ങിയ അക്ഷരങ്ങൾ തെളിച്ചമുള്ളതാക്കി */
+        :is(#section-revision, #section-practice, #section-study_zone, #section-study-practice, #section-tracker, #section-admin_panel, #section-subtopics, #section-notes-subtopics, #section-gemini-notes-subtopics) .text-slate-300 { color: #f1f5f9 !important; }
+        :is(#section-revision, #section-practice, #section-study_zone, #section-study-practice, #section-tracker, #section-admin_panel, #section-subtopics, #section-notes-subtopics, #section-gemini-notes-subtopics) .text-slate-400 { color: #e2e8f0 !important; }
+        :is(#section-revision, #section-practice, #section-study_zone, #section-study-practice, #section-tracker, #section-admin_panel, #section-subtopics, #section-notes-subtopics, #section-gemini-notes-subtopics) .text-slate-500 { color: #cbd5e1 !important; }
+        :is(#section-revision, #section-practice, #section-study_zone, #section-study-practice, #section-tracker, #section-admin_panel, #section-subtopics, #section-notes-subtopics, #section-gemini-notes-subtopics) .text-slate-600 { color: #cbd5e1 !important; }
+        :is(#section-revision, #section-practice, #section-study_zone, #section-study-practice, #section-tracker, #section-admin_panel, #section-subtopics, #section-notes-subtopics, #section-gemini-notes-subtopics) .text-indigo-300, :is(#section-revision, #section-practice, #section-study_zone, #section-study-practice, #section-tracker, #section-admin_panel, #section-subtopics, #section-notes-subtopics, #section-gemini-notes-subtopics) .text-indigo-400, :is(#section-revision, #section-practice, #section-study_zone, #section-study-practice, #section-tracker, #section-admin_panel, #section-subtopics, #section-notes-subtopics, #section-gemini-notes-subtopics) .text-amber-400, :is(#section-revision, #section-practice, #section-study_zone, #section-study-practice, #section-tracker, #section-admin_panel, #section-subtopics, #section-notes-subtopics, #section-gemini-notes-subtopics) .text-amber-300 { color: var(--actxt) !important; }
+        :is(#section-revision, #section-practice, #section-study_zone, #section-study-practice, #section-tracker, #section-admin_panel, #section-subtopics, #section-notes-subtopics, #section-gemini-notes-subtopics) .text-emerald-400 { color: #6ee7b7 !important; }
+        :is(#section-revision, #section-practice, #section-study_zone, #section-study-practice, #section-tracker, #section-admin_panel, #section-subtopics, #section-notes-subtopics, #section-gemini-notes-subtopics) .text-red-400, :is(#section-revision, #section-practice, #section-study_zone, #section-study-practice, #section-tracker, #section-admin_panel, #section-subtopics, #section-notes-subtopics, #section-gemini-notes-subtopics) .text-rose-300, :is(#section-revision, #section-practice, #section-study_zone, #section-study-practice, #section-tracker, #section-admin_panel, #section-subtopics, #section-notes-subtopics, #section-gemini-notes-subtopics) .text-rose-400 { color: #fda4af !important; }
+        :is(#section-revision, #section-practice, #section-study_zone, #section-study-practice, #section-tracker, #section-admin_panel, #section-subtopics, #section-notes-subtopics, #section-gemini-notes-subtopics) p, :is(#section-revision, #section-practice, #section-study_zone, #section-study-practice, #section-tracker, #section-admin_panel, #section-subtopics, #section-notes-subtopics, #section-gemini-notes-subtopics) label, :is(#section-revision, #section-practice, #section-study_zone, #section-study-practice, #section-tracker, #section-admin_panel, #section-subtopics, #section-notes-subtopics, #section-gemini-notes-subtopics) li, :is(#section-revision, #section-practice, #section-study_zone, #section-study-practice, #section-tracker, #section-admin_panel, #section-subtopics, #section-notes-subtopics, #section-gemini-notes-subtopics) span { text-shadow: none; }
+
+        :is(#section-revision, #section-practice, #section-study_zone, #section-study-practice, #section-tracker, #section-admin_panel, #section-subtopics, #section-notes-subtopics, #section-gemini-notes-subtopics) h2 {
+            display: block;
+            background: linear-gradient(135deg, var(--ac), var(--ac2));
+            color: #fff !important;
+            font-weight: 800;
+            padding: 0.6rem 1rem;
+            border-radius: 1rem;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.45);
+            box-shadow: 0 6px 16px rgba(var(--acrgb),0.35);
+        }
+        :is(#section-revision, #section-practice, #section-study_zone, #section-study-practice, #section-tracker, #section-admin_panel, #section-subtopics, #section-notes-subtopics, #section-gemini-notes-subtopics) .bg-indigo-600, :is(#section-revision, #section-practice, #section-study_zone, #section-study-practice, #section-tracker, #section-admin_panel, #section-subtopics, #section-notes-subtopics, #section-gemini-notes-subtopics) [class*="hover:bg-indigo-700"] {
+            background: linear-gradient(135deg, var(--ac), var(--ac2)) !important;
+            color: #fff !important;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.45);
+            box-shadow: 0 6px 16px rgba(var(--acrgb),0.35);
+        }
+        :is(#section-revision, #section-practice, #section-study_zone, #section-study-practice, #section-tracker, #section-admin_panel, #section-subtopics, #section-notes-subtopics, #section-gemini-notes-subtopics) [class*="hover:bg-indigo-700"]:active { filter: brightness(0.9); transform: scale(0.98); }
+        :is(#section-revision, #section-practice, #section-study_zone, #section-study-practice, #section-tracker, #section-admin_panel, #section-subtopics, #section-notes-subtopics, #section-gemini-notes-subtopics) input, :is(#section-revision, #section-practice, #section-study_zone, #section-study-practice, #section-tracker, #section-admin_panel, #section-subtopics, #section-notes-subtopics, #section-gemini-notes-subtopics) select, :is(#section-revision, #section-practice, #section-study_zone, #section-study-practice, #section-tracker, #section-admin_panel, #section-subtopics, #section-notes-subtopics, #section-gemini-notes-subtopics) textarea {
+            background: rgba(8,13,26,0.85) !important;
+            color: #fff !important;
+            border-color: rgba(var(--acrgb),0.55) !important;
+            border-radius: 0.85rem !important;
+        }
+        :is(#section-revision, #section-practice, #section-study_zone, #section-study-practice, #section-tracker, #section-admin_panel, #section-subtopics, #section-notes-subtopics, #section-gemini-notes-subtopics) input::placeholder, :is(#section-revision, #section-practice, #section-study_zone, #section-study-practice, #section-tracker, #section-admin_panel, #section-subtopics, #section-notes-subtopics, #section-gemini-notes-subtopics) textarea::placeholder { color: #94a3b8 !important; }
+        :is(#section-revision, #section-practice, #section-study_zone, #section-study-practice, #section-tracker, #section-admin_panel, #section-subtopics, #section-notes-subtopics, #section-gemini-notes-subtopics) input:focus, :is(#section-revision, #section-practice, #section-study_zone, #section-study-practice, #section-tracker, #section-admin_panel, #section-subtopics, #section-notes-subtopics, #section-gemini-notes-subtopics) select:focus, :is(#section-revision, #section-practice, #section-study_zone, #section-study-practice, #section-tracker, #section-admin_panel, #section-subtopics, #section-notes-subtopics, #section-gemini-notes-subtopics) textarea:focus {
+            outline: none;
+            border-color: var(--ac) !important;
+            box-shadow: 0 0 0 3px rgba(var(--acrgb),0.35);
+        }
+        :is(#section-revision, #section-practice, #section-study_zone, #section-study-practice, #section-tracker, #section-admin_panel, #section-subtopics, #section-notes-subtopics, #section-gemini-notes-subtopics) .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(var(--acrgb),0.7); }
+
+        /* ടാബ് ബാർ: ഓരോ ടാബിനും സ്വന്തം നിറം */
+        .tab-btn {
+            background: linear-gradient(145deg, rgba(var(--t1rgb),0.25), #111827) !important;
+            border: 1px solid rgba(var(--t1rgb),0.65) !important;
+            color: #f1f5f9 !important;
+            border-radius: 1rem !important;
+            transition: transform .15s, box-shadow .15s;
+        }
+        .tab-btn.bg-indigo-600 {
+            background: linear-gradient(135deg, var(--t1), var(--t2)) !important;
+            color: #fff !important;
+            font-weight: 800 !important;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.45);
+            box-shadow: 0 6px 18px rgba(var(--t1rgb),0.55) !important;
+            transform: scale(1.04);
+        }
+        #btn-dashboard { --t1:#4f46e5; --t1rgb:79,70,229; --t2:#7c3aed; }
+        #btn-revision { --t1:#ea580c; --t1rgb:234,88,12; --t2:#c2410c; }
+        #btn-practice { --t1:#059669; --t1rgb:5,150,105; --t2:#0f766e; }
+        #btn-study_zone { --t1:#9333ea; --t1rgb:147,51,234; --t2:#be185d; }
+        #btn-admin_panel { --t1:#e11d48; --t1rgb:225,29,72; --t2:#c2410c; }
+        #btn-tracker { --t1:#0284c7; --t1rgb:2,132,199; --t2:#0f766e; }
+
+        /* അഡ്മിൻ ഉപ-ബട്ടണുകൾ */
+        .admin-sub-btn {
+            background: linear-gradient(145deg, rgba(var(--s1rgb),0.25), #111827) !important;
+            border: 1px solid rgba(var(--s1rgb),0.7) !important;
+            color: #f1f5f9 !important;
+            border-radius: 1rem !important;
+        }
+        .admin-sub-btn.bg-indigo-600 {
+            background: linear-gradient(135deg, var(--s1), var(--s2)) !important;
+            color: #fff !important;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.45);
+            box-shadow: 0 6px 16px rgba(var(--s1rgb),0.5) !important;
+        }
+        .admin-sub-btn:nth-child(1) { --s1:#4f46e5; --s1rgb:79,70,229; --s2:#7c3aed; }
+        .admin-sub-btn:nth-child(2) { --s1:#d97706; --s1rgb:217,119,6; --s2:#c2410c; }
+        .admin-sub-btn:nth-child(3) { --s1:#e11d48; --s1rgb:225,29,72; --s2:#be185d; }
+        .admin-sub-btn:nth-child(4) { --s1:#059669; --s1rgb:5,150,105; --s2:#0f766e; }
+        .admin-sub-btn:nth-child(5) { --s1:#9333ea; --s1rgb:147,51,234; --s2:#a21caf; }
+        .admin-sub-btn:nth-child(6) { --s1:#0284c7; --s1rgb:2,132,199; --s2:#0e7490; }
+        .admin-sub-btn:nth-child(7) { --s1:#ca8a04; --s1rgb:202,138,4; --s2:#b45309; }
+        .admin-sub-btn:nth-child(8) { --s1:#dc2626; --s1rgb:220,38,38; --s2:#c2410c; }
+        /* ===== ബട്ടണുകൾ: പ്രൊഫഷണൽ ലുക്ക് (ഫങ്ഷനിൽ മാറ്റമില്ല) ===== */
+        button {
+            -webkit-tap-highlight-color: transparent;
+            transition: transform .12s ease, box-shadow .2s ease, filter .2s ease, background .2s ease;
+        }
+        button:hover:not(:disabled) { filter: brightness(1.08); }
+        button:active:not(:disabled) { transform: scale(0.97); filter: brightness(0.95); }
+        button:focus-visible { outline: 2px solid #c7d2fe; outline-offset: 2px; }
+        button:disabled { opacity: 0.5; cursor: not-allowed; filter: grayscale(0.35); }
+        /* പ്രൈമറി (ഇൻഡിഗോ) ബട്ടണുകൾ: ടാബ്-തീമിന് പുറത്തുള്ളവ (റിസൾട്ട്, ടെസ്റ്റ് സ്ക്രീൻ, പോപ്പ്-അപ്പ്) */
+        button.bg-indigo-600, button[class*="hover:bg-indigo-700"] {
+            background: linear-gradient(135deg, #4f46e5, #7c3aed) !important;
+            border: 1px solid rgba(255,255,255,0.18);
+            border-radius: 0.9rem !important;
+            font-weight: 700 !important;
+            letter-spacing: 0.01em;
+            color: #fff !important;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.35);
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.28), 0 6px 14px rgba(79,70,229,0.40) !important;
+        }
+        button.bg-emerald-600, button.bg-emerald-600:hover {
+            background: linear-gradient(135deg, #10b981, #059669) !important;
+            border: 1px solid rgba(255,255,255,0.18) !important;
+            border-radius: 0.9rem !important;
+            font-weight: 700 !important;
+            letter-spacing: 0.01em;
+            color: #fff !important;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.35);
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.28), 0 6px 14px rgba(16,185,129,0.38) !important;
+        }
+        button.bg-amber-600, button.bg-amber-600:hover {
+            background: linear-gradient(135deg, #f59e0b, #d97706) !important;
+            border: 1px solid rgba(255,255,255,0.18) !important;
+            border-radius: 0.9rem !important;
+            font-weight: 700 !important;
+            letter-spacing: 0.01em;
+            color: #fff !important;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.35);
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.28), 0 6px 14px rgba(245,158,11,0.38) !important;
+        }
+        button.bg-red-600, button.bg-red-600:hover {
+            background: linear-gradient(135deg, #ef4444, #dc2626) !important;
+            border: 1px solid rgba(255,255,255,0.18) !important;
+            border-radius: 0.9rem !important;
+            font-weight: 700 !important;
+            letter-spacing: 0.01em;
+            color: #fff !important;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.35);
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.28), 0 6px 14px rgba(239,68,68,0.38) !important;
+        }
+        button.bg-rose-600, button.bg-rose-600:hover {
+            background: linear-gradient(135deg, #f43f5e, #e11d48) !important;
+            border: 1px solid rgba(255,255,255,0.18) !important;
+            border-radius: 0.9rem !important;
+            font-weight: 700 !important;
+            letter-spacing: 0.01em;
+            color: #fff !important;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.35);
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.28), 0 6px 14px rgba(244,63,94,0.38) !important;
+        }
+        button.bg-slate-700, button.bg-slate-700:hover {
+            background: linear-gradient(135deg, #475569, #334155) !important;
+            border: 1px solid rgba(255,255,255,0.14) !important;
+            border-radius: 0.9rem !important;
+            font-weight: 600 !important;
+            color: #f8fafc !important;
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.18), 0 4px 10px rgba(0,0,0,0.35) !important;
+        }
+        button[class*="bg-red-950"] {
+            background: rgba(239,68,68,0.14) !important;
+            border: 1px solid rgba(239,68,68,0.55) !important;
+            border-radius: 0.9rem !important;
+            font-weight: 600 !important;
+            box-shadow: 0 2px 8px rgba(239,68,68,0.18) !important;
+        }
+        button[class*="bg-red-950"]:hover { background: rgba(239,68,68,0.26) !important; }
+        button[class*="bg-rose-950"] {
+            background: rgba(244,63,94,0.14) !important;
+            border: 1px solid rgba(244,63,94,0.55) !important;
+            border-radius: 0.9rem !important;
+            font-weight: 600 !important;
+            box-shadow: 0 2px 8px rgba(244,63,94,0.18) !important;
+        }
+        button[class*="bg-rose-950"]:hover { background: rgba(244,63,94,0.26) !important; }
+        button[class*="bg-indigo-950"] {
+            background: rgba(99,102,241,0.14) !important;
+            border: 1px solid rgba(99,102,241,0.55) !important;
+            border-radius: 0.9rem !important;
+            font-weight: 600 !important;
+            box-shadow: 0 2px 8px rgba(99,102,241,0.18) !important;
+        }
+        button[class*="bg-indigo-950"]:hover { background: rgba(99,102,241,0.26) !important; }
+        button[class*="bg-emerald-950"] {
+            background: rgba(16,185,129,0.14) !important;
+            border: 1px solid rgba(16,185,129,0.55) !important;
+            border-radius: 0.9rem !important;
+            font-weight: 600 !important;
+            box-shadow: 0 2px 8px rgba(16,185,129,0.18) !important;
+        }
+        button[class*="bg-emerald-950"]:hover { background: rgba(16,185,129,0.26) !important; }
+        button[class*="bg-amber-950"] {
+            background: rgba(245,158,11,0.14) !important;
+            border: 1px solid rgba(245,158,11,0.55) !important;
+            border-radius: 0.9rem !important;
+            font-weight: 600 !important;
+            box-shadow: 0 2px 8px rgba(245,158,11,0.18) !important;
+        }
+        button[class*="bg-amber-950"]:hover { background: rgba(245,158,11,0.26) !important; }
+        /* ചെറിയ "തിരികെ" ബട്ടണുകൾ (ടാബ് തീമിനുള്ളിൽ) */
+        :is(#section-revision, #section-practice, #section-study_zone, #section-study-practice, #section-tracker, #section-admin_panel, #section-subtopics, #section-notes-subtopics, #section-gemini-notes-subtopics) button.bg-slate-800 {
+            background: rgba(var(--acrgb),0.20) !important;
+            border: 1px solid rgba(var(--acrgb),0.6) !important;
+            border-radius: 0.9rem !important;
+            color: #fff !important;
+            font-weight: 600 !important;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.35) !important;
+        }
+        /* അഡ്മിൻ ഉപ-ബട്ടണുകൾ: സെലക്ട് ചെയ്തത് സ്വന്തം നിറത്തിൽ തന്നെ നിൽക്കാൻ */
+        #section-admin_panel .admin-sub-btn.bg-indigo-600 {
+            background: linear-gradient(135deg, var(--s1), var(--s2)) !important;
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.28), 0 6px 16px rgba(var(--s1rgb),0.5) !important;
+        }
+        #section-admin_panel .admin-sub-btn { font-weight: 700 !important; }
     </style>
 </head>
 <body class="font-sans antialiased min-h-screen flex flex-col">
 
     <!-- Header -->
-    <header class="bg-slate-900 border-b border-slate-800 p-4 sticky top-0 z-50 flex justify-between items-center shadow-md">
+    <header class="bg-slate-900 border-b border-slate-800 p-4 sticky top-0 z-50 flex justify-between items-center shadow-md" style="display:none;">
         <div class="flex items-center space-x-2">
             <div class="bg-indigo-600 text-white font-bold px-2.5 py-1 rounded-lg text-sm">PSC</div>
             <h1 class="text-lg font-bold text-white">Smart Revision</h1>
@@ -75,12 +316,12 @@
 
         <!-- Navigation Tabs -->
         <div class="flex overflow-x-auto space-x-2 pb-2 custom-scrollbar">
-            <button onclick="switchTab('dashboard')" id="btn-dashboard" class="tab-btn px-4 py-2 bg-indigo-600 text-white rounded-xl text-sm font-medium whitespace-nowrap shadow">ഹോം (Home)</button>
-            <button onclick="switchTab('revision')" id="btn-revision" class="tab-btn px-4 py-2 bg-slate-800 text-slate-300 border border-slate-700 rounded-xl text-sm font-medium whitespace-nowrap">Custom Revision</button>
-            <button onclick="switchTab('practice')" id="btn-practice" class="tab-btn px-4 py-2 bg-slate-800 text-slate-300 border border-slate-700 rounded-xl text-sm font-medium whitespace-nowrap">Practice Zone</button>
+            <button onclick="switchTab('dashboard')" id="btn-dashboard" class="tab-btn px-4 py-2 bg-indigo-600 text-white rounded-xl text-sm font-medium whitespace-nowrap shadow">🏠 ഹോം (Home)</button>
+            <button onclick="switchTab('revision')" id="btn-revision" class="tab-btn px-4 py-2 bg-slate-800 text-slate-300 border border-slate-700 rounded-xl text-sm font-medium whitespace-nowrap">🎯 Custom Revision</button>
+            <button onclick="switchTab('practice')" id="btn-practice" class="tab-btn px-4 py-2 bg-slate-800 text-slate-300 border border-slate-700 rounded-xl text-sm font-medium whitespace-nowrap">✍️ Practice Zone</button>
             <button onclick="switchTab('study_zone')" id="btn-study_zone" class="tab-btn px-4 py-2 bg-slate-800 text-slate-300 border border-slate-700 rounded-xl text-sm font-medium whitespace-nowrap">📚 Study Zone</button>
-            <button onclick="switchTab('admin_panel')" id="btn-admin_panel" class="tab-btn px-4 py-2 bg-slate-800 text-slate-300 border border-slate-700 rounded-xl text-sm font-medium whitespace-nowrap">Admin Panel</button>
-            <button onclick="switchTab('tracker')" id="btn-tracker" class="tab-btn px-4 py-2 bg-slate-800 text-slate-300 border border-slate-700 rounded-xl text-sm font-medium whitespace-nowrap">Progress Tracker</button>
+            <button onclick="switchTab('admin_panel')" id="btn-admin_panel" class="tab-btn px-4 py-2 bg-slate-800 text-slate-300 border border-slate-700 rounded-xl text-sm font-medium whitespace-nowrap">🛡️ Admin Panel</button>
+            <button onclick="switchTab('tracker')" id="btn-tracker" class="tab-btn px-4 py-2 bg-slate-800 text-slate-300 border border-slate-700 rounded-xl text-sm font-medium whitespace-nowrap">📊 Progress Tracker</button>
         </div>
 
         <!-- TAB 1: DASHBOARD -->
@@ -3181,6 +3422,35 @@
         // =================== END SPECIAL EXAM ===================
 
         switchTab('dashboard');
+    </script>
+
+    <!-- Full Screen ബട്ടൺ (ആപ്പ് ആയി ഇൻസ്റ്റാൾ ചെയ്തതാണെങ്കിൽ തനിയെ മറയും) -->
+    <button id="fs-toggle-btn" onclick="toggleFullScreenMode()" style="display:none; position:fixed; right:12px; bottom:84px; z-index:40; width:44px; height:44px; border-radius:9999px; background:rgba(79,70,229,0.92); color:#fff; font-size:20px; border:1px solid rgba(255,255,255,0.25); box-shadow:0 4px 12px rgba(0,0,0,0.4);" aria-label="Full Screen">⛶</button>
+    <script>
+        (function() {
+            var btn = document.getElementById('fs-toggle-btn');
+            var isStandalone = window.matchMedia('(display-mode: fullscreen)').matches ||
+                               window.matchMedia('(display-mode: standalone)').matches ||
+                               window.navigator.standalone === true;
+            var canFS = document.documentElement.requestFullscreen || document.documentElement.webkitRequestFullscreen;
+            if (btn && canFS && !isStandalone) btn.style.display = 'block';
+            window.toggleFullScreenMode = function() {
+                var el = document.documentElement;
+                var inFS = document.fullscreenElement || document.webkitFullscreenElement;
+                try {
+                    if (!inFS) { (el.requestFullscreen || el.webkitRequestFullscreen).call(el); }
+                    else { (document.exitFullscreen || document.webkitExitFullscreen).call(document); }
+                } catch (e) { console.log(e); }
+            };
+            function syncIcon() {
+                if (btn) btn.innerText = (document.fullscreenElement || document.webkitFullscreenElement) ? '🗗' : '⛶';
+            }
+            document.addEventListener('fullscreenchange', syncIcon);
+            document.addEventListener('webkitfullscreenchange', syncIcon);
+            if ('serviceWorker' in navigator) {
+                window.addEventListener('load', function() { navigator.serviceWorker.register('sw.js').catch(function(e) { console.log('SW:', e); }); });
+            }
+        })();
     </script>
 </body>
 </html>
