@@ -713,6 +713,7 @@
 
         <!-- RESULT VIEW -->
         <div id="result-interface" class="hidden bg-slate-800 border border-slate-700 p-6 rounded-2xl shadow-xl space-y-6">
+            <button id="result-back-btn" onclick="backToTestList()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-2.5 rounded-xl text-sm font-medium transition shadow">← ടെസ്റ്റ് ലിസ്റ്റിലേക്ക് മടങ്ങുക</button>
             <h2 class="text-xl font-bold text-indigo-400 text-center">ടെസ്റ്റ് റിസൾട്ട്</h2>
             
             <div class="grid grid-cols-2 gap-4 text-center">
@@ -755,7 +756,6 @@
                 <div id="result-answers-list" class="space-y-3 max-h-72 overflow-y-auto custom-scrollbar p-1"></div>
             </div>
             
-            <button onclick="resetToHome()" class="w-full bg-slate-700 hover:bg-slate-600 text-white py-2.5 rounded-xl text-sm font-medium">ഹോമിലേക്ക് മടങ്ങുക</button>
         </div>
 
     </main>
@@ -997,6 +997,7 @@
         let currentTestTitle = "";
         let activeTestKeyForTracking = "";
         let activeCategoryKey = "";
+        let testOrigin = ""; // മോക്ക് ടെസ്റ്റ് തുടങ്ങിയ സ്ഥലം: category / special / revision
         let activeSubtopicName = "";
         let activeOriginalTestName = "";
         let activeCurrentNoteKey = "";
@@ -2685,6 +2686,7 @@
             currentTestTitle = "മൾട്ടി-സെലക്ട് റിവിഷൻ ടെസ്റ്റ്";
             activeTestKeyForTracking = "Custom Revision Test";
             prepareFinalTestQuestions(finalSelected);
+            setTestOrigin('revision');
             launchMockTest();
         }
 
@@ -2782,6 +2784,7 @@
             if(filtered.length === 0) { alert("ഈ ടെസ്റ്റിൽ ചോദ്യങ്ങൾ ഒന്നും ലഭ്യമല്ല!"); return; }
             
             prepareFinalTestQuestions(shuffleArray(filtered));
+            setTestOrigin('category');
             launchMockTest();
         }
 
@@ -2793,6 +2796,31 @@
                 let newAnswerIndex = shuffledOpts.indexOf(correctOptText);
                 return { ...q, options: shuffledOpts, answer: newAnswerIndex };
             });
+        }
+
+        function setTestOrigin(origin) {
+            testOrigin = origin;
+            const btn = document.getElementById('result-back-btn');
+            if(btn) {
+                btn.innerText = origin === 'special' ? '← Special Exam-ലേക്ക് മടങ്ങുക'
+                              : origin === 'revision' ? '← Custom Revision-ലേക്ക് മടങ്ങുക'
+                              : '← ടെസ്റ്റ് ലിസ്റ്റിലേക്ക് മടങ്ങുക';
+            }
+        }
+
+        // മോക്ക് ടെസ്റ്റ് റിസൾട്ടിൽ നിന്ന് ടെസ്റ്റ് തുടങ്ങിയ ലിസ്റ്റിലേക്ക് തന്നെ തിരികെ പോകാൻ
+        function backToTestList() {
+            document.getElementById('result-interface').classList.add('hidden');
+            document.getElementById('mock-interface').classList.add('hidden');
+            if(testOrigin === 'special') {
+                openSpecialExam();
+            } else if(testOrigin === 'revision') {
+                switchTab('revision');
+            } else if(testOrigin === 'category' && activeCategoryKey) {
+                openSubTopics(activeCategoryKey);
+            } else {
+                switchTab('dashboard');
+            }
         }
 
         function launchMockTest() {
@@ -3385,6 +3413,7 @@
             specialExamActive = true;
 
             prepareFinalTestQuestions(shuffleArray([...specialExamQuestions]));
+            setTestOrigin('special');
             launchMockTest();
         }
 
