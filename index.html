@@ -291,6 +291,88 @@
             box-shadow: inset 0 1px 0 rgba(255,255,255,0.28), 0 6px 16px rgba(var(--s1rgb),0.5) !important;
         }
         #section-admin_panel .admin-sub-btn { font-weight: 700 !important; }
+        /* ===== ഡെസ്ക്ടോപ്പ്/ലാപ്ടോപ്പ് (≥1024px): സാധാരണ വെബ്സൈറ്റ് പോലെ വീതിയിൽ ===== */
+        /* ഫോണിലും ടാബ്ലെറ്റിലും ഒരു മാറ്റവുമില്ല. ഡാറ്റ/ഫങ്ഷൻ ബാധിക്കില്ല. */
+        @media (min-width: 1024px) {
+            body {
+                background-image:
+                    radial-gradient(1100px 520px at 8% -8%, rgba(99,102,241,0.20), transparent 70%),
+                    radial-gradient(900px 480px at 100% 0%, rgba(236,72,153,0.14), transparent 70%);
+                background-attachment: fixed;
+            }
+            /* പേജ് വീതി: സ്ക്രീനിന്റെ വലിയ ഭാഗം ഉപയോഗിക്കുന്നു */
+            body > main {
+                max-width: 1320px !important;
+                padding: 1.75rem 2.5rem 6rem !important;
+            }
+            /* ടാബ് ബാർ: വീതിയിൽ ഒരേ വലിപ്പത്തിലുള്ള നാവിഗേഷൻ */
+            body > main > div.overflow-x-auto:first-child {
+                overflow: visible !important;
+                gap: 0.75rem;
+            }
+            body > main > div.overflow-x-auto:first-child > .tab-btn {
+                flex: 1 1 0 !important;
+                padding: 0.95rem 1rem !important;
+                font-size: 1rem !important;
+                margin-left: 0 !important;
+            }
+            body > main > div.overflow-x-auto:first-child > .tab-btn:hover { transform: translateY(-2px); }
+
+            /* ഹോം: കാറ്റഗറി നിരകൾ ഗ്രിഡ് ആയി */
+            #dashboard-categories-grid { display: flex; flex-direction: column; gap: 2rem; }
+            #dashboard-categories-grid > * { margin-top: 0 !important; }
+            #dashboard-categories-grid .snap-x {
+                display: grid !important;
+                grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
+                gap: 1.25rem;
+                overflow-x: visible !important;
+                scroll-snap-type: none !important;
+            }
+            #dashboard-categories-grid .snap-x > * {
+                width: auto !important;
+                margin-left: 0 !important;
+                padding: 1.4rem !important;
+                min-height: 9.5rem;
+            }
+            #dashboard-categories-grid .snap-x > *:hover {
+                transform: translateY(-4px);
+                box-shadow: 0 14px 30px rgba(0,0,0,0.5);
+            }
+            #dashboard-categories-grid h3.text-lg { font-size: 1.35rem; }
+            #dashboard-categories-grid .justify-between > span { display: none; }
+
+            /* ടാബുകൾക്കുള്ളിലെ ലിസ്റ്റുകൾ: രണ്ട് കോളം */
+            #subtopics-container,
+            #study-zone-tests-container,
+            #notes-subtopics-container,
+            #gemini-notes-subtopics-container,
+            #tracker-detailed-container {
+                display: grid;
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                gap: 1.25rem;
+                align-items: start;
+            }
+            #subtopics-container > *,
+            #study-zone-tests-container > *,
+            #notes-subtopics-container > *,
+            #gemini-notes-subtopics-container > *,
+            #tracker-detailed-container > * { margin-top: 0 !important; }
+            #study-zone-tests-container { max-height: none !important; overflow: visible !important; }
+
+            /* Custom Revision: രണ്ട് കാർഡുകൾ അടുത്തടുത്ത് */
+            #section-revision:not(.hidden) {
+                display: grid;
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                gap: 1.5rem;
+                align-items: start;
+            }
+            #section-revision > * { margin-top: 0 !important; }
+            #accordion-container { max-height: 26rem !important; }
+
+            /* അഡ്മിൻ ഉപ-ബട്ടണുകൾ ഒതുങ്ങി നിൽക്കാൻ */
+            #section-admin_panel .overflow-x-auto { flex-wrap: wrap; overflow: visible !important; gap: 0.6rem; }
+            #section-admin_panel .overflow-x-auto > * { margin-left: 0 !important; }
+        }
     </style>
 </head>
 <body class="font-sans antialiased min-h-screen flex flex-col">
