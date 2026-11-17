@@ -17,6 +17,7 @@
     <!-- Firebase SDKs (Compat version) -->
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
     <style>
         .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
         .custom-scrollbar::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
@@ -389,7 +390,7 @@
                 <span>🏠 Go to Main Home</span>
             </a>
             <!-- Logged In User Display -->
-            <div id="sync-status" class="text-xs bg-indigo-950 text-indigo-300 px-2.5 py-1 rounded border border-indigo-700 font-bold">👤 Login: അനൂപ്</div>
+            <button id="sync-status" type="button" class="text-xs bg-indigo-950 text-indigo-300 px-2.5 py-1 rounded border border-indigo-700 font-bold">🔐 Google Login</button>
         </div>
     </header>
 
@@ -745,6 +746,12 @@
 
         <!-- TAB 4: Progress Tracker -->
         <section id="section-tracker" class="hidden space-y-4">
+            <div class="flex space-x-2 overflow-x-auto custom-scrollbar pb-1">
+                <button id="trk-btn-topics" onclick="switchTrackerTab('topics')" class="px-4 py-2 rounded-xl text-sm font-medium whitespace-nowrap bg-indigo-600 text-white shadow">📚 Topic Progress</button>
+                <button id="trk-btn-daily" onclick="switchTrackerTab('daily')" class="px-4 py-2 rounded-xl text-sm font-medium whitespace-nowrap bg-slate-800 text-slate-300 border border-slate-700">📰 Daily Current Affairs</button>
+                <button id="trk-btn-monthly" onclick="switchTrackerTab('monthly')" class="px-4 py-2 rounded-xl text-sm font-medium whitespace-nowrap bg-slate-800 text-slate-300 border border-slate-700">🗓️ Monthly Current Affairs</button>
+            </div>
+            <div id="trk-panel-topics">
             <div class="bg-slate-800 border border-slate-700 p-5 rounded-2xl shadow-md space-y-4">
                 <h2 class="text-lg font-bold text-indigo-400">📊 പ്രോഗ്രസ് ട്രാക്കർ (Progress Tracker)</h2>
                 <p class="text-xs text-slate-400">താങ്കളുടെ പഠന പുരോഗതിയും പൂർത്തിയാക്കിയ ടോപ്പിക്കുകളുടെ ശതമാനവും താഴെ കാണാം:</p>
@@ -765,6 +772,9 @@
                     <p class="text-xs text-slate-500 text-center py-4">ടോപ്പിക്കുകൾ ഒന്നും ലഭ്യമല്ല.</p>
                 </div>
             </div>
+            </div>
+            <div id="trk-panel-daily" class="hidden"></div>
+            <div id="trk-panel-monthly" class="hidden"></div>
         </section>
 
         <!-- ACTIVE MOCK TEST -->
@@ -825,6 +835,7 @@
             </div>
 
             <div id="save-mistakes-container"></div>
+            <div id="retry-container" class="grid grid-cols-1 gap-2"></div>
 
             <div class="flex space-x-2 pt-2">
                 <button onclick="renderResultAnswers('all')" class="flex-1 bg-slate-700 hover:bg-slate-600 text-white py-1.5 rounded-lg text-xs font-medium">എല്ലാം</button>
@@ -922,6 +933,7 @@
             <div>
                 <label class="block text-xs font-medium text-slate-300 mb-1">ചോദ്യം (Question):</label>
                 <textarea id="edit-q-text" rows="3" class="w-full p-2.5 bg-slate-900 border border-slate-700 text-white rounded-xl text-sm custom-scrollbar"></textarea>
+                <div id="edit-q-extras" class="text-xs"></div>
             </div>
 
             <div class="space-y-2">
@@ -955,6 +967,9 @@
     </div>
 
     <script>
+        let DB_DOC = "psc_database_anoop";
+        let SP_DOC = "psc_special_exam_anoop";
+        let currentUser = null;
         const firebaseConfig = {
             apiKey: "AIzaSyDA1XwfYzlPCL_Soxia0d-JpNekGGCaJMM",
             authDomain: "mypscrevison.firebaseapp.com",
@@ -969,10 +984,77 @@
         try {
             firebase.initializeApp(firebaseConfig);
             db = firebase.firestore();
-            loadDataFromFirebase();
+            initAuth();
         } catch(e) {
             console.log("Firebase init error:", e);
         }
+
+
+        // ===================== GOOGLE LOGIN =====================
+        async function saveAllToCloud() {
+            if(!db) return;
+            try {
+                await db.collection("app_data").doc(DB_DOC).set({
+                    categoriesData: categoriesData,
+                    sampleQuestions: sampleQuestions,
+                    studyNotesMap: studyNotesMap,
+                    studyHighlightsMap: studyHighlightsMap,
+                    userProgressData: userProgressData,
+                    reportedQuestionsList: reportedQuestionsList,
+                    trackerTopicsData: trackerTopicsData,
+                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
+            } catch(e) { console.log("Cloud save error:", e); }
+        }
+
+        function initAuth() {
+            if(!db || !firebase.auth) { loadDataFromFirebase(); return; }
+            firebase.auth().onAuthStateChanged(async (user) => {
+                currentUser = user || null;
+                if(user) { DB_DOC = "psc_database_" + user.uid; SP_DOC = "psc_special_exam_" + user.uid; }
+                else { DB_DOC = "psc_database_anoop"; SP_DOC = "psc_special_exam_anoop"; }
+                updateAuthUI();
+                await loadDataFromFirebase();
+                try { loadSpecialExamFromCloud(); } catch(e) { console.log(e); }
+                try { renderTrackerUI(); } catch(e) {}
+            });
+        }
+
+        function updateAuthUI() {
+            const el = document.getElementById('sync-status');
+            if(!el) return;
+            if(currentUser) {
+                const nm = (currentUser.displayName || currentUser.email || 'User').split(' ')[0];
+                el.innerHTML = '👤 ' + nm + ' · Logout';
+                el.title = currentUser.email || '';
+                el.onclick = googleSignOut;
+            } else {
+                el.innerHTML = '🔐 Google Login';
+                el.title = 'Gmail / Google അക്കൗണ്ട് ഉപയോഗിച്ച് ലോഗിൻ ചെയ്യുക';
+                el.onclick = googleSignIn;
+            }
+        }
+
+        async function googleSignIn() {
+            if(!firebase.auth) { alert('ലോഗിൻ സൗകര്യം ലഭ്യമല്ല. ഇന്റർനെറ്റ് പരിശോധിക്കുക.'); return; }
+            const provider = new firebase.auth.GoogleAuthProvider();
+            try {
+                await firebase.auth().signInWithPopup(provider);
+            } catch(e) {
+                if(e && (e.code === 'auth/popup-blocked' || e.code === 'auth/operation-not-supported-in-this-environment' || e.code === 'auth/web-storage-unsupported')) {
+                    try { await firebase.auth().signInWithRedirect(provider); } catch(e2) { alert('ലോഗിൻ പരാജയപ്പെട്ടു: ' + (e2.code || e2.message)); }
+                } else if(e && e.code !== 'auth/popup-closed-by-user' && e.code !== 'auth/cancelled-popup-request') {
+                    alert('ലോഗിൻ പരാജയപ്പെട്ടു: ' + (e.code || e.message));
+                }
+            }
+        }
+
+        async function googleSignOut() {
+            if(!confirm('ലോഗൗട്ട് ചെയ്യണോ?')) return;
+            try { await firebase.auth().signOut(); } catch(e) { console.log(e); }
+            location.reload();
+        }
+        // =================== END GOOGLE LOGIN ===================
 
         let defaultCategoriesOrder = {
             topic_wise: { title: "Topic-wise Exams", subtopics: [] },
@@ -1023,8 +1105,15 @@
         async function loadDataFromFirebase() {
             if(!db) return;
             try {
-                const docRef = db.collection("app_data").doc("psc_database_anoop");
-                const docSnap = await docRef.get();
+                const docRef = db.collection("app_data").doc(DB_DOC);
+                let docSnap = await docRef.get();
+                let migrated = false;
+                if(!docSnap.exists && currentUser) {
+                    try {
+                        const legacy = await db.collection("app_data").doc("psc_database_anoop").get();
+                        if(legacy.exists) { docSnap = legacy; migrated = true; }
+                    } catch(e) { console.log("Legacy load skipped:", e); }
+                }
                 if (docSnap.exists) {
                     const serverData = docSnap.data();
                     if(serverData.categoriesData) {
@@ -1063,6 +1152,9 @@
                         trackerTopicsData = serverData.trackerTopicsData;
                         localStorage.setItem('psc_tracker_topics_data_anoop', JSON.stringify(trackerTopicsData));
                     }
+                    if(migrated) { await saveAllToCloud(); }
+                } else if(currentUser) {
+                    await saveAllToCloud();
                 }
             } catch(err) {
                 console.log("Firebase load error:", err);
@@ -1133,6 +1225,7 @@
             } else if(tabId === 'tracker') {
                 document.getElementById('section-tracker').classList.remove('hidden');
                 renderTrackerUI();
+                switchTrackerTab(trackerTab);
             }
         }
 
@@ -1302,7 +1395,7 @@
             localStorage.setItem('psc_tracker_topics_data_anoop', JSON.stringify(trackerTopicsData));
             if(db) {
                 try {
-                    await db.collection("app_data").doc("psc_database_anoop").set({
+                    await db.collection("app_data").doc(DB_DOC).set({
                         categoriesData: categoriesData,
                         sampleQuestions: sampleQuestions,
                         studyNotesMap: studyNotesMap,
@@ -1374,6 +1467,71 @@
                 `;
             });
         }
+
+
+        // ===================== TEST COMPLETION + CURRENT AFFAIRS TRACKER =====================
+        let trackerTab = 'topics';
+
+        function recordTestCompletion(correct, wrong, unattempted, score) {
+            try {
+                if(testOrigin !== 'category' || !activeCategoryKey || !activeOriginalTestName) return;
+                if(!userProgressData || typeof userProgressData !== 'object') userProgressData = {};
+                if(!userProgressData.completedTests) userProgressData.completedTests = {};
+                const key = [activeCategoryKey, activeSubtopicName, activeOriginalTestName].join('|');
+                const prev = userProgressData.completedTests[key];
+                userProgressData.completedTests[key] = {
+                    topic: activeCategoryKey,
+                    sub: activeSubtopicName,
+                    test: activeOriginalTestName,
+                    lastDone: Date.now(),
+                    attempts: (prev && prev.attempts ? prev.attempts : 0) + 1,
+                    score: score, correct: correct, wrong: wrong, unattempted: unattempted
+                };
+                localStorage.setItem('psc_user_progress_anoop', JSON.stringify(userProgressData));
+                saveAllToCloud();
+            } catch(e) { console.log('Completion record error:', e); }
+        }
+
+        function switchTrackerTab(t) {
+            trackerTab = t;
+            ['topics', 'daily', 'monthly'].forEach(k => {
+                const p = document.getElementById('trk-panel-' + k);
+                const b = document.getElementById('trk-btn-' + k);
+                if(p) p.classList.toggle('hidden', k !== t);
+                if(b) b.className = k === t
+                    ? 'px-4 py-2 rounded-xl text-sm font-medium whitespace-nowrap bg-indigo-600 text-white shadow'
+                    : 'px-4 py-2 rounded-xl text-sm font-medium whitespace-nowrap bg-slate-800 text-slate-300 border border-slate-700';
+            });
+            if(t === 'daily') renderCompletedCA('ca_daily', 'trk-panel-daily', 'Daily Current Affairs');
+            if(t === 'monthly') renderCompletedCA('ca_monthly', 'trk-panel-monthly', 'Monthly Current Affairs');
+        }
+
+        function renderCompletedCA(topicKey, panelId, title) {
+            const panel = document.getElementById(panelId);
+            if(!panel) return;
+            const all = (userProgressData && userProgressData.completedTests) ? Object.values(userProgressData.completedTests) : [];
+            const list = all.filter(x => x.topic === topicKey).sort((a, b) => (b.lastDone || 0) - (a.lastDone || 0));
+            let body = list.length === 0
+                ? `<p class="text-xs text-slate-500 text-center py-4">ഇതുവരെ ടെസ്റ്റ് ചെയ്തവ ഒന്നും ഇല്ല.</p>`
+                : list.map(x => {
+                    const d = x.lastDone ? new Date(x.lastDone).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }) : '';
+                    return `<div class="flex items-center justify-between bg-slate-900 border border-slate-800 p-3 rounded-xl text-xs">
+                        <div class="min-w-0">
+                            <div class="text-slate-200 font-bold truncate">${x.test}</div>
+                            <div class="text-slate-500 truncate">${x.sub || ''}${d ? ' · ' + d : ''}</div>
+                        </div>
+                        <span class="ml-2 px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-950 text-emerald-400 border border-emerald-800 whitespace-nowrap">Completed</span>
+                    </div>`;
+                }).join('');
+            panel.innerHTML = `<div class="bg-slate-800 border border-slate-700 p-5 rounded-2xl shadow-md space-y-3">
+                <div class="flex justify-between items-center">
+                    <h2 class="text-base font-bold text-indigo-400">${title}</h2>
+                    <span class="text-xs font-bold text-emerald-400">${list.length} Completed</span>
+                </div>
+                <div class="space-y-2">${body}</div>
+            </div>`;
+        }
+        // =================== END CURRENT AFFAIRS TRACKER ===================
 
         // Render Study Zone Tests List (Topic-wise only)
         function renderStudyZoneTests() {
@@ -1708,7 +1866,7 @@
             localStorage.setItem('psc_study_highlights_map_anoop', JSON.stringify(studyHighlightsMap));
             if(db && activeCurrentNoteKey) {
                 try {
-                    await db.collection("app_data").doc("psc_database_anoop").set({
+                    await db.collection("app_data").doc(DB_DOC).set({
                         categoriesData: categoriesData,
                         sampleQuestions: sampleQuestions,
                         studyNotesMap: studyNotesMap,
@@ -1847,7 +2005,7 @@
                 localStorage.setItem('psc_study_notes_map_anoop', JSON.stringify(studyNotesMap));
 
                 if(db) {
-                    await db.collection("app_data").doc("psc_database_anoop").set({
+                    await db.collection("app_data").doc(DB_DOC).set({
                         categoriesData: categoriesData,
                         sampleQuestions: sampleQuestions,
                         studyNotesMap: studyNotesMap,
@@ -1929,7 +2087,7 @@
                 localStorage.setItem('psc_study_notes_map_anoop', JSON.stringify(studyNotesMap));
 
                 if(db) {
-                    await db.collection("app_data").doc("psc_database_anoop").set({
+                    await db.collection("app_data").doc(DB_DOC).set({
                         categoriesData: categoriesData,
                         sampleQuestions: sampleQuestions,
                         studyNotesMap: studyNotesMap,
@@ -2021,7 +2179,7 @@
 
             if(db) {
                 try {
-                    await db.collection("app_data").doc("psc_database_anoop").set({
+                    await db.collection("app_data").doc(DB_DOC).set({
                         categoriesData: categoriesData,
                         sampleQuestions: sampleQuestions,
                         studyNotesMap: studyNotesMap,
@@ -2170,7 +2328,7 @@
 
             if(db) {
                 try {
-                    await db.collection("app_data").doc("psc_database_anoop").set({
+                    await db.collection("app_data").doc(DB_DOC).set({
                         categoriesData: categoriesData,
                         sampleQuestions: sampleQuestions,
                         studyNotesMap: studyNotesMap,
@@ -2252,7 +2410,7 @@
                 localStorage.setItem('psc_sample_questions_anoop', JSON.stringify(sampleQuestions));
 
                 if(db) {
-                    await db.collection("app_data").doc("psc_database_anoop").set({
+                    await db.collection("app_data").doc(DB_DOC).set({
                         categoriesData: categoriesData,
                         sampleQuestions: sampleQuestions,
                         studyNotesMap: studyNotesMap,
@@ -2346,7 +2504,7 @@
                 localStorage.setItem('psc_sample_questions_anoop', JSON.stringify(sampleQuestions));
 
                 if(db) {
-                    await db.collection("app_data").doc("psc_database_anoop").set({
+                    await db.collection("app_data").doc(DB_DOC).set({
                         categoriesData: categoriesData,
                         sampleQuestions: sampleQuestions,
                         studyNotesMap: studyNotesMap,
@@ -2433,7 +2591,7 @@
 
             if(db) {
                 try {
-                    await db.collection("app_data").doc("psc_database_anoop").set({
+                    await db.collection("app_data").doc(DB_DOC).set({
                         categoriesData: categoriesData,
                         sampleQuestions: sampleQuestions,
                         studyNotesMap: studyNotesMap,
@@ -2480,7 +2638,14 @@
                 questionText: reportTargetQuestion.q || reportTargetQuestion.question || "",
                 testName: reportTargetQuestion.testName || "General",
                 subtopic: reportTargetQuestion.subtopic || "",
-                comment: comment
+                comment: comment,
+                qSnapshot: JSON.parse(JSON.stringify({
+                    statements: reportTargetQuestion.statements || null,
+                    matchingPairs: reportTargetQuestion.matchingPairs || null,
+                    options: reportTargetQuestion.options || [],
+                    answer: reportTargetQuestion.answer,
+                    explanation: reportTargetQuestion.explanation || ''
+                }))
             };
 
             reportedQuestionsList.push(reportObj);
@@ -2488,7 +2653,7 @@
 
             if(db) {
                 try {
-                    await db.collection("app_data").doc("psc_database_anoop").set({
+                    await db.collection("app_data").doc(DB_DOC).set({
                         categoriesData: categoriesData,
                         sampleQuestions: sampleQuestions,
                         studyNotesMap: studyNotesMap,
@@ -2516,6 +2681,16 @@
             }
 
             reportedQuestionsList.forEach((rep) => {
+                const qo = (rep.questionId && sampleQuestions.find(q => q.id === rep.questionId)) || rep.qSnapshot || null;
+                let detailHtml = '';
+                if(qo) {
+                    const opts = Array.isArray(qo.options) ? qo.options : [];
+                    const exp = String(qo.explanation || '').replace(/\[span_\d+\]|\(start_span\)|\(end_span\)/g, '');
+                    detailHtml = questionExtrasHtml(qo) +
+                        (opts.length ? `<div class="space-y-1">${opts.map((o, i) => `<div class="${i === qo.answer ? 'text-emerald-400 font-bold' : 'text-slate-400'}">${i === qo.answer ? '✓' : '•'} ${o}</div>`).join('')}</div>` : '') +
+                        (opts[qo.answer] !== undefined ? `<div class="text-emerald-400 font-bold">ശരിയായ ഉത്തരം: ${opts[qo.answer]}</div>` : '') +
+                        (exp ? `<div class="text-indigo-300 bg-indigo-950/40 p-2 rounded">💡 വിശദീകരണം: ${exp}</div>` : '');
+                }
                 container.innerHTML += `
                     <div class="bg-slate-900 border border-slate-700 p-4 rounded-xl space-y-2 text-xs">
                         <div class="flex justify-between items-center text-amber-400 font-bold">
@@ -2527,6 +2702,7 @@
                             </div>
                         </div>
                         <div class="text-white font-medium">${rep.questionText}</div>
+                        ${detailHtml}
                         <div class="text-indigo-300 bg-indigo-950/40 p-2 rounded">💬 ഉപയോക്താവിന്റെ കമന്റ്: ${rep.comment}</div>
                     </div>
                 `;
@@ -2539,7 +2715,7 @@
 
             if(db) {
                 try {
-                    await db.collection("app_data").doc("psc_database_anoop").set({
+                    await db.collection("app_data").doc(DB_DOC).set({
                         categoriesData: categoriesData,
                         sampleQuestions: sampleQuestions,
                         studyNotesMap: studyNotesMap,
@@ -2565,6 +2741,8 @@
             document.getElementById('edit-target-question-id').value = questionId;
             document.getElementById('edit-target-report-id').value = reportId;
             document.getElementById('edit-q-text').value = qObj.q || qObj.question || "";
+            const exBox = document.getElementById('edit-q-extras');
+            if(exBox) exBox.innerHTML = questionExtrasHtml(qObj);
             document.getElementById('edit-opt-0').value = qObj.options && qObj.options[0] ? qObj.options[0] : "";
             document.getElementById('edit-opt-1').value = qObj.options && qObj.options[1] ? qObj.options[1] : "";
             document.getElementById('edit-opt-2').value = qObj.options && qObj.options[2] ? qObj.options[2] : "";
@@ -2607,7 +2785,7 @@
 
             if(db) {
                 try {
-                    await db.collection("app_data").doc("psc_database_anoop").set({
+                    await db.collection("app_data").doc(DB_DOC).set({
                         categoriesData: categoriesData,
                         sampleQuestions: sampleQuestions,
                         studyNotesMap: studyNotesMap,
@@ -2636,7 +2814,7 @@
 
             if(db) {
                 try {
-                    await db.collection("app_data").doc("psc_database_anoop").set({
+                    await db.collection("app_data").doc(DB_DOC).set({
                         categoriesData: categoriesData,
                         sampleQuestions: sampleQuestions,
                         studyNotesMap: studyNotesMap,
@@ -2935,11 +3113,8 @@
             document.getElementById('timer-display').innerText = `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
         }
 
-        function renderQuestionContent(q, containerId) {
-            const container = document.getElementById(containerId);
-            if(!container) return;
-            let html = `<div class="font-medium text-base mb-3 leading-relaxed">${q.q || q.question || ""}</div>`;
-
+        function questionExtrasHtml(q) {
+            let html = "";
             if (q.statements && Array.isArray(q.statements) && q.statements.length > 0) {
                 html += `<div class="p-4 rounded-xl space-y-3 my-3 border border-slate-700/50 bg-slate-800/40">`;
                 q.statements.forEach((stmt, sIdx) => {
@@ -2980,6 +3155,16 @@
 
                 html += `</div>`;
             }
+
+            return html;
+        }
+
+        function renderQuestionContent(q, containerId) {
+            const container = document.getElementById(containerId);
+            if(!container) return;
+            let html = `<div class="font-medium text-base mb-3 leading-relaxed">${q.q || q.question || ""}</div>`;
+
+            html += questionExtrasHtml(q);
 
             container.innerHTML = html;
         }
@@ -3087,8 +3272,28 @@
                 saveBtnContainer.innerHTML = `<p class="text-xs text-emerald-400 text-center font-bold">അഭിനന്ദനങ്ങൾ! എല്ലാ ചോദ്യങ്ങളും ശരിയാണ്!</p>`;
             }
 
+            renderRetryButtons(wrong + unattempted);
+            recordTestCompletion(correct, wrong, unattempted, score);
             renderResultAnswers('all');
             recordWrongForSpecialExam();
+        }
+
+        function renderRetryButtons(missedCount) {
+            const box = document.getElementById('retry-container');
+            if(!box) return;
+            let html = `<button onclick="retryCurrentTest('all')" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-2.5 rounded-xl text-xs font-bold shadow transition">🔁 എല്ലാ ചോദ്യങ്ങളും വീണ്ടും ചെയ്തു നോക്കുക</button>`;
+            if(missedCount > 0) {
+                html += `<button onclick="retryCurrentTest('missed')" class="w-full bg-amber-600 hover:bg-amber-700 text-white py-2.5 rounded-xl text-xs font-bold shadow transition">🎯 തെറ്റിയവയും വിട്ടുപോയവയും (${missedCount}) വീണ്ടും ചെയ്തു നോക്കുക</button>`;
+            }
+            box.innerHTML = html;
+        }
+
+        function retryCurrentTest(mode) {
+            let src = currentTestQuestions.filter((q, idx) => mode === 'all' ? true : (userAnswers[idx] === undefined || userAnswers[idx] !== q.answer));
+            if(src.length === 0) { alert('വീണ്ടും ചെയ്യാൻ ചോദ്യങ്ങൾ ഇല്ല!'); return; }
+            prepareFinalTestQuestions(shuffleArray(src.map(q => ({ ...q }))));
+            document.getElementById('result-interface').classList.add('hidden');
+            launchMockTest();
         }
 
         function saveMistakesAsNewMockTest() {
@@ -3131,7 +3336,7 @@
             localStorage.setItem('psc_sample_questions_anoop', JSON.stringify(sampleQuestions));
 
             if(db) {
-                db.collection("app_data").doc("psc_database_anoop").set({
+                db.collection("app_data").doc(DB_DOC).set({
                     categoriesData: categoriesData,
                     sampleQuestions: sampleQuestions,
                     studyNotesMap: studyNotesMap,
@@ -3179,7 +3384,7 @@
             localStorage.setItem('psc_sample_questions_anoop', JSON.stringify(sampleQuestions));
 
             if(db) {
-                db.collection("app_data").doc("psc_database_anoop").set({
+                db.collection("app_data").doc(DB_DOC).set({
                     categoriesData: categoriesData,
                     sampleQuestions: sampleQuestions,
                     studyNotesMap: studyNotesMap,
@@ -3217,10 +3422,11 @@
                 listContainer.innerHTML += `
                     <div class="bg-slate-900 border border-slate-700 p-3.5 rounded-xl space-y-2 text-xs">
                         <div class="flex justify-between items-center"><span class="font-bold text-slate-300">ചോദ്യം ${idx + 1}</span>${statusBadge}</div>
-                        <div class="font-medium text-white">${q.q}</div>
-                        ${cleanExplanation ? `<div class="text-indigo-300 bg-indigo-950/40 p-2 rounded">💡 വിശദീകരണം: ${cleanExplanation}</div>` : ''}
+                        <div class="font-medium text-white">${q.q || q.question || ''}</div>
+                        ${questionExtrasHtml(q)}
                         <div class="text-slate-400">നിങ്ങളുടെ ഉത്തരം: <span class="${status === 'correct' ? 'text-emerald-400' : 'text-red-400'} font-bold">${userAnsText}</span></div>
-                        ${status !== 'correct' ? `<div class="text-emerald-400 font-bold">ശരിയായ ഉത്തരം: ${correctAnsText}</div>` : ''}
+                        <div class="text-emerald-400 font-bold">ശരിയായ ഉത്തരം: ${correctAnsText}</div>
+                        ${cleanExplanation ? `<div class="text-indigo-300 bg-indigo-950/40 p-2 rounded">💡 വിശദീകരണം: ${cleanExplanation}</div>` : ''}
                     </div>
                 `;
             });
@@ -3399,7 +3605,7 @@
             try { localStorage.setItem(SPECIAL_EXAM_LS_KEY, JSON.stringify(specialExamQuestions)); } catch(e) { console.log(e); }
             if(typeof db !== 'undefined' && db) {
                 try {
-                    db.collection("app_data").doc("psc_special_exam_anoop").set({
+                    db.collection("app_data").doc(SP_DOC).set({
                         questions: JSON.parse(JSON.stringify(specialExamQuestions)),
                         updatedAt: firebase.firestore.FieldValue.serverTimestamp()
                     }).catch(e => console.log("Special exam sync error:", e));
@@ -3513,10 +3719,10 @@
         })();
 
         // മറ്റ് ഡിവൈസുകളിൽ നിന്നുള്ള Special Exam ഡേറ്റ കൂടി ലയിപ്പിക്കുന്നു
-        (async function loadSpecialExamFromCloud() {
+        async function loadSpecialExamFromCloud() {
             try {
                 if(typeof db === 'undefined' || !db) return;
-                const snap = await db.collection("app_data").doc("psc_special_exam_anoop").get();
+                const snap = await db.collection("app_data").doc(SP_DOC).get();
                 if(snap.exists) {
                     let cloud = snap.data().questions;
                     if(Array.isArray(cloud)) {
@@ -3529,7 +3735,7 @@
                     persistSpecialExam();
                 }
             } catch(e) { console.log("Special exam cloud load error:", e); }
-        })();
+        }
         // =================== END SPECIAL EXAM ===================
 
         switchTab('dashboard');
