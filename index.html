@@ -806,21 +806,80 @@
 
         <!-- TAB 3: Practice Zone -->
         <section id="section-practice" class="hidden space-y-4">
-            <div class="bg-slate-800 border border-slate-700 p-5 rounded-2xl shadow-xl space-y-6">
-                <div class="flex justify-between items-center border-b border-slate-700 pb-3">
-                    <h2 class="text-lg font-bold text-indigo-400">പ്രാക്ടീസ് സോൺ</h2>
-                    <div class="flex items-center space-x-3">
-                        <span id="practice-progress-indicator" class="text-xs text-slate-400">പുരോഗതി</span>
-                        <button onclick="finishPracticeZone()" class="bg-amber-600 hover:bg-amber-700 text-white text-xs px-3 py-1.5 rounded-lg font-medium">Finish</button>
+
+            <!-- VIEW 1: Landing (രണ്ട് സെക്ഷനുകൾ) -->
+            <div id="practice-landing" class="space-y-4">
+                <div class="bg-slate-800 border border-slate-700 p-5 rounded-2xl shadow-xl space-y-5">
+                    <div class="border-b border-slate-700 pb-3">
+                        <h2 class="text-lg font-bold text-indigo-400">✍️ പ്രാക്ടീസ് സോൺ</h2>
+                        <p class="text-xs text-slate-400 mt-1">ചോദ്യങ്ങളും ഓപ്ഷനുകളും ഓരോ തവണയും റാൻഡം ആയി മാറിവരും.</p>
+                    </div>
+
+                    <!-- Resume box (പാതിവഴിയിൽ നിർത്തിയ പ്രാക്ടീസ്) -->
+                    <div id="practice-resume-box" class="hidden bg-slate-900 border border-amber-500 rounded-2xl p-4 space-y-3"></div>
+
+                    <div class="space-y-3">
+                        <button onclick="openPracticeSelection()" class="w-full text-left bg-slate-900 border border-slate-700 hover:border-emerald-500 rounded-2xl p-4 transition shadow-md">
+                            <div class="flex items-center space-x-3">
+                                <span class="text-3xl">🎯</span>
+                                <div class="flex-1">
+                                    <div class="font-bold text-white text-base">സെലക്ഷൻ പ്രാക്ടീസ്</div>
+                                    <div class="text-xs text-slate-400 mt-0.5">Selection Practice – ഇഷ്ടമുള്ള ടോപ്പിക്കോ സബ്-ടോപ്പിക്കോ തിരഞ്ഞെടുത്ത് പ്രാക്ടീസ് ചെയ്യാം</div>
+                                </div>
+                                <span class="text-slate-400 text-lg">›</span>
+                            </div>
+                        </button>
+                        <button onclick="startPracticeAll()" class="w-full text-left bg-slate-900 border border-slate-700 hover:border-emerald-500 rounded-2xl p-4 transition shadow-md">
+                            <div class="flex items-center space-x-3">
+                                <span class="text-3xl">📚</span>
+                                <div class="flex-1">
+                                    <div class="font-bold text-white text-base">പ്രാക്ടീസ് ഓൾ</div>
+                                    <div class="text-xs text-slate-400 mt-0.5">Practice All – ആപ്പിലുള്ള മുഴുവൻ ചോദ്യങ്ങളും <span id="practice-all-count" class="font-bold text-emerald-400"></span></div>
+                                </div>
+                                <span class="text-slate-400 text-lg">›</span>
+                            </div>
+                        </button>
                     </div>
                 </div>
-                <div id="practice-box" class="space-y-4">
-                    <div id="p-q-container" class="space-y-3"></div>
-                    <div id="p-options-box" class="space-y-2.5"></div>
-                    <div id="practice-feedback-banner" class="hidden p-4 rounded-xl text-sm font-medium transition-all space-y-3"></div>
+            </div>
+
+            <!-- VIEW 2: Selection Practice (ടോപ്പിക് / സബ്-ടോപ്പിക് തിരഞ്ഞെടുക്കാൻ) -->
+            <div id="practice-selection" class="hidden space-y-4">
+                <div class="flex items-center justify-between">
+                    <h2 class="text-lg font-bold text-indigo-400">🎯 സെലക്ഷൻ പ്രാക്ടീസ്</h2>
+                    <button onclick="backToPracticeLanding()" class="bg-slate-700 hover:bg-slate-600 text-white text-xs px-3 py-1.5 rounded-lg font-medium">← Back</button>
                 </div>
-                <div class="pt-3 border-t border-slate-700 flex justify-end">
-                    <button onclick="openReportModalForCurrentPractice()" class="bg-rose-950/80 border border-rose-800 text-rose-300 hover:bg-rose-900 text-xs px-3 py-1.5 rounded-lg font-medium transition">🚩 Report Issue</button>
+                <p class="text-xs text-slate-400">ടോപ്പിക് മുഴുവനായോ, അല്ലെങ്കിൽ സബ്-ടോപ്പിക്കുകൾ ടിക്ക് ചെയ്തോ പ്രാക്ടീസ് തുടങ്ങാം.</p>
+                <div id="practice-selection-list" class="space-y-3"></div>
+                <div class="sticky bottom-2 z-10">
+                    <button id="practice-sel-start-btn" onclick="startPracticeSelected()" class="w-full bg-emerald-600 hover:bg-emerald-700 disabled:opacity-50 text-white py-3 rounded-xl text-sm font-bold shadow-lg transition">▶ തിരഞ്ഞെടുത്തവ പ്രാക്ടീസ് ചെയ്യുക</button>
+                </div>
+            </div>
+
+            <!-- VIEW 3: Practice Session -->
+            <div id="practice-session" class="hidden">
+                <div class="bg-slate-800 border border-slate-700 p-5 rounded-2xl shadow-xl space-y-6">
+                    <div class="border-b border-slate-700 pb-3 space-y-2">
+                        <div class="flex justify-between items-center">
+                            <h2 class="text-lg font-bold text-indigo-400">പ്രാക്ടീസ് സോൺ</h2>
+                            <div class="flex items-center space-x-2">
+                                <button id="practice-pause-btn" onclick="pausePracticeZone()" class="bg-indigo-600 hover:bg-indigo-700 text-white text-xs px-3 py-1.5 rounded-lg font-medium">⏸ Pause</button>
+                                <button onclick="confirmFinishPractice()" class="bg-amber-600 hover:bg-amber-700 text-white text-xs px-3 py-1.5 rounded-lg font-medium">Finish</button>
+                            </div>
+                        </div>
+                        <div class="flex justify-between items-center gap-2">
+                            <span id="practice-session-label" class="text-xs text-slate-400 truncate"></span>
+                            <span id="practice-progress-indicator" class="text-xs text-slate-400 whitespace-nowrap">പുരോഗതി</span>
+                        </div>
+                    </div>
+                    <div id="practice-box" class="space-y-4">
+                        <div id="p-q-container" class="space-y-3"></div>
+                        <div id="p-options-box" class="space-y-2.5"></div>
+                        <div id="practice-feedback-banner" class="hidden p-4 rounded-xl text-sm font-medium transition-all space-y-3"></div>
+                    </div>
+                    <div class="pt-3 border-t border-slate-700 flex justify-end">
+                        <button onclick="openReportModalForCurrentPractice()" class="bg-rose-950/80 border border-rose-800 text-rose-300 hover:bg-rose-900 text-xs px-3 py-1.5 rounded-lg font-medium transition">🚩 Report Issue</button>
+                    </div>
                 </div>
             </div>
         </section>
@@ -1117,6 +1176,7 @@
                 updateAuthUI();
                 await loadDataFromFirebase();
                 try { loadSpecialExamFromCloud(); } catch(e) { console.log(e); }
+                try { loadPracticeProgressFromCloud(); } catch(e) { console.log(e); }
                 try { renderTrackerUI(); } catch(e) {}
             });
         }
@@ -1305,6 +1365,10 @@
             }
             renderDashboardCategories();
             populateCategoryDropdowns();
+            try {
+                const _l = document.getElementById('practice-landing'), _s = document.getElementById('section-practice');
+                if(_l && _s && !_l.classList.contains('hidden') && !_s.classList.contains('hidden')) renderPracticeLanding();
+            } catch(e) {}
         }
 
         let currentTestQuestions = [];
@@ -3144,6 +3208,7 @@
             practiceQueue = shuffleArray([...filtered]);
             practiceAttemptedMaster.clear();
             practiceLearnedMaster.clear();
+            practiceMeta = { persist: false, origin: 'other', mode: 'sub-test', label: '', total: filtered.length };
 
             document.querySelectorAll('main > section').forEach(sec => sec.classList.add('hidden'));
             document.getElementById('section-subtopics').classList.add('hidden');
@@ -3158,6 +3223,7 @@
 
         function backToPracticeList() {
             document.getElementById('practice-result-interface').classList.add('hidden');
+            if(practiceMeta.origin === 'tab') { switchTab('practice'); return; }
             if(activeCategoryKey === 'special_exam') {
                 openSpecialExam();
             } else if(activeCategoryKey) {
@@ -3625,25 +3691,321 @@
             closePaletteModal();
         }
 
-        // Practice Zone
+        // ===================== PRACTICE ZONE (Selection / Practice All / Pause & Resume) =====================
+        const PRACTICE_PROGRESS_LS_KEY = 'psc_practice_progress_anoop';
+        let practiceMeta = { persist: false, origin: 'other', mode: '', label: '', total: 0 };
+        let practiceNextTimer = null;
+        let practiceCloudTimer = null;
+        let practiceCurrentDone = false;
+
+        function practiceEsc(s) {
+            return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+        }
+        function getPracticeDocId() { return String(DB_DOC).replace('psc_database_', 'psc_practice_'); }
+
+        function practicePoolMap() {
+            const m = new Map();
+            try { sampleQuestions.forEach(q => { if(q && q.id != null && !m.has(String(q.id))) m.set(String(q.id), q); }); } catch(e) {}
+            try { specialExamQuestions.forEach(q => { if(q && q.id != null && !m.has(String(q.id))) m.set(String(q.id), q); }); } catch(e) {}
+            return m;
+        }
+
+        function showPracticeView(v) {
+            ['landing', 'selection', 'session'].forEach(n => {
+                const el = document.getElementById('practice-' + n);
+                if(el) el.classList.toggle('hidden', n !== v);
+            });
+        }
+
+        // ---- saved progress (localStorage + Firebase) ----
+        function readPracticeProgress() {
+            try {
+                const s = JSON.parse(localStorage.getItem(PRACTICE_PROGRESS_LS_KEY) || 'null');
+                if(s && !s.cleared && Array.isArray(s.queueIds) && s.queueIds.length > 0) return s;
+            } catch(e) {}
+            return null;
+        }
+        function currentPracticeState() {
+            const ids = [];
+            if(currentPracticeQuestion && !practiceCurrentDone) ids.push(String(currentPracticeQuestion.id));
+            practiceQueue.forEach(q => ids.push(String(q.id)));
+            return {
+                v: 1,
+                mode: practiceMeta.mode,
+                label: practiceMeta.label,
+                total: practiceMeta.total,
+                queueIds: ids,
+                attempted: Array.from(practiceAttemptedMaster),
+                learned: Array.from(practiceLearnedMaster)
+            };
+        }
+        function writePracticeProgress(state, immediateCloud) {
+            state.savedAt = Date.now();
+            try { localStorage.setItem(PRACTICE_PROGRESS_LS_KEY, JSON.stringify(state)); } catch(e) {}
+            clearTimeout(practiceCloudTimer);
+            if(immediateCloud) pushPracticeProgressToCloud();
+            else practiceCloudTimer = setTimeout(pushPracticeProgressToCloud, 2500);
+        }
+        function savePracticeProgress(immediate) {
+            if(!practiceMeta.persist) return;
+            const st = currentPracticeState();
+            if(st.queueIds.length === 0) { clearPracticeProgress(); return; }
+            writePracticeProgress(st, !!immediate);
+        }
+        function clearPracticeProgress() {
+            writePracticeProgress({ v: 1, cleared: true }, true);
+        }
+        async function pushPracticeProgressToCloud() {
+            clearTimeout(practiceCloudTimer);
+            try {
+                if(typeof db === 'undefined' || !db) return;
+                const raw = localStorage.getItem(PRACTICE_PROGRESS_LS_KEY);
+                if(!raw) return;
+                await db.collection("app_data").doc(getPracticeDocId()).set(JSON.parse(raw));
+            } catch(e) { console.log("Practice progress cloud save error:", e); }
+        }
+        async function loadPracticeProgressFromCloud() {
+            try {
+                if(typeof db === 'undefined' || !db) return;
+                const snap = await db.collection("app_data").doc(getPracticeDocId()).get();
+                let local = null;
+                try { local = JSON.parse(localStorage.getItem(PRACTICE_PROGRESS_LS_KEY) || 'null'); } catch(e) {}
+                if(snap.exists) {
+                    const cloud = snap.data();
+                    if(!local || (cloud.savedAt || 0) > (local.savedAt || 0)) {
+                        if(!practiceMeta.persist) localStorage.setItem(PRACTICE_PROGRESS_LS_KEY, JSON.stringify(cloud));
+                    } else if((local.savedAt || 0) > (cloud.savedAt || 0)) {
+                        pushPracticeProgressToCloud();
+                    }
+                } else if(local) {
+                    pushPracticeProgressToCloud();
+                }
+                const landing = document.getElementById('practice-landing');
+                const sec = document.getElementById('section-practice');
+                if(landing && sec && !landing.classList.contains('hidden') && !sec.classList.contains('hidden')) renderPracticeLanding();
+            } catch(e) { console.log("Practice progress cloud load error:", e); }
+        }
+        // ആപ്പ് ക്ലോസ് ചെയ്യുമ്പോഴും ടാബ് മറയുമ്പോഴും ഉടൻ സേവ് ചെയ്യുന്നു
+        function flushPracticeProgress() {
+            if(practiceMeta.persist) { savePracticeProgress(true); }
+        }
+        document.addEventListener('visibilitychange', () => { if(document.visibilityState === 'hidden') flushPracticeProgress(); });
+        window.addEventListener('pagehide', flushPracticeProgress);
+
+        // ---- landing ----
         function initPracticeZone() {
-            if(sampleQuestions.length === 0) {
+            if(sampleQuestions.length === 0 && !readPracticeProgress()) {
                 alert("പ്രാക്ടീസ് ചെയ്യാൻ ചോദ്യങ്ങൾ ഒന്നുമില്ല. ആദ്യം പുതിയ മോക്ക് ടെസ്റ്റുകൾ ആഡ് ചെയ്യുക!");
                 switchTab('dashboard');
                 return;
             }
-            practiceQueue = shuffleArray([...sampleQuestions]);
-            practiceAttemptedMaster.clear();
-            practiceLearnedMaster.clear();
+            clearTimeout(practiceNextTimer);
+            practiceMeta.persist = false;
+            showPracticeView('landing');
+            renderPracticeLanding();
+        }
+
+        function renderPracticeLanding() {
+            const cnt = document.getElementById('practice-all-count');
+            if(cnt) cnt.innerText = `(${sampleQuestions.length} ചോദ്യങ്ങൾ)`;
+            const box = document.getElementById('practice-resume-box');
+            if(!box) return;
+            const st = readPracticeProgress();
+            if(!st) { box.classList.add('hidden'); box.innerHTML = ''; return; }
+            const remaining = st.queueIds.length;
+            const learned = (st.learned || []).length;
+            box.classList.remove('hidden');
+            box.innerHTML = `
+                <div class="flex items-center space-x-2">
+                    <span class="text-xl">⏸</span>
+                    <div class="font-bold text-amber-400 text-sm">പാതിവഴിയിൽ നിർത്തിയ പ്രാക്ടീസ്</div>
+                </div>
+                <div class="text-xs text-slate-300 leading-relaxed">
+                    <div class="font-medium text-white">${practiceEsc(st.label || 'Practice')}</div>
+                    ബാക്കി: <b>${remaining}</b> ചോദ്യങ്ങൾ${st.total ? ' (ആകെ ' + st.total + ')' : ''} • പഠിച്ചത്: <b>${learned}</b>
+                </div>
+                <div class="flex space-x-2">
+                    <button onclick="resumePractice()" class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white py-2.5 rounded-xl text-sm font-bold shadow transition">▶ Resume</button>
+                    <button onclick="discardSavedPractice()" class="bg-slate-700 hover:bg-slate-600 text-white px-4 py-2.5 rounded-xl text-xs font-medium transition">🗑 Discard</button>
+                </div>`;
+        }
+
+        function backToPracticeLanding() {
+            showPracticeView('landing');
+            renderPracticeLanding();
+        }
+
+        function discardSavedPractice() {
+            if(!confirm('സേവ് ചെയ്ത പ്രാക്ടീസ് പുരോഗതി ഒഴിവാക്കണോ?')) return;
+            clearPracticeProgress();
+            renderPracticeLanding();
+        }
+
+        function resumePractice() {
+            const st = readPracticeProgress();
+            if(!st) { renderPracticeLanding(); return; }
+            const pool = practicePoolMap();
+            if(pool.size === 0) { alert('ചോദ്യങ്ങൾ ലോഡ് ആകുന്നു. ഇന്റർനെറ്റ് പരിശോധിച്ച് അല്പസമയത്തിനു ശേഷം വീണ്ടും ശ്രമിക്കുക.'); return; }
+            const qs = st.queueIds.map(id => pool.get(String(id))).filter(Boolean);
+            if(qs.length === 0) {
+                alert('സേവ് ചെയ്ത ചോദ്യങ്ങൾ ഇപ്പോൾ ലഭ്യമല്ല. പുതിയ പ്രാക്ടീസ് തുടങ്ങാം.');
+                clearPracticeProgress();
+                renderPracticeLanding();
+                return;
+            }
+            clearTimeout(practiceNextTimer);
+            practiceQueue = qs;
+            practiceAttemptedMaster = new Set(st.attempted || []);
+            practiceLearnedMaster = new Set(st.learned || []);
+            practiceMeta = { persist: true, origin: 'tab', mode: st.mode || '', label: st.label || 'Practice', total: st.total || qs.length };
             loadPracticeQuestion();
         }
+
+        function beginPracticeSession(list, meta) {
+            if(!list || list.length === 0) { alert("ഈ വിഭാഗത്തിൽ പ്രാക്ടീസ് ചെയ്യാൻ ചോദ്യങ്ങൾ ഒന്നും ലഭ്യമല്ല!"); return; }
+            if(readPracticeProgress() && !confirm('പാതിവഴിയിൽ നിർത്തിയ ഒരു പ്രാക്ടീസ് ഉണ്ട്. പുതിയത് തുടങ്ങിയാൽ അത് ഒഴിവാകും. തുടരണോ?')) return;
+            clearTimeout(practiceNextTimer);
+            // ഓരോ തവണയും ചോദ്യങ്ങൾ പൂർണ്ണമായും ഷഫിൾ ചെയ്യുന്നു
+            practiceQueue = shuffleArray([...list]);
+            practiceAttemptedMaster.clear();
+            practiceLearnedMaster.clear();
+            practiceMeta = { persist: true, origin: 'tab', mode: meta.mode, label: meta.label, total: list.length };
+            loadPracticeQuestion();
+        }
+
+        function startPracticeAll() {
+            beginPracticeSession([...sampleQuestions], { mode: 'all', label: 'പ്രാക്ടീസ് ഓൾ (എല്ലാ ചോദ്യങ്ങളും)' });
+        }
+
+        // ---- selection practice ----
+        function openPracticeSelection() {
+            showPracticeView('selection');
+            renderPracticeSelection();
+        }
+
+        function renderPracticeSelection() {
+            const list = document.getElementById('practice-selection-list');
+            if(!list) return;
+            const keys = Object.keys(categoriesData);
+            const counts = {};
+            const topicCounts = {};
+            sampleQuestions.forEach(q => {
+                topicCounts[q.topic] = (topicCounts[q.topic] || 0) + 1;
+                const k = q.topic + '\u0001' + q.subtopic;
+                counts[k] = (counts[k] || 0) + 1;
+            });
+            let html = '';
+            keys.forEach((ck, ci) => {
+                const cat = categoriesData[ck];
+                const total = topicCounts[ck] || 0;
+                if(!cat || total === 0) return;
+                const subs = cat.subtopics || [];
+                let rows = '';
+                subs.forEach((sub, si) => {
+                    const c = counts[ck + '\u0001' + sub.name] || 0;
+                    if(c === 0) return;
+                    rows += `
+                        <div class="flex items-center space-x-2 bg-slate-900 border border-slate-700 rounded-xl px-3 py-2.5">
+                            <input type="checkbox" class="psel-chk w-4 h-4 accent-emerald-500" data-ci="${ci}" data-si="${si}" onchange="updatePracticeSelCount()">
+                            <span class="flex-1 text-slate-200 text-sm">${practiceEsc(sub.name)} <span class="text-xs text-slate-400">(${c})</span></span>
+                            <button onclick="startPracticeSub(${ci}, ${si})" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs px-3 py-1.5 rounded-lg font-medium transition whitespace-nowrap">Practice</button>
+                        </div>`;
+                });
+                html += `
+                    <details class="bg-slate-800 border border-slate-700 rounded-2xl shadow-md overflow-hidden">
+                        <summary class="flex items-center justify-between px-4 py-3 cursor-pointer select-none">
+                            <span class="font-bold text-white text-sm">📂 ${practiceEsc(cat.title || ck)}</span>
+                            <span class="text-xs text-slate-400">${total} ചോദ്യങ്ങൾ ▾</span>
+                        </summary>
+                        <div class="px-4 pb-4 space-y-2">
+                            <button onclick="startPracticeTopic(${ci})" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-2 rounded-xl text-xs font-bold shadow transition">ഈ ടോപ്പിക് മുഴുവൻ പ്രാക്ടീസ് ചെയ്യുക (${total})</button>
+                            ${rows || '<p class="text-xs text-slate-500 text-center py-2">സബ്-ടോപ്പിക്കുകൾ ഇല്ല.</p>'}
+                        </div>
+                    </details>`;
+            });
+            list.innerHTML = html || '<p class="text-xs text-slate-500 text-center py-6">പ്രാക്ടീസ് ചെയ്യാൻ ചോദ്യങ്ങൾ ഒന്നും ലഭ്യമല്ല.</p>';
+            updatePracticeSelCount();
+        }
+
+        function practiceQuestionsFor(ck, subName) {
+            return sampleQuestions.filter(q => q.topic === ck && (subName == null || q.subtopic === subName));
+        }
+
+        function startPracticeTopic(ci) {
+            const ck = Object.keys(categoriesData)[ci];
+            if(!ck) return;
+            const cat = categoriesData[ck];
+            beginPracticeSession(practiceQuestionsFor(ck, null), { mode: 'topic', label: '🎯 ' + (cat.title || ck) });
+        }
+
+        function startPracticeSub(ci, si) {
+            const ck = Object.keys(categoriesData)[ci];
+            if(!ck) return;
+            const cat = categoriesData[ck];
+            const sub = (cat.subtopics || [])[si];
+            if(!sub) return;
+            beginPracticeSession(practiceQuestionsFor(ck, sub.name), { mode: 'sub', label: '🎯 ' + (cat.title || ck) + ' › ' + sub.name });
+        }
+
+        function getSelectedPracticeQuestions() {
+            const keys = Object.keys(categoriesData);
+            const out = [];
+            const seen = new Set();
+            document.querySelectorAll('.psel-chk:checked').forEach(chk => {
+                const ck = keys[parseInt(chk.dataset.ci)];
+                const sub = ck && (categoriesData[ck].subtopics || [])[parseInt(chk.dataset.si)];
+                if(!sub) return;
+                practiceQuestionsFor(ck, sub.name).forEach(q => { if(!seen.has(q)) { seen.add(q); out.push(q); } });
+            });
+            return out;
+        }
+
+        function updatePracticeSelCount() {
+            const btn = document.getElementById('practice-sel-start-btn');
+            if(!btn) return;
+            const n = document.querySelectorAll('.psel-chk:checked').length;
+            const qn = getSelectedPracticeQuestions().length;
+            btn.disabled = n === 0;
+            btn.innerText = n === 0 ? '▶ സബ്-ടോപ്പിക്കുകൾ ടിക്ക് ചെയ്യുക' : `▶ തിരഞ്ഞെടുത്ത ${n} സബ്-ടോപ്പിക്(${qn} ചോദ്യങ്ങൾ) പ്രാക്ടീസ് ചെയ്യുക`;
+        }
+
+        function startPracticeSelected() {
+            const qs = getSelectedPracticeQuestions();
+            const n = document.querySelectorAll('.psel-chk:checked').length;
+            beginPracticeSession(qs, { mode: 'multi', label: `🎯 തിരഞ്ഞെടുത്ത ${n} സബ്-ടോപ്പിക്കുകൾ` });
+        }
+
+        // ---- pause / finish ----
+        function pausePracticeZone() {
+            clearTimeout(practiceNextTimer);
+            if(!practiceMeta.persist) { switchTab('practice'); return; }
+            const st = currentPracticeState();
+            if(st.queueIds.length === 0) { clearPracticeProgress(); }
+            else { writePracticeProgress(st, true); }
+            practiceMeta.persist = false;
+            switchTab('practice');
+        }
+
+        function confirmFinishPractice() {
+            if(practiceMeta.persist && !confirm('പ്രാക്ടീസ് അവസാനിപ്പിച്ച് റിസൾട്ട് കാണണോ? (സേവ് ചെയ്ത പുരോഗതി ഒഴിവാകും. പിന്നീട് തുടരാൻ "Pause" ഉപയോഗിക്കുക.)')) return;
+            finishPracticeZone();
+        }
+        // =================== END PRACTICE ZONE ===================
 
         let practiceShuffledOpts = [];
         let practiceShuffledCorrectIdx = 0;
 
         function loadPracticeQuestion() {
             if(practiceQueue.length === 0) { finishPracticeZone(); return; }
+            clearTimeout(practiceNextTimer);
+            showPracticeView('session');
             currentPracticeQuestion = practiceQueue.shift();
+            practiceCurrentDone = false;
+            const pauseBtn = document.getElementById('practice-pause-btn');
+            if(pauseBtn) pauseBtn.style.display = practiceMeta.persist ? '' : 'none';
+            const sessLbl = document.getElementById('practice-session-label');
+            if(sessLbl) sessLbl.innerText = practiceMeta.persist ? (practiceMeta.label || '') : '';
+            savePracticeProgress();
             const progInd = document.getElementById('practice-progress-indicator');
             if(progInd) progInd.innerText = `ബാക്കി ചോദ്യങ്ങൾ: ${practiceQueue.length + 1}`;
             renderQuestionContent(currentPracticeQuestion, 'p-q-container');
@@ -3684,6 +4046,7 @@
                 Array.from(parentBox.children).forEach(child => child.disabled = true);
             }
             practiceAttemptedMaster.add(currentPracticeQuestion.id);
+            savePracticeProgress();
 
             const correctIdx = practiceShuffledCorrectIdx;
             const correctOptText = practiceShuffledOpts[correctIdx].optText;
@@ -3695,12 +4058,15 @@
 
             if(selectedIdx === correctIdx) {
                 practiceLearnedMaster.add(currentPracticeQuestion.id);
+                practiceCurrentDone = true;
+                savePracticeProgress();
                 if(buttons[selectedIdx]) {
                     buttons[selectedIdx].className = "w-full text-left p-3.5 border border-emerald-500 bg-emerald-950/80 text-emerald-300 rounded-xl font-medium transition";
                 }
                 banner.className = "p-2 rounded-xl text-xs font-medium bg-emerald-900/80 border border-emerald-600 text-emerald-200";
                 banner.innerHTML = `ശരി ഉത്തരം! (Correct)`;
-                setTimeout(() => { loadPracticeQuestion(); }, 1000);
+                clearTimeout(practiceNextTimer);
+                practiceNextTimer = setTimeout(() => { loadPracticeQuestion(); }, 1000);
             } else {
                 if(buttons[selectedIdx]) {
                     buttons[selectedIdx].className = "w-full text-left p-3.5 border border-red-500 bg-red-950/80 text-red-300 rounded-xl font-medium transition";
@@ -3726,6 +4092,8 @@
         }
 
         function finishPracticeZone() {
+            clearTimeout(practiceNextTimer);
+            if(practiceMeta.persist) { practiceMeta.persist = false; clearPracticeProgress(); }
             document.getElementById('section-practice').classList.add('hidden');
             document.getElementById('practice-result-interface').classList.remove('hidden');
             document.getElementById('p-res-attempted').innerText = practiceAttemptedMaster.size;
@@ -3827,6 +4195,7 @@
             practiceQueue = shuffleArray([...specialExamQuestions]);
             practiceAttemptedMaster.clear();
             practiceLearnedMaster.clear();
+            practiceMeta = { persist: false, origin: 'other', mode: 'special', label: '', total: specialExamQuestions.length };
 
             document.querySelectorAll('main > section').forEach(sec => sec.classList.add('hidden'));
             document.getElementById('section-subtopics').classList.add('hidden');
