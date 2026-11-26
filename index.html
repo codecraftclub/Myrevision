@@ -441,6 +441,104 @@
         html.theme-light #login-gate { background:#f1f5f9 !important; }
     </style>
     <script>try{if(localStorage.getItem('psc_theme')==='light')document.documentElement.classList.add('theme-light');}catch(e){}</script>
+    <script>
+(function () {
+    // ===== psc_* ഡാറ്റ IndexedDB-യിൽ (localStorage-ന്റെ ~5 MB പരിധി ഒഴിവാക്കാൻ) =====
+    // ആപ്പിന്റെ കോഡ് മാറ്റമില്ലാതെ localStorage.getItem/setItem/removeItem ഉപയോഗിക്കുന്നു; psc_* കീകൾ ഇവിടെ വഴിതിരിച്ചുവിടുന്നു.
+    var DBN = 'psc_store', STORE = 'kv';
+    var isBig = function (k) { return typeof k === 'string' && k.indexOf('psc_') === 0 && k !== 'psc_theme'; };
+    var cache = {}, idbOk = false, gaveUp = false, db = null, warned = false;
+    var ls = window.localStorage;
+    var rawGet = Storage.prototype.getItem, rawSet = Storage.prototype.setItem, rawRemove = Storage.prototype.removeItem;
+
+    function openDb() {
+        return new Promise(function (res, rej) {
+            if (!window.indexedDB) { rej(new Error('IndexedDB ലഭ്യമല്ല')); return; }
+            var r = window.indexedDB.open(DBN, 1);
+            r.onupgradeneeded = function () { r.result.createObjectStore(STORE); };
+            r.onsuccess = function () { res(r.result); };
+            r.onerror = function () { rej(r.error); };
+            r.onblocked = function () { rej(new Error('IndexedDB blocked')); };
+        });
+    }
+    function readAll() {
+        return new Promise(function (res, rej) {
+            var out = {};
+            var tx = db.transaction(STORE, 'readonly');
+            var req = tx.objectStore(STORE).openCursor();
+            req.onsuccess = function () {
+                var c = req.result;
+                if (c) { out[c.key] = c.value; c.continue(); } else { res(out); }
+            };
+            req.onerror = function () { rej(req.error); };
+        });
+    }
+    function txDone(tx) {
+        return new Promise(function (res, rej) {
+            tx.oncomplete = function () { res(); };
+            tx.onerror = tx.onabort = function () { rej(tx.error || new Error('IndexedDB write failed')); };
+        });
+    }
+    function put(k, v) { var tx = db.transaction(STORE, 'readwrite'); tx.objectStore(STORE).put(v, k); return txDone(tx); }
+    function del(k) { var tx = db.transaction(STORE, 'readwrite'); tx.objectStore(STORE).delete(k); return txDone(tx); }
+    function reportFail(e) {
+        console.log('IndexedDB write error:', e);
+        if (!warned) { warned = true; try { alert('⚠️ ഡാറ്റ ഫോണിൽ സേവ് ചെയ്യാൻ കഴിഞ്ഞില്ല. സ്റ്റോറേജ് നിറഞ്ഞിരിക്കാം. Settings-ൽ നിന്ന് ബാക്കപ്പ് എടുക്കുക.'); } catch (x) {} }
+    }
+
+    Storage.prototype.getItem = function (k) {
+        if (this === ls && idbOk && isBig(k)) return Object.prototype.hasOwnProperty.call(cache, k) ? cache[k] : null;
+        return rawGet.apply(this, arguments);
+    };
+    Storage.prototype.setItem = function (k, v) {
+        if (this === ls && idbOk && isBig(k)) {
+            var s = String(v);
+            cache[k] = s;
+            put(k, s).catch(reportFail);
+            return;
+        }
+        return rawSet.apply(this, arguments);
+    };
+    Storage.prototype.removeItem = function (k) {
+        if (this === ls && idbOk && isBig(k)) {
+            delete cache[k];
+            del(k).catch(reportFail);
+            return;
+        }
+        return rawRemove.apply(this, arguments);
+    };
+
+    var init = openDb().then(function (d) { db = d; return readAll(); }).then(function (all) {
+        if (gaveUp) throw new Error('timeout');
+        Object.keys(all).forEach(function (k) { if (typeof all[k] === 'string') cache[k] = all[k]; });
+        var jobs = [];
+        var n = 0; try { n = ls.length; } catch (e) {}
+        var keys = [];
+        for (var i = 0; i < n; i++) { var k = ls.key(i); if (isBig(k)) keys.push(k); }
+        keys.forEach(function (k) {
+            if (Object.prototype.hasOwnProperty.call(cache, k)) {
+                // IndexedDB-യിൽ ഇതിനകം ഉണ്ട് → localStorage-ലെ പഴയ കോപ്പി നീക്കി സ്ഥലം ഒഴിവാക്കുക
+                jobs.push(Promise.resolve().then(function () { try { rawRemove.call(ls, k); } catch (e) {} }));
+            } else {
+                var v = rawGet.call(ls, k);
+                if (v === null) return;
+                cache[k] = v;
+                // IndexedDB-യിൽ എഴുതി ഉറപ്പായ ശേഷം മാത്രം localStorage-ൽ നിന്ന് നീക്കുക
+                jobs.push(put(k, v).then(function () { try { rawRemove.call(ls, k); } catch (e) {} }));
+            }
+        });
+        return Promise.all(jobs);
+    }).then(function () {
+        idbOk = true;
+        try { if (navigator.storage && navigator.storage.persist) navigator.storage.persist(); } catch (e) {}
+    }).catch(function (e) {
+        console.log('IndexedDB ഉപയോഗിക്കാൻ കഴിഞ്ഞില്ല; localStorage തുടരുന്നു:', e);
+        idbOk = false;
+    });
+    var timeout = new Promise(function (res) { setTimeout(function () { if (!idbOk) { gaveUp = true; } res(); }, 5000); });
+    window.__pscStoreReady = Promise.race([init, timeout]);
+})();
+    </script>
 </head>
 <body class="font-sans antialiased min-h-screen flex flex-col">
 
@@ -1162,7 +1260,7 @@
         </div>
     </div>
 
-    <script>
+    <script type="text/plain" id="psc-main-script">
         let DB_DOC = "psc_database_anoop";
         let SP_DOC = "psc_special_exam_anoop";
         let currentUser = null;
@@ -1187,20 +1285,124 @@
         }
 
 
+
+        // ===================== CLOUD SHARDS (Firestore 1 MiB document limit പരിഹാരം) =====================
+        // ഡാറ്റ ഓരോ വിഭാഗമായും, വലുതാണെങ്കിൽ ചെറിയ കഷണങ്ങളായും പല ഡോക്യുമെന്റുകളിൽ സൂക്ഷിക്കുന്നു.
+        // manifest ഡോക്യുമെന്റ് ഏത് കഷണങ്ങളാണ് നിലവിലുള്ളതെന്ന് പറയുന്നു. പഴയ ഡോക്യുമെന്റ് ഡിലീറ്റ് ചെയ്യുന്നില്ല.
+        const CLOUD_KEYS = ['categoriesData','sampleQuestions','studyNotesMap','studyHighlightsMap','userProgressData','reportedQuestionsList','trackerTopicsData'];
+        const CLOUD_CHUNK_CHARS = 250000; // 1 അക്ഷരം പരമാവധി 3 bytes → ഒരു കഷണം ~750 KB
+        let _cloudFor = null, _cloudVerified = null, _cloudManifest = {}, _cloudLast = {}, _cloudSeq = 0;
+        let _cloudQueue = Promise.resolve();
+
+        function cloudManifestId() { return DB_DOC + '__manifest'; }
+        function cloudPartId(key, v, i) { return DB_DOC + '__' + key + '__' + v + '__' + i; }
+        function cloudCurrentState() {
+            return { categoriesData, sampleQuestions, studyNotesMap, studyHighlightsMap, userProgressData, reportedQuestionsList, trackerTopicsData };
+        }
+        function cloudSplit(str) {
+            const out = [];
+            let pos = 0;
+            if(str.length === 0) return [''];
+            while(pos < str.length) {
+                let end = Math.min(pos + CLOUD_CHUNK_CHARS, str.length);
+                if(end < str.length) {
+                    const c = str.charCodeAt(end - 1);
+                    if(c >= 0xD800 && c <= 0xDBFF) end--; // surrogate pair നടുവിൽ മുറിക്കരുത്
+                }
+                out.push(str.slice(pos, end));
+                pos = end;
+            }
+            return out;
+        }
+        function cloudResetIfUserChanged() {
+            if(_cloudFor !== DB_DOC) { _cloudFor = DB_DOC; _cloudVerified = null; _cloudManifest = {}; _cloudLast = {}; }
+        }
+
+        // ക്ലൗഡിൽ നിന്ന് ലോഡ്: manifest ഇല്ലെങ്കിൽ null (പഴയ രീതിയിലുള്ള ഡോക്യുമെന്റ് ഉപയോഗിക്കണം)
+        async function cloudLoadShards() {
+            cloudResetIfUserChanged();
+            const coll = db.collection("app_data");
+            const m = await coll.doc(cloudManifestId()).get();
+            if(!m.exists) { _cloudVerified = DB_DOC; _cloudManifest = {}; _cloudLast = {}; return null; }
+            const keys = (m.data() && m.data().keys) || {};
+            const out = {}, last = {};
+            try {
+                await Promise.all(Object.keys(keys).map(async key => {
+                    const info = keys[key];
+                    const snaps = await Promise.all(Array.from({ length: info.n }, (_, i) => coll.doc(cloudPartId(key, info.v, i)).get()));
+                    let str = '';
+                    snaps.forEach((sn, i) => {
+                        if(!sn.exists) throw new Error('ക്ലൗഡ് ഭാഗം കാണുന്നില്ല: ' + key + ' #' + i);
+                        str += sn.data().data;
+                    });
+                    out[key] = JSON.parse(str);
+                    last[key] = str;
+                }));
+            } catch(e) {
+                e.cloudShardsCorrupt = true; // manifest ഉണ്ട്, പക്ഷേ വായിക്കാൻ കഴിഞ്ഞില്ല → ലോക്കൽ ഡാറ്റ സംരക്ഷിക്കാൻ
+                throw e;
+            }
+            _cloudManifest = keys; _cloudLast = last; _cloudVerified = DB_DOC;
+            return out;
+        }
+
+        // ക്ലൗഡിലേക്ക് സേവ്: മാറിയ വിഭാഗങ്ങൾ മാത്രം, ഒന്നിനുപുറകെ ഒന്നായി (queue)
+        function cloudSaveAll() {
+            if(!db) return Promise.resolve();
+            const p = _cloudQueue.catch(() => {}).then(cloudSaveRun);
+            _cloudQueue = p;
+            return p;
+        }
+        async function cloudSaveRun() {
+            if(!db) return;
+            cloudResetIfUserChanged();
+            const coll = db.collection("app_data");
+            if(_cloudVerified !== DB_DOC) {
+                const m = await coll.doc(cloudManifestId()).get();
+                if(m.exists) throw new Error('ക്ലൗഡിലെ ഡാറ്റ ഇതുവരെ ലോഡ് ആയിട്ടില്ല. ഇന്റർനെറ്റ് ഓണാക്കി ആപ്പ് വീണ്ടും തുറക്കൂ.');
+                _cloudVerified = DB_DOC; _cloudManifest = {}; _cloudLast = {};
+            }
+            const state = cloudCurrentState();
+            const newKeys = Object.assign({}, _cloudManifest);
+            const newLast = Object.assign({}, _cloudLast);
+            const writes = [], oldIds = [];
+            for(const key of CLOUD_KEYS) {
+                const json = JSON.stringify(state[key] === undefined ? null : state[key]);
+                if(_cloudLast[key] === json && newKeys[key]) continue;
+                const chunks = cloudSplit(json);
+                const v = Date.now().toString(36) + (_cloudSeq++).toString(36);
+                chunks.forEach((c, i) => writes.push({ id: cloudPartId(key, v, i), data: { key: key, v: v, i: i, n: chunks.length, data: c } }));
+                const old = newKeys[key];
+                if(old) { for(let i = 0; i < old.n; i++) oldIds.push(cloudPartId(key, old.v, i)); }
+                newKeys[key] = { v: v, n: chunks.length };
+                newLast[key] = json;
+            }
+            if(writes.length === 0) return;
+            // 1) പുതിയ കഷണങ്ങൾ (ചെറിയ ബാച്ചുകളായി)
+            for(let i = 0; i < writes.length; i += 8) {
+                const batch = db.batch();
+                writes.slice(i, i + 8).forEach(w => batch.set(coll.doc(w.id), w.data));
+                await batch.commit();
+            }
+            // 2) manifest അവസാനം (ഇതോടെയാണ് പുതിയ ഡാറ്റ "ആക്റ്റീവ്" ആകുന്നത്)
+            await coll.doc(cloudManifestId()).set({ format: 2, keys: newKeys, updatedAt: firebase.firestore.FieldValue.serverTimestamp() });
+            _cloudManifest = newKeys; _cloudLast = newLast;
+            // 3) പഴയ കഷണങ്ങൾ വൃത്തിയാക്കൽ (പരാജയപ്പെട്ടാലും പ്രശ്നമില്ല)
+            try {
+                for(let i = 0; i < oldIds.length; i += 400) {
+                    const batch = db.batch();
+                    oldIds.slice(i, i + 400).forEach(id => batch.delete(coll.doc(id)));
+                    await batch.commit();
+                }
+            } catch(e) { console.log('Old shard cleanup skipped:', e); }
+        }
+        // =================== END CLOUD SHARDS ===================
+
         // ===================== GOOGLE LOGIN =====================
         async function saveAllToCloud() {
             if(!db) return;
             try {
-                await db.collection("app_data").doc(DB_DOC).set({
-                    categoriesData: categoriesData,
-                    sampleQuestions: sampleQuestions,
-                    studyNotesMap: studyNotesMap,
-                    studyHighlightsMap: studyHighlightsMap,
-                    userProgressData: userProgressData,
-                    reportedQuestionsList: reportedQuestionsList,
-                    trackerTopicsData: trackerTopicsData,
-                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-                });
+                await cloudSaveAll();
             } catch(e) { console.log("Cloud save error:", e); }
         }
 
@@ -1347,17 +1549,25 @@
         async function loadDataFromFirebase() {
             if(!db) return;
             try {
-                const docRef = db.collection("app_data").doc(DB_DOC);
-                let docSnap = await docRef.get();
+                let shardData = null, shardBlocked = false;
+                try { shardData = await cloudLoadShards(); }
+                catch(e) { console.log("Shard load error:", e); if(e && e.cloudShardsCorrupt) shardBlocked = true; }
+                let docSnap = null;
                 let migrated = false;
-                if(!docSnap.exists && currentUser) {
-                    try {
-                        const legacy = await db.collection("app_data").doc("psc_database_anoop").get();
-                        if(legacy.exists) { docSnap = legacy; migrated = true; }
-                    } catch(e) { console.log("Legacy load skipped:", e); }
+                if(!shardData && !shardBlocked) {
+                    const docRef = db.collection("app_data").doc(DB_DOC);
+                    docSnap = await docRef.get();
+                    if(!docSnap.exists && currentUser) {
+                        try {
+                            const legacy = await db.collection("app_data").doc("psc_database_anoop").get();
+                            if(legacy.exists) { docSnap = legacy; migrated = true; }
+                        } catch(e) { console.log("Legacy load skipped:", e); }
+                    }
                 }
-                if (docSnap.exists) {
-                    const serverData = docSnap.data();
+                if (shardBlocked) {
+                    console.log("Cloud shards unreadable - keeping local data untouched.");
+                } else if (shardData || (docSnap && docSnap.exists)) {
+                    const serverData = shardData || docSnap.data();
                     if(serverData.categoriesData) {
                         let sData = serverData.categoriesData;
                         let ordered = {};
@@ -1394,7 +1604,7 @@
                         trackerTopicsData = serverData.trackerTopicsData;
                         localStorage.setItem('psc_tracker_topics_data_anoop', JSON.stringify(trackerTopicsData));
                     }
-                    if(migrated) { await saveAllToCloud(); }
+                    if(!shardData) { await saveAllToCloud(); } // പഴയ ഡോക്യുമെന്റിൽ നിന്ന് പുതിയ ഭാഗങ്ങളിലേക്ക് മാറ്റൽ
                 } else if(currentUser) {
                     await saveAllToCloud();
                 }
@@ -1648,16 +1858,7 @@
             localStorage.setItem('psc_tracker_topics_data_anoop', JSON.stringify(trackerTopicsData));
             if(db) {
                 try {
-                    await db.collection("app_data").doc(DB_DOC).set({
-                        categoriesData: categoriesData,
-                        sampleQuestions: sampleQuestions,
-                        studyNotesMap: studyNotesMap,
-                        studyHighlightsMap: studyHighlightsMap,
-                        userProgressData: userProgressData,
-                        reportedQuestionsList: reportedQuestionsList,
-                        trackerTopicsData: trackerTopicsData,
-                        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-                    }, { merge: true });
+                    await cloudSaveAll();
                 } catch(e) { console.log("Tracker sync error:", e); }
             }
         }
@@ -1838,11 +2039,7 @@
                 let cloudMsg = '';
                 if(db) {
                     try {
-                        await db.collection("app_data").doc(DB_DOC).set({
-                            categoriesData, sampleQuestions, studyNotesMap, studyHighlightsMap,
-                            userProgressData, reportedQuestionsList, trackerTopicsData,
-                            updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-                        });
+                        await cloudSaveAll();
                         cloudMsg = ' ക്ലൗഡിലും സേവ് ചെയ്തു.';
                     } catch(e) {
                         console.log('Restore cloud error:', e);
@@ -2530,16 +2727,7 @@
             localStorage.setItem('psc_study_highlights_map_anoop', JSON.stringify(studyHighlightsMap));
             if(db && activeCurrentNoteKey) {
                 try {
-                    await db.collection("app_data").doc(DB_DOC).set({
-                        categoriesData: categoriesData,
-                        sampleQuestions: sampleQuestions,
-                        studyNotesMap: studyNotesMap,
-                        studyHighlightsMap: studyHighlightsMap,
-                        userProgressData: userProgressData,
-                        reportedQuestionsList: reportedQuestionsList,
-                        trackerTopicsData: trackerTopicsData,
-                        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-                    }, { merge: true });
+                    await cloudSaveAll();
                 } catch(e) {
                     console.log("Highlight sync error:", e);
                 }
@@ -2669,16 +2857,7 @@
                 localStorage.setItem('psc_study_notes_map_anoop', JSON.stringify(studyNotesMap));
 
                 if(db) {
-                    await db.collection("app_data").doc(DB_DOC).set({
-                        categoriesData: categoriesData,
-                        sampleQuestions: sampleQuestions,
-                        studyNotesMap: studyNotesMap,
-                        studyHighlightsMap: studyHighlightsMap,
-                        userProgressData: userProgressData,
-                        reportedQuestionsList: reportedQuestionsList,
-                        trackerTopicsData: trackerTopicsData,
-                        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-                    });
+                    await cloudSaveAll();
                 }
 
                 alert(`🎉 വിജയകരമായി "${subtopic}" എന്ന Gemini Note സേവ് ചെയ്തു!`);
@@ -2751,16 +2930,7 @@
                 localStorage.setItem('psc_study_notes_map_anoop', JSON.stringify(studyNotesMap));
 
                 if(db) {
-                    await db.collection("app_data").doc(DB_DOC).set({
-                        categoriesData: categoriesData,
-                        sampleQuestions: sampleQuestions,
-                        studyNotesMap: studyNotesMap,
-                        studyHighlightsMap: studyHighlightsMap,
-                        userProgressData: userProgressData,
-                        reportedQuestionsList: reportedQuestionsList,
-                        trackerTopicsData: trackerTopicsData,
-                        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-                    });
+                    await cloudSaveAll();
                 }
 
                 alert(`🎉 വിജയകരമായി "${testName}" എന്ന നോട്ടിലേക്ക് വിവരങ്ങൾ സേവ് ചെയ്തു!`);
@@ -2843,16 +3013,7 @@
 
             if(db) {
                 try {
-                    await db.collection("app_data").doc(DB_DOC).set({
-                        categoriesData: categoriesData,
-                        sampleQuestions: sampleQuestions,
-                        studyNotesMap: studyNotesMap,
-                        studyHighlightsMap: studyHighlightsMap,
-                        userProgressData: userProgressData,
-                        reportedQuestionsList: reportedQuestionsList,
-                        trackerTopicsData: trackerTopicsData,
-                        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-                    });
+                    await cloudSaveAll();
                 } catch(e) { console.log("Notes delete sync error:", e); }
             }
 
@@ -2992,16 +3153,7 @@
 
             if(db) {
                 try {
-                    await db.collection("app_data").doc(DB_DOC).set({
-                        categoriesData: categoriesData,
-                        sampleQuestions: sampleQuestions,
-                        studyNotesMap: studyNotesMap,
-                        studyHighlightsMap: studyHighlightsMap,
-                        userProgressData: userProgressData,
-                        reportedQuestionsList: reportedQuestionsList,
-                        trackerTopicsData: trackerTopicsData,
-                        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-                    });
+                    await cloudSaveAll();
                 } catch(e) { console.log("Category sync error:", e); }
             }
 
@@ -3074,16 +3226,7 @@
                 localStorage.setItem('psc_sample_questions_anoop', JSON.stringify(sampleQuestions));
 
                 if(db) {
-                    await db.collection("app_data").doc(DB_DOC).set({
-                        categoriesData: categoriesData,
-                        sampleQuestions: sampleQuestions,
-                        studyNotesMap: studyNotesMap,
-                        studyHighlightsMap: studyHighlightsMap,
-                        userProgressData: userProgressData,
-                        reportedQuestionsList: reportedQuestionsList,
-                        trackerTopicsData: trackerTopicsData,
-                        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-                    });
+                    await cloudSaveAll();
                 }
 
                 alert(`🎉 വിജയകരമായി ${generatedQuestions.length} ചോദ്യങ്ങൾ സേവ് ചെയ്തു!`);
@@ -3168,16 +3311,7 @@
                 localStorage.setItem('psc_sample_questions_anoop', JSON.stringify(sampleQuestions));
 
                 if(db) {
-                    await db.collection("app_data").doc(DB_DOC).set({
-                        categoriesData: categoriesData,
-                        sampleQuestions: sampleQuestions,
-                        studyNotesMap: studyNotesMap,
-                        studyHighlightsMap: studyHighlightsMap,
-                        userProgressData: userProgressData,
-                        reportedQuestionsList: reportedQuestionsList,
-                        trackerTopicsData: trackerTopicsData,
-                        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-                    });
+                    await cloudSaveAll();
                 }
 
                 alert(`🎉 വിജയകരമായി ${newQuestions.length} പുതിയ ചോദ്യങ്ങൾ "${testName}" എന്ന മോക്ക് ടെസ്റ്റിലേക്ക് കൂട്ടിച്ചേർത്തു!`);
@@ -3255,16 +3389,7 @@
 
             if(db) {
                 try {
-                    await db.collection("app_data").doc(DB_DOC).set({
-                        categoriesData: categoriesData,
-                        sampleQuestions: sampleQuestions,
-                        studyNotesMap: studyNotesMap,
-                        studyHighlightsMap: studyHighlightsMap,
-                        userProgressData: userProgressData,
-                        reportedQuestionsList: reportedQuestionsList,
-                        trackerTopicsData: trackerTopicsData,
-                        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-                    });
+                    await cloudSaveAll();
                 } catch(e) { console.log("Mock delete sync error:", e); }
             }
 
@@ -3317,16 +3442,7 @@
 
             if(db) {
                 try {
-                    await db.collection("app_data").doc(DB_DOC).set({
-                        categoriesData: categoriesData,
-                        sampleQuestions: sampleQuestions,
-                        studyNotesMap: studyNotesMap,
-                        studyHighlightsMap: studyHighlightsMap,
-                        userProgressData: userProgressData,
-                        reportedQuestionsList: reportedQuestionsList,
-                        trackerTopicsData: trackerTopicsData,
-                        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-                    });
+                    await cloudSaveAll();
                 } catch(e) { console.log("Report sync error:", e); }
             }
 
@@ -3379,16 +3495,7 @@
 
             if(db) {
                 try {
-                    await db.collection("app_data").doc(DB_DOC).set({
-                        categoriesData: categoriesData,
-                        sampleQuestions: sampleQuestions,
-                        studyNotesMap: studyNotesMap,
-                        studyHighlightsMap: studyHighlightsMap,
-                        userProgressData: userProgressData,
-                        reportedQuestionsList: reportedQuestionsList,
-                        trackerTopicsData: trackerTopicsData,
-                        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-                    });
+                    await cloudSaveAll();
                 } catch(e) { console.log("No action sync error:", e); }
             }
 
@@ -3449,16 +3556,7 @@
 
             if(db) {
                 try {
-                    await db.collection("app_data").doc(DB_DOC).set({
-                        categoriesData: categoriesData,
-                        sampleQuestions: sampleQuestions,
-                        studyNotesMap: studyNotesMap,
-                        studyHighlightsMap: studyHighlightsMap,
-                        userProgressData: userProgressData,
-                        reportedQuestionsList: reportedQuestionsList,
-                        trackerTopicsData: trackerTopicsData,
-                        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-                    });
+                    await cloudSaveAll();
                 } catch(e) { console.log("Edit sync error:", e); }
             }
 
@@ -3478,16 +3576,7 @@
 
             if(db) {
                 try {
-                    await db.collection("app_data").doc(DB_DOC).set({
-                        categoriesData: categoriesData,
-                        sampleQuestions: sampleQuestions,
-                        studyNotesMap: studyNotesMap,
-                        studyHighlightsMap: studyHighlightsMap,
-                        userProgressData: userProgressData,
-                        reportedQuestionsList: reportedQuestionsList,
-                        trackerTopicsData: trackerTopicsData,
-                        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-                    });
+                    await cloudSaveAll();
                 } catch(e) { console.log("Admin delete sync error:", e); }
             }
 
@@ -4002,16 +4091,7 @@
             localStorage.setItem('psc_sample_questions_anoop', JSON.stringify(sampleQuestions));
 
             if(db) {
-                db.collection("app_data").doc(DB_DOC).set({
-                    categoriesData: categoriesData,
-                    sampleQuestions: sampleQuestions,
-                    studyNotesMap: studyNotesMap,
-                    studyHighlightsMap: studyHighlightsMap,
-                    userProgressData: userProgressData,
-                    reportedQuestionsList: reportedQuestionsList,
-                    trackerTopicsData: trackerTopicsData,
-                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-                }).catch(e => console.log(e));
+                cloudSaveAll().catch(e => console.log(e));
             }
 
             alert(`🎉 "${newTestName}" വിജയകരമായി 'മൈ റിവിഷൻ സെറ്റുകൾ' (Custom Revision)-ൽ സേവ് ചെയ്തു!`);
@@ -4050,16 +4130,7 @@
             localStorage.setItem('psc_sample_questions_anoop', JSON.stringify(sampleQuestions));
 
             if(db) {
-                db.collection("app_data").doc(DB_DOC).set({
-                    categoriesData: categoriesData,
-                    sampleQuestions: sampleQuestions,
-                    studyNotesMap: studyNotesMap,
-                    studyHighlightsMap: studyHighlightsMap,
-                    userProgressData: userProgressData,
-                    reportedQuestionsList: reportedQuestionsList,
-                    trackerTopicsData: trackerTopicsData,
-                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-                }).catch(e => console.log(e));
+                cloudSaveAll().catch(e => console.log(e));
             }
 
             renderSavedMistakeSets();
@@ -4708,6 +4779,17 @@
         // =================== END SPECIAL EXAM ===================
 
         switchTab('dashboard');
+    </script>
+    <script>
+        // IndexedDB ഡാറ്റ ലോഡ് ആയ ശേഷം മാത്രം ആപ്പിന്റെ പ്രധാന സ്ക്രിപ്റ്റ് പ്രവർത്തിപ്പിക്കുന്നു
+        (function () {
+            function boot() {
+                var el = document.createElement('script');
+                el.textContent = document.getElementById('psc-main-script').textContent;
+                document.body.appendChild(el);
+            }
+            (window.__pscStoreReady || Promise.resolve()).then(boot, boot);
+        })();
     </script>
 
     <!-- Full Screen ബട്ടൺ (ആപ്പ് ആയി ഇൻസ്റ്റാൾ ചെയ്തതാണെങ്കിൽ തനിയെ മറയും) -->
