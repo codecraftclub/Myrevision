@@ -513,6 +513,15 @@
             </div>
 
             <div class="bg-slate-800 border border-slate-700 p-5 rounded-2xl shadow-md space-y-3">
+                <h3 class="text-sm font-bold text-slate-200">💾 ബാക്കപ്പ് (Backup)</h3>
+                <p class="text-xs text-slate-400">മോക്ക് ടെസ്റ്റുകൾ, നോട്ടുകൾ, പ്രോഗ്രസ്, ട്രാക്കർ, Todo എന്നിവ ഉൾപ്പെടെ എല്ലാ ഡാറ്റയും ഒരു ഫയലായി ഫോണിൽ സേവ് ചെയ്യാം.</p>
+                <button onclick="downloadBackup()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-2.5 rounded-xl text-sm font-bold shadow">⬇️ ബാക്കപ്പ് ഡൗൺലോഡ് ചെയ്യുക</button>
+                <button onclick="document.getElementById('backup-file-input').click()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-2.5 rounded-xl text-sm font-bold shadow">⬆️ ബാക്കപ്പിൽ നിന്ന് തിരിച്ചെടുക്കുക (Restore)</button>
+                <input type="file" id="backup-file-input" accept=".json,application/json" class="hidden" onchange="restoreBackupFile(this)">
+                <div id="backup-status" class="text-xs text-emerald-400 min-h-[1rem]"></div>
+            </div>
+
+            <div class="bg-slate-800 border border-slate-700 p-5 rounded-2xl shadow-md space-y-3">
                 <h3 class="text-sm font-bold text-slate-200">👤 Account</h3>
                 <div id="settings-account-info" class="text-xs text-slate-400"></div>
                 <button id="settings-auth-btn" class="w-full py-2.5 rounded-xl text-sm font-bold shadow bg-rose-600 text-white">Logout</button>
@@ -1713,6 +1722,139 @@
         }
 
 
+
+
+        // ===================== BACKUP DOWNLOAD / RESTORE =====================
+        function buildBackupObject() {
+            return {
+                backupVersion: 1,
+                createdAt: new Date().toISOString(),
+                categoriesData: categoriesData,
+                sampleQuestions: sampleQuestions,
+                studyNotesMap: studyNotesMap,
+                studyHighlightsMap: studyHighlightsMap,
+                userProgressData: userProgressData,
+                savedMistakeSets: savedMistakeSets,
+                reportedQuestionsList: reportedQuestionsList,
+                trackerTopicsData: trackerTopicsData
+            };
+        }
+        function backupSetStatus(msg) {
+            const st = document.getElementById('backup-status');
+            if(st) st.innerText = msg || '';
+        }
+        function triggerBackupDownload(prefix) {
+            const json = JSON.stringify(buildBackupObject());
+            const d = new Date();
+            const stamp = d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0')
+                + '_' + String(d.getHours()).padStart(2,'0') + String(d.getMinutes()).padStart(2,'0');
+            const fileName = prefix + '-' + stamp + '.json';
+            const blob = new Blob([json], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url; a.download = fileName;
+            document.body.appendChild(a); a.click(); document.body.removeChild(a);
+            setTimeout(() => URL.revokeObjectURL(url), 10000);
+            return { fileName: fileName, kb: Math.round(json.length / 1024) };
+        }
+        function downloadBackup() {
+            try {
+                const r = triggerBackupDownload('psc-backup');
+                backupSetStatus('✅ ' + r.fileName + ' ഡൗൺലോഡ് ചെയ്തു (' + r.kb + ' KB). ഫോണിലെ Downloads ഫോൾഡറിൽ നോക്കൂ.');
+            } catch(e) {
+                console.log('Backup error:', e);
+                backupSetStatus('⚠️ ബാക്കപ്പ് ഡൗൺലോഡ് ചെയ്യാൻ കഴിഞ്ഞില്ല: ' + (e.message || e));
+            }
+        }
+
+        // ബാക്കപ്പ് ഫയലിൽ നിന്ന് തിരിച്ചെടുക്കൽ: ഇപ്പോഴുള്ള ഡാറ്റ ബാക്കപ്പ് കൊണ്ട് REPLACE ചെയ്യും (merge അല്ല) → ഡ്യൂപ്ലിക്കേറ്റ് വരില്ല
+        function restoreBackupFile(inputEl) {
+            const file = inputEl && inputEl.files && inputEl.files[0];
+            if(!file) return;
+            const reader = new FileReader();
+            reader.onerror = () => { backupSetStatus('⚠️ ഫയൽ വായിക്കാൻ കഴിഞ്ഞില്ല.'); inputEl.value = ''; };
+            reader.onload = async () => {
+                let data;
+                try { data = JSON.parse(reader.result); }
+                catch(e) { alert('ഇത് ശരിയായ ബാക്കപ്പ് ഫയൽ അല്ല (JSON വായിക്കാൻ കഴിഞ്ഞില്ല).'); inputEl.value = ''; return; }
+
+                const isObj = v => v && typeof v === 'object' && !Array.isArray(v);
+                const spec = [
+                    { key: 'categoriesData',        ok: isObj, ls: 'psc_categories_data_anoop' },
+                    { key: 'sampleQuestions',       ok: Array.isArray, ls: 'psc_sample_questions_anoop' },
+                    { key: 'studyNotesMap',         ok: isObj, ls: 'psc_study_notes_map_anoop' },
+                    { key: 'studyHighlightsMap',    ok: isObj, ls: 'psc_study_highlights_map_anoop' },
+                    { key: 'userProgressData',      ok: isObj, ls: 'psc_user_progress_anoop' },
+                    { key: 'savedMistakeSets',      ok: Array.isArray, ls: 'psc_saved_mistake_sets_anoop' },
+                    { key: 'reportedQuestionsList', ok: Array.isArray, ls: 'psc_reported_questions_anoop' },
+                    { key: 'trackerTopicsData',     ok: Array.isArray, ls: 'psc_tracker_topics_data_anoop' }
+                ];
+                if(!isObj(data) || !data.backupVersion || !spec.some(x => x.ok(data[x.key]))) {
+                    alert('ഇത് ഈ ആപ്പിന്റെ ബാക്കപ്പ് ഫയലായി തോന്നുന്നില്ല. ശരിയായ psc-backup ഫയൽ തിരഞ്ഞെടുക്കൂ.');
+                    inputEl.value = ''; return;
+                }
+
+                const len = v => Array.isArray(v) ? v.length : (isObj(v) ? Object.keys(v).length : 0);
+                const todoCount = (isObj(data.userProgressData) && Array.isArray(data.userProgressData.todos)) ? data.userProgressData.todos.length : 0;
+                const when = data.createdAt ? new Date(data.createdAt).toLocaleString() : 'അറിയില്ല';
+                const msg = 'ബാക്കപ്പ് (' + when + '):\n'
+                    + '• ചോദ്യങ്ങൾ/മോക്ക് ഡാറ്റ: ' + len(data.sampleQuestions) + '\n'
+                    + '• കാറ്റഗറികൾ: ' + len(data.categoriesData) + '\n'
+                    + '• നോട്ടുകൾ: ' + len(data.studyNotesMap) + '\n'
+                    + '• ട്രാക്കർ മെയിൻ ടോപ്പിക്കുകൾ: ' + len(data.trackerTopicsData) + '\n'
+                    + '• Todo: ' + todoCount + '\n\n'
+                    + '⚠️ ഇപ്പോഴുള്ള ഡാറ്റ ഈ ബാക്കപ്പ് കൊണ്ട് മാറ്റപ്പെടും (കൂട്ടിച്ചേർക്കില്ല). മാറ്റുന്നതിനു മുമ്പ് ഇപ്പോഴത്തെ ഡാറ്റയുടെ ഒരു ബാക്കപ്പ് തനിയെ ഡൗൺലോഡ് ആകും.\n\nതുടരട്ടെ?';
+                if(!confirm(msg)) { inputEl.value = ''; return; }
+
+                // 1) ഇപ്പോഴത്തെ ഡാറ്റ സുരക്ഷിതമായി ഡൗൺലോഡ്
+                try { triggerBackupDownload('psc-before-restore'); }
+                catch(e) {
+                    if(!confirm('ഇപ്പോഴത്തെ ഡാറ്റയുടെ ബാക്കപ്പ് എടുക്കാൻ കഴിഞ്ഞില്ല. എന്നിട്ടും തുടരണോ?')) { inputEl.value = ''; return; }
+                }
+
+                // 2) ബാക്കപ്പിലുള്ള കീകൾ മാത്രം മാറ്റുക
+                try {
+                    if(spec[0].ok(data.categoriesData)) categoriesData = data.categoriesData;
+                    if(spec[1].ok(data.sampleQuestions)) sampleQuestions = data.sampleQuestions;
+                    if(spec[2].ok(data.studyNotesMap)) studyNotesMap = data.studyNotesMap;
+                    if(spec[3].ok(data.studyHighlightsMap)) studyHighlightsMap = data.studyHighlightsMap;
+                    if(spec[4].ok(data.userProgressData)) userProgressData = data.userProgressData;
+                    if(spec[5].ok(data.savedMistakeSets)) savedMistakeSets = data.savedMistakeSets;
+                    if(spec[6].ok(data.reportedQuestionsList)) reportedQuestionsList = data.reportedQuestionsList;
+                    if(spec[7].ok(data.trackerTopicsData)) trackerTopicsData = data.trackerTopicsData;
+                    const live = { categoriesData, sampleQuestions, studyNotesMap, studyHighlightsMap, userProgressData, savedMistakeSets, reportedQuestionsList, trackerTopicsData };
+                    spec.forEach(x => { try { localStorage.setItem(x.ls, JSON.stringify(live[x.key])); } catch(e) { console.log('LS save error', x.key, e); } });
+                } catch(e) {
+                    backupSetStatus('⚠️ Restore പരാജയപ്പെട്ടു: ' + (e.message || e));
+                    inputEl.value = ''; return;
+                }
+
+                // 3) സ്ക്രീനുകൾ പുതുക്കുക
+                try { renderDashboardCategories(); } catch(e) {}
+                try { populateCategoryDropdowns(); } catch(e) {}
+                try { renderTrackerUI(); } catch(e) {}
+
+                // 4) ക്ലൗഡിലേക്ക് സേവ് (പരാജയപ്പെട്ടാൽ വ്യക്തമായി അറിയിക്കും)
+                let cloudMsg = '';
+                if(db) {
+                    try {
+                        await db.collection("app_data").doc(DB_DOC).set({
+                            categoriesData, sampleQuestions, studyNotesMap, studyHighlightsMap,
+                            userProgressData, reportedQuestionsList, trackerTopicsData,
+                            updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                        });
+                        cloudMsg = ' ക്ലൗഡിലും സേവ് ചെയ്തു.';
+                    } catch(e) {
+                        console.log('Restore cloud error:', e);
+                        cloudMsg = ' ⚠️ പക്ഷേ ക്ലൗഡിൽ സേവ് ആയില്ല (' + (e.code || e.message || 'error') + '). ഡാറ്റ ഈ ഫോണിൽ മാത്രമാണ്; ആപ്പ് റീലോഡ് ചെയ്യരുത്.';
+                    }
+                }
+                backupSetStatus('✅ Restore പൂർത്തിയായി.' + cloudMsg);
+                inputEl.value = '';
+            };
+            reader.readAsText(file);
+        }
+        // =================== END BACKUP DOWNLOAD / RESTORE ===================
 
         // ===================== TODO LIST (Progress Tracker auto-sync) =====================
         const TODO_OTHERS = 'മറ്റുള്ളവ (Others)';
